@@ -113,18 +113,34 @@
   },
   {
     "model": "backend.backendmenu",
-    "pk": 404,
+    "pk": 450,
     "fields": {
       "module_name": "Building",
       "menu_name": "Building List",
-      "menu_url": "/building-list/",
+      "menu_url": "building-setup",
       "menu_icon": "fa-solid fa-building icon",
       "menu_description": "Manage building list information.",
-      "parent_id": 400,
+      "parent_id": 3,
       "is_main_menu": false,
       "is_sub_menu": true,
       "is_sub_child_menu": false,
       "is_active": true
     }
-  }
+  }, 
+  {
+    "model": "backend.backendmenu",
+    "pk": 451,
+    "fields": {
+      "module_name": "Building",
+      "menu_name": "Building List",
+      "menu_url": "/building/",
+      "menu_icon": "fa-solid fa-building icon",
+      "menu_description": "Manage building list information.",
+      "parent_id": 450,
+      "is_main_menu": false,
+      "is_sub_menu": false,
+      "is_sub_child_menu": true,
+      "is_active": true
+    }
+  } 
 ]

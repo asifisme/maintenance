@@ -886,20 +886,49 @@ def building_add(request):
 
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
+        nickname = request.POST.get('nickname', '').strip()
         division_id = request.POST.get('division')
         subdivision_id = request.POST.get('subdivision')
         section_id = request.POST.get('section')
+        address = request.POST.get('address', '').strip()
+        latitude = request.POST.get('latitude')
+        longitude = request.POST.get('longitude')
         status = request.POST.get('status', 'Active')
+        installation_year = request.POST.get('installation_year')
+        notes = request.POST.get('notes', '').strip()
+        image = request.FILES.get('image')
+
+        try:
+            latitude = float(latitude) if latitude else None
+        except ValueError:
+            latitude = None
+            
+        try:
+            longitude = float(longitude) if longitude else None
+        except ValueError:
+            longitude = None
+            
+        try:
+            installation_year = int(installation_year) if installation_year else None
+        except ValueError:
+            installation_year = None
 
         if not name:
             messages.error(request, 'Name is required.')
         else:
             Building.objects.create(
                 name=name,
+                nickname=nickname,
                 division_id=division_id or None,
                 subdivision_id=subdivision_id or None,
                 section_id=section_id or None,
+                address=address,
+                latitude=latitude,
+                longitude=longitude,
                 status=status,
+                installation_year=installation_year,
+                notes=notes,
+                image=image,
                 created_by=request.user,
             )
             messages.success(request, 'Building added successfully.')
@@ -920,19 +949,49 @@ def building_update(request, data_id):
 
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
+        nickname = request.POST.get('nickname', '').strip()
         division_id = request.POST.get('division')
         subdivision_id = request.POST.get('subdivision')
         section_id = request.POST.get('section')
+        address = request.POST.get('address', '').strip()
+        latitude = request.POST.get('latitude')
+        longitude = request.POST.get('longitude')
         status = request.POST.get('status', 'Active')
+        installation_year = request.POST.get('installation_year')
+        notes = request.POST.get('notes', '').strip()
+        
+        if 'image' in request.FILES:
+            obj.image = request.FILES.get('image')
+
+        try:
+            latitude = float(latitude) if latitude else None
+        except ValueError:
+            latitude = None
+            
+        try:
+            longitude = float(longitude) if longitude else None
+        except ValueError:
+            longitude = None
+            
+        try:
+            installation_year = int(installation_year) if installation_year else None
+        except ValueError:
+            installation_year = None
 
         if not name:
             messages.error(request, 'Name is required.')
         else:
             obj.name = name
+            obj.nickname = nickname
             obj.division_id = division_id or None
             obj.subdivision_id = subdivision_id or None
             obj.section_id = section_id or None
+            obj.address = address
+            obj.latitude = latitude
+            obj.longitude = longitude
             obj.status = status
+            obj.installation_year = installation_year
+            obj.notes = notes
             obj.updated_by = request.user
             obj.save()
             messages.success(request, 'Building updated successfully.')
