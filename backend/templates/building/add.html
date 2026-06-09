@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}{{ action }} Building{% endblock %}
+{% block content %}
+    <section class="bg-[var(--bg-color)] text-[var(--text-color)] min-h-screen p-4">
+        <div class="bg-white rounded-lg p-6 shadow-sm ring-1 ring-[var(--border-color)] max-w-2xl mx-auto">
+            <h2 class="text-xl font-bold mb-4">{{ action }} Building</h2>
+            <form method="post" enctype="multipart/form-data" class="space-y-4">
+                {% csrf_token %}
+                <div>
+                    <label class="block mb-1">Name</label>
+                    <input type="text"
+                           name="name"
+                           value="{{ obj.name|default:'' }}"
+                           class="w-full border rounded p-2"
+                           required>
+                </div>
+                <div>
+                    <label class="block mb-1">Division</label>
+                    <select name="division" class="w-full border rounded p-2">
+                        <option value="">Select Division</option>
+                        {% for d in divisions %}
+                            <option value="{{ d.id }}"
+                                    {% if obj.division_id == d.id %}selected{% endif %}>{{ d.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block mb-1">Sub-Division</label>
+                    <select name="subdivision" class="w-full border rounded p-2">
+                        <option value="">Select Sub-Division</option>
+                        {% for s in subdivisions %}
+                            <option value="{{ s.id }}"
+                                    {% if obj.subdivision_id == s.id %}selected{% endif %}>{{ s.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block mb-1">Section</label>
+                    <select name="section" class="w-full border rounded p-2">
+                        <option value="">Select Section</option>
+                        {% for s in sections %}
+                            <option value="{{ s.id }}" {% if obj.section_id == s.id %}selected{% endif %}>{{ s.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="pt-4 flex gap-3">
+                    <button type="submit"
+                            class="h-11 px-6 rounded-md bg-[var(--primary-color)] text-white">Save</button>
+                    <a href="{% url 'backend:building_list' %}"
+                       class="h-11 px-6 grid place-items-center border rounded-md">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </section>
+{% endblock %}

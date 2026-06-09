@@ -1,5 +1,5 @@
 from backend.models import (
-    BackendMenu, UserMenuPermission, SiteSettings,
+    BackendMenu, UserMenuPermission, SiteSettings
 )
 
 
@@ -102,14 +102,9 @@ def site_design_settings(request):
     current_path = request.get_full_path()
 
     if "/admin/" not in current_path:
-        try:
-            site_setting, _ = SiteSettings.objects.get_or_create()
-        except Exception:
-            # Fallback if get_or_create fails due to missing fields
-            site_setting = SiteSettings.objects.filter().first()
-            if not site_setting:
-                site_setting = None
+        site_setting, _ = SiteSettings.objects.get_or_create()
 
+ 
         return {
             "site_setting": site_setting,
             "request_path": request.path,

@@ -7,13 +7,16 @@ urlpatterns = [
     path("api/menu-search/", views.search_backend_menus, name="search_backend_menus"),
 
     # Dashboards
+    path('', views.dash_board, name='dash_board'),
+    path('dashboard/', views.dash_board, name='backend_dashboard'),
+    path('dashboard/menu/<str:menu_slug>/', views.menu_wise_dashboard, name='menu_wise_dashboard'),
+
     # Image optimization
     path("image/<str:unique_key>/", views.serve_optimized_image, name="serve_optimized_image"),
 
     path('login/', views.backend_login, name='backend_login'),
     path('logout/', views.backend_logout, name='backend_logout'),
 
-    path('<str:menu_slug>-menu/', views.menu_wise_dashboard, name='menu_wise_dashboard'),
 
     # User Management
     path('user/', views.UserListView.as_view(), name='user_list'),
@@ -31,5 +34,18 @@ urlpatterns = [
     # SubDivision
     path('subdivision/', views.subdivision_list, name='subdivision_list'),
     path('subdivision/add/', views.subdivision_add, name='subdivision_add'),
-   
+    path('subdivision/update/<int:data_id>/', views.subdivision_update, name='subdivision_update'),
+    path('subdivision/delete/<int:data_id>/', views.subdivision_delete, name='subdivision_delete'),
+
+    # Section
+    path('section/', views.section_list, name='section_list'),
+    path('section/add/', views.section_add, name='section_add'),
+    path('section/update/<int:data_id>/', views.section_update, name='section_update'),
+    path('section/delete/<int:data_id>/', views.section_delete, name='section_delete'),
+
+    # Building
+    path('building/', views.building_list, name='building_list'),
+    path('building/add/', views.building_add, name='building_add'),
+    path('building/update/<int:data_id>/', views.building_update, name='building_update'),
+    path('building/delete/<int:data_id>/', views.building_delete, name='building_delete'),
 ]

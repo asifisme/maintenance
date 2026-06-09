@@ -33,24 +33,16 @@
         </script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+              rel="stylesheet">
     </head>
     <body class="antialiased bg-white text-slate-800 font-sans min-h-screen flex items-center justify-center">
-        
         <main class="w-full max-w-md px-6 py-12 flex flex-col items-center">
-            
             <div class="text-center mb-10">
-                <h1 class="text-[44px] font-bold tracking-tight text-[#3498C7] mb-8">
-                    Mintanance HUB
-                </h1>
-                <h2 class="text-3xl font-bold text-[#3D3D3D] mb-2">
-                    Welcome back
-                </h2>
-                <p class="text-sm text-gray-500 font-normal">
-                    Sign in to manage your pet food store and orders
-                </p>
+                <h1 class="text-[44px] font-bold tracking-tight text-[#3498C7] mb-8">Mintanance HUB</h1>
+                <h2 class="text-3xl font-bold text-[#3D3D3D] mb-2">Welcome back</h2>
+                <p class="text-sm text-gray-500 font-normal">Sign in to manage your pet food store and orders</p>
             </div>
-
             {% if messages %}
                 <ul class="w-full mb-4 space-y-2">
                     {% for message in messages %}
@@ -60,24 +52,20 @@
                     {% endfor %}
                 </ul>
             {% endif %}
-            
             {% if form.non_field_errors %}
                 <div class="w-full mb-4 text-sm rounded-md bg-red-50 text-red-700 ring-1 ring-red-200 px-3 py-2">
                     {{ form.non_field_errors|striptags }}
                 </div>
             {% endif %}
-
             <form id="adminLoginForm" method="POST" class="w-full space-y-5" novalidate>
                 {% csrf_token %}
-                
                 <div>
-                    <label for="id_username" class="block text-sm font-semibold text-gray-700 mb-1.5">
-                        Email Address
-                    </label>
+                    <label for="id_username"
+                           class="block text-sm font-semibold text-gray-700 mb-1.5">Email Address</label>
                     <div class="relative">
-                        <input type="text" 
-                               name="username" 
-                               id="id_username" 
+                        <input type="text"
+                               name="username"
+                               id="id_username"
                                placeholder="Enter your email"
                                class="w-full h-12 px-4 rounded-lg border border-[#FFE2D5] focus:outline-none focus:border-hubBlue-400 text-gray-700 placeholder-gray-400 transition"
                                required>
@@ -86,19 +74,16 @@
                         <p class="mt-1 text-xs text-red-600">{{ form.username.errors.as_text }}</p>
                     {% endif %}
                 </div>
-
                 <div>
-                    <label for="id_password" class="block text-sm font-semibold text-gray-700 mb-1.5">
-                        Password
-                    </label>
+                    <label for="id_password"
+                           class="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
                     <div class="relative">
-                        <input type="password" 
-                               name="password" 
-                               id="id_password" 
+                        <input type="password"
+                               name="password"
+                               id="id_password"
                                placeholder="Enter your password"
                                class="w-full h-12 pl-4 pr-12 rounded-lg border border-[#FFE2D5] focus:outline-none focus:border-hubBlue-400 text-gray-700 placeholder-gray-400 transition"
                                required>
-                        
                         <button type="button"
                                 class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                                 onclick="togglePassword()">
@@ -119,7 +104,6 @@
                         <p class="mt-1 text-xs text-red-600">{{ form.password.errors.as_text }}</p>
                     {% endif %}
                 </div>
-
                 <div class="flex items-center justify-between pt-0.5">
                     <label class="inline-flex items-center gap-2 text-xs text-slate-500 cursor-pointer select-none">
                         <input type="checkbox"
@@ -128,11 +112,8 @@
                                class="h-3.5 w-3.5 rounded border-gray-300 text-hubBlue-500 focus:ring-hubBlue-400">
                         <span>Remember me</span>
                     </label>
-                    <a href="#" class="text-xs font-medium text-[#3498C7] hover:underline">
-                        Forgot password?
-                    </a>
+                    <a href="#" class="text-xs font-medium text-[#3498C7] hover:underline">Forgot password?</a>
                 </div>
-
                 <div class="pt-4">
                     <button type="submit"
                             class="w-full h-12 rounded-lg bg-[#3498C7] text-white text-sm font-semibold tracking-wide shadow-[0_10px_20px_-5px_rgba(52,152,199,0.4)] hover:bg-[#2A85B0] active:scale-[0.99] transition focus:outline-none">
@@ -141,7 +122,6 @@
                 </div>
             </form>
         </main>
-
         <script>
         // Run storage verification on mount
         getInfo();

@@ -45,7 +45,7 @@ from backend.forms import UserCreateForm
 
 from backend.models import (
     LoginLog, BackendMenu, UserMenuPermission, WebImages, SiteSettings,
-    Division, SubDivision
+    Division, SubDivision, Section, Building
 )
 
 from backend.forms import (
@@ -581,7 +581,6 @@ def division_add(request):
         name = request.POST.get('name', '').strip()
         code = request.POST.get('code', '').strip()
         location = request.POST.get('location', '').strip()
-        is_active = request.POST.get('is_active') == '1'
 
         if not name or not code:
             messages.error(request, 'Name and Code are required.')
@@ -589,8 +588,9 @@ def division_add(request):
             messages.error(request, 'A division with this code already exists.')
         else:
             Division.objects.create(
-                name=name, code=code, location=location or None,
-                is_active=is_active, created_by=request.user,
+                name=name, code=code,
+                is_active=True, 
+                created_by=request.user,
             )
             messages.success(request, 'Division added successfully.')
             return redirect('backend:division_list')
@@ -609,7 +609,6 @@ def division_update(request, data_id):
         name = request.POST.get('name', '').strip()
         code = request.POST.get('code', '').strip()
         location = request.POST.get('location', '').strip()
-        is_active = request.POST.get('is_active') == '1'
 
         if not name or not code:
             messages.error(request, 'Name and Code are required.')
@@ -618,8 +617,7 @@ def division_update(request, data_id):
         else:
             obj.name = name
             obj.code = code
-            obj.location = location or None
-            obj.is_active = is_active
+            obj.is_active = True
             obj.updated_by = request.user
             obj.save()
             messages.success(request, 'Division updated successfully.')
@@ -657,6 +655,7 @@ def subdivision_list(request):
     search = request.GET.get('search', '').strip()
     division_id = request.GET.get('division', '').strip()
     qs = SubDivision.objects.filter(deleted=False).select_related('division')
+
     if search:
         qs = qs.filter(Q(name__icontains=search))
     if division_id:
@@ -687,15 +686,17 @@ def subdivision_add(request):
         division_id = request.POST.get('division')
         name = request.POST.get('name', '').strip()
         location = request.POST.get('location', '').strip()
-        is_active = request.POST.get('is_active') == '1'
 
         if not division_id or not name:
             messages.error(request, 'Division and Name are required.')
         else:
             SubDivision.objects.create(
-                division_id=division_id, name=name, location=location or None,
-                is_active=is_active, created_by=request.user,
+                division_id=division_id, 
+                name=name,
+                is_active=True, 
+                created_by=request.user,
             )
+
             messages.success(request, 'Sub-Division added successfully.')
             return redirect('backend:subdivision_list')
 
@@ -715,15 +716,13 @@ def subdivision_update(request, data_id):
         division_id = request.POST.get('division')
         name = request.POST.get('name', '').strip()
         location = request.POST.get('location', '').strip()
-        is_active = request.POST.get('is_active') == '1'
 
         if not division_id or not name:
             messages.error(request, 'Division and Name are required.')
         else:
             obj.division_id = division_id
             obj.name = name
-            obj.location = location or None
-            obj.is_active = is_active
+            obj.is_active = True
             obj.updated_by = request.user
             obj.save()
             messages.success(request, 'Sub-Division updated successfully.')
@@ -750,3 +749,216 @@ def subdivision_delete(request, data_id):
     
     messages.error(request, 'Invalid request method.')
     return redirect('backend:subdivision_list')
+
+
+@login_required
+def section_list(request):
+    if not checkUserPermission(request, "can_view", "/backend/location/section/"):
+        return render(request, "403.html", status=403)
+
+    search = request.GET.get('search', '').strip()
+    subdivision_id = request.GET.get('subdivision', '').strip()
+    qs = Section.objects.filter(deleted=False).select_related('subdivision')
+    if search:
+        qs = qs.filter(Q(name__icontains=search))
+    if subdivision_id:
+        qs = qs.filter(subdivision_id=subdivision_id)
+
+    page_num = request.GET.get('page', 1)
+    data_list, paginator_list, last_page = paginate_data(request, page_num, qs)
+
+    context = {
+        'data_list': data_list,
+        'paginator_list': paginator_list,
+        'last_page': last_page,
+        'search': search,
+        'subdivision_id': subdivision_id,
+        'subdivisions': SubDivision.objects.filter(deleted=False, is_active=True),
+    }
+    return render(request, 'section/list.html', context) 
+
+
+@login_required
+def section_add(request):
+    if not checkUserPermission(request, "can_add", "/backend/location/section/"):
+        return render(request, "403.html", status=403)
+
+    subdivisions = SubDivision.objects.filter(deleted=False, is_active=True)
+
+    if request.method == 'POST':
+        subdivision_id = request.POST.get('subdivision')
+        name = request.POST.get('name', '').strip()
+        location = request.POST.get('location', '').strip()
+        is_active = request.POST.get('is_active') == '1'
+
+        if not subdivision_id or not name:
+            messages.error(request, 'Sub-Division and Name are required.')
+        else:
+            Section.objects.create(
+                subdivision_id=subdivision_id, name=name,
+                is_active=is_active, created_by=request.user,
+            )
+            messages.success(request, 'Section added successfully.')
+            return redirect('backend:section_list')
+
+    context = {'action': 'Add', 'subdivisions': subdivisions}
+    return render(request, 'section/add.html', context)
+
+
+@login_required
+def section_update(request, data_id):
+    if not checkUserPermission(request, "can_update", "/backend/location/section/"):
+        return render(request, "403.html", status=403)
+
+    obj = get_object_or_404(Section, pk=data_id, deleted=False)
+    subdivisions = SubDivision.objects.filter(deleted=False, is_active=True)
+
+    if request.method == 'POST':
+        subdivision_id = request.POST.get('subdivision')
+        name = request.POST.get('name', '').strip()
+        location = request.POST.get('location', '').strip()
+        is_active = request.POST.get('is_active') == '1'
+
+        if not subdivision_id or not name:
+            messages.error(request, 'Sub-Division and Name are required.')
+        else:
+            obj.subdivision_id = subdivision_id
+            obj.name = name
+            obj.is_active = is_active
+            obj.updated_by = request.user
+            obj.save()
+            messages.success(request, 'Section updated successfully.')
+            return redirect('backend:section_list')
+
+    context = {'action': 'Update', 'obj': obj, 'subdivisions': subdivisions}
+    return render(request, 'section/update.html', context)
+
+
+@login_required
+def section_delete(request, data_id):
+    if not checkUserPermission(request, "can_delete", "/backend/location/section/"):
+        messages.error(request, 'You do not have permission to delete this section.')
+        return render(request, "403.html", status=403)
+
+    if request.method == 'POST':
+        Section.objects.filter(pk=data_id, deleted=False).update(
+            deleted=True,
+            is_active=False,
+            updated_by=request.user
+        )
+        messages.success(request, 'Section deleted successfully.')
+        return redirect('backend:section_list')
+    
+    messages.error(request, 'Invalid request method.')
+    return redirect('backend:section_list')
+
+
+# Building
+@login_required
+def building_list(request):
+    if not checkUserPermission(request, 'can_view', '/backend/location/building/'):
+        return render(request, '403.html', status=403)
+
+    search = request.GET.get('search', '').strip()
+    qs = Building.objects.filter(deleted=False).select_related('division', 'subdivision', 'section')
+    if search:
+        qs = qs.filter(Q(name__icontains=search))
+
+    page_num = request.GET.get('page', 1)
+    data_list, paginator_list, last_page = paginate_data(request, page_num, qs)
+
+    context = {
+        'data_list': data_list,
+        'paginator_list': paginator_list,
+        'last_page': last_page,
+        'search': search,
+    }
+    return render(request, 'building/list.html', context)
+
+@login_required
+def building_add(request):
+    if not checkUserPermission(request, 'can_add', '/backend/location/building/'):
+        return render(request, '403.html', status=403)
+
+    divisions = Division.objects.filter(deleted=False, is_active=True)
+    subdivisions = SubDivision.objects.filter(deleted=False, is_active=True)
+    sections = Section.objects.filter(deleted=False, is_active=True)
+
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        division_id = request.POST.get('division')
+        subdivision_id = request.POST.get('subdivision')
+        section_id = request.POST.get('section')
+        status = request.POST.get('status', 'Active')
+
+        if not name:
+            messages.error(request, 'Name is required.')
+        else:
+            Building.objects.create(
+                name=name,
+                division_id=division_id or None,
+                subdivision_id=subdivision_id or None,
+                section_id=section_id or None,
+                status=status,
+                created_by=request.user,
+            )
+            messages.success(request, 'Building added successfully.')
+            return redirect('backend:building_list')
+
+    context = {'action': 'Add', 'divisions': divisions, 'subdivisions': subdivisions, 'sections': sections}
+    return render(request, 'building/add.html', context)
+
+@login_required
+def building_update(request, data_id):
+    if not checkUserPermission(request, 'can_update', '/backend/location/building/'):
+        return render(request, '403.html', status=403)
+
+    obj = get_object_or_404(Building, pk=data_id, deleted=False)
+    divisions = Division.objects.filter(deleted=False, is_active=True)
+    subdivisions = SubDivision.objects.filter(deleted=False, is_active=True)
+    sections = Section.objects.filter(deleted=False, is_active=True)
+
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        division_id = request.POST.get('division')
+        subdivision_id = request.POST.get('subdivision')
+        section_id = request.POST.get('section')
+        status = request.POST.get('status', 'Active')
+
+        if not name:
+            messages.error(request, 'Name is required.')
+        else:
+            obj.name = name
+            obj.division_id = division_id or None
+            obj.subdivision_id = subdivision_id or None
+            obj.section_id = section_id or None
+            obj.status = status
+            obj.updated_by = request.user
+            obj.save()
+            messages.success(request, 'Building updated successfully.')
+            return redirect('backend:building_list')
+
+    context = {'action': 'Update', 'obj': obj, 'divisions': divisions, 'subdivisions': subdivisions, 'sections': sections}
+    return render(request, 'building/update.html', context)
+
+@login_required
+def building_delete(request, data_id):
+    if not checkUserPermission(request, 'can_delete', '/backend/location/building/'):
+        messages.error(request, 'You do not have permission to delete this building.')
+        return render(request, '403.html', status=403)
+
+    if request.method == 'POST':
+        Building.objects.filter(pk=data_id, deleted=False).update(
+            deleted=True,
+            is_active=False,
+            updated_by=request.user
+        )
+        messages.success(request, 'Building deleted successfully.')
+        return redirect('backend:building_list')
+    
+    messages.error(request, 'Invalid request method.')
+    return redirect('backend:building_list')
+
+@login_required
+def dash_board(request):
+    return render(request, 'dashboard.html', {})

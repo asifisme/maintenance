@@ -35,32 +35,96 @@
     "model": "backend.backendmenu",
     "pk": 3,
     "fields": {
-      "module_name": "Inventory Management",
-      "menu_name": "Inventory Management",
-      "menu_url": "/inventory/",
-      "menu_icon": "fa-solid fa-boxes-stacked icon",
-      "menu_description": "Manage inventory items, stock levels, and related operations.",
+      "module_name": "Building Management",
+      "menu_name": "Building Management",
+      "menu_url": "/building/",
+      "menu_icon": "fa-solid fa-building icon",
+      "menu_description": "Manage building information.",
       "parent_id": null,
       "is_main_menu": true,
       "is_sub_menu": false,
       "is_sub_child_menu": false,
       "is_active": true
     }
-  },  
+  },
   {
     "model": "backend.backendmenu",
-    "pk": 4,
+    "pk": 400,
     "fields": {
-      "module_name": "Requisition Management",
-      "menu_name": "Requisition Management",
-      "menu_url": "/requisition/",
-      "menu_icon": "fa-solid fa-file-lines icon",
-      "menu_description": "Manage requisitions, approvals, and returns.",
-      "parent_id": null,
-      "is_main_menu": true,
+      "module_name": "Setup",
+      "menu_name": "Setup",
+      "menu_url": "division-setup",
+      "menu_icon": "fa-solid fa-boxes-stacked icon",
+      "menu_description": "Manage division information.",
+      "parent_id": 3,
+      "is_main_menu": false,
+      "is_sub_menu": true,
+      "is_sub_child_menu": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "backend.backendmenu",
+    "pk": 401,
+    "fields": {
+      "module_name": "Building",
+      "menu_name": "Division Setup",
+      "menu_url": "/division/",
+      "menu_icon": "fa-solid fa-boxes-stacked icon",
+      "menu_description": "Manage division information.",
+      "parent_id": 400,
+      "is_main_menu": false,
       "is_sub_menu": false,
+      "is_sub_child_menu": true,
+      "is_active": true
+    }
+  },
+  {
+    "model": "backend.backendmenu",
+    "pk": 402,
+    "fields": {
+      "module_name": "Building",
+      "menu_name": "subdivision",
+      "menu_url": "/subdivision/",
+      "menu_icon": "fa-solid fa-boxes-stacked icon",
+      "menu_description": "Manage section information.",
+      "parent_id": 400,
+      "is_main_menu": false,
+      "is_sub_menu": false,
+      "is_sub_child_menu": true,
+      "is_active": true
+    }
+  },
+  {
+    "model": "backend.backendmenu",
+    "pk": 403,
+    "fields": {
+      "module_name": "Building",
+      "menu_name": "Section",
+      "menu_url": "/section/",
+      "menu_icon": "fa-solid fa-boxes-stacked icon",
+      "menu_description": "Manage sub-division information.",
+      "parent_id": 400,
+      "is_main_menu": false,
+      "is_sub_menu": false,
+      "is_sub_child_menu": true,
+      "is_active": true
+    }
+  },
+  {
+    "model": "backend.backendmenu",
+    "pk": 404,
+    "fields": {
+      "module_name": "Building",
+      "menu_name": "Building List",
+      "menu_url": "/building-list/",
+      "menu_icon": "fa-solid fa-building icon",
+      "menu_description": "Manage building list information.",
+      "parent_id": 400,
+      "is_main_menu": false,
+      "is_sub_menu": true,
       "is_sub_child_menu": false,
       "is_active": true
     }
   }
-] 
+]

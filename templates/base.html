@@ -21,9 +21,7 @@
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title"
               content="{% block twitter_title %}{{ site_setting.site_title|default:'' }}{% endblock %}" />
-        <title>
-            {% block page_title %}{{ site_setting.site_title|default:'' }}{% endblock %}
-        </title>
+        <title>{% block page_title %}{{ site_setting.site_title|default:'' }}{% endblock %}</title>
         <link rel="icon"
               type="image/png"
               href="{% url 'backend:serve_optimized_image' 'no_image' %}?width=300&quality=100&image_path=favicon">
@@ -672,7 +670,6 @@
         </script>
         <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
         <script src="{% static 'js/backend_menu_search.js' %}"></script>
-        {% block extra_js %}
-        {% endblock %}
+        {% block extra_js %}{% endblock %}
     </body>
 </html>

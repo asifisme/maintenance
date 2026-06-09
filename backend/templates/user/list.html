@@ -16,15 +16,6 @@
         <span class="hidden md:block">Filter</span>
     </button>
     <!-- Add New User -->
-    <a href="{% url 'backend:user_add' %}"
-       class="inline-flex items-center gap-2 h-11 px-3 rounded-md bg-[var(--primary-color)] text-[var(--button-text-color)]">
-        <span class="grid h-5 w-5 place-items-center rounded-full bg-[var(--bg-color)]/20">
-            <svg width="20" height="20" viewBox="0 0 24 24">
-                <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            </svg>
-        </span>
-        <span class="hidden md:block">Add New User</span>
-    </a>
 {% endblock %}
 {% block modals %}
     <div class="flex relative items-center justify-between">
@@ -118,7 +109,7 @@
     </div>
 {% endblock %}
 {% block content %}
-    <section class="text-[var(--text-color)] min-h-screen overflow-x-hidden px-1">
+    <section class="text-[var(--text-color)] min-h-screen px-1">
         <!-- Date range banner (match previous: white bg) -->
         {% comment %} <div class="mt-4 rounded-md ring-1 ring-[var(--border-color)] bg-[var(--white-color)] px-4 py-3 text-sm font-bold">
     {% if request.GET.created_from or request.GET.created_to %}
@@ -127,10 +118,10 @@
     {% endif %}
         </div> {% endcomment %}
         <!-- Table card (match previous: white bg + header var + no extra rounding) -->
-        <div class="relative mt-2 ring-1 ring-[var(--border-color)] bg-[var(--white-color)]">
-            <div class="overflow-x-auto overscroll-x-contain"
-                 style="overflow-y: visible">
-                <table class="w-full min-w-[1000px] text-sm">
+        <div class="relative mt-2 transition-shadow ring-1 ring-[var(--border-color)] bg-[var(--white-color)]">
+            <div class="overflow-x-auto w-full custom-scrollbar"
+                 style="-webkit-overflow-scrolling: touch">
+                <table class="w-full min-w-[900px] text-sm table-auto">
                     <colgroup>
                         <col class="w-[100px]">
                         <col class="w-[180px]">
@@ -157,43 +148,43 @@
                         {% for data in user_list %}
                             <tr class="hover:bg-[var(--bg-color)]/50 transition-colors">
                                 <td class="px-4 py-3">
-                                    <div class="inline-flex items-center gap-2">
+                                    <div class="flex items-center gap-3">
                                         {% if data.get_profile_photo_url %}
                                             <img src="{{ data.get_profile_photo_url }}"
-                                                 class="h-9 w-9 rounded-full ring-1 ring-[var(--border-color)]"
-                                                 alt="">
+                                                 class="h-9 w-9 rounded-full ring-1 ring-[var(--border-color)] object-cover"
+                                                 alt="{{ data.username }}">
                                         {% else %}
-                                            <div class="w-9 h-9 bg-[var(--primary-color)] rounded-full flex items-center justify-center text-white text-sm font-semibold ring-1 ring-[var(--border-color)]">
-                                                {{ data.username|slice:":1"|upper }}
+                                            <div class="h-9 w-9 rounded-full ring-1 ring-[var(--border-color)] bg-[var(--primary-color)] flex items-center justify-center text-white font-bold text-sm uppercase">
+                                                {{ data.username|slice:":1" }}
                                             </div>
                                         {% endif %}
-                                        <span class="font-medium">{{ data.first_name|default:"" }}</span>
+                                        <div class="flex flex-col">
+                                            <span class="font-medium text-[var(--text-color)]">{{ data.first_name|default:data.username }}</span>
+                                            {% if data.last_name %}<span class="text-xs text-[var(--text-light-color)]">{{ data.last_name }}</span>{% endif %}
+                                        </div>
                                     </div>
                                 </td>
-                                <td class="px-4 py-3 whitespace-nowrap font-medium">{{ data.username|default:"" }}</td>
+                                <td class="px-4 py-3 whitespace-nowrap font-medium text-[var(--text-color)]">{{ data.username|default:"" }}</td>
                                 <td class="px-4 py-3">
                                     <span class="block truncate">{{ data.email|default:"" }}</span>
                                 </td>
                                 <td class="px-4 py-3 whitespace-nowrap">{{ data.date_joined|date:"d-M-Y" }}</td>
                                 <td class="px-4 py-3 whitespace-nowrap">
                                     {% if data.is_active %}
-                                        <span class="inline-flex h-6 items-center rounded-full px-2 text-xs bg-[#4354a3]/60 text-black">Active</span>
+                                        <span class="inline-flex h-6 items-center rounded-full px-2 text-xs bg-green-100 text-green-800">Active</span>
                                     {% else %}
-                                        <span class="inline-flex h-6 items-center rounded-full px-2 text-xs bg-red-100 text-black">Inactive</span>
+                                        <span class="inline-flex h-6 items-center rounded-full px-2 text-xs bg-red-100 text-red-800">Inactive</span>
                                     {% endif %}
                                 </td>
                                 <!-- Action dropdown (match previous: white dropdown + divider) -->
                                 <td class="px-4 py-3 text-right">
-                                    <div class="inline-block" data-menu-wrap>
+                                    <div class="inline-block relative" data-menu-wrap>
                                         <button type="button"
                                                 class="h-8 w-8 rounded-md cursor-pointer hover:bg-[var(--bg-color)]"
                                                 data-menu-btn
                                                 aria-haspopup="true"
-                                                aria-expanded="false"
-                                                onclick=" const menu=this.nextElementSibling; const willOpen=menu.classList.contains('hidden'); document.querySelectorAll('[data-menu]').forEach(m=>m.classList.add('hidden')); document.querySelectorAll('[data-menu-btn]').forEach(b=>b.setAttribute('aria-expanded','false')); if(willOpen){menu.classList.remove('hidden'); this.setAttribute('aria-expanded','true');} ">
-                                            ⋯
-                                        </button>
-                                        <div class="hidden absolute right-4 mt-1 w-44 z-50 rounded-md bg-[var(--white-color)] ring-1 ring-[var(--border-color)] shadow-lg"
+                                                aria-expanded="false">⋯</button>
+                                        <div class="hidden absolute right-0 top-full mt-1 w-44 z-[999] rounded-md bg-[var(--white-color)] ring-1 ring-[var(--border-color)] shadow-lg"
                                              data-menu
                                              role="menu">
                                             <a href="{% url 'backend:user_permission' data.id %}"
@@ -273,11 +264,10 @@
                 </div>
             </div>
         </div>
-        <div class="lg:hidden mt-4 h-2 w-2/3 mx-auto rounded-full bg-[var(--bg-color)]"></div>
     </section>
 {% endblock %}
 {% block extra_js %}
-    <script>
+<script>
   $(document).ready(function () {
     $('.select2-items').select2();
   });
