@@ -1,0 +1,678 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport"
+              content="width=device-width,initial-scale=1,shrink-to-fit=no" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description"
+              content="{% block meta_description %}{{ site_setting.site_title|default:'' }} - Modern HR and Vehicle Management System{% endblock %}" />
+        <meta name="keywords"
+              content="{% block meta_keywords %}HR management, vehicle management, employee tracking{% endblock %}" />
+        <meta name="author" content="{{ site_setting.site_title|default:'' }}" />
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website" />
+        <meta property="og:title"
+              content="{% block og_title %}{{ site_setting.site_title|default:'' }}{% endblock %}" />
+        <meta property="og:description"
+              content="{% block og_description %}Modern HR and Vehicle Management System{% endblock %}" />
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title"
+              content="{% block twitter_title %}{{ site_setting.site_title|default:'' }}{% endblock %}" />
+        <title>
+            {% block page_title %}{{ site_setting.site_title|default:'' }}{% endblock %}
+        </title>
+        <link rel="icon"
+              type="image/png"
+              href="{% url 'backend:serve_optimized_image' 'no_image' %}?width=300&quality=100&image_path=favicon">
+        <link rel="icon"
+              type="image/webp"
+              href="{% url 'backend:serve_optimized_image' 'no_image' %}?width=300&quality=100&image_path=favicon">
+        <link rel="apple-touch-icon"
+              href="{% url 'backend:serve_optimized_image' 'no_image' %}?width=300&quality=100&image_path=logo">
+        <!-- Tailwind CDN -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    boxShadow: {
+                        card: '0 24px 40px -20px rgba(2,6,23,.12)',
+                        cardHover: '0 32px 60px -24px rgba(2,6,23,.18)',
+                    }
+                }
+            }
+        };
+        </script>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+              rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+              rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+              rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css"
+              rel="stylesheet" />
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <style>
+        html {
+            font-family: Inter, system-ui, ui-sans-serif;
+        }
+        body {
+            font-family: Inter, system-ui, ui-sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Responsive Breadcrumb and Table fixes */
+        @media (max-width: 640px) {
+            .lg\:pl-72 {
+                overflow-x: hidden;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            nav[aria-label="Breadcrumb"] {
+                font-size: 0.75rem !important; /* text-xs */
+                gap: 0.25rem !important;
+            }
+            nav[aria-label="Breadcrumb"] svg {
+                width: 0.875rem !important;
+                height: 0.875rem !important;
+            }
+            .breadcrumb-last {
+                display: -webkit-box;
+                -webkit-line-clamp: 1;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                max-width: 120px;
+            }
+        }
+
+        /* Custom scrollbar for tables */
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Select2 with Tailwind CSS */
+        .select2-container {
+            width: 100% !important;
+            margin-top: .25rem;
+            /* mt-1 */
+        }
+
+        /* === Tailwind look for single select (h-11 rounded-lg etc., no shadow) === */
+        .select2-container .select2-selection--single {
+            height: 2.75rem;
+            /* h-11 */
+            background: var(--bg-color);
+            /* bg-[var(--bg-color)] */
+            border: 1px solid var(--border-color);
+            /* ring-1 ring-[var(--border-color)] */
+            border-radius: .5rem;
+            /* rounded-lg */
+            outline: none;
+            /* outline-none */
+            -webkit-appearance: none;
+            /* appearance-none */
+            appearance: none;
+        }
+
+        /* Text & padding (px-3 pr-10 text-sm) */
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 2.75rem;
+            padding: 0 2.5rem 0 .75rem;
+            /* right = 2.5rem (pr-10), left = .75rem (px-3) */
+            font-size: .875rem;
+            /* text-sm */
+            color: var(--text-color);
+        }
+
+        /* Placeholder */
+        .select2-container--default .select2-selection--single .select2-selection__placeholder {
+            color: var(--text-light-color);
+        }
+
+        /* Arrow placement (respect the pr-10 space) */
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 2.75rem;
+            /* match h-11 */
+            right: .625rem;
+            /* keep a little gap inside pr-10 */
+            width: 1.25rem;
+            /* stable click target */
+        }
+
+        /* Dropdown panel */
+        .select2-dropdown {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: .5rem;
+            /* match rounded-lg */
+            overflow: hidden;
+        }
+        </style>
+        <!-- Your variables file -->
+        {% comment %}
+        <link rel="stylesheet" href="/static/site/css/variables.css"> {% endcomment %}
+        <style>
+        :root {
+            --primary-color: {{ design.primary_color|default:'#4354A3' }};
+            --bg-color: {{ design.bg_color|default:'#EEF3F8' }};
+            --hover-color: {{ design.hover_color|default:'#4354A3' }};
+            --border-color: {{design.border_color|default:'#E5E7EB' }};
+            --shadow-color: {{ design.shadow_color|default:'#DDE0FF' }};
+            --control-shadow: 0 0 10px 0 {{ design.control_shadow_color|default:'#00000040' }};
+            --text-color: {{ design.text_color|default:'#22242A' }};
+            --text-light-color: {{ design.text_light_color|default:'#868686' }};
+            --button-text-color: {{ design.button_text_color|default:'#ffffff' }};
+            --button-bg-color: {{ design.button_bg_color|default:'#4354A3' }};
+            --discount-bg-color: {{ design.discount_bg_color|default:'#F80000' }};
+            --active-color: {{ design.active_color|default:'#4354A3' }};
+            --inactive-color: {{ design.inactive_color|default:'#EF4444' }};
+            --footer-bg-color: {{ design.footer_bg_color|default:'#22242A' }};
+            --footer-text-color: {{ design.footer_text_color|default:'#ffffff' }};
+            --table-header: #F9FAFB;
+            --white-color: #FFFFFF;
+        }
+        </style>
+    </head>
+    <body class="antialiased bg-[var(--bg-color)] text-[var(--text-color)]">
+        {% block modals %}{% endblock %}
+        <!--  for mobile  -->
+        <div id="backdrop"
+             class="fixed inset-0 z-40 hidden bg-black/50 backdrop-blur-sm lg:hidden"></div>
+        <!-- sidebar -->
+        <aside id="sidebar"
+               class="fixed md:shadow-[2px_0px_25px_var(--shadow-color)] inset-y-0 left-0 z-50 w-72 translate-x-[-100%] overflow-y-auto border-r transition-transform duration-300 ease-in-out bg-[var(--bg-color)] border-[var(--border-color)] lg:translate-x-0 flex flex-col">
+            <!-- Brand -->
+            <div class="flex items-center justify-between px-4 h-16 border-b border-[var(--border-color)]">
+                <a href="{% url 'backend:dash_board' %}" class="flex items-center gap-2">
+                    <img src="{% url 'backend:serve_optimized_image' 'no_image' %}?width=300&quality=100&image_path=logo"
+                         class="h-9 w-9"
+                         alt="">
+                    <span class="text-2xl font-semibold">{{ site_setting.site_title|default:'' }}</span>
+                </a>
+                <!-- close btn for mobile -->
+                <button id="btnCloseMobile"
+                        class="lg:hidden p-2 rounded-md hover:bg-gray-100 text-[var(--text-color)]">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <!-- Nav -->
+            <nav class="px-3 py-4 text-[15px] flex-1">
+                {% for menu in main_menu_list %}
+                    {% if menu.sub_menu %}
+                        <details class="sidebar-accordion group mt-3"
+                                 {% if menu.is_current %}open{% endif %}>
+                            <summary class="relative w-full flex items-center justify-between px-3 py-2.5 rounded-md hover:bg-[#EAF4FA] hover:text-[var(--primary-color)] before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[6px] before:bg-[var(--primary-color)] before:rounded-r-3xl before:transition-opacity before:opacity-0 hover:before:opacity-100 {% if menu.is_current %}bg-[#EAF4FA] text-[var(--primary-color)] before:opacity-100{% endif %} cursor-pointer select-none [&::-webkit-details-marker]:hidden">
+                                <span class="flex items-center gap-3">
+                                    <i class="{{ menu.menu.menu_icon }}"></i>
+                                    <span class="font-medium">{{ menu.menu.menu_name }}</span>
+                                </span>
+                                <svg class="h-4 w-4 text-[var(--text-light-color)] transition-transform group-open:rotate-180"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2">
+                                    <path d="M6 9l6 6 6-6" />
+                                </svg>
+                            </summary>
+                            <!-- Submenu -->
+                            <ul class="mt-1 space-y-1 pl-6 pb-2">
+                                {% for sub_menu in menu.sub_menu %}
+                                    <li>
+                                        <a href="{% if sub_menu.menu.menu_url %}{% if '/' in sub_menu.menu.menu_url %}{{ sub_menu.menu.menu_url }}{% else %}{% url 'backend:menu_wise_dashboard' sub_menu.menu.menu_url %}{% endif %}{% else %}#{% endif %}"
+                                           class="group flex items-center gap-2 pl-4 pr-3 py-2 cursor-pointer rounded-md hover:bg-[#EAF4FA] hover:text-[var(--primary-color)] {% if sub_menu.is_current %}bg-[#EAF4FA] text-[var(--primary-color)]{% endif %}">
+                                            <span class="w-[7px] h-[7px] rounded-full flex-shrink-0 transition-colors {% if sub_menu.is_current %} bg-[var(--primary-color)] {% else %} bg-[var(--text-color)] group-hover:bg-[var(--primary-color)] {% endif %}">
+                                            </span>
+                                            {{ sub_menu.menu.menu_name }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </details>
+                    {% else %}
+                        <div class="mt-3">
+                            <a href="{{ menu.menu.menu_url }}"
+                               class="relative flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-[#EAF4FA] hover:text-[var(--primary-color)] before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[6px] before:bg-[var(--primary-color)] before:rounded-r-3xl before:transition-opacity before:opacity-0 hover:before:opacity-100 {% if menu.is_current %}bg-[#EAF4FA] text-[var(--primary-color)] before:opacity-100{% endif %}">
+                                <i class="{{ menu.menu.menu_icon }}"></i>
+                                <span>{{ menu.menu.menu_name }}</span>
+                            </a>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </nav>
+        </aside>
+        <div class="lg:pl-72 bg-[var(--bg-color)] ">
+            <!-- header -->
+            <header class="sticky top-0 z-30 bg-[var(--bg-color)]/80 backdrop-blur ">
+                <div class="mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="h-16 flex items-center justify-between">
+                        <!-- left side -->
+                        <div class="flex items-center gap-2">
+                            <!-- mobile hamburger -->
+                            <button id="btnOpen"
+                                    class="lg:hidden -ml-1 p-2.5 rounded-md hover:bg-[var(--bg-color)]">
+                                <svg class="h-6 w-6 text-[var(--text-color)]"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2">
+                                    <path d="M4 6h16M4 12h16M4 18h16" />
+                                </svg>
+                            </button>
+                            <!-- mobile logo -->
+                            <div class="flex items-center gap-2 lg:hidden">
+                                <img src="{% url 'backend:serve_optimized_image' 'no_image' %}?width=300&quality=100&image_path=logo"
+                                     class="h-9 w-7"
+                                     alt="">
+                                <span class="font-semibold">{{ site_setting.site_title|default:'' }}</span>
+                            </div>
+                            <!-- desktop welcome -->
+                            <div class="hidden lg:block ">
+                                <span class="text-2xl font-medium text-[var(--text-color)]">Welcome, {{ user.username }}</span>
+                            </div>
+                        </div>
+                        <!-- Left side -->
+                        <div class="flex items-center gap-3">
+                            <!-- desktop search -->
+                            <div class="hidden lg:block">
+                                <label class="relative block w-[420px]">
+                                    <span class="pointer-events-none absolute inset-y-0 left-3 grid place-items-center">
+                                        <svg class="h-5 w-5 text-[var(--text-light-color)]"
+                                             viewBox="0 0 24 24"
+                                             fill="none"
+                                             stroke="currentColor"
+                                             stroke-width="2">
+                                            <circle cx="11" cy="11" r="7" />
+                                            <path d="M21 21l-4.35-4.35" />
+                                        </svg>
+                                    </span>
+                                    <input type="text"
+                                           placeholder="Search"
+                                           data-search="backend-menu"
+                                           class="w-full rounded-lg bg-[var(--bg-color)] h-11 pl-10 pr-3 text-sm outline-none ring-1 ring-[var(--border-color)] focus:ring-[var(--primary-color)]/30">
+                                </label>
+                            </div>
+                            <!-- right icons -->
+                            <button class="p-2.5 rounded-md hover:bg-[var(--bg-color)] relative"
+                                    aria-label="Notifications">
+                                <svg class="h-6 w-6 text-[var(--primary-color)]"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2">
+                                    <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11a6 6 0 1 0-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 1 1-6 0v-1m6 0H9" />
+                                </svg>
+                            </button>
+                            <!-- Profile Dropdown -->
+                            <div class="relative">
+                                <button id="profileMenuBtn"
+                                        onclick="toggleProfileMenu()"
+                                        class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-[var(--bg-color)] transition-colors"
+                                        aria-haspopup="true"
+                                        aria-expanded="false">
+                                    <div class="w-8 h-8 bg-[var(--primary-color)] rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                                        {{ user.username|slice:":1"|upper }}
+                                    </div>
+                                    <svg class="w-4 h-4 text-[var(--text-light-color)] hidden lg:block"
+                                         fill="none"
+                                         stroke="currentColor"
+                                         viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </button>
+                                <div id="profileMenu"
+                                     class="hidden absolute right-0 mt-2 w-56 rounded-lg bg-white ring-1 ring-[var(--border-color)] shadow-lg z-50">
+                                    <div class="px-4 py-3 border-b border-[var(--border-color)]">
+                                        <p class="text-sm font-medium text-[var(--text-color)]">{{ user.get_full_name|default:user.username }}</p>
+                                        <p class="text-xs text-[var(--text-light-color)] mt-0.5">{{ user.email|default:'' }}</p>
+                                    </div>
+                                    <div class="py-1">
+                                        <a href="{% url 'backend:dash_board' %}"
+                                           class="block px-4 py-2 text-sm text-[var(--text-color)] hover:bg-gray-50">
+                                            <i class="fas fa-home mr-2 w-4"></i>Dashboard
+                                        </a>
+                                        <a href="{% url 'backend:backend_logout' %}"
+                                           class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                            <i class="fas fa-sign-out-alt mr-2 w-4"></i>Logout
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- mobile search -->
+                    <div class="pb-3 lg:hidden">
+                        <label class="relative block">
+                            <span class="pointer-events-none absolute inset-y-0 left-3 grid place-items-center">
+                                <svg class="h-5 w-5 text-[var(--text-light-color)]"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2">
+                                    <circle cx="11" cy="11" r="7" />
+                                    <path d="M21 21l-4.35-4.35" />
+                                </svg>
+                            </span>
+                            <input type="search"
+                                   placeholder="Search"
+                                   data-search="backend-menu"
+                                   class="w-full rounded-lg bg-[var(--bg-color)] h-11 pl-10 pr-3 text-sm outline-none ring-1 ring-[var(--border-color)] focus:ring-[var(--primary-color)]/30">
+                        </label>
+                    </div>
+                </div>
+            </header>
+            <!-- Django messages -->
+            {% if messages %}
+                <div class="mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+                    <div class="space-y-2">
+                        {% for message in messages %}
+                            <div role="alert"
+                                 class="flex items-start gap-3 rounded-lg px-4 py-3 shadow-sm {% if message.tags == 'error' or message.tags == 'danger' %} bg-red-50 text-red-800 ring-1 ring-red-200 {% elif message.tags == 'success' %} bg-emerald-50 text-emerald-800 ring-1 ring-emerald-200 {% elif message.tags == 'warning' %} bg-amber-50 text-amber-800 ring-1 ring-amber-200 {% elif message.tags == 'info' %} bg-blue-50 text-blue-800 ring-1 ring-blue-200 {% else %} bg-gray-50 text-gray-800 ring-1 ring-gray-200 {% endif %}">
+                                <div class="flex-shrink-0 mt-0.5">
+                                    {% if message.tags == 'error' or message.tags == 'danger' %}
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                            </path>
+                                        </svg>
+                                    {% elif message.tags == 'success' %}
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z">
+                                            </path>
+                                        </svg>
+                                    {% elif message.tags == 'warning' %}
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                                            </path>
+                                        </svg>
+                                    {% else %}
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                            </path>
+                                        </svg>
+                                    {% endif %}
+                                </div>
+                                <p class="text-sm flex-1">{{ message }}</p>
+                                <button type="button"
+                                        onclick="this.closest('[role=alert]').remove()"
+                                        class="flex-shrink-0 ml-2 text-current opacity-50 hover:opacity-100 transition-opacity"
+                                        aria-label="Close">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+            <main class="md:mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
+                <!-- Page Header -->
+                <div class="mb-6">
+                    <!-- Breadcrumb Navigation -->
+                    <nav class="flex items-center gap-2 text-sm text-[var(--text-light-color)] mb-3"
+                         aria-label="Breadcrumb">
+                        <a href="{% url 'backend:dash_board' %}"
+                           class="hover:text-[var(--primary-color)] transition-colors flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                                </path>
+                            </svg>
+                            <span>Home</span>
+                        </a>
+                        {% for breadcrumb in breadcrumb_menu %}
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                            <a {% if breadcrumb.menu_url %}href="{% if '/' in breadcrumb.menu_url %}{{ breadcrumb.menu_url }}{% else %}{% url 'backend:menu_wise_dashboard' breadcrumb.menu_url %}{% endif %}
+                               "
+                               {% else %}
+                               href="#"
+                               {% endif %}
+                               class="hover:text-[var(--primary-color)] transition-colors{% if forloop.last %} font-medium text-[var(--primary-color)] breadcrumb-last{% endif %}">
+                                {{ breadcrumb.menu_name }}
+                            </a>
+                        {% endfor %}
+                        {% block breadcrumb %}{% endblock %}
+                    </nav>
+                    <!-- Page Title and Actions -->
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            {% block back_button %}{% endblock %}
+                            <div>
+                                <h1 id="page_title"
+                                    class="text-2xl lg:text-3xl font-bold text-[var(--text-color)]">
+                                    {% block title %}{{ site_setting.site_title|default:'' }}{% endblock %}
+                                </h1>
+                                {% block subtitle %}{% endblock %}
+                            </div>
+                        </div>
+                        <!-- Header Actions -->
+                        <div class="flex flex-wrap items-center gap-3">
+                            {% block header_actions %}{% endblock %}
+                        </div>
+                    </div>
+                </div>
+                <!-- Main Content -->
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+        <!--  JS -->
+        <script>
+        const pageTitle = document.getElementById('page_title');
+        if (pageTitle) {
+            document.title = pageTitle.textContent.trim() + ' - {{ site_setting.site_title|default:"" }}';
+        }
+        </script>
+        <!-- Loading State -->
+        <script>
+        // Show loading on form submissions
+        document.addEventListener('submit', function(e) {
+            const form = e.target;
+            if (form.tagName === 'FORM') {
+                const submitBtn = form.querySelector('[type="submit"]');
+                if (submitBtn && !submitBtn.dataset.noLoading) {
+                    submitBtn.disabled = true;
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<svg class="animate-spin h-4 w-4 inline mr-2" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...';
+                    setTimeout(() => {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
+                    }, 5000);
+                }
+            }
+        });
+
+        // Auto-hide messages after 5 seconds
+        setTimeout(() => {
+            document.querySelectorAll('[role="alert"]').forEach(alert => {
+                alert.style.transition = 'opacity 0.3s ease-out';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 300);
+            });
+        }, 5000);
+        </script>
+        <script>
+        const sidebar = document.getElementById('sidebar');
+        const openBtn = document.getElementById('btnOpen');
+        const closeBtnMobile = document.getElementById('btnCloseMobile');
+        const backdrop = document.getElementById('backdrop');
+        const open = () => { 
+            sidebar.classList.remove('translate-x-[-100%]'); 
+            sidebar.classList.add('translate-x-0'); 
+            backdrop.classList.remove('hidden'); 
+            document.body.style.overflow = 'hidden'; // Prevent body scroll
+        };
+        const close = () => { 
+            sidebar.classList.add('translate-x-[-100%]'); 
+            sidebar.classList.remove('translate-x-0'); 
+            backdrop.classList.add('hidden'); 
+            document.body.style.overflow = ''; // Restore scroll
+        };
+        openBtn?.addEventListener('click', open);
+        closeBtnMobile?.addEventListener('click', close);
+        backdrop?.addEventListener('click', close);
+        window.addEventListener('keydown', e => e.key === 'Escape' && close());
+        </script>
+        <script>
+        function toggleProfileMenu() {
+            const menu = document.getElementById('profileMenu');
+            if (!menu) return;
+            menu.classList.toggle('hidden');
+        }
+        window.addEventListener('click', function(e) {
+            const menu = document.getElementById('profileMenu');
+            const btn = document.getElementById('profileMenuBtn');
+            if (!btn || !menu) return;
+            if (!btn.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+        </script>
+        <script>
+        document.addEventListener("DOMContentLoaded", () => {
+        const accordions = document.querySelectorAll("details.sidebar-accordion");
+        accordions.forEach((d) => {
+            d.addEventListener("toggle", () => {
+            if (!d.open) return;
+            accordions.forEach((other) => {
+                if (other !== d) other.removeAttribute("open");
+            });
+            });
+        });
+        });
+        </script>
+        <!--  input white background fix -->
+        <style>
+        input,
+        textarea,
+        select {
+            background-color: #fff !important;
+            color-scheme: light;
+            /* prevent dark-mode UA tints */
+        }
+
+        /* Chrome / Safari / Edge (WebKit/Blink) */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        textarea:-webkit-autofill,
+        select:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+            /* paint white */
+            box-shadow: 0 0 0 1000px #fff inset !important;
+            -webkit-text-fill-color: inherit;
+            /* keep your text color */
+            caret-color: inherit;
+            /* normal caret color */
+            transition: background-color 9999s ease-in-out 0s;
+            /* suppress flash */
+        }
+
+        /* Firefox */
+        input:-moz-autofill,
+        textarea:-moz-autofill,
+        select:-moz-autofill {
+            box-shadow: 0 0 0 1000px #fff inset !important;
+            -moz-text-fill-color: inherit;
+            caret-color: inherit;
+        }
+        </style>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script>
+            // Dropdown menus use position:fixed so they are never clipped by overflow containers
+            $(document).ready(function() {
+                $('head').append('<style>[data-menu].hidden { display: none !important; } [data-menu] { position: fixed !important; z-index: 9999 !important; background: white !important; border: 1px solid #e5e7eb !important; border-radius: 0.5rem !important; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15) !important; min-width: 160px; } [data-menu-wrap] { position: relative !important; }</style>');
+            });
+
+            /**
+             * Global 3-dot menu handler — uses position:fixed to escape overflow:auto clipping
+             */
+            function positionMenu($btn, $menu) {
+                const rect = $btn[0].getBoundingClientRect();
+                const viewportH = window.innerHeight;
+
+                // Temporarily reveal off-screen to measure real dimensions
+                $menu.css({ visibility: 'hidden', top: '-9999px', left: '-9999px' });
+                const menuWidth  = $menu.outerWidth()  || 180;
+                const menuHeight = $menu.outerHeight() || 120;
+                $menu.css({ visibility: '' });
+
+                // Align right edge of menu with right edge of button
+                let left = rect.right - menuWidth;
+                let top  = rect.bottom + 4;
+
+                // Keep on screen
+                if (left < 8) left = rect.left;
+                if (top + menuHeight > viewportH - 8) top = rect.top - menuHeight - 4;
+
+                $menu.css({ top: top + 'px', left: left + 'px' });
+            }
+
+            $(document).on('click', '[data-menu-btn]', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const $btn  = $(this);
+                const $wrap = $btn.closest('[data-menu-wrap]');
+                const $menu = $wrap.find('[data-menu]');
+                const isOpening = $menu.hasClass('hidden');
+
+                // Close ALL other menus first
+                $('[data-menu]').not($menu).addClass('hidden');
+                $('[data-menu-btn]').not($btn).attr('aria-expanded', 'false');
+
+                if (isOpening) {
+                    $menu.removeClass('hidden');
+                    positionMenu($btn, $menu);
+                    $btn.attr('aria-expanded', 'true');
+                } else {
+                    $menu.addClass('hidden');
+                    $btn.attr('aria-expanded', 'false');
+                }
+            });
+
+            // Close menu when a menu item is clicked (works with position:fixed menus)
+            $(document).on('click', '[data-menu] [role="menuitem"], [data-menu] a, [data-menu] button', function() {
+                $('[data-menu]').addClass('hidden');
+                $('[data-menu-btn]').attr('aria-expanded', 'false');
+            });
+
+            // Click outside to close (also handles fixed-position menus)
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('[data-menu-wrap]').length && !$(e.target).closest('[data-menu]').length) {
+                    $('[data-menu]').addClass('hidden');
+                    $('[data-menu-btn]').attr('aria-expanded', 'false');
+                }
+            });
+
+            // Escape key to close
+            $(document).on('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    $('[data-menu]').addClass('hidden');
+                    $('[data-menu-btn]').attr('aria-expanded', 'false');
+                }
+            });
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+        <script src="{% static 'js/backend_menu_search.js' %}"></script>
+        {% block extra_js %}
+        {% endblock %}
+    </body>
+</html>

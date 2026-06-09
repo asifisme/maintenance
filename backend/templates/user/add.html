@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block title %}Add New User{% endblock %}
+{% block content %}
+    <section class="bg-[var(--bg-color)] text-[var(--text-color)] min-h-screen">
+        <div class="mt-5 overflow-hidden rounded-lg ">
+            <div class="p-4">
+                <form method="post" enctype="multipart/form-data" class="space-y-6">
+                    {% csrf_token %}
+                    <div class="grid gap-6 lg:grid-cols-[1fr_auto]">
+                        <!-- LEFT -->
+                        <div class="space-y-4">
+                            <!-- Full Name -->
+                            <div>
+                                {{ form.first_name.label_tag }}
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                    <p class="mt-1 text-sm text-red-600">{{ form.first_name.errors|striptags }}</p>
+                                {% endif %}
+                            </div>
+                            <!-- Email -->
+                            <div>
+                                {{ form.email.label_tag }}
+                                {{ form.email }}
+                                {% if form.email.errors %}<p class="mt-1 text-sm text-red-600">{{ form.email.errors|striptags }}</p>{% endif %}
+                            </div>
+                            <!-- Mobile -->
+                            <div>
+                                {{ form.phone.label_tag }}
+                                {{ form.phone }}
+                                {% if form.phone.errors %}<p class="mt-1 text-sm text-red-600">{{ form.phone.errors|striptags }}</p>{% endif %}
+                            </div>
+                            <!-- Gender (native select with chevron) -->
+                            <div class="relative">
+                                {{ form.gender.label_tag }}
+                                {{ form.gender }}
+                                {% if form.gender.errors %}<p class="mt-1 text-sm text-red-600">{{ form.gender.errors|striptags }}</p>{% endif %}
+                            </div>
+                            {% if form.non_field_errors %}
+                                <div class="rounded-md bg-red-50 p-3 text-sm text-red-600 border border-red-200">
+                                    {{ form.non_field_errors|striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <!-- RIGHT: Image card inside the same form -->
+                        <div class="lg:pl-4">
+                            <div class="w-full lg:w-[400px] rounded-xl bg-white ring-1 ring-[var(--border-color)] shadow-lg p-4 sm:p-5">
+                                <h3 class="text-sm font-medium">Add User Image</h3>
+                                {% if form.instance.image %}
+                                    <p class="mt-2 text-xs text-[var(--text-light-color)]">
+                                        Current:
+                                        <a href="{{ form.instance.image.url }}"
+                                           target="_blank"
+                                           class="underline">{{ form.instance.image.name }}</a>
+                                    </p>
+                                {% endif %}
+                                <!-- Drop area -->
+                                <label for="{{ form.profile_image.id_for_label }}"
+                                       class="mt-3 grid h-48 place-items-center rounded-lg border-2 border-dashed border-[var(--border-color)] bg-[var(--bg-color)] hover:border-[var(--primary-color)]/60 transition cursor-pointer">
+                                    <div class="text-center">
+                                        <img id="photoPreview"
+                                             class="mx-auto h-24 w-24 rounded-full object-cover hidden"
+                                             alt="preview">
+                                        <svg id="photoPlaceholder"
+                                             class="mx-auto"
+                                             xmlns="http://www.w3.org/2000/svg"
+                                             width="48"
+                                             height="49"
+                                             viewBox="0 0 48 49"
+                                             fill="none">
+                                            <path d="M20.6 42.5H10C8.93913 42.5 7.92172 42.0786 7.17157 41.3284C6.42143 40.5783 6 39.5609 6 38.5V10.5C6 9.43913 6.42143 8.42172 7.17157 7.67157C7.92172 6.92143 8.93913 6.5 10 6.5H38C39.0609 6.5 40.0783 6.92143 40.8284 7.67157C41.5786 8.42172 42 9.43913 42 10.5V30.5L35.8 24.3C35.0474 23.5624 34.0341 23.1515 32.9802 23.1568C31.9264 23.162 30.9172 23.5829 30.172 24.328L12 42.5" stroke="#868686" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M28 39.5L34 33.5M34 33.5L40 39.5M34 33.5V44.5" stroke="#868686" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M18 22.5C20.2091 22.5 22 20.7091 22 18.5C22 16.2909 20.2091 14.5 18 14.5C15.7909 14.5 14 16.2909 14 18.5C14 20.7091 15.7909 22.5 18 22.5Z" stroke="#868686" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                    </div>
+                                    {{ form.profile_image }}
+                                </label>
+                                <!-- Upload button -->
+                                <label for="{{ form.profile_image.id_for_label }}"
+                                       class="mt-4 grid h-11 w-full place-items-center rounded-md bg-[var(--button-bg-color)] text-[var(--button-text-color)] text-sm font-medium cursor-pointer hover:opacity-95">
+                                    Upload
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Actions -->
+                    <div class="pt-2 flex flex-wrap items-center gap-3">
+                        <button type="submit"
+                                class="h-11 w-[150px] px-5 rounded-md bg-[var(--button-bg-color)] text-[var(--button-text-color)] text-sm font-medium shadow-sm hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]/30">
+                            Save User
+                        </button>
+                        <a href="javascript:history.back()"
+                           class="h-11 w-[150px] grid place-items-center rounded-md text-sm ring-1 ring-[var(--border-color)] bg-[var(--bg-color)]">
+                            Discard
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</section>
+{% endblock %}
+{% block extra_js %}
+    <script>
+  // inline preview for profile image
+  (function () {
+    const input = document.getElementById("{{ form.profile_image.id_for_label }}");
+    const img   = document.getElementById("photoPreview");
+    const ph    = document.getElementById("photoPlaceholder");
+    if (!input) return;
+
+    input.addEventListener('change', () => {
+      const [file] = input.files || [];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      img.src = url;
+      img.classList.remove('hidden');
+      ph.classList.add('hidden');
+    });
+  })();
+
+  
+    </script>
+{% endblock %}

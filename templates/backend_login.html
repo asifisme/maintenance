@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>{{ site_setting.site_title|default:'Mintanance HUB' }} — Admin Login</title>
+        <link rel="icon"
+              type="image/png"
+              href="{% url 'backend:serve_optimized_image' 'no_image' %}?width=300&quality=100&image_path=favicon">
+        <link rel="icon"
+              type="image/webp"
+              href="{% url 'backend:serve_optimized_image' 'no_image' %}?width=300&quality=100&image_path=favicon">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui'] 
+                    },
+                    colors: {
+                        hubBlue: {
+                            400: '#3FA2D0',
+                            500: '#3498C7',
+                            600: '#2A85B0',
+                        },
+                        inputBorder: '#FFE2D5'
+                    }
+                }
+            }
+        }
+        </script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    </head>
+    <body class="antialiased bg-white text-slate-800 font-sans min-h-screen flex items-center justify-center">
+        
+        <main class="w-full max-w-md px-6 py-12 flex flex-col items-center">
+            
+            <div class="text-center mb-10">
+                <h1 class="text-[44px] font-bold tracking-tight text-[#3498C7] mb-8">
+                    Mintanance HUB
+                </h1>
+                <h2 class="text-3xl font-bold text-[#3D3D3D] mb-2">
+                    Welcome back
+                </h2>
+                <p class="text-sm text-gray-500 font-normal">
+                    Sign in to manage your pet food store and orders
+                </p>
+            </div>
+
+            {% if messages %}
+                <ul class="w-full mb-4 space-y-2">
+                    {% for message in messages %}
+                        <li class="text-sm rounded-md px-3 py-2 {% if message.tags == 'error' %} bg-red-50 text-red-700 ring-1 ring-red-200 {% elif message.tags == 'success' %} bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 {% else %} bg-slate-50 text-slate-700 ring-1 ring-slate-200 {% endif %}">
+                            {{ message }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            
+            {% if form.non_field_errors %}
+                <div class="w-full mb-4 text-sm rounded-md bg-red-50 text-red-700 ring-1 ring-red-200 px-3 py-2">
+                    {{ form.non_field_errors|striptags }}
+                </div>
+            {% endif %}
+
+            <form id="adminLoginForm" method="POST" class="w-full space-y-5" novalidate>
+                {% csrf_token %}
+                
+                <div>
+                    <label for="id_username" class="block text-sm font-semibold text-gray-700 mb-1.5">
+                        Email Address
+                    </label>
+                    <div class="relative">
+                        <input type="text" 
+                               name="username" 
+                               id="id_username" 
+                               placeholder="Enter your email"
+                               class="w-full h-12 px-4 rounded-lg border border-[#FFE2D5] focus:outline-none focus:border-hubBlue-400 text-gray-700 placeholder-gray-400 transition"
+                               required>
+                    </div>
+                    {% if form.username.errors %}
+                        <p class="mt-1 text-xs text-red-600">{{ form.username.errors.as_text }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="id_password" class="block text-sm font-semibold text-gray-700 mb-1.5">
+                        Password
+                    </label>
+                    <div class="relative">
+                        <input type="password" 
+                               name="password" 
+                               id="id_password" 
+                               placeholder="Enter your password"
+                               class="w-full h-12 pl-4 pr-12 rounded-lg border border-[#FFE2D5] focus:outline-none focus:border-hubBlue-400 text-gray-700 placeholder-gray-400 transition"
+                               required>
+                        
+                        <button type="button"
+                                class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                                onclick="togglePassword()">
+                            <svg id="eye-icon"
+                                 xmlns="http://www.w3.org/2000/svg"
+                                 width="20"
+                                 height="20"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor"
+                                 stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    {% if form.password.errors %}
+                        <p class="mt-1 text-xs text-red-600">{{ form.password.errors.as_text }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="flex items-center justify-between pt-0.5">
+                    <label class="inline-flex items-center gap-2 text-xs text-slate-500 cursor-pointer select-none">
+                        <input type="checkbox"
+                               id="remember"
+                               name="remember"
+                               class="h-3.5 w-3.5 rounded border-gray-300 text-hubBlue-500 focus:ring-hubBlue-400">
+                        <span>Remember me</span>
+                    </label>
+                    <a href="#" class="text-xs font-medium text-[#3498C7] hover:underline">
+                        Forgot password?
+                    </a>
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit"
+                            class="w-full h-12 rounded-lg bg-[#3498C7] text-white text-sm font-semibold tracking-wide shadow-[0_10px_20px_-5px_rgba(52,152,199,0.4)] hover:bg-[#2A85B0] active:scale-[0.99] transition focus:outline-none">
+                        Sign In
+                    </button>
+                </div>
+            </form>
+        </main>
+
+        <script>
+        // Run storage verification on mount
+        getInfo();
+
+        const loginForm = document.getElementById("adminLoginForm");
+
+        loginForm.addEventListener("submit", function (event) {
+            const rememberMeCheckbox = document.getElementById("remember");
+            if (rememberMeCheckbox.checked) {
+                const username = document.getElementById("id_username");
+                const password = document.getElementById("id_password");
+
+                if (username.value && password.value) {
+                    localStorage.setItem("id_username_backend", username.value);
+                    localStorage.setItem("id_password_backend", password.value);
+                }
+            } else {
+                localStorage.removeItem("id_username_backend");
+                localStorage.removeItem("id_password_backend");
+            }
+        });
+
+        function getInfo() {
+            const rememberMeCheckbox = document.getElementById("remember");
+            const get_username = localStorage.getItem("id_username_backend");
+            const get_password = localStorage.getItem("id_password_backend");
+
+            if (get_username && get_password) {
+                const username = document.getElementById("id_username");
+                const password = document.getElementById("id_password");
+                username.value = get_username;
+                password.value = get_password;
+                rememberMeCheckbox.checked = true;
+            } else {
+                rememberMeCheckbox.checked = false;
+            }
+        }
+
+        function togglePassword() {
+            const passwordField = document.getElementById("id_password");
+            const eyeIcon = document.getElementById("eye-icon");
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+                `;
+            } else {
+                passwordField.type = "password";
+                eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                `;
+            }
+        }
+        </script>
+    </body>
+</html>
