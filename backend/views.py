@@ -685,14 +685,16 @@ def subdivision_add(request):
     if request.method == 'POST':
         division_id = request.POST.get('division')
         name = request.POST.get('name', '').strip()
+        code = request.POST.get('code', '').strip()
         location = request.POST.get('location', '').strip()
 
-        if not division_id or not name:
-            messages.error(request, 'Division and Name are required.')
+        if not division_id or not name or not code:
+            messages.error(request, 'Division, Name and Code are required.')
         else:
             SubDivision.objects.create(
                 division_id=division_id, 
                 name=name,
+                code=code,
                 is_active=True, 
                 created_by=request.user,
             )
@@ -715,13 +717,15 @@ def subdivision_update(request, data_id):
     if request.method == 'POST':
         division_id = request.POST.get('division')
         name = request.POST.get('name', '').strip()
+        code = request.POST.get('code', '').strip()
         location = request.POST.get('location', '').strip()
 
-        if not division_id or not name:
-            messages.error(request, 'Division and Name are required.')
+        if not division_id or not name or not code:
+            messages.error(request, 'Division, Name and Code are required.')
         else:
             obj.division_id = division_id
             obj.name = name
+            obj.code = code
             obj.is_active = True
             obj.updated_by = request.user
             obj.save()
@@ -788,15 +792,17 @@ def section_add(request):
     if request.method == 'POST':
         subdivision_id = request.POST.get('subdivision')
         name = request.POST.get('name', '').strip()
+        code = request.POST.get('code', '').strip()
         location = request.POST.get('location', '').strip()
-        is_active = request.POST.get('is_active') == '1'
 
-        if not subdivision_id or not name:
-            messages.error(request, 'Sub-Division and Name are required.')
+        if not subdivision_id or not name or not code:
+            messages.error(request, 'Sub-Division, Name and Code are required.')
+        elif Section.objects.filter(subdivision_id=subdivision_id, code=code).exists():
+            messages.error(request, 'A section with this code already exists in this sub-division.')
         else:
             Section.objects.create(
-                subdivision_id=subdivision_id, name=name,
-                is_active=is_active, created_by=request.user,
+                subdivision_id=subdivision_id, name=name, code=code,
+                is_active=True, created_by=request.user,
             )
             messages.success(request, 'Section added successfully.')
             return redirect('backend:section_list')
@@ -816,15 +822,18 @@ def section_update(request, data_id):
     if request.method == 'POST':
         subdivision_id = request.POST.get('subdivision')
         name = request.POST.get('name', '').strip()
+        code = request.POST.get('code', '').strip()
         location = request.POST.get('location', '').strip()
-        is_active = request.POST.get('is_active') == '1'
 
-        if not subdivision_id or not name:
-            messages.error(request, 'Sub-Division and Name are required.')
+        if not subdivision_id or not name or not code:
+            messages.error(request, 'Sub-Division, Name and Code are required.')
+        elif Section.objects.filter(subdivision_id=subdivision_id, code=code).exclude(pk=data_id).exists():
+            messages.error(request, 'A section with this code already exists in this sub-division.')
         else:
             obj.subdivision_id = subdivision_id
             obj.name = name
-            obj.is_active = is_active
+            obj.code = code
+            obj.is_active = True
             obj.updated_by = request.user
             obj.save()
             messages.success(request, 'Section updated successfully.')
