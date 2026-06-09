@@ -47,5 +47,6 @@ urlpatterns = [
     path('building/', views.building_list, name='building_list'),
     path('building/add/', views.building_add, name='building_add'),
     path('building/update/<int:data_id>/', views.building_update, name='building_update'),
+    path('building/details/<int:data_id>/', views.building_details, name='building_details'),
     path('building/delete/<int:data_id>/', views.building_delete, name='building_delete'),
 ]

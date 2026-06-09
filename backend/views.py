@@ -45,7 +45,7 @@ from backend.forms import UserCreateForm
 
 from backend.models import (
     LoginLog, BackendMenu, UserMenuPermission, WebImages, SiteSettings,
-    Division, SubDivision, Section, Building
+    Division, SubDivision, Section, Building, Equipment
 )
 
 from backend.forms import (
@@ -869,18 +869,46 @@ def building_list(request):
         return render(request, '403.html', status=403)
 
     search = request.GET.get('search', '').strip()
+    division_id = request.GET.get('division', '').strip()
+    subdivision_id = request.GET.get('subdivision', '').strip()
+    section_id = request.GET.get('section', '').strip()
+    status = request.GET.get('status', '').strip()
+
     qs = Building.objects.filter(deleted=False).select_related('division', 'subdivision', 'section')
+    
     if search:
-        qs = qs.filter(Q(name__icontains=search))
+        qs = qs.filter(Q(name__icontains=search) | Q(building_id__icontains=search) | Q(nickname__icontains=search))
+    if division_id:
+        qs = qs.filter(division_id=division_id)
+    if subdivision_id:
+        qs = qs.filter(subdivision_id=subdivision_id)
+    if section_id:
+        qs = qs.filter(section_id=section_id)
+    if status:
+        qs = qs.filter(status=status)
 
     page_num = request.GET.get('page', 1)
     data_list, paginator_list, last_page = paginate_data(request, page_num, qs)
+
+    # Fetch filter options
+    divisions = Division.objects.filter(deleted=False, is_active=True)
+    subdivisions = SubDivision.objects.filter(deleted=False, is_active=True)
+    sections = Section.objects.filter(deleted=False, is_active=True)
+    status_choices = [choice[0] for choice in Building.STATUS_CHOICES]
 
     context = {
         'data_list': data_list,
         'paginator_list': paginator_list,
         'last_page': last_page,
         'search': search,
+        'selected_division': division_id,
+        'selected_subdivision': subdivision_id,
+        'selected_section': section_id,
+        'selected_status': status,
+        'divisions': divisions,
+        'subdivisions': subdivisions,
+        'sections': sections,
+        'status_choices': status_choices,
     }
     return render(request, 'building/list.html', context)
 
@@ -1026,6 +1054,34 @@ def building_delete(request, data_id):
     
     messages.error(request, 'Invalid request method.')
     return redirect('backend:building_list')
+
+@login_required
+def building_details(request, data_id):
+    if not checkUserPermission(request, 'can_view', '/backend/location/building/'):
+        return render(request, '403.html', status=403)
+
+    building = get_object_or_404(Building, pk=data_id, deleted=False)
+    
+    # Fetch equipment list for this building
+    equipment_list = Equipment.objects.filter(building=building, deleted=False).select_related('equipment_type')
+    
+    # Calculate counts
+    total_assets = equipment_list.count()
+    
+    # Filter lifts, ac units, substations
+    lifts_count = equipment_list.filter(equipment_type__name__icontains='lift').count()
+    ac_count = equipment_list.filter(Q(equipment_type__name__icontains='ac') | Q(equipment_type__name__icontains='air conditioner')).count()
+    substations_count = equipment_list.filter(Q(equipment_type__name__icontains='substation') | Q(equipment_type__name__icontains='sub-station') | Q(equipment_type__name__icontains='sub station') | Q(equipment_type__name__icontains='sub-stations') | Q(equipment_type__name__icontains='sub-stns')).count()
+    
+    context = {
+        'building': building,
+        'equipment_list': equipment_list,
+        'total_assets': total_assets,
+        'lifts_count': lifts_count,
+        'ac_count': ac_count,
+        'substations_count': substations_count,
+    }
+    return render(request, 'building/details.html', context)
 
 @login_required
 def dash_board(request):
