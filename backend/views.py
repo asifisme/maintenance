@@ -46,8 +46,10 @@ from backend.forms import UserCreateForm
 from backend.models import (
     LoginLog, BackendMenu, UserMenuPermission, WebImages, SiteSettings,
     Division, SubDivision, Section, Building, EquipmentType, EquipmentTypeData, Equipment,
-    Ticket, TicketComment, TicketActivityLog 
+    Ticket, TicketComment, TicketActivityLog,
+    ScheduledMaintenance, CriticalAlert,
 )
+from django.db.models import Count
 
 from backend.forms import (
     CustomUserLoginForm,
@@ -1086,7 +1088,95 @@ def building_details(request, data_id):
 
 @login_required
 def dash_board(request):
-    return render(request, 'dashboard.html', {})
+    today = date.today()
+    seven_days = today + timedelta(days=7)
+
+    # --- Building stats ---
+    buildings_qs = Building.objects.filter(deleted=False)
+    total_buildings = buildings_qs.count()
+    active_buildings = buildings_qs.filter(status='Active').count()
+    inactive_buildings = buildings_qs.filter(status='Inactive').count()
+    renovation_buildings = buildings_qs.filter(status='Under Maintenance').count()
+
+    # --- Equipment stats ---
+    equipment_qs = Equipment.objects.filter(deleted=False)
+    total_equipment = equipment_qs.count()
+    eq_active = equipment_qs.filter(status='active').count()
+    eq_maintenance = equipment_qs.filter(status='under_maintenance').count()
+    eq_repair = equipment_qs.filter(status='in_repair').count()
+    eq_outdated = equipment_qs.filter(status='inactive').count()
+    eq_decommissioned = equipment_qs.filter(status='decommissioned').count()
+
+    # Percentages for donut chart
+    if total_equipment > 0:
+        uptime_pct = round(eq_active / total_equipment * 100, 1)
+        repair_pct = round(eq_repair / total_equipment * 100, 1)
+        outdated_pct = round(eq_outdated / total_equipment * 100, 1)
+    else:
+        uptime_pct = repair_pct = outdated_pct = 0
+
+    # --- Tickets ---
+    tickets_qs = Ticket.objects.filter(deleted=False)
+    open_tickets = tickets_qs.filter(status__in=['open', 'assigned', 'in_progress'])
+    open_ticket_count = open_tickets.count()
+    critical_ticket_count = open_tickets.filter(priority='critical').count()
+    assigned_ticket_count = open_tickets.filter(status__in=['assigned', 'in_progress']).count()
+    unassigned_ticket_count = open_tickets.filter(status='open').count()
+    recent_tickets = (
+        open_tickets
+        .select_related('equipment', 'building', 'equipment__equipment_type')
+        .order_by('-opened_at')[:5]
+    )
+
+    # --- Upcoming maintenance (next 7 days) ---
+    upcoming_maintenance = (
+        ScheduledMaintenance.objects
+        .filter(deleted=False, status='pending', scheduled_date__gte=today, scheduled_date__lte=seven_days)
+        .select_related('equipment', 'equipment__building')
+        .order_by('scheduled_date')
+    )
+    upcoming_maintenance_count = upcoming_maintenance.count()
+    overdue_maintenance = (
+        ScheduledMaintenance.objects
+        .filter(deleted=False, status='pending', scheduled_date__lt=today)
+    )
+    overdue_count = overdue_maintenance.count()
+
+    # --- Critical alerts ---
+    alerts_qs = CriticalAlert.objects.filter(is_acknowledged=False).order_by('-id')
+    new_alert_count = alerts_qs.count()
+    critical_alerts = alerts_qs[:5]
+
+    context = {
+        # Buildings
+        'total_buildings': total_buildings,
+        'active_buildings': active_buildings,
+        'inactive_buildings': inactive_buildings,
+        'renovation_buildings': renovation_buildings,
+        # Equipment
+        'total_equipment': total_equipment,
+        'eq_active': eq_active,
+        'eq_maintenance': eq_maintenance,
+        'eq_repair': eq_repair,
+        'eq_outdated': eq_outdated,
+        'eq_decommissioned': eq_decommissioned,
+        'uptime_pct': uptime_pct,
+        'repair_pct': repair_pct,
+        'outdated_pct': outdated_pct,
+        # Tickets
+        'open_ticket_count': open_ticket_count,
+        'critical_ticket_count': critical_ticket_count,
+        'assigned_ticket_count': assigned_ticket_count,
+        'unassigned_ticket_count': unassigned_ticket_count,
+        'recent_tickets': recent_tickets,
+        # Maintenance
+        'upcoming_maintenance_count': upcoming_maintenance_count,
+        'overdue_count': overdue_count,
+        # Alerts
+        'new_alert_count': new_alert_count,
+        'critical_alerts': critical_alerts,
+    }
+    return render(request, 'dashboard.html', context)
 
 
 

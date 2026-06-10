@@ -1,10 +1,401 @@
 {% extends 'base.html' %}
 {% block title %}Dashboard{% endblock %}
+
 {% block content %}
-    <section class="bg-[var(--bg-color)] text-[var(--text-color)] min-h-screen p-4">
-        <div class="bg-white rounded-lg p-6 shadow-sm ring-1 ring-[var(--border-color)]">
-            <h2 class="text-xl font-bold mb-4">Welcome to the Maintenance Dashboard</h2>
-            <p>This is the central hub for managing your organization, buildings, and maintenance tickets.</p>
+<section class="space-y-5">
+    <!-- ════════════════════════ ROW 1: Stat Cards ════════════════════════ -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+
+        <!-- Total Buildings -->
+        <div class="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-sm  transition-all duration-200 relative overflow-hidden group">
+            <div class="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg mb-3">
+                <i class="fas fa-building"></i>
+            </div>
+            <p class="text-xs text-gray-400 font-medium mb-1">Total Buildings</p>
+            <p class="text-3xl font-extrabold text-gray-900 leading-none dash-stat-value">{{ total_buildings }}</p>
+            <p class="text-[11px] text-gray-400 mt-1.5">{{ active_buildings }} Active / {{ inactive_buildings }} Inactive / {{ renovation_buildings }} Renovation</p>
         </div>
-    </section>
+
+        <!-- Total Equipment -->
+        <div class="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-sm  duration-200 relative overflow-hidden group">
+            <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg mb-3">
+                <i class="fas fa-wrench"></i>
+            </div>
+            <p class="text-xs text-gray-400 font-medium mb-1">Total Equipment</p>
+            <p class="text-3xl font-extrabold text-gray-900 leading-none dash-stat-value">{{ total_equipment }}</p>
+            <!-- Mini stacked bar -->
+            <div class="h-1.5 rounded-full bg-gray-100 flex overflow-hidden mt-2.5">
+                {% if total_equipment > 0 %}
+                <div class="h-full bg-emerald-500 transition-all duration-700" style="width:{% widthratio eq_active total_equipment 100 %}%"></div>
+                <div class="h-full bg-amber-400 transition-all duration-700" style="width:{% widthratio eq_maintenance total_equipment 100 %}%"></div>
+                <div class="h-full bg-blue-500 transition-all duration-700" style="width:{% widthratio eq_repair total_equipment 100 %}%"></div>
+                <div class="h-full bg-gray-400 transition-all duration-700" style="width:{% widthratio eq_outdated total_equipment 100 %}%"></div>
+                {% endif %}
+            </div>
+            <div class="flex flex-wrap gap-x-2 gap-y-0.5 mt-2 text-[11px] text-gray-400">
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-emerald-500 inline-block shrink-0"></span> {{ eq_active }} Active</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-amber-400 inline-block shrink-0"></span> {{ eq_maintenance }} Maintenance</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-blue-500 inline-block shrink-0"></span> {{ eq_repair }} Repair</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-gray-400 inline-block shrink-0"></span> {{ eq_outdated }} Outdated</span>
+            </div>
+        </div>
+
+        <!-- Open Tickets -->
+        <div class="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-sm  duration-200 relative overflow-hidden group">
+            <div class="w-11 h-11 rounded-xl bg-red-50 text-red-500 flex items-center justify-center text-lg mb-3">
+                <i class="fas fa-ticket-alt"></i>
+            </div>
+            <p class="text-xs text-gray-400 font-medium mb-1">Open Tickets</p>
+            <div class="flex items-baseline gap-2">
+                <p class="text-3xl font-extrabold text-gray-900 leading-none dash-stat-value">{{ open_ticket_count }}</p>
+                {% if critical_ticket_count > 0 %}
+                <span class="text-xs font-bold text-red-600">{{ critical_ticket_count }} Critical</span>
+                {% endif %}
+            </div>
+            <p class="text-[11px] text-gray-400 mt-1.5">{{ assigned_ticket_count }} Assigned / {{ unassigned_ticket_count }} Unassigned</p>
+        </div>
+
+        <!-- Upcoming Maintenance -->
+        <div class="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-sm  duration-200 relative overflow-hidden group">
+            {% if overdue_count > 0 %}
+            <div class="absolute top-3 right-3">
+                <span class="inline-flex items-center gap-1 bg-red-100 text-red-600 text-[11px] font-bold px-2.5 py-0.5 rounded-full">
+                    <i class="fas fa-exclamation-triangle text-[9px]"></i>
+                    {{ overdue_count }} OVERDUE TASK{{ overdue_count|pluralize:"S" }}
+                </span>
+            </div>
+            {% endif %}
+            <div class="w-11 h-11 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center text-lg mb-3">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <p class="text-xs text-gray-400 font-medium mb-1">Upcoming Maintenance</p>
+            <p class="text-3xl font-extrabold text-gray-900 leading-none dash-stat-value">{{ upcoming_maintenance_count }}</p>
+            <p class="text-[11px] text-gray-400 mt-1.5">Next 7 Days</p>
+        </div>
+    </div>
+
+    <!-- ════════════════════════ ROW 2: Quick Actions Bar ════════════════════════ -->
+    <div class="flex items-center flex-wrap gap-3 rounded-2xl px-5 py-3" style="background:linear-gradient(135deg,#2D1B69 0%,#4A2D8C 50%,#6B3FA0 100%);">
+        <span class="text-white/60 text-[11px] font-bold tracking-widest uppercase whitespace-nowrap">Quick Actions</span>
+        <a href="{% url 'backend:building_add' %}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white text-[#2D1B69] text-xs font-semibold hover:bg-purple-50 transition-colors">
+            <i class="fas fa-plus text-[10px]"></i> Add Building
+        </a>
+        <a href="{% url 'backend:equipment_add' %}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/15 text-white text-xs font-semibold hover:bg-white/25 transition-colors">
+            <i class="fas fa-cog text-[10px]"></i> Add Equipment
+        </a>
+        <a href="{% url 'backend:ticket_add' %}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/15 text-white text-xs font-semibold hover:bg-white/25 transition-colors">
+            <i class="fas fa-plus-circle text-[10px]"></i> Create Ticket
+        </a>
+        <a href="{% url 'backend:ticket_list' %}" class="ml-auto inline-flex items-center gap-1.5 px-5 py-2 rounded-lg border border-white/30 text-white text-sm font-semibold hover:bg-white/10 hover:border-white transition-colors">
+            View Maintenance <i class="fas fa-chevron-right text-[10px] ml-0.5"></i>
+        </a>
+    </div>
+
+    <!-- ════════════════════════ ROW 3: Donut Chart + Recent Tickets ════════════════════════ -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+        <!-- Equipment Health Distribution -->
+        <div class="bg-white rounded-2xl border border-gray-100 p-6">
+            <div class="flex items-center justify-between mb-5">
+                <h3 class="text-base font-bold text-gray-900">Equipment Health Distribution</h3>
+                <button class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <i class="fas fa-filter text-sm"></i>
+                </button>
+            </div>
+
+            <!-- Donut -->
+            <div class="relative w-[200px] h-[200px] mx-auto">
+                <canvas id="donutChart" class="w-full h-full"></canvas>
+            </div>
+
+            <!-- Legend -->
+            <div class="flex flex-wrap justify-center gap-x-4 gap-y-1.5 mt-5 text-xs text-gray-600">
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-emerald-500 inline-block shrink-0"></span> Active</span>
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-amber-400 inline-block shrink-0"></span> Maintenance</span>
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-blue-500 inline-block shrink-0"></span> In Repair</span>
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-gray-400 inline-block shrink-0"></span> Outdated</span>
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-gray-800 inline-block shrink-0"></span> Decommissioned</span>
+            </div>
+
+            <!-- KPI metrics -->
+            <div class="flex justify-center gap-10 mt-5">
+                <div class="text-center">
+                    <p class="text-[11px] text-gray-400">Uptime</p>
+                    <p class="text-xl font-extrabold text-emerald-600 leading-tight">{{ uptime_pct }}%</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-[11px] text-gray-400">Repair Rate</p>
+                    <p class="text-xl font-extrabold text-orange-600 leading-tight">{{ repair_pct }}%</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-[11px] text-gray-400">Outdated</p>
+                    <p class="text-xl font-extrabold text-gray-400 leading-tight">{{ outdated_pct }}%</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Active Tickets -->
+        <div class="bg-white rounded-2xl border border-gray-100 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-bold text-gray-900">Recent Active Tickets</h3>
+                <a href="{% url 'backend:ticket_list' %}" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">
+                    View All Tickets
+                </a>
+            </div>
+
+            <div class="divide-y divide-gray-50">
+                {% for ticket in recent_tickets %}
+                <div class="flex items-start gap-3 py-3 hover:bg-gray-50/50 rounded-lg transition-colors px-1 -mx-1">
+                    <!-- Icon -->
+                    <div class="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center shrink-0 mt-0.5">
+                        <i class="fas fa-tools text-xs text-red-500"></i>
+                    </div>
+                    <!-- Info -->
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <span class="text-[10px] font-bold bg-gray-100 text-gray-400 px-1.5 py-px rounded whitespace-nowrap">TKT-{{ ticket.id }}</span>
+                            <span class="text-sm font-bold text-gray-900 truncate">{{ ticket.title|truncatechars:30 }}</span>
+                        </div>
+                        <p class="text-[11px] text-gray-400 mt-0.5">
+                            <i class="fas fa-building text-[9px]"></i>
+                            {{ ticket.building.nickname|default:ticket.building.name|truncatechars:25 }}
+                        </p>
+                    </div>
+                    <!-- Status + time -->
+                    <div class="shrink-0 text-right">
+                        {% if ticket.priority == 'critical' %}
+                        <span class="inline-block text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-red-100 text-red-600">Critical</span>
+                        {% elif ticket.status == 'in_progress' %}
+                        <span class="inline-block text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-600">In Progress</span>
+                        {% elif ticket.status == 'assigned' %}
+                        <span class="inline-block text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-600">Pending</span>
+                        {% elif ticket.status == 'resolved' %}
+                        <span class="inline-block text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-600">Resolved</span>
+                        {% else %}
+                        <span class="inline-block text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-600">{{ ticket.get_status_display }}</span>
+                        {% endif %}
+                        <p class="text-[10px] text-gray-400 mt-1">
+                            <i class="far fa-clock"></i> {{ ticket.opened_at|timesince|truncatewords:2 }} ago
+                        </p>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center py-10 text-gray-400">
+                    <i class="fas fa-check-circle text-3xl mb-2 block text-emerald-500"></i>
+                    <p class="text-sm font-medium">No active tickets</p>
+                    <p class="text-xs">All systems running smoothly</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════ ROW 4: Critical Alerts + Infrastructure ════════════════════════ -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+        <!-- Critical Alerts -->
+        <div class="bg-white rounded-2xl border border-gray-100 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                    <h3 class="text-base font-bold text-gray-900">Critical Alerts</h3>
+                    {% if new_alert_count > 0 %}
+                    <span class="inline-flex items-center gap-1 bg-red-600 text-white text-[10px] font-bold px-2 py-px rounded-full">{{ new_alert_count }} NEW</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="divide-y divide-gray-50">
+                {% for alert in critical_alerts %}
+                <div class="py-3.5">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-bold text-gray-900 truncate">
+                                {{ alert.get_alert_type_display }}: {{ alert.title|truncatechars:35 }}
+                            </p>
+                            {% if alert.building %}
+                            <p class="text-[11px] text-gray-400 mt-0.5">
+                                {{ alert.building.nickname|default:alert.building.name }}
+                            </p>
+                            {% endif %}
+                            <p class="text-[11px] text-red-500 font-medium mt-1">
+                                <i class="fas fa-exclamation-circle text-[9px]"></i>
+                                {{ alert.description|truncatechars:50|default:"Action required" }}
+                            </p>
+                        </div>
+                        {% if alert.severity == 'critical' %}
+                        <span class="inline-block text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-red-100 text-red-600 shrink-0">Critical</span>
+                        {% elif alert.severity == 'high' %}
+                        <span class="inline-block text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-orange-100 text-orange-600 shrink-0">High</span>
+                        {% elif alert.severity == 'medium' %}
+                        <span class="inline-block text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-600 shrink-0">Medium</span>
+                        {% else %}
+                        <span class="inline-block text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-600 shrink-0">Low</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center py-10 text-gray-400">
+                    <i class="fas fa-shield-alt text-3xl mb-2 block text-emerald-500"></i>
+                    <p class="text-sm font-medium">No critical alerts</p>
+                    <p class="text-xs">All systems are operating normally</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% if critical_alerts %}
+            <div class="text-center mt-3 pt-3 border-t border-gray-100">
+                <button class="text-xs font-semibold text-gray-400 hover:text-gray-600 transition-colors">
+                    Acknowledge All Alerts
+                </button>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Infrastructure Footprint -->
+        <div class="bg-white rounded-xl border border-gray-100 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-bold text-gray-900">Infrastructure Footprint</h3>
+                <div class="flex gap-3 text-[11px] text-gray-500">
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span> Healthy</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500 inline-block"></span> Issues</span>
+                </div>
+            </div>
+
+            <div id="infraGrid" class="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] gap-3 py-4">
+                <!-- Populated by JS -->
+            </div>
+
+            {% if total_buildings == 0 %}
+            <div class="text-center py-10 text-gray-400">
+                <i class="fas fa-map-marked-alt text-3xl mb-2 block"></i>
+                <p class="text-sm font-medium">No buildings registered</p>
+                <p class="text-xs">Add buildings to see the infrastructure map</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // ── Donut Chart ──
+    const ctx = document.getElementById('donutChart');
+    if (ctx) {
+        const data = [
+            {{ eq_active }},
+            {{ eq_maintenance }},
+            {{ eq_repair }},
+            {{ eq_outdated }},
+            {{ eq_decommissioned }}
+        ];
+        const total = data.reduce((a, b) => a + b, 0);
+
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Active', 'Maintenance', 'In Repair', 'Outdated', 'Decommissioned'],
+                datasets: [{
+                    data: total > 0 ? data : [1],
+                    backgroundColor: total > 0
+                        ? ['#10B981', '#F59E0B', '#3B82F6', '#9CA3AF', '#1F2937']
+                        : ['#E5E7EB'],
+                    borderWidth: 3,
+                    borderColor: '#fff',
+                    hoverBorderWidth: 4,
+                    hoverOffset: 8,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                cutout: '68%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1F2937',
+                        titleFont: { family: 'Inter', weight: '600' },
+                        bodyFont: { family: 'Inter' },
+                        padding: 10,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: function(context) {
+                                if (total === 0) return 'No equipment';
+                                const pct = ((context.raw / total) * 100).toFixed(1);
+                                return `${context.label}: ${context.raw} (${pct}%)`;
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    animateRotate: true,
+                    duration: 1200,
+                    easing: 'easeOutQuart',
+                }
+            },
+            plugins: [{
+                id: 'centerText',
+                beforeDraw(chart) {
+                    const { ctx: c, width, height } = chart;
+                    c.save();
+                    c.font = '800 1.5rem Inter, sans-serif';
+                    c.fillStyle = '#1F2937';
+                    c.textAlign = 'center';
+                    c.textBaseline = 'middle';
+                    c.fillText(total.toString(), width / 2, height / 2 - 8);
+                    c.font = '500 .7rem Inter, sans-serif';
+                    c.fillStyle = '#9CA3AF';
+                    c.fillText('Total', width / 2, height / 2 + 14);
+                    c.restore();
+                }
+            }]
+        });
+    }
+
+    //Infrastructure Grid
+    const grid = document.getElementById('infraGrid');
+    if (grid) {
+        const totalBuildings = {{ total_buildings }};
+        const activeBuildings = {{ active_buildings }};
+
+        if (totalBuildings > 0) {
+            for (let i = 0; i < totalBuildings; i++) {
+                const isHealthy = i < activeBuildings;
+                const card = document.createElement('div');
+                card.className = `rounded-xl p-3 text-center relative cursor-default flex flex-col items-center justify-center min-h-[70px] border transition-all duration-200 ${
+                    isHealthy
+                        ? 'bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200'
+                        : 'bg-gradient-to-br from-red-50 to-red-100 border-red-200'
+                }`;
+                card.innerHTML = `
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full ${isHealthy ? 'bg-emerald-500' : 'bg-red-500'}"></span>
+                    <i class="fas fa-building text-lg ${isHealthy ? 'text-emerald-600' : 'text-red-500'} mb-1"></i>
+                    <span class="text-[10px] font-semibold ${isHealthy ? 'text-emerald-800' : 'text-red-800'}">B${String(i + 1).padStart(2, '0')}</span>
+                `;
+                grid.appendChild(card);
+            }
+        }
+    }
+
+    //Number count-up animation
+    document.querySelectorAll('.dash-stat-value').forEach(el => {
+        const target = parseInt(el.textContent);
+        if (isNaN(target) || target === 0) return;
+        let current = 0;
+        const step = Math.max(1, Math.ceil(target / 40));
+        const timer = setInterval(() => {
+            current += step;
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+            el.textContent = current;
+        }, 30);
+    });
+});
+</script>
 {% endblock %}
