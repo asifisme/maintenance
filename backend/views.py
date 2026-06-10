@@ -634,18 +634,18 @@ def division_update(request, data_id):
 
 
 @login_required
-def division_delete(request, data_id):
-    if not checkUserPermission(request, "can_delete", "/backend/location/division/"):
-        messages.error(request, 'You do not have permission to delete this division.')
+def division_status(request, data_id):
+    if not checkUserPermission(request, "can_update", "/backend/location/division/"):
+        messages.error(request, 'You do not have permission to change status of this division.')
         return render(request, "403.html", status=403)
 
     if request.method == 'POST':
-        Division.objects.filter(pk=data_id, deleted=False).update(
-            deleted=True,
-            is_active=False,
-            updated_by=request.user
-        )
-        messages.success(request, 'Division deleted successfully.')
+        obj = get_object_or_404(Division, pk=data_id, deleted=False)
+        obj.is_active = not obj.is_active
+        obj.updated_by = request.user
+        obj.save()
+        status_text = "Active" if obj.is_active else "Inactive"
+        messages.success(request, f'Division status changed to {status_text} successfully.')
         return redirect('backend:division_list')
     
     messages.error(request, 'Invalid request method.')
@@ -743,18 +743,18 @@ def subdivision_update(request, data_id):
 
 
 @login_required
-def subdivision_delete(request, data_id):
-    if not checkUserPermission(request, "can_delete", "/backend/location/subdivision/"):
-        messages.error(request, 'You do not have permission to delete this sub-division.')
+def subdivision_status(request, data_id):
+    if not checkUserPermission(request, "can_update", "/backend/location/subdivision/"):
+        messages.error(request, 'You do not have permission to change status of this sub-division.')
         return render(request, "403.html", status=403)
 
     if request.method == 'POST':
-        SubDivision.objects.filter(pk=data_id, deleted=False).update(
-            deleted=True,
-            is_active=False,
-            updated_by=request.user
-        )
-        messages.success(request, 'Sub-Division deleted successfully.')
+        obj = get_object_or_404(SubDivision, pk=data_id, deleted=False)
+        obj.is_active = not obj.is_active
+        obj.updated_by = request.user
+        obj.save()
+        status_text = "Active" if obj.is_active else "Inactive"
+        messages.success(request, f'Sub-Division status changed to {status_text} successfully.')
         return redirect('backend:subdivision_list')
     
     messages.error(request, 'Invalid request method.')
@@ -850,18 +850,18 @@ def section_update(request, data_id):
 
 
 @login_required
-def section_delete(request, data_id):
-    if not checkUserPermission(request, "can_delete", "/backend/location/section/"):
-        messages.error(request, 'You do not have permission to delete this section.')
+def section_status(request, data_id):
+    if not checkUserPermission(request, "can_update", "/backend/location/section/"):
+        messages.error(request, 'You do not have permission to change status of this section.')
         return render(request, "403.html", status=403)
 
     if request.method == 'POST':
-        Section.objects.filter(pk=data_id, deleted=False).update(
-            deleted=True,
-            is_active=False,
-            updated_by=request.user
-        )
-        messages.success(request, 'Section deleted successfully.')
+        obj = get_object_or_404(Section, pk=data_id, deleted=False)
+        obj.is_active = not obj.is_active
+        obj.updated_by = request.user
+        obj.save()
+        status_text = "Active" if obj.is_active else "Inactive"
+        messages.success(request, f'Section status changed to {status_text} successfully.')
         return redirect('backend:section_list')
     
     messages.error(request, 'Invalid request method.')
@@ -883,7 +883,7 @@ def building_list(request):
     qs = Building.objects.filter(deleted=False).select_related('division', 'subdivision', 'section')
     
     if search:
-        qs = qs.filter(Q(name__icontains=search) | Q(building_id__icontains=search) | Q(nickname__icontains=search))
+        qs = qs.filter(Q(name__icontains=search) | Q(building_id__icontains=search) | Q(surname__icontains=search))
     if division_id:
         qs = qs.filter(division_id=division_id)
     if subdivision_id:
@@ -928,18 +928,16 @@ def building_add(request):
     sections = Section.objects.filter(deleted=False, is_active=True)
 
     if request.method == 'POST':
+        building_id = request.POST.get('building_id', '').strip()
         name = request.POST.get('name', '').strip()
-        nickname = request.POST.get('nickname', '').strip()
-        division_id = request.POST.get('division')
-        subdivision_id = request.POST.get('subdivision')
-        section_id = request.POST.get('section')
+        surname = request.POST.get('surname', '').strip()
+        division_id = request.POST.get('division') or None
+        subdivision_id = request.POST.get('subdivision') or None
+        section_id = request.POST.get('section') or None
         address = request.POST.get('address', '').strip()
         latitude = request.POST.get('latitude')
         longitude = request.POST.get('longitude')
         status = request.POST.get('status', 'Active')
-        installation_year = request.POST.get('installation_year')
-        notes = request.POST.get('notes', '').strip()
-        image = request.FILES.get('image')
 
         try:
             latitude = float(latitude) if latitude else None
@@ -950,28 +948,31 @@ def building_add(request):
             longitude = float(longitude) if longitude else None
         except ValueError:
             longitude = None
-            
-        try:
-            installation_year = int(installation_year) if installation_year else None
-        except ValueError:
-            installation_year = None
 
-        if not name:
-            messages.error(request, 'Name is required.')
+        if not building_id:
+            messages.error(request, 'Building ID is required.')
+        elif not name:
+            messages.error(request, 'Building Name is required.')
+        elif not section_id:
+            messages.error(request, 'Section is required.')
+        elif not address:
+            messages.error(request, 'Physical Address is required.')
+        elif Building.objects.filter(building_id=building_id, deleted=False).exists():
+            messages.error(request, 'A building with this Building ID already exists.')
+        elif Building.objects.filter(name=name, deleted=False).exists():
+            messages.error(request, 'A building with this name already exists.')
         else:
             Building.objects.create(
+                building_id=building_id,
                 name=name,
-                nickname=nickname,
-                division_id=division_id or None,
-                subdivision_id=subdivision_id or None,
-                section_id=section_id or None,
+                surname=surname,
+                division_id=division_id,
+                subdivision_id=subdivision_id,
+                section_id=section_id,
                 address=address,
                 latitude=latitude,
                 longitude=longitude,
                 status=status,
-                installation_year=installation_year,
-                notes=notes,
-                image=image,
                 created_by=request.user,
             )
             messages.success(request, 'Building added successfully.')
@@ -992,19 +993,14 @@ def building_update(request, data_id):
 
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
-        nickname = request.POST.get('nickname', '').strip()
-        division_id = request.POST.get('division')
-        subdivision_id = request.POST.get('subdivision')
-        section_id = request.POST.get('section')
+        surname = request.POST.get('surname', '').strip()
+        division_id = request.POST.get('division') or None
+        subdivision_id = request.POST.get('subdivision') or None
+        section_id = request.POST.get('section') or None
         address = request.POST.get('address', '').strip()
         latitude = request.POST.get('latitude')
         longitude = request.POST.get('longitude')
         status = request.POST.get('status', 'Active')
-        installation_year = request.POST.get('installation_year')
-        notes = request.POST.get('notes', '').strip()
-        
-        if 'image' in request.FILES:
-            obj.image = request.FILES.get('image')
 
         try:
             latitude = float(latitude) if latitude else None
@@ -1015,26 +1011,25 @@ def building_update(request, data_id):
             longitude = float(longitude) if longitude else None
         except ValueError:
             longitude = None
-            
-        try:
-            installation_year = int(installation_year) if installation_year else None
-        except ValueError:
-            installation_year = None
 
         if not name:
-            messages.error(request, 'Name is required.')
+            messages.error(request, 'Building Name is required.')
+        elif not section_id:
+            messages.error(request, 'Section is required.')
+        elif not address:
+            messages.error(request, 'Physical Address is required.')
+        elif Building.objects.filter(name=name, deleted=False).exclude(pk=data_id).exists():
+            messages.error(request, 'A building with this name already exists.')
         else:
             obj.name = name
-            obj.nickname = nickname
-            obj.division_id = division_id or None
-            obj.subdivision_id = subdivision_id or None
-            obj.section_id = section_id or None
+            obj.surname = surname
+            obj.division_id = division_id
+            obj.subdivision_id = subdivision_id
+            obj.section_id = section_id
             obj.address = address
             obj.latitude = latitude
             obj.longitude = longitude
             obj.status = status
-            obj.installation_year = installation_year
-            obj.notes = notes
             obj.updated_by = request.user
             obj.save()
             messages.success(request, 'Building updated successfully.')
@@ -1044,18 +1039,18 @@ def building_update(request, data_id):
     return render(request, 'building/update.html', context)
 
 @login_required
-def building_delete(request, data_id):
-    if not checkUserPermission(request, 'can_delete', '/backend/location/building/'):
-        messages.error(request, 'You do not have permission to delete this building.')
+def building_status(request, data_id):
+    if not checkUserPermission(request, 'can_update', '/backend/location/building/'):
+        messages.error(request, 'You do not have permission to change status of this building.')
         return render(request, '403.html', status=403)
 
     if request.method == 'POST':
-        Building.objects.filter(pk=data_id, deleted=False).update(
-            deleted=True,
-            is_active=False,
-            updated_by=request.user
-        )
-        messages.success(request, 'Building deleted successfully.')
+        obj = get_object_or_404(Building, pk=data_id, deleted=False)
+        obj.is_active = not obj.is_active
+        obj.updated_by = request.user
+        obj.save()
+        status_text = "Active" if obj.is_active else "Inactive"
+        messages.success(request, f'Building status changed to {status_text} successfully.')
         return redirect('backend:building_list')
     
     messages.error(request, 'Invalid request method.')
@@ -1256,18 +1251,18 @@ def equipment_type_update(request, data_id):
 
 
 @login_required
-def equipment_type_delete(request, data_id):
-    if not checkUserPermission(request, 'can_delete', '/backend/equipment/equipment_type/'):
-        messages.error(request, 'You do not have permission to delete this equipment type.')
+def equipment_type_status(request, data_id):
+    if not checkUserPermission(request, 'can_update', '/backend/equipment/equipment_type/'):
+        messages.error(request, 'You do not have permission to change status of this equipment type.')
         return render(request, '403.html', status=403)
     
     if request.method == 'POST':
-        EquipmentType.objects.filter(pk=data_id, deleted=False).update(
-            deleted=True,
-            is_active=False,
-            updated_by=request.user
-        )
-        messages.success(request, 'Equipment Type deleted successfully.')
+        obj = get_object_or_404(EquipmentType, pk=data_id, deleted=False)
+        obj.is_active = not obj.is_active
+        obj.updated_by = request.user
+        obj.save()
+        status_text = "Active" if obj.is_active else "Inactive"
+        messages.success(request, f'Equipment Type status changed to {status_text} successfully.')
         return redirect('backend:equipment_type_list')
     
     messages.error(request, 'Invalid request method.')
@@ -1346,18 +1341,18 @@ def equipment_type_data_update(request, data_id):
 
 
 @login_required
-def equipment_type_data_delete(request, data_id):
-    if not checkUserPermission(request, 'can_delete', '/backend/equipment/equipment_type_data/'):
-        messages.error(request, 'You do not have permission to delete this equipment type data.')
+def equipment_type_data_status(request, data_id):
+    if not checkUserPermission(request, 'can_update', '/backend/equipment/equipment_type_data/'):
+        messages.error(request, 'You do not have permission to change status of this equipment type data.')
         return render(request, '403.html', status=403)
     
     if request.method == 'POST':
-        EquipmentTypeData.objects.filter(pk=data_id, deleted=False).update(
-            deleted=True,
-            is_active=False,
-            updated_by=request.user
-        )
-        messages.success(request, 'Equipment Type Data deleted successfully.')
+        obj = get_object_or_404(EquipmentTypeData, pk=data_id, deleted=False)
+        obj.is_active = not obj.is_active
+        obj.updated_by = request.user
+        obj.save()
+        status_text = "Active" if obj.is_active else "Inactive"
+        messages.success(request, f'Equipment Type Data status changed to {status_text} successfully.')
         return redirect('backend:equipment_type_data_list')
     
     messages.error(request, 'Invalid request method.')
@@ -1495,18 +1490,18 @@ def equipment_update(request, data_id):
 
 
 @login_required
-def equipment_delete(request, data_id):
-    if not checkUserPermission(request, 'can_delete', '/backend/equipment/equipment/'):
-        messages.error(request, 'You do not have permission to delete this equipment.')
+def equipment_status(request, data_id):
+    if not checkUserPermission(request, 'can_update', '/backend/equipment/equipment/'):
+        messages.error(request, 'You do not have permission to change status of this equipment.')
         return render(request, '403.html', status=403)
     
     if request.method == 'POST':
-        Equipment.objects.filter(pk=data_id, deleted=False).update(
-            deleted=True,
-            is_active=False,
-            updated_by=request.user
-        )
-        messages.success(request, 'Equipment deleted successfully.')
+        obj = get_object_or_404(Equipment, pk=data_id, deleted=False)
+        obj.is_active = not obj.is_active
+        obj.updated_by = request.user
+        obj.save()
+        status_text = "Active" if obj.is_active else "Inactive"
+        messages.success(request, f'Equipment status changed to {status_text} successfully.')
         return redirect('backend:equipment_list')
     
     messages.error(request, 'Invalid request method.')
@@ -1690,22 +1685,19 @@ def ticket_update(request, data_id):
     return render(request, 'ticket/update.html', context)
 
 @login_required
-def ticket_delete(request, data_id):
-    if not checkUserPermission(request, 'can_delete', '/backend/ticket/ticket/'):
-        messages.error(request, 'You do not have permission to delete this ticket.')
+def ticket_status(request, data_id):
+    if not checkUserPermission(request, 'can_update', '/backend/ticket/ticket/'):
+        messages.error(request, 'You do not have permission to change status of this ticket.')
         return render(request, '403.html', status=403)
 
-    obj = get_object_or_404(Ticket, pk=data_id, deleted=False)
-    
     if request.method == 'POST':
-        obj.deleted = True
-        obj.is_active = False
+        obj = get_object_or_404(Ticket, pk=data_id, deleted=False)
+        obj.is_active = not obj.is_active
+        obj.updated_by = request.user
         obj.save()
-        messages.success(request, 'Ticket deleted successfully.')
+        status_text = "Active" if obj.is_active else "Inactive"
+        messages.success(request, f'Ticket status changed to {status_text} successfully.')
         return redirect('backend:ticket_list')
 
-    context = {
-        'obj': obj,
-        'cancel_url': reverse('backend:ticket_list')
-    }
-    return render(request, 'delete.html', context)
+    messages.error(request, 'Invalid request method.')
+    return redirect('backend:ticket_list')

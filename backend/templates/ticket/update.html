@@ -95,14 +95,14 @@
                     Cancel
                 </a>
                 <div class="ml-auto">
-                    <button type="button" onclick="if(confirm('Are you sure you want to delete this ticket?')) { document.getElementById('delete-form').submit(); }" class="text-red-500 hover:text-red-700 font-semibold py-3 px-4 transition duration-200 text-sm">
-                        Delete Ticket
+                    <button type="button" onclick="if(confirm('Are you sure you want to change status?')) { document.getElementById('status-form').submit(); }" class="{% if obj.is_active %}text-red-500 hover:text-red-700{% else %}text-green-500 hover:text-green-700{% endif %} font-semibold py-3 px-4 transition duration-200 text-sm">
+                        {% if obj.is_active %}Make Inactive{% else %}Make Active{% endif %}
                     </button>
                 </div>
             </div>
         </form>
 
-        <form id="delete-form" action="{% url 'backend:ticket_delete' obj.id %}" method="post" style="display: none;">
+        <form id="status-form" action="{% url 'backend:ticket_status' obj.id %}" method="post" style="display: none;">
             {% csrf_token %}
         </form>
     </div>

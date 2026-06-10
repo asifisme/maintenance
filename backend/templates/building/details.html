@@ -37,7 +37,7 @@
 
 {% block subtitle %}
 <p class="text-xs font-semibold tracking-wider text-gray-400 mt-1 uppercase">
-    {{ building.building_id|default:"-" }} &mdash; {{ building.nickname|default:"-" }}
+    {{ building.building_id|default:"-" }} &mdash; {{ building.surname|default:"-" }}
 </p>
 {% endblock %}
 
@@ -64,8 +64,8 @@
                         <div class="text-sm font-semibold text-gray-700 mt-1">{{ building.building_id|default:"-" }}</div>
                     </div>
                     <div>
-                        <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Nickname</div>
-                        <div class="text-sm font-semibold text-gray-700 mt-1">{{ building.nickname|default:"-" }}</div>
+                        <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Surname</div>
+                        <div class="text-sm font-semibold text-gray-700 mt-1">{{ building.surname|default:"-" }}</div>
                     </div>
                     <div>
                         <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Division</div>

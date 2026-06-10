@@ -236,8 +236,9 @@ class Building(models.Model):
     ] 
  
     # Identity
+    building_id  = models.CharField(max_length=50, unique=True, null=True, blank=True)
     name         = models.CharField(max_length=200, unique=True)
-    nickname     = models.CharField(max_length=50, blank=True) 
+    surname      = models.CharField(max_length=50, blank=True) 
 
     # Hierarchy
     division     = models.ForeignKey(Division,    null=True, blank=True, on_delete=models.SET_NULL, related_name="buildings")
@@ -251,9 +252,6 @@ class Building(models.Model):
  
     # Status
     status           = models.CharField(max_length=30, choices=STATUS_CHOICES, default="Active")
-    installation_year = models.PositiveSmallIntegerField(null=True, blank=True)
-    image            = models.ImageField(upload_to="buildings/", null=True, blank=True)
-    notes            = models.TextField(blank=True)
 
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='building_created_by', blank=True, null=True) 
     updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='building_updated_by', blank=True, null=True)
@@ -264,7 +262,7 @@ class Building(models.Model):
  
  
     def __str__(self):
-        label = self.nickname or self.name
+        label = self.surname or self.name
         return f"[{self.id}] — {label}"
  
 

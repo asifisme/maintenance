@@ -8,7 +8,7 @@
     <section class="mt-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         {% for menu_item in menu_list %}
             <a href="{% if '/' in menu_item.menu.menu_url %}{{ menu_item.menu.menu_url }}{% else %}{% url 'backend:menu_wise_dashboard' menu_item.menu.menu_url %}{% endif %}"
-               class="relative rounded-2xl bg-[var(--bg-color)] p-7 ring-1 ring-[var(--border-color)] shadow-card hover:shadow-cardHover transition">
+               class="relative rounded-2xl bg-[var(--white-color)] p-7 ring-1 ring-[var(--border-color)] shadow-card hover:shadow-cardHover transition">
                 {% if menu_item.unread_count %}
                     <span class="absolute right-4 top-4 inline-flex min-w-6 items-center justify-center rounded-full bg-red-500 px-2 py-1 text-[11px] font-semibold leading-none text-white shadow-sm">
                         {{ menu_item.unread_count }}

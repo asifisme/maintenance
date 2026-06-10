@@ -40,18 +40,36 @@
                                 <td class="px-4 py-3 whitespace-nowrap">{{ data.division.name|default:"" }}</td>
                                 <td class="px-4 py-3 whitespace-nowrap">{{ data.name|default:"" }}</td>
                                 <td class="px-4 py-3 whitespace-nowrap">{{ data.code|default:"" }}</td>
-                                <td class="px-4 py-3 whitespace-nowrap">{{ data.is_active|default:"" }}</td>
+                                <td class="px-4 py-3 whitespace-nowrap">
+                                    {% if data.is_active %}
+                                        <span class="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Active</span>
+                                    {% else %}
+                                        <span class="inline-flex items-center rounded-full bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">Inactive</span>
+                                    {% endif %}
+                                </td>
                                 <td class="px-4 py-3 text-right">
-                                    <a href="{% url 'backend:subdivision_update' data.id %}"
-                                       class="text-blue-500 hover:underline mr-2">Edit</a>
-                                    <form action="{% url 'backend:subdivision_delete' data.id %}"
-                                          method="post"
-                                          class="inline">
-                                        {% csrf_token %}
-                                        <button type="submit"
-                                                class="text-red-500 hover:underline"
-                                                onclick="return confirm('Are you sure?')">Delete</button>
-                                    </form>
+                                    <div data-menu-wrap class="inline-block relative">
+                                        <button data-menu-btn
+                                                class="p-1 text-[var(--text-light-color)] hover:text-[var(--primary-color)] transition-colors rounded-full hover:bg-[var(--bg-color)]">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                            </svg>
+                                        </button>
+                                        <div data-menu class="hidden absolute right-0 mt-2 w-36 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+                                            <div class="py-1">
+                                                <a href="{% url 'backend:subdivision_update' data.id %}"
+                                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">Edit</a>
+                                                <form action="{% url 'backend:subdivision_status' data.id %}" method="post">
+                                                    {% csrf_token %}
+                                                    <button type="submit"
+                                                            class="block px-4 py-2 text-sm {% if data.is_active %}text-red-600 hover:bg-red-50{% else %}text-green-600 hover:bg-green-50{% endif %} w-full text-left"
+                                                            onclick="return confirm('Are you sure you want to change status?')">
+                                                        {% if data.is_active %}Inactive{% else %}Active{% endif %}
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         {% empty %}
@@ -80,5 +98,5 @@
   $(document).ready(function () {
     $('.select2-items').select2();
   });
-<script>
+</script>
 {% endblock %} 

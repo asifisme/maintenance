@@ -50,7 +50,7 @@ class SectionAdmin(admin.ModelAdmin):
 
 @admin.register(Building)
 class BuildingAdmin(admin.ModelAdmin):
-    list_display = ("name", "nickname", "division", "status", "is_active")
+    list_display = ("building_id", "name", "surname", "division", "status", "is_active")
     list_filter = ("status", "is_active", "division")
 
 @admin.register(Technician)

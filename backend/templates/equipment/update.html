@@ -41,7 +41,7 @@
                     <select name="building_id" class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none" required>
                         <option value="">Select Building</option>
                         {% for b in buildings %}
-                            <option value="{{ b.id }}" {% if obj.building_id == b.id %}selected{% endif %}>[{{ b.id }}] — {{ b.name }} {% if b.nickname %}({{ b.nickname }}){% endif %}</option>
+                            <option value="{{ b.id }}" {% if obj.building_id == b.id %}selected{% endif %}>[{{ b.id }}] — {{ b.name }} {% if b.surname %}({{ b.surname }}){% endif %}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -117,8 +117,8 @@
                 
                 {% if action == 'Update' %}
                 <div class="ml-auto">
-                    <button type="button" onclick="if(confirm('Are you sure you want to delete this equipment?')) { document.getElementById('delete-form').submit(); }" class="text-red-500 hover:text-red-700 font-semibold py-3 px-4 transition duration-200 text-sm">
-                        Delete Equipment
+                    <button type="button" onclick="if(confirm('Are you sure you want to change status?')) { document.getElementById('status-form').submit(); }" class="{% if obj.is_active %}text-red-500 hover:text-red-700{% else %}text-green-500 hover:text-green-700{% endif %} font-semibold py-3 px-4 transition duration-200 text-sm">
+                        {% if obj.is_active %}Make Inactive{% else %}Make Active{% endif %}
                     </button>
                 </div>
                 {% endif %}
@@ -126,7 +126,7 @@
         </form>
         
         {% if action == 'Update' %}
-        <form id="delete-form" action="{% url 'backend:equipment_delete' obj.id %}" method="post" style="display: none;">
+        <form id="status-form" action="{% url 'backend:equipment_status' obj.id %}" method="post" style="display: none;">
             {% csrf_token %}
         </form>
         {% endif %}
@@ -138,5 +138,5 @@
   $(document).ready(function () {
     $('.select2-items').select2();
   });
-<script>
+</script>
 {% endblock %} 
