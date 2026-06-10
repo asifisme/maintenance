@@ -149,7 +149,7 @@
     "fields": {
       "module_name": "Equipment Management",
       "menu_name": "Equipment Management",
-      "menu_url": "/backend/equipment/equipment/",
+      "menu_url": "/equipment/",
       "menu_icon": "fa-solid fa-screwdriver-wrench icon",
       "menu_description": "Manage equipment, types, and dynamic data fields.",
       "parent_id": null,
@@ -181,7 +181,7 @@
     "fields": {
       "module_name": "Equipment",
       "menu_name": "Equipment Type Setup",
-      "menu_url": "/backend/equipment/equipment_type/",
+      "menu_url": "/equipment-type/",
       "menu_icon": "fa-solid fa-boxes-stacked icon",
       "menu_description": "Manage different types of equipment.",
       "parent_id": 500,
@@ -197,7 +197,7 @@
     "fields": {
       "module_name": "Equipment",
       "menu_name": "Equipment Fields Setup",
-      "menu_url": "/backend/equipment/equipment_type_data/",
+      "menu_url": "/equipment-type-data/",
       "menu_icon": "fa-solid fa-database icon",
       "menu_description": "Define dynamic data fields for equipment types.",
       "parent_id": 500,
@@ -229,10 +229,42 @@
     "fields": {
       "module_name": "Equipment",
       "menu_name": "Equipment List",
-      "menu_url": "/backend/equipment/equipment/",
+      "menu_url": "/equipment/",
       "menu_icon": "fa-solid fa-list-check icon",
       "menu_description": "View and manage all equipments.",
       "parent_id": 550,
+      "is_main_menu": false,
+      "is_sub_menu": false,
+      "is_sub_child_menu": true,
+      "is_active": true
+    }
+  },
+  {
+    "model": "backend.backendmenu",
+    "pk": 600,
+    "fields": {
+      "module_name": "Ticket Management",
+      "menu_name": "Ticket Setup",
+      "menu_url": "ticket-setup",
+      "menu_icon": "fa-solid fa-ticket icon",
+      "menu_description": "Manage tickets.",
+      "parent_id": 4,
+      "is_main_menu": false,
+      "is_sub_menu": true,
+      "is_sub_child_menu": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "backend.backendmenu",
+    "pk": 601,
+    "fields": {
+      "module_name": "Ticket Management",
+      "menu_name": "Ticket List",
+      "menu_url": "/ticket/",
+      "menu_icon": "fa-solid fa-ticket icon",
+      "menu_description": "Manage tickets.",
+      "parent_id": 600,
       "is_main_menu": false,
       "is_sub_menu": false,
       "is_sub_child_menu": true,
