@@ -225,6 +225,22 @@
   },
   {
     "model": "backend.backendmenu",
+    "pk": 552,
+    "fields": {
+      "module_name": "Equipment",
+      "menu_name": "Equipment History",
+      "menu_url": "/equipment/history/",
+      "menu_icon": "fa-solid fa-history icon",
+      "menu_description": "Add new equipment.",
+      "parent_id": 550,
+      "is_main_menu": false,
+      "is_sub_menu": false,
+      "is_sub_child_menu": true,
+      "is_active": true
+    }
+  },
+  {
+    "model": "backend.backendmenu",
     "pk": 600,
     "fields": {
       "module_name": "Ticket Management",

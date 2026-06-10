@@ -68,7 +68,15 @@ urlpatterns = [
     path('equipment/detail/<int:data_id>/', views.equipment_detail, name='equipment_detail'),
     path('equipment/qr/<int:data_id>/', views.qr_equipement_views, name='equipment_qr'),
     path('equipment/update/<int:data_id>/', views.equipment_update, name='equipment_update'),
+<<<<<<< HEAD
     path('equipment/status/<int:data_id>/', views.equipment_status, name='equipment_status'),
+=======
+    path('equipment/delete/<int:data_id>/', views.equipment_delete, name='equipment_delete'),
+    path('equipment/history/', views.equipment_history, name='equipment_history'),
+
+    # Maintenance Record Review (approve / reject)
+    path('maintenance-record/<int:record_id>/review/', views.maintenance_record_review, name='maintenance_record_review'),
+>>>>>>> origin
 
     # Ticket
     path('ticket/', views.ticket_list, name='ticket_list'),

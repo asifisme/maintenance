@@ -37,8 +37,7 @@
                             required>
                             <option value="">Select Type</option>
                             {% for t in equipment_types %}
-                            <option value="{{ t.id }}" {% if obj.equipment_type_id == t.id %}selected{% endif %}>{{ t.name
-                                }}</option>
+                            <option value="{{ t.id }}" {% if obj.equipment_type_id == t.id %}selected{% endif %}>{{ t.name }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -52,8 +51,12 @@
                         required>
                         <option value="">Select Building</option>
                         {% for b in buildings %}
+<<<<<<< HEAD
                         <option value="{{ b.id }}" {% if obj.building_id == b.id %}selected{% endif %}>[{{ b.id }}] — {{
                             b.name }} {% if b.surname %}({{ b.surname }}){% endif %}</option>
+=======
+                        <option value="{{ b.id }}" {% if obj.building_id == b.id %}selected{% endif %}>[{{ b.id }}] — {{ b.name }} {% if b.nickname %}({{ b.nickname }}){% endif %}</option>
+>>>>>>> origin
                         {% endfor %}
                     </select>
                 </div>
