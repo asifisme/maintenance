@@ -68,6 +68,11 @@ urlpatterns = [
     path('equipment/detail/<int:data_id>/', views.equipment_detail, name='equipment_detail'),
     path('equipment/update/<int:data_id>/', views.equipment_update, name='equipment_update'),
     path('equipment/delete/<int:data_id>/', views.equipment_delete, name='equipment_delete'),
+
+    # Ticket
+    path('ticket/', views.ticket_list, name='ticket_list'),
+    path('ticket/add/', views.ticket_add, name='ticket_add'),
+    path('ticket/detail/<int:data_id>/', views.ticket_detail, name='ticket_detail'),
+    path('ticket/update/<int:data_id>/', views.ticket_update, name='ticket_update'),
+    path('ticket/delete/<int:data_id>/', views.ticket_delete, name='ticket_delete'),
 ]
-
-

@@ -8,7 +8,7 @@
                 {% csrf_token %}
                 <div>
                     <label class="block mb-1">Sub-Division</label>
-                    <select name="subdivision" class="w-full border rounded p-2" required>
+                    <select name="subdivision" class="w-full border rounded p-2 select2-items" required>
                         <option value="">Select Sub-Division</option>
                         {% for s in subdivisions %}
                             <option value="{{ s.id }}"
@@ -42,3 +42,10 @@
         </div>
     </section>
 {% endblock %}
+{% block extra_js %}
+<script>
+  $(document).ready(function () {
+    $('.select2-items').select2();
+  });
+</script>
+{% endblock %} 

@@ -45,7 +45,8 @@ from backend.forms import UserCreateForm
 
 from backend.models import (
     LoginLog, BackendMenu, UserMenuPermission, WebImages, SiteSettings,
-    Division, SubDivision, Section, Building, EquipmentType, EquipmentTypeData, Equipment 
+    Division, SubDivision, Section, Building, EquipmentType, EquipmentTypeData, Equipment,
+    Ticket, TicketComment, TicketActivityLog 
 )
 
 from backend.forms import (
@@ -1433,3 +1434,150 @@ def equipment_detail(request, data_id):
         'maintenance_records': maintenance_records
     }
     return render(request, 'equipment/detail.html', context)
+
+# ======================================== Ticket ========================================
+# Ticket Management
+# ======================================== 
+
+@login_required
+def ticket_list(request):
+    if not checkUserPermission(request, 'can_view', '/backend/ticket/ticket/'):
+        messages.error(request, 'You do not have permission to view this ticket.')
+        return render(request, '403.html', status=403)
+    
+    # Optional filtering
+    status_filter = request.GET.get('status', '')
+    priority_filter = request.GET.get('priority', '')
+    
+    tickets = Ticket.objects.filter(deleted=False).order_by('-created_at')
+    
+    if status_filter:
+        tickets = tickets.filter(status=status_filter)
+    if priority_filter:
+        tickets = tickets.filter(priority=priority_filter)
+        
+    context = {
+        'tickets': tickets,
+        'status_filter': status_filter,
+        'priority_filter': priority_filter,
+    }
+    return render(request, 'ticket/list.html', context)
+
+@login_required
+def ticket_detail(request, data_id):
+    if not checkUserPermission(request, 'can_view', '/backend/ticket/ticket/'):
+        messages.error(request, 'You do not have permission to view this ticket.')
+        return render(request, '403.html', status=403)
+    
+    obj = get_object_or_404(Ticket, pk=data_id, deleted=False)
+    
+    context = {
+        'obj': obj,
+    }
+    return render(request, 'ticket/detail.html', context) 
+
+@login_required
+def ticket_add(request):
+    if not checkUserPermission(request, 'can_add', '/backend/ticket/ticket/'):
+        messages.error(request, 'You do not have permission to add this ticket.')
+        return render(request, '403.html', status=403)
+
+    equipments = Equipment.objects.filter(deleted=False, is_active=True)
+    buildings = Building.objects.filter(deleted=False, is_active=True)
+
+    if request.method == 'POST':
+        title = request.POST.get('title', '').strip()
+        equipment_id = request.POST.get('equipment_id', '')
+        building_id = request.POST.get('building_id', '')
+        issue_type = request.POST.get('issue_type', 'breakdown')
+        priority = request.POST.get('priority', 'medium')
+        status = request.POST.get('status', 'open')
+        issue_description = request.POST.get('issue_description', '').strip()
+        
+        if not title or not equipment_id or not building_id:
+            messages.error(request, 'Title, Equipment, and Building are required.')
+        else:
+            obj = Ticket(
+                title=title,
+                equipment_id=equipment_id,
+                building_id=building_id,
+                issue_type=issue_type,
+                priority=priority,
+                status=status,
+                issue_description=issue_description,
+                user=request.user,
+                created_by=request.user
+            )
+            obj.save()
+            messages.success(request, 'Ticket created successfully.')
+            return redirect('backend:ticket_list')
+    
+    context = {
+        'action': 'Add',
+        'equipments': equipments,
+        'buildings': buildings,
+    }
+    return render(request, 'ticket/add.html', context)
+
+@login_required
+def ticket_update(request, data_id):
+    if not checkUserPermission(request, 'can_update', '/backend/ticket/ticket/'):
+        messages.error(request, 'You do not have permission to update this ticket.')
+        return render(request, '403.html', status=403)
+    
+    obj = get_object_or_404(Ticket, pk=data_id, deleted=False)
+    equipments = Equipment.objects.filter(deleted=False, is_active=True)
+    buildings = Building.objects.filter(deleted=False, is_active=True)
+    
+    if request.method == 'POST':
+        title = request.POST.get('title', '').strip()
+        equipment_id = request.POST.get('equipment_id', '')
+        building_id = request.POST.get('building_id', '')
+        issue_type = request.POST.get('issue_type', 'breakdown')
+        priority = request.POST.get('priority', 'medium')
+        status = request.POST.get('status', 'open')
+        issue_description = request.POST.get('issue_description', '').strip()
+        
+        if not title or not equipment_id or not building_id:
+            messages.error(request, 'Title, Equipment, and Building are required.')
+        else:
+            obj.title = title
+            obj.equipment_id = equipment_id
+            obj.building_id = building_id
+            obj.issue_type = issue_type
+            obj.priority = priority
+            obj.status = status
+            obj.issue_description = issue_description
+            obj.updated_by = request.user
+            obj.save()
+            messages.success(request, 'Ticket updated successfully.')
+            return redirect('backend:ticket_list')
+    
+    context = {
+        'action': 'Update',
+        'obj': obj,
+        'equipments': equipments,
+        'buildings': buildings,
+    }
+    return render(request, 'ticket/update.html', context)
+
+@login_required
+def ticket_delete(request, data_id):
+    if not checkUserPermission(request, 'can_delete', '/backend/ticket/ticket/'):
+        messages.error(request, 'You do not have permission to delete this ticket.')
+        return render(request, '403.html', status=403)
+
+    obj = get_object_or_404(Ticket, pk=data_id, deleted=False)
+    
+    if request.method == 'POST':
+        obj.deleted = True
+        obj.is_active = False
+        obj.save()
+        messages.success(request, 'Ticket deleted successfully.')
+        return redirect('backend:ticket_list')
+
+    context = {
+        'obj': obj,
+        'cancel_url': reverse('backend:ticket_list')
+    }
+    return render(request, 'delete.html', context)
