@@ -45,7 +45,7 @@ from backend.forms import UserCreateForm
 
 from backend.models import (
     LoginLog, BackendMenu, UserMenuPermission, WebImages, SiteSettings,
-    Division, SubDivision, Section, Building, Equipment
+    Division, SubDivision, Section, Building, EquipmentType, EquipmentTypeData, Equipment , Equipment
 )
 
 from backend.forms import (
@@ -1086,3 +1086,350 @@ def building_details(request, data_id):
 @login_required
 def dash_board(request):
     return render(request, 'dashboard.html', {})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Equipment Management 
+@login_required 
+def equipment_type_list(request):
+    if not checkUserPermission(request, 'can_view', '/backend/equipment/equipment_type/'):
+        messages.error(request, 'You do not have permission to view this page.')
+        return render(request, '403.html', status=403)
+    
+    equipment_types = EquipmentType.objects.filter(deleted=False)
+    return render(request, 'equipment_type/list.html', {'equipment_types': equipment_types})
+
+
+@login_required
+def equipment_type_add(request):
+    if not checkUserPermission(request, 'can_add', '/backend/equipment/equipment_type/'):
+        messages.error(request, 'You do not have permission to add this equipment type.')
+        return render(request, '403.html', status=403)
+    
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        description = request.POST.get('description', '').strip() 
+        
+        if not name:
+            messages.error(request, 'Name is required.')
+        else:
+            obj = EquipmentType(
+                name=name,
+                description=description, 
+                created_by=request.user
+            )
+            obj.save()
+            messages.success(request, 'Equipment Type added successfully.')
+            return redirect('backend:equipment_type_list')
+    
+    return render(request, 'equipment_type/add.html', {})
+
+
+@login_required
+def equipment_type_update(request, data_id):
+    if not checkUserPermission(request, 'can_edit', '/backend/equipment/equipment_type/'):
+        messages.error(request, 'You do not have permission to edit this equipment type.')
+        return render(request, '403.html', status=403)
+    
+    obj = get_object_or_404(EquipmentType, pk=data_id, deleted=False)
+    
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        description = request.POST.get('description', '').strip() 
+        
+        if not name:
+            messages.error(request, 'Name is required.')
+        else:
+            obj.name = name
+            obj.description = description
+            obj.updated_by = request.user
+            obj.save()
+            messages.success(request, 'Equipment Type updated successfully.')
+            return redirect('backend:equipment_type_list')
+    
+    return render(request, 'equipment_type/update.html', {'obj': obj})
+
+
+@login_required
+def equipment_type_delete(request, data_id):
+    if not checkUserPermission(request, 'can_delete', '/backend/equipment/equipment_type/'):
+        messages.error(request, 'You do not have permission to delete this equipment type.')
+        return render(request, '403.html', status=403)
+    
+    if request.method == 'POST':
+        EquipmentType.objects.filter(pk=data_id, deleted=False).update(
+            deleted=True,
+            is_active=False,
+            updated_by=request.user
+        )
+        messages.success(request, 'Equipment Type deleted successfully.')
+        return redirect('backend:equipment_type_list')
+    
+    messages.error(request, 'Invalid request method.')
+    return redirect('backend:equipment_type_list')
+
+
+@login_required
+def equipment_type_data_list(request):
+    if not checkUserPermission(request, 'can_view', '/backend/equipment/equipment_type_data/'):
+        messages.error(request, 'You do not have permission to view this page.')
+        return render(request, '403.html', status=403)
+    
+    equipment_type_datas = EquipmentTypeData.objects.filter(deleted=False)
+    return render(request, 'equipment_type_data/list.html', {'equipment_type_datas': equipment_type_datas})
+
+
+@login_required
+def equipment_type_data_add(request):
+    if not checkUserPermission(request, 'can_add', '/backend/equipment/equipment_type_data/'):
+        messages.error(request, 'You do not have permission to add this equipment type data.')
+        return render(request, '403.html', status=403)
+    
+    if request.method == 'POST':
+        equipment_type_id = request.POST.get('equipment_type_id', '').strip()
+        field_name = request.POST.get('field_name', '').strip()
+        field_type = request.POST.get('field_type', '').strip()
+        is_required = request.POST.get('is_required', 'False')
+    
+        
+        if not equipment_type_id or not field_name or not field_type:
+            messages.error(request, 'Equipment Type, Field Name, and Field Type are required.')
+        else:
+            obj = EquipmentTypeData(
+                equipment_type_id=equipment_type_id,
+                field_name=field_name,
+                field_type=field_type,
+                is_required=is_required,
+                created_by=request.user
+            )
+            obj.save()
+            messages.success(request, 'Equipment Type Data added successfully.')
+            return redirect('backend:equipment_type_data_list')
+    
+    equipment_types = EquipmentType.objects.filter(deleted=False, is_active=True)
+    return render(request, 'equipment_type_data/add.html', {'equipment_types': equipment_types})
+
+
+@login_required
+def equipment_type_data_update(request, data_id):
+    if not checkUserPermission(request, 'can_edit', '/backend/equipment/equipment_type_data/'):
+        messages.error(request, 'You do not have permission to edit this equipment type data.')
+        return render(request, '403.html', status=403)
+    
+    obj = get_object_or_404(EquipmentTypeData, pk=data_id, deleted=False)
+    
+    if request.method == 'POST':
+        equipment_type_id = request.POST.get('equipment_type_id', '').strip()
+        field_name = request.POST.get('field_name', '').strip()
+        field_type = request.POST.get('field_type', '').strip()
+        is_required = request.POST.get('is_required', 'False')
+      
+        if not equipment_type_id or not field_name or not field_type:
+            messages.error(request, 'Equipment Type, Field Name, and Field Type are required.')
+        else:
+            obj.equipment_type_id = equipment_type_id
+            obj.field_name = field_name
+            obj.field_type = field_type
+            obj.is_required = is_required
+            obj.updated_by = request.user
+            obj.save()
+            messages.success(request, 'Equipment Type Data updated successfully.')
+            return redirect('backend:equipment_type_data_list')
+    
+    equipment_types = EquipmentType.objects.filter(deleted=False, is_active=True)
+    return render(request, 'equipment_type_data/update.html', {'obj': obj, 'equipment_types': equipment_types})
+
+
+@login_required
+def equipment_type_data_delete(request, data_id):
+    if not checkUserPermission(request, 'can_delete', '/backend/equipment/equipment_type_data/'):
+        messages.error(request, 'You do not have permission to delete this equipment type data.')
+        return render(request, '403.html', status=403)
+    
+    if request.method == 'POST':
+        EquipmentTypeData.objects.filter(pk=data_id, deleted=False).update(
+            deleted=True,
+            is_active=False,
+            updated_by=request.user
+        )
+        messages.success(request, 'Equipment Type Data deleted successfully.')
+        return redirect('backend:equipment_type_data_list')
+    
+    messages.error(request, 'Invalid request method.')
+    return redirect('backend:equipment_type_data_list')
+
+
+@login_required
+def equipment_list(request):
+    if not checkUserPermission(request, 'can_view', '/backend/equipment/equipment/'):
+        messages.error(request, 'You do not have permission to view this page.')
+        return render(request, '403.html', status=403)
+    
+    search = request.GET.get('search', '').strip()
+    type_id = request.GET.get('type_id', '').strip()
+    status = request.GET.get('status', '').strip()
+    
+    qs = Equipment.objects.filter(deleted=False).select_related('equipment_type', 'building')
+    
+    if search:
+        qs = qs.filter(Q(equipment_id__icontains=search) | Q(brand__icontains=search) | Q(building__name__icontains=search))
+    if type_id:
+        qs = qs.filter(equipment_type_id=type_id)
+    if status:
+        qs = qs.filter(status=status)
+        
+    page_num = request.GET.get('page', 1)
+    data_list, paginator_list, last_page = paginate_data(request, page_num, qs)
+    
+    equipment_types = EquipmentType.objects.filter(deleted=False, is_active=True)
+    
+    context = {
+        'data_list': data_list,
+        'paginator_list': paginator_list,
+        'last_page': last_page,
+        'search': search,
+        'type_id': type_id,
+        'status': status,
+        'equipment_types': equipment_types,
+        'status_choices': Equipment.STATUS_CHOICES,
+    }   
+    return render(request, 'equipment/list.html', context)
+
+
+@login_required
+def equipment_add(request):
+    if not checkUserPermission(request, 'can_add', '/backend/equipment/equipment/'):
+        messages.error(request, 'You do not have permission to add equipment.')
+        return render(request, '403.html', status=403)
+        
+    equipment_types = EquipmentType.objects.filter(deleted=False, is_active=True)
+    buildings = Building.objects.filter(deleted=False, is_active=True)
+    
+    if request.method == 'POST':
+        equipment_id = request.POST.get('equipment_id', '').strip()
+        equipment_type_id = request.POST.get('equipment_type_id', '')
+        building_id = request.POST.get('building_id', '')
+        brand = request.POST.get('brand', '').strip()
+        floor_location = request.POST.get('floor_location', '').strip()
+        
+        maintenance_period_days = request.POST.get('maintenance_period_days', '90')
+        next_service_due = request.POST.get('next_service_due', '')
+        
+        if not equipment_id or not equipment_type_id or not building_id:
+            messages.error(request, 'Equipment ID, Type, and Building are required.')
+        else:
+            obj = Equipment(
+                equipment_id=equipment_id,
+                equipment_type_id=equipment_type_id,
+                building_id=building_id,
+                brand=brand,
+                floor_location=floor_location,
+                maintenance_period_days=maintenance_period_days if maintenance_period_days else 90,
+                next_service_due=next_service_due if next_service_due else None,
+                created_by=request.user
+            )
+            obj.save()
+            messages.success(request, 'Equipment added successfully.')
+            return redirect('backend:equipment_list')
+    
+    context = {
+        'action': 'Add',
+        'equipment_types': equipment_types,
+        'buildings': buildings
+    }
+    return render(request, 'equipment/add.html', context)
+
+
+
+@login_required
+def equipment_update(request, data_id):
+    if not checkUserPermission(request, 'can_edit', '/backend/equipment/equipment/'):
+        messages.error(request, 'You do not have permission to edit this equipment.')
+        return render(request, '403.html', status=403)
+    
+    obj = get_object_or_404(Equipment, pk=data_id, deleted=False)
+    equipment_types = EquipmentType.objects.filter(deleted=False, is_active=True)
+    buildings = Building.objects.filter(deleted=False, is_active=True)
+    
+    if request.method == 'POST':
+        equipment_id = request.POST.get('equipment_id', '').strip()
+        equipment_type_id = request.POST.get('equipment_type_id', '')
+        building_id = request.POST.get('building_id', '')
+        brand = request.POST.get('brand', '').strip()
+        floor_location = request.POST.get('floor_location', '').strip()
+        
+        maintenance_period_days = request.POST.get('maintenance_period_days', '90')
+        next_service_due = request.POST.get('next_service_due', '')
+        
+        status = request.POST.get('status', obj.status)
+        
+        if not equipment_id or not equipment_type_id or not building_id:
+            messages.error(request, 'Equipment ID, Type, and Building are required.')
+        else:
+            obj.equipment_id = equipment_id
+            obj.equipment_type_id = equipment_type_id
+            obj.building_id = building_id
+            obj.brand = brand
+            obj.floor_location = floor_location
+            obj.maintenance_period_days = maintenance_period_days if maintenance_period_days else 90
+            obj.next_service_due = next_service_due if next_service_due else None
+            obj.status = status
+            
+            obj.updated_by = request.user
+            obj.save()
+            messages.success(request, 'Equipment updated successfully.')
+            return redirect('backend:equipment_list')
+    
+    context = {
+        'action': 'Update',
+        'obj': obj,
+        'equipment_types': equipment_types,
+        'buildings': buildings
+    }
+    return render(request, 'equipment/update.html', context)
+
+
+@login_required
+def equipment_delete(request, data_id):
+    if not checkUserPermission(request, 'can_delete', '/backend/equipment/equipment/'):
+        messages.error(request, 'You do not have permission to delete this equipment.')
+        return render(request, '403.html', status=403)
+    
+    if request.method == 'POST':
+        Equipment.objects.filter(pk=data_id, deleted=False).update(
+            deleted=True,
+            is_active=False,
+            updated_by=request.user
+        )
+        messages.success(request, 'Equipment deleted successfully.')
+        return redirect('backend:equipment_list')
+    
+    messages.error(request, 'Invalid request method.')
+    return redirect('backend:equipment_list')
+
+
+@login_required
+def equipment_detail(request, data_id):
+    if not checkUserPermission(request, 'can_view', '/backend/equipment/equipment/'):
+        messages.error(request, 'You do not have permission to view this equipment.')
+        return render(request, '403.html', status=403)
+    
+    obj = get_object_or_404(Equipment, pk=data_id, deleted=False)
+    maintenance_records = obj.maintenance_records.filter(deleted=False).order_by('-maintenance_date')
+    
+    context = {
+        'obj': obj,
+        'maintenance_records': maintenance_records
+    }
+    return render(request, 'equipment/detail.html', context)
