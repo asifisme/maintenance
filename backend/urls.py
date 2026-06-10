@@ -48,4 +48,25 @@ urlpatterns = [
     path('building/add/', views.building_add, name='building_add'),
     path('building/update/<int:data_id>/', views.building_update, name='building_update'),
     path('building/delete/<int:data_id>/', views.building_delete, name='building_delete'),
+
+    # Equipment Type
+    path('equipment-type/', views.equipment_type_list, name='equipment_type_list'),
+    path('equipment-type/add/', views.equipment_type_add, name='equipment_type_add'),
+    path('equipment-type/update/<int:data_id>/', views.equipment_type_update, name='equipment_type_update'),
+    path('equipment-type/delete/<int:data_id>/', views.equipment_type_delete, name='equipment_type_delete'),
+
+    # Equipment Type Data
+    path('equipment-type-data/', views.equipment_type_data_list, name='equipment_type_data_list'),
+    path('equipment-type-data/add/', views.equipment_type_data_add, name='equipment_type_data_add'),
+    path('equipment-type-data/update/<int:data_id>/', views.equipment_type_data_update, name='equipment_type_data_update'),
+    path('equipment-type-data/delete/<int:data_id>/', views.equipment_type_data_delete, name='equipment_type_data_delete'),
+
+    # Equipment
+    path('equipment/', views.equipment_list, name='equipment_list'),
+    path('equipment/add/', views.equipment_add, name='equipment_add'),
+    path('equipment/detail/<int:data_id>/', views.equipment_detail, name='equipment_detail'),
+    path('equipment/update/<int:data_id>/', views.equipment_update, name='equipment_update'),
+    path('equipment/delete/<int:data_id>/', views.equipment_delete, name='equipment_delete'),
 ]
+
+
