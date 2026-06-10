@@ -2,10 +2,13 @@ import code
 import os
 import base64
 import logging
+import qrcode 
 import json
 import calendar
 from datetime import datetime, date 
 from urllib import request
+from io import BytesIO 
+from django.core.files import File 
 from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -1524,6 +1527,41 @@ def equipment_detail(request, data_id):
         'maintenance_records': maintenance_records
     }
     return render(request, 'equipment/detail.html', context)
+
+
+
+
+def generate_qr_code(data):
+    """
+    Generate QR code for the given data.
+    """
+    qr = qrcode.QRCode(version=1, box_size=10, border=4)
+    qr.add_data(data)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    return img 
+
+import base64
+from io import BytesIO
+
+@login_required
+def qr_equipement_views(request, data_id):
+    obj = get_object_or_404(Equipment, pk=data_id, deleted=False)
+    last_maintenance = obj.maintenance_records.filter(deleted=False).order_by('-maintenance_date').first()
+    
+    qr_base64 = None
+    if obj.qr_code:
+        img = generate_qr_code(obj.qr_code)
+        buffer = BytesIO()
+        img.save(buffer, format="PNG")
+        qr_base64 = base64.b64encode(buffer.getvalue()).decode()
+
+    context = {
+        'obj': obj,
+        'last_maintenance': last_maintenance,
+        'qr_base64': qr_base64,
+    }
+    return render(request, "equipment/qr.html", context)
 
 # ======================================== Ticket ========================================
 # Ticket Management

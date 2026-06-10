@@ -1,0 +1,54 @@
+[
+    {
+        "model": "backend.division",
+        "pk": 1,
+        "fields": {
+            "name": "North Division",
+            "code": "DIV-N",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z"
+        }
+    },
+    {
+        "model": "backend.division",
+        "pk": 2,
+        "fields": {
+            "name": "South Division",
+            "code": "DIV-S",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z"
+        }
+    },
+    {
+        "model": "backend.division",
+        "pk": 3,
+        "fields": {
+            "name": "East Division",
+            "code": "DIV-E",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z"
+        }
+    },
+    {
+        "model": "backend.division",
+        "pk": 4,
+        "fields": {
+            "name": "West Division",
+            "code": "DIV-W",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z"
+        }
+    }
+]

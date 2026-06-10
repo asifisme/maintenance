@@ -1,0 +1,56 @@
+[
+    {
+        "model": "backend.building",
+        "pk": 1,
+        "fields": {
+            "name": "Headquarters Building",
+            "nickname": "HQ",
+            "division": 1,
+            "subdivision": 1,
+            "section": 1,
+            "status": "Active",
+            "installation_year": 2015,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z"
+        }
+    },
+    {
+        "model": "backend.building",
+        "pk": 2,
+        "fields": {
+            "name": "South Annex Building",
+            "nickname": "South Annex",
+            "division": 2,
+            "subdivision": 3,
+            "section": 3,
+            "status": "Active",
+            "installation_year": 2018,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z"
+        }
+    },
+    {
+        "model": "backend.building",
+        "pk": 3,
+        "fields": {
+            "name": "Tech Hub East",
+            "nickname": "Tech Hub",
+            "division": 3,
+            "subdivision": 4,
+            "section": 4,
+            "status": "Under Maintenance",
+            "installation_year": 2020,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z"
+        }
+    }
+]

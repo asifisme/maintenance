@@ -1,0 +1,58 @@
+[
+    {
+        "model": "backend.subdivision",
+        "pk": 1,
+        "fields": {
+            "division": 1,
+            "name": "North Region A",
+            "code": "SUB-NA",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 2,
+        "fields": {
+            "division": 1,
+            "name": "North Region B",
+            "code": "SUB-NB",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 3,
+        "fields": {
+            "division": 2,
+            "name": "South Region A",
+            "code": "SUB-SA",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 4,
+        "fields": {
+            "division": 3,
+            "name": "East Region A",
+            "code": "SUB-EA",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z"
+        }
+    }
+]

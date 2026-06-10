@@ -265,7 +265,7 @@ class Building(models.Model):
  
     def __str__(self):
         label = self.nickname or self.name
-        return f"[{self.building_id}] — {label}"
+        return f"[{self.id}] — {label}"
  
 
 class Technician(models.Model):
@@ -336,7 +336,7 @@ class Equipment(models.Model):
     serial_number  = models.CharField(max_length=100, blank=True)
 
     installation_year = models.PositiveSmallIntegerField(null=True, blank=True)
-    qr_code        = models.ImageField(upload_to="qrcodes/", null=True, blank=True)
+    qr_code        = models.CharField(max_length=100, blank=True, unique=True) 
 
     image          = models.ImageField(upload_to="equipment/", null=True, blank=True)
     notes          = models.TextField(blank=True)
@@ -355,6 +355,11 @@ class Equipment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
     deleted = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if not self.qr_code:
+            self.qr_code = f"EQ-{self.equipment_id or uuid.uuid4().hex[:8].upper()}"
+        super().save(*args, **kwargs)
     
     def __str__(self):
         return f"[{self.equipment_id}] {self.equipment_type.name} at {self.building.name}"
