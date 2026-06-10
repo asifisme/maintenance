@@ -142,5 +142,101 @@
       "is_sub_child_menu": true,
       "is_active": true
     }
-  } 
+  },
+  {
+    "model": "backend.backendmenu",
+    "pk": 4,
+    "fields": {
+      "module_name": "Equipment Management",
+      "menu_name": "Equipment Management",
+      "menu_url": "/backend/equipment/equipment/",
+      "menu_icon": "fa-solid fa-screwdriver-wrench icon",
+      "menu_description": "Manage equipment, types, and dynamic data fields.",
+      "parent_id": null,
+      "is_main_menu": true,
+      "is_sub_menu": false,
+      "is_sub_child_menu": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "backend.backendmenu",
+    "pk": 500,
+    "fields": {
+      "module_name": "Setup",
+      "menu_name": "Setup",
+      "menu_url": "equipment-setup",
+      "menu_icon": "fa-solid fa-gear icon",
+      "menu_description": "Setup equipment types and dynamic data fields.",
+      "parent_id": 4,
+      "is_main_menu": false,
+      "is_sub_menu": true,
+      "is_sub_child_menu": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "backend.backendmenu",
+    "pk": 501,
+    "fields": {
+      "module_name": "Equipment",
+      "menu_name": "Equipment Type Setup",
+      "menu_url": "/backend/equipment/equipment_type/",
+      "menu_icon": "fa-solid fa-boxes-stacked icon",
+      "menu_description": "Manage different types of equipment.",
+      "parent_id": 500,
+      "is_main_menu": false,
+      "is_sub_menu": false,
+      "is_sub_child_menu": true,
+      "is_active": true
+    }
+  },
+  {
+    "model": "backend.backendmenu",
+    "pk": 502,
+    "fields": {
+      "module_name": "Equipment",
+      "menu_name": "Equipment Fields Setup",
+      "menu_url": "/backend/equipment/equipment_type_data/",
+      "menu_icon": "fa-solid fa-database icon",
+      "menu_description": "Define dynamic data fields for equipment types.",
+      "parent_id": 500,
+      "is_main_menu": false,
+      "is_sub_menu": false,
+      "is_sub_child_menu": true,
+      "is_active": true
+    }
+  },
+  {
+    "model": "backend.backendmenu",
+    "pk": 550,
+    "fields": {
+      "module_name": "Equipment",
+      "menu_name": "Equipment List",
+      "menu_url": "equipment-list",
+      "menu_icon": "fa-solid fa-list-check icon",
+      "menu_description": "Manage list of equipments.",
+      "parent_id": 4,
+      "is_main_menu": false,
+      "is_sub_menu": true,
+      "is_sub_child_menu": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "backend.backendmenu",
+    "pk": 551,
+    "fields": {
+      "module_name": "Equipment",
+      "menu_name": "Equipment List",
+      "menu_url": "/backend/equipment/equipment/",
+      "menu_icon": "fa-solid fa-list-check icon",
+      "menu_description": "View and manage all equipments.",
+      "parent_id": 550,
+      "is_main_menu": false,
+      "is_sub_menu": false,
+      "is_sub_child_menu": true,
+      "is_active": true
+    }
+  }
 ]

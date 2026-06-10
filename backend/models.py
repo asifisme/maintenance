@@ -236,8 +236,8 @@ class Building(models.Model):
     ] 
  
     # Identity
-    name         = models.CharField(max_length=200)
-    nickname     = models.CharField(max_length=50, blank=True)
+    name         = models.CharField(max_length=200, unique=True)
+    nickname     = models.CharField(max_length=50, blank=True) 
 
     # Hierarchy
     division     = models.ForeignKey(Division,    null=True, blank=True, on_delete=models.SET_NULL, related_name="buildings")
