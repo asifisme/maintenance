@@ -1,0 +1,59 @@
+[
+    {
+        "model": "backend.ticket",
+        "pk": 1,
+        "fields": {
+            "title": "AC not cooling in Main Lobby",
+            "equipment": 1,
+            "building": 1,
+            "status": "open",
+            "priority": "high",
+            "issue_type": "breakdown",
+            "issue_description": "The AC is blowing warm air in the main lobby area.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 2,
+        "fields": {
+            "title": "Elevator making grinding noise",
+            "equipment": 2,
+            "building": 1,
+            "status": "in_progress",
+            "priority": "medium",
+            "issue_type": "inspection",
+            "issue_description": "Strange grinding noise when moving between 2nd and 3rd floors.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 3,
+        "fields": {
+            "title": "Generator failure",
+            "equipment": 3,
+            "building": 2,
+            "status": "resolved",
+            "priority": "critical",
+            "issue_type": "emergency",
+            "issue_description": "Backup generator did not kick in during yesterday's power dip.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z"
+        }
+    }
+]

@@ -1,0 +1,62 @@
+[
+    {
+        "model": "backend.maintenancerecord",
+        "pk": 1,
+        "fields": {
+            "equipment": 1,
+            "record_type": "routine",
+            "maintenance_date": "2026-03-01",
+            "technician": 1,
+            "work_description": "Quarterly filter replacement and system check.",
+            "parts_replaced": "Air Filters",
+            "cost": "150.00",
+            "duration_hours": "2.5",
+            "review_status": "approved",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z"
+        }
+    },
+    {
+        "model": "backend.maintenancerecord",
+        "pk": 2,
+        "fields": {
+            "equipment": 2,
+            "record_type": "inspection",
+            "maintenance_date": "2026-05-15",
+            "technician": 1,
+            "work_description": "Monthly elevator safety inspection. All clear.",
+            "parts_replaced": "",
+            "cost": "200.00",
+            "duration_hours": "3.0",
+            "review_status": "approved",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z"
+        }
+    },
+    {
+        "model": "backend.maintenancerecord",
+        "pk": 3,
+        "fields": {
+            "equipment": 3,
+            "record_type": "repair",
+            "maintenance_date": "2026-06-08",
+            "technician": 1,
+            "work_description": "Generator failed to start during weekly test. Diagnosing fuel pump issue.",
+            "parts_replaced": "Fuel Pump Assembly",
+            "cost": "1200.00",
+            "duration_hours": "8.0",
+            "review_status": "pending",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z"
+        }
+    }
+]

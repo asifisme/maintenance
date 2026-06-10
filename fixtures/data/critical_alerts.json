@@ -1,0 +1,29 @@
+[
+    {
+        "model": "backend.criticalalert",
+        "pk": 1,
+        "fields": {
+            "equipment": 1,
+            "building": 1,
+            "alert_type": "maint_overdue",
+            "severity": "high",
+            "title": "HVAC Maintenance Overdue",
+            "description": "Routine maintenance for EQ-HVAC-001 is past due.",
+            "is_acknowledged": false
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 2,
+        "fields": {
+            "equipment": 3,
+            "building": 2,
+            "alert_type": "eq_fault",
+            "severity": "critical",
+            "title": "Generator Fault Detected",
+            "description": "Critical failure logged for EQ-GEN-001.",
+            "is_acknowledged": true,
+            "acknowledged_by": 1
+        }
+    }
+]

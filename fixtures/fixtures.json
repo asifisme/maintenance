@@ -1,22 +1,6 @@
 [
   {
     "model": "backend.backendmenu",
-    "pk": 1,
-    "fields": {
-      "module_name": "Organization Management",
-      "menu_name": "Organization Management",
-      "menu_url": "organization-management",
-      "menu_icon": "fa-solid fa-sitemap icon",
-      "menu_description": "Manage company structure, locations, and organizational setup.",
-      "parent_id": null,
-      "is_main_menu": true,
-      "is_sub_menu": false,
-      "is_sub_child_menu": false,
-      "is_active": true
-    }
-  },
-  {
-    "model": "backend.backendmenu",
     "pk": 2,
     "fields": {
       "module_name": "User Management",

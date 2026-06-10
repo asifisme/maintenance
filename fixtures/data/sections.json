@@ -1,0 +1,58 @@
+[
+    {
+        "model": "backend.section",
+        "pk": 1,
+        "fields": {
+            "subdivision": 1,
+            "name": "Section A1",
+            "code": "SEC-A1",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 2,
+        "fields": {
+            "subdivision": 1,
+            "name": "Section A2",
+            "code": "SEC-A2",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 3,
+        "fields": {
+            "subdivision": 3,
+            "name": "Section S1",
+            "code": "SEC-S1",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 4,
+        "fields": {
+            "subdivision": 4,
+            "name": "Section E1",
+            "code": "SEC-E1",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z"
+        }
+    }
+]

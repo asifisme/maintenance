@@ -66,6 +66,7 @@ urlpatterns = [
     path('equipment/', views.equipment_list, name='equipment_list'),
     path('equipment/add/', views.equipment_add, name='equipment_add'),
     path('equipment/detail/<int:data_id>/', views.equipment_detail, name='equipment_detail'),
+    path('equipment/qr/<int:data_id>/', views.qr_equipement_views, name='equipment_qr'),
     path('equipment/update/<int:data_id>/', views.equipment_update, name='equipment_update'),
     path('equipment/delete/<int:data_id>/', views.equipment_delete, name='equipment_delete'),
 
