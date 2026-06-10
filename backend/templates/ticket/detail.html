@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% block title %}Ticket #{{ obj.id }}{% endblock %}
+{% block content %}
+<section class="bg-slate-50 min-h-screen p-4 md:p-8 font-sans">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center gap-4">
+                <a href="{% url 'backend:ticket_list' %}" class="text-gray-600 hover:text-gray-900 bg-white p-2 rounded-lg border border-gray-200 shadow-sm transition">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 18l-6-6 6-6"/>
+                    </svg>
+                </a>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                        #{{ obj.id }} - {{ obj.title }}
+                    </h2>
+                    <p class="text-sm text-gray-500 mt-1">Reported by {{ obj.user.get_full_name|default:obj.user.username|default:"System" }} &bull; {{ obj.created_at|date:"M d, Y" }}</p>
+                </div>
+            </div>
+            
+            <a href="{% url 'backend:ticket_update' obj.id %}" class="bg-[#3B5998] hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 transition duration-200 text-sm shadow-sm">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                Edit Ticket
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Column: Details -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Status Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Status Card -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center shrink-0 border 
+                            {% if obj.status == 'open' %}bg-blue-50 text-blue-500 border-blue-100
+                            {% elif obj.status == 'resolved' or obj.status == 'closed' %}bg-green-50 text-green-500 border-green-100
+                            {% elif obj.status == 'in_progress' %}bg-yellow-50 text-yellow-500 border-yellow-100
+                            {% elif obj.status == 'rejected' %}bg-red-50 text-red-500 border-red-100
+                            {% else %}bg-gray-50 text-gray-500 border-gray-100{% endif %}">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Status</p>
+                            <h3 class="text-xl font-bold text-gray-900 capitalize">{{ obj.get_status_display }}</h3>
+                        </div>
+                    </div>
+
+                    <!-- Priority Card -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center shrink-0 border
+                            {% if obj.priority == 'critical' %}bg-red-50 text-red-500 border-red-100
+                            {% elif obj.priority == 'high' %}bg-orange-50 text-orange-500 border-orange-100
+                            {% elif obj.priority == 'medium' %}bg-yellow-50 text-yellow-500 border-yellow-100
+                            {% else %}bg-green-50 text-green-500 border-green-100{% endif %}">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                <line x1="12" y1="9" x2="12" y2="13"></line>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Priority</p>
+                            <h3 class="text-xl font-bold text-gray-900 capitalize">{{ obj.get_priority_display }}</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-100">Issue Description</h3>
+                    <div class="text-sm text-gray-700 whitespace-pre-line leading-relaxed">
+                        {% if obj.issue_description %}
+                            {{ obj.issue_description }}
+                        {% else %}
+                            <p class="text-gray-400 italic">No description provided.</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+            </div>
+
+            <!-- Right Column: Details & Specs -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Equipment & Location -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-6 pb-2 border-b border-gray-100">Equipment Info</h3>
+                    
+                    <div class="space-y-5">
+                        <div class="border-b border-gray-100 pb-4">
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Equipment</p>
+                            {% if obj.equipment %}
+                                <a href="{% url 'backend:equipment_detail' obj.equipment.id %}" class="text-sm font-semibold text-blue-600 hover:underline">
+                                    {{ obj.equipment.equipment_id|default:obj.equipment.id }} - {{ obj.equipment.equipment_type.name }}
+                                </a>
+                            {% else %}
+                                <p class="text-sm font-semibold text-gray-900">-</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="border-b border-gray-100 pb-4">
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Building</p>
+                            {% if obj.building %}
+                                <p class="text-sm font-semibold text-gray-900">[{{ obj.building.id }}] {{ obj.building.name }}</p>
+                            {% else %}
+                                <p class="text-sm font-semibold text-gray-900">-</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="border-b border-gray-100 pb-4">
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Issue Type</p>
+                            <p class="text-sm font-semibold text-gray-900">{{ obj.get_issue_type_display }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timestamps -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-6 pb-2 border-b border-gray-100">Timeline</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-500 font-medium">Opened</span>
+                            <span class="text-sm font-semibold text-gray-900">{{ obj.opened_at|date:"M d, Y H:i" }}</span>
+                        </div>
+                        
+                        {% if obj.assigned_at %}
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-500 font-medium">Assigned</span>
+                            <span class="text-sm font-semibold text-gray-900">{{ obj.assigned_at|date:"M d, Y H:i" }}</span>
+                        </div>
+                        {% endif %}
+
+                        {% if obj.resolved_at %}
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-500 font-medium">Resolved</span>
+                            <span class="text-sm font-semibold text-green-600">{{ obj.resolved_at|date:"M d, Y H:i" }}</span>
+                        </div>
+                        {% endif %}
+                        
+                        {% if obj.closed_at %}
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-500 font-medium">Closed</span>
+                            <span class="text-sm font-semibold text-gray-900">{{ obj.closed_at|date:"M d, Y H:i" }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block extra_js %}
+<script>
+  $(document).ready(function () {
+    $('.select2-items').select2();
+  });
+</script>
+{% endblock %} 

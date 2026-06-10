@@ -489,7 +489,7 @@ class Ticket(models.Model):
 
 
     def __str__(self):
-        return f"{self.ticket_id}: {self.title}"
+        return f"{self.id}: {self.title}"
  
  
 class TicketComment(models.Model):
@@ -509,7 +509,7 @@ class TicketComment(models.Model):
         ordering  = ["created_at"]
  
     def __str__(self):
-        return f"Comment on {self.ticket.ticket_id} by {self.author}"
+        return f"Comment on {self.ticket.id} by {self.author}"
  
 
 class TicketActivityLog(models.Model):
@@ -532,7 +532,7 @@ class TicketActivityLog(models.Model):
 
  
     def __str__(self):
-        return f"{self.action_type} on {self.ticket.ticket_id} @ {self.created_at:%Y-%m-%d %H:%M}"
+        return f"{self.action_type} on {self.ticket.id} @ {self.created_at:%Y-%m-%d %H:%M}"
  
  
 
