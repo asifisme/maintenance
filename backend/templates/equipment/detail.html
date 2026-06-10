@@ -87,7 +87,7 @@
                             </svg>
                             <h3 class="text-lg font-bold text-gray-900">Recent Maintenance</h3>
                         </div>
-                        <a href="#" class="text-sm font-semibold text-blue-600 hover:text-blue-800">See All Records</a>
+                        <a href="{% url 'backend:equipment_history' %}?equipment_id={{ obj.id }}" class="text-sm font-semibold text-blue-600 hover:text-blue-800">See All Records</a>
                     </div>
                     
                     <div class="divide-y divide-gray-100">
@@ -116,15 +116,50 @@
                             <p class="text-xs text-gray-500 mb-3">Technician: {{ record.technician.get_full_name|default:record.technician.username|default:"Unknown" }}</p>
                             
                             {% if record.review_status == 'pending' %}
+                            <!-- ── Approve inline form ── -->
                             <div class="flex gap-3 mt-3">
-                                <button class="flex-1 py-2 px-4 rounded-lg bg-green-50 text-green-700 text-xs font-bold border border-green-200 hover:bg-green-100 transition flex items-center justify-center gap-1">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                    Approve
-                                </button>
-                                <button class="flex-1 py-2 px-4 rounded-lg bg-red-50 text-red-700 text-xs font-bold border border-red-200 hover:bg-red-100 transition flex items-center justify-center gap-1">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                    Reject
-                                </button>
+                                <form method="POST" action="{% url 'backend:maintenance_record_review' record.id %}" class="flex-1">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="approve">
+                                    <button type="submit"
+                                        class="w-full py-2 px-4 rounded-lg bg-green-50 text-green-700 text-xs font-bold border border-green-200 hover:bg-green-100 transition flex items-center justify-center gap-1">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                        Approve
+                                    </button>
+                                </form>
+
+                                <!-- ── Reject: toggle a notes panel ── -->
+                                <div class="flex-1">
+                                    <button type="button"
+                                        onclick="toggleRejectPanel('reject-panel-{{ record.id }}')"
+                                        class="w-full py-2 px-4 rounded-lg bg-red-50 text-red-700 text-xs font-bold border border-red-200 hover:bg-red-100 transition flex items-center justify-center gap-1">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                        Reject
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- ── Reject reason panel (hidden by default) ── -->
+                            <div id="reject-panel-{{ record.id }}" class="hidden mt-3 p-4 bg-red-50 border border-red-200 rounded-lg">
+                                <form method="POST" action="{% url 'backend:maintenance_record_review' record.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="reject">
+                                    <label class="block text-xs font-bold text-red-700 mb-1">Reason for rejection <span class="text-red-500">*</span></label>
+                                    <textarea name="review_notes" rows="3" required
+                                        placeholder="Explain why this record is being rejected…"
+                                        class="w-full text-xs border border-red-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-red-300 bg-white resize-none"></textarea>
+                                    <div class="flex gap-2 mt-2">
+                                        <button type="submit"
+                                            class="flex-1 py-1.5 px-3 rounded-lg bg-red-600 text-white text-xs font-bold hover:bg-red-700 transition">
+                                            Confirm Reject
+                                        </button>
+                                        <button type="button"
+                                            onclick="toggleRejectPanel('reject-panel-{{ record.id }}')"
+                                            class="flex-1 py-1.5 px-3 rounded-lg bg-white text-gray-600 text-xs font-bold border border-gray-200 hover:bg-gray-100 transition">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
                             {% endif %}
                         </div>
@@ -182,5 +217,12 @@
   $(document).ready(function () {
     $('.select2-items').select2();
   });
+
+  function toggleRejectPanel(panelId) {
+    const panel = document.getElementById(panelId);
+    if (panel) {
+      panel.classList.toggle('hidden');
+    }
+  }
 </script>
-{% endblock %} 
+{% endblock %}

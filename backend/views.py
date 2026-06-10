@@ -49,7 +49,7 @@ from backend.forms import UserCreateForm
 from backend.models import (
     LoginLog, BackendMenu, UserMenuPermission, WebImages, SiteSettings,
     Division, SubDivision, Section, Building, EquipmentType, EquipmentTypeData, Equipment,
-    Ticket, TicketComment, TicketActivityLog 
+    MaintenanceRecord, Ticket, TicketComment, TicketActivityLog 
 )
 
 from backend.forms import (
@@ -1472,6 +1472,133 @@ def qr_equipement_views(request, data_id):
         'qr_base64': qr_base64,
     }
     return render(request, "equipment/qr.html", context)
+
+# ======================================== Maintenance Record Review ========================================
+
+@login_required
+def maintenance_record_review(request, record_id):
+    """Approve or Reject a MaintenanceRecord from the equipment detail page."""
+    from django.utils import timezone as tz
+
+    record = get_object_or_404(MaintenanceRecord, pk=record_id, deleted=False)
+
+    if request.method != 'POST':
+        messages.error(request, 'Invalid request method.')
+        return redirect('backend:equipment_detail', data_id=record.equipment_id)
+
+    action = request.POST.get('action', '').strip()   # 'approve' or 'reject'
+    review_notes = request.POST.get('review_notes', '').strip()
+
+    if action == 'approve':
+        record.review_status = 'approved'
+        record.review_notes = review_notes
+        record.reviewed_by = request.user
+        record.reviewed_at = tz.now()
+        record.updated_by = request.user
+        record.save()
+        messages.success(request, 'Maintenance record approved successfully.')
+
+    elif action == 'reject':
+        if not review_notes:
+            messages.error(request, 'Please provide a reason for rejection.')
+            return redirect('backend:equipment_detail', data_id=record.equipment_id)
+        record.review_status = 'rejected'
+        record.review_notes = review_notes
+        record.reviewed_by = request.user
+        record.reviewed_at = tz.now()
+        record.updated_by = request.user
+        record.save()
+        messages.success(request, 'Maintenance record rejected.')
+
+    else:
+        messages.error(request, 'Unknown action.')
+
+    return redirect('backend:equipment_detail', data_id=record.equipment_id)
+
+@login_required
+def equipment_history(request):
+    if not checkUserPermission(request, 'can_view', '/backend/equipment/equipment/'):
+        messages.error(request, 'You do not have permission to view this page.')
+        return render(request, '403.html', status=403)
+
+    # ── Filters ──────────────────────────────────────────────────────────
+    search        = request.GET.get('search', '').strip()
+    equipment_id  = request.GET.get('equipment_id', '').strip()
+    record_type   = request.GET.get('record_type', '').strip()
+    review_status = request.GET.get('review_status', '').strip()
+    date_from     = request.GET.get('date_from', '').strip()
+    date_to       = request.GET.get('date_to', '').strip()
+
+    qs = MaintenanceRecord.objects.filter(deleted=False).select_related(
+        'equipment', 'equipment__building', 'equipment__equipment_type',
+        'technician', 'reviewed_by'
+    ).order_by('-maintenance_date', '-created_at')
+
+    if search:
+        qs = qs.filter(
+            Q(equipment__equipment_id__icontains=search)
+            | Q(equipment__building__name__icontains=search)
+            | Q(work_description__icontains=search)
+            | Q(technician__first_name__icontains=search)
+            | Q(technician__last_name__icontains=search)
+            | Q(technician__username__icontains=search)
+        )
+    if equipment_id:
+        qs = qs.filter(equipment_id=equipment_id)
+    if record_type:
+        qs = qs.filter(record_type=record_type)
+    if review_status:
+        qs = qs.filter(review_status=review_status)
+    if date_from:
+        try:
+            from datetime import datetime
+            qs = qs.filter(maintenance_date__gte=datetime.strptime(date_from, '%Y-%m-%d').date())
+        except ValueError:
+            pass
+    if date_to:
+        try:
+            from datetime import datetime
+            qs = qs.filter(maintenance_date__lte=datetime.strptime(date_to, '%Y-%m-%d').date())
+        except ValueError:
+            pass
+
+    # ── Summary stats (from the FULL unfiltered set) ──────────────────────
+    all_records    = MaintenanceRecord.objects.filter(deleted=False)
+    total_count    = all_records.count()
+    pending_count  = all_records.filter(review_status='pending').count()
+    approved_count = all_records.filter(review_status='approved').count()
+    rejected_count = all_records.filter(review_status='rejected').count()
+
+    # ── Pagination ────────────────────────────────────────────────────────
+    page_num = request.GET.get('page', 1)
+    data_list, paginator_list, last_page = paginate_data(request, page_num, qs)
+
+    # ── Filter options ────────────────────────────────────────────────────
+    equipment_list = Equipment.objects.filter(deleted=False, is_active=True).order_by('equipment_id')
+
+    context = {
+        'data_list'     : data_list,
+        'paginator_list': paginator_list,
+        'last_page'     : last_page,
+        # active filters
+        'search'        : search,
+        'f_equipment_id': equipment_id,
+        'f_record_type' : record_type,
+        'f_review_status': review_status,
+        'f_date_from'   : date_from,
+        'f_date_to'     : date_to,
+        # filter options
+        'equipment_list': equipment_list,
+        'record_type_choices': MaintenanceRecord.RECORD_TYPE_CHOICES,
+        'review_status_choices': MaintenanceRecord.REVIEW_STATUS_CHOICES,
+        # stats
+        'total_count'   : total_count,
+        'pending_count' : pending_count,
+        'approved_count': approved_count,
+        'rejected_count': rejected_count,
+    }
+    return render(request, 'equipment/history.html', context)
+
 
 # ======================================== Ticket ========================================
 # Ticket Management

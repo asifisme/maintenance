@@ -69,6 +69,10 @@ urlpatterns = [
     path('equipment/qr/<int:data_id>/', views.qr_equipement_views, name='equipment_qr'),
     path('equipment/update/<int:data_id>/', views.equipment_update, name='equipment_update'),
     path('equipment/delete/<int:data_id>/', views.equipment_delete, name='equipment_delete'),
+    path('equipment/history/', views.equipment_history, name='equipment_history'),
+
+    # Maintenance Record Review (approve / reject)
+    path('maintenance-record/<int:record_id>/review/', views.maintenance_record_review, name='maintenance_record_review'),
 
     # Ticket
     path('ticket/', views.ticket_list, name='ticket_list'),
