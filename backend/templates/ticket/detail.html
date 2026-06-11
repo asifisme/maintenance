@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% block title %}Ticket #{{ obj.id }}{% endblock %}
 {% block content %}
-<section class="bg-slate-50 min-h-screen p-4 md:p-8 font-sans">
+<section class="bg-[var(--bg-color)] min-h-screen p-4 md:p-2 font-sans">
     <div class="max-w-6xl mx-auto">
         <!-- Header -->
         <div class="flex items-center justify-between mb-8 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-4"> 
                 <a href="{% url 'backend:ticket_list' %}"
                    class="text-gray-600 hover:text-gray-900 bg-white p-2 rounded-lg transition">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -190,16 +190,42 @@
                         </svg>
                         COMMENTS
                     </h3>
-                    <div class="flex items-center gap-2">
-                        <input type="text" placeholder="Type a comment..." class="w-full text-sm border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-gray-50" />
-                        <button class="bg-slate-100 text-slate-500 hover:bg-blue-50 hover:text-blue-600 p-2 rounded-lg transition border border-slate-200 hover:border-blue-100">
+
+                    <!-- Existing comments -->
+                    {% if obj.comments.exists %}
+                        <div class="space-y-3 mb-4">
+                            {% for comment in obj.comments.all %}
+                                {% if not comment.deleted %}
+                                <div class="bg-slate-50 rounded-lg p-3">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold uppercase shrink-0">
+                                            {{ comment.author.username|first }}
+                                        </span>
+                                        <span class="text-xs font-semibold text-gray-700">{{ comment.author.get_full_name|default:comment.author.username }}</span>
+                                        <span class="text-xs text-gray-400 ml-auto">{{ comment.created_at|date:"n/j/Y, g:i A" }}</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 pl-8">{{ comment.body }}</p>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- Add comment form -->
+                    <form method="POST" action="{% url 'backend:ticket_detail' obj.id %}" class="flex items-center gap-2">
+                        {% csrf_token %}
+                        <input type="text" name="comment_body" id="comment_body" placeholder="Type a comment..." 
+                               class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 outline-none" 
+                               autocomplete="off" />
+                        <button type="submit" class="bg-slate-100 text-slate-500 hover:bg-blue-50 hover:text-blue-600 p-2 rounded-lg transition border border-slate-200 hover:border-blue-100 shrink-0">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="12" y1="5" x2="12" y2="19"></line>
                                 <line x1="5" y1="12" x2="19" y2="12"></line>
                             </svg>
                         </button>
-                    </div>
+                    </form>
                 </div>
+
             </div>
         </div>
     </div>
