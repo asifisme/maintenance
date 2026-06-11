@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+{% block title %}Maintenance Session Details{% endblock %}
+{% block breadcrumb %}
+    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+    </svg>
+    <a href="{% url 'backend:maintenance' %}" class="hover:text-[var(--primary-color)] transition-colors">Maintenance Sessions</a>
+    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+    </svg>
+    <span class="font-medium text-[var(--primary-color)]">{{ obj.maintenance_serial }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Session Summary Card -->
+    <div class="bg-white rounded-lg p-6 shadow-sm ring-1 ring-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="space-y-2">
+            <div class="flex items-center gap-3">
+                <span class="px-3 py-1 bg-indigo-50 text-indigo-700 font-semibold rounded-full text-sm">Session</span>
+                <h2 class="text-2xl font-bold text-gray-900">{{ obj.maintenance_serial }}</h2>
+            </div>
+            <p class="text-sm text-gray-500">QR Code: <span class="font-mono text-gray-700">{{ obj.qr_code|default:"None" }}</span></p>
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-400">
+                <span>Created by: <strong>{{ obj.created_by.get_full_name|default:obj.created_by.username }}</strong></span>
+                <span>•</span>
+                <span>Created at: <strong>{{ obj.created_at|date:"d-b-Y H:i:s" }}</strong></span>
+                <span>•</span>
+                <span>Status: 
+                    {% if obj.is_active %}
+                        <span class="text-green-600 font-semibold">Active</span>
+                    {% else %}
+                        <span class="text-red-600 font-semibold">Inactive</span>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+        <div class="flex gap-2">
+            <a href="{% url 'backend:maintenance_update' obj.id %}" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-semibold flex items-center gap-2">
+                <i class="fas fa-edit text-xs"></i> Edit Session
+            </a>
+            <a href="{% url 'backend:maintenance' %}" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-semibold flex items-center gap-2">
+                <i class="fas fa-list text-xs"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Workspace Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left side: Records logged in this session -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-white rounded-lg p-6 shadow-sm ring-1 ring-gray-100">
+                <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <i class="fas fa-folder-open text-indigo-500"></i> Records Logged in this Session
+                </h3>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="bg-gray-50 border-b border-gray-200">
+                            <tr>
+                                <th class="px-4 py-3 font-semibold text-gray-700">Equipment</th>
+                                <th class="px-4 py-3 font-semibold text-gray-700">Type / Date</th>
+                                <th class="px-4 py-3 font-semibold text-gray-700">Technician</th>
+                                <th class="px-4 py-3 font-semibold text-gray-700">Work Description</th>
+                                <th class="px-4 py-3 font-semibold text-gray-700 text-center">Status</th>
+                                <th class="px-4 py-3 font-semibold text-gray-700 text-right">Cost</th>
+                                <th class="px-4 py-3 font-semibold text-gray-700 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            {% for rec in records %}
+                                <tr class="hover:bg-gray-50/50">
+                                    <td class="px-4 py-3">
+                                        <div class="font-medium text-gray-900">{{ rec.equipment.equipment_id }}</div>
+                                        <div class="text-xs text-gray-500">{{ rec.equipment.building.name }}</div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="capitalize text-gray-800">{{ rec.record_type }}</div>
+                                        <div class="text-xs text-gray-400">{{ rec.maintenance_date|date:"d-M-Y" }}</div>
+                                    </td>
+                                    <td class="px-4 py-3 text-gray-700">
+                                        {{ rec.assigned_to.display_name|default:rec.technician.get_full_name|default:rec.technician.username|default:"Unassigned" }}
+                                    </td>
+                                    <td class="px-4 py-3 max-w-xs truncate" title="{{ rec.work_description }}">
+                                        {{ rec.work_description }}
+                                    </td>
+                                    <td class="px-4 py-3 text-center">
+                                        {% if rec.maintainance_status == 'completed' %}
+                                            <span class="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Completed</span>
+                                        {% elif rec.maintainance_status == 'in_progress' %}
+                                            <span class="inline-flex items-center rounded-full bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-600/20">In Progress</span>
+                                        {% elif rec.maintainance_status == 'pending' %}
+                                            <span class="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-600/20">Pending</span>
+                                        {% else %}
+                                            <span class="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 capitalize">{{ rec.maintainance_status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-4 py-3 text-right font-medium text-gray-900">
+                                        ${{ rec.cost|default:"0.00" }}
+                                    </td>
+                                    <td class="px-4 py-3 text-center">
+                                        <form action="" method="post" onsubmit="return confirm('Are you sure you want to remove this record?');">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="action" value="delete_record">
+                                            <input type="hidden" name="record_id" value="{{ rec.id }}">
+                                            <button type="submit" class="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded transition-colors" title="Delete record">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="7" class="px-4 py-8 text-center text-gray-400">No records logged in this session yet. Log one on the right panel!</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right side: Quick Log Record Form -->
+        <div class="space-y-6">
+            <div class="bg-white rounded-lg p-6 shadow-sm ring-1 ring-gray-100">
+                <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <i class="fas fa-file-signature text-indigo-500"></i> Log Maintenance Record
+                </h3>
+                
+                <form method="post" class="space-y-4">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add_record">
+                    
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Equipment</label>
+                        <select name="equipment_id" class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-200 select2-items" required>
+                            <option value="">Select Equipment</option>
+                            {% for eq in equipments %}
+                                <option value="{{ eq.id }}">{{ eq.equipment_id }} - {{ eq.equipment_type.name }} ({{ eq.building.name }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Record Type</label>
+                            <select name="record_type" class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-200" required>
+                                {% for choice in record_type_choices %}
+                                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Date</label>
+                            <input type="date" name="maintenance_date" value="{% now 'Y-m-d' %}" class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-200" required>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Assigned Technician</label>
+                        <select name="technician_id" class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-200 select2-items">
+                            <option value="">Select Technician</option>
+                            {% for tech in technicians %}
+                                <option value="{{ tech.id }}">{{ tech.display_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Work Description</label>
+                        <textarea name="work_description" rows="3" placeholder="Describe the maintenance work..." class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-200" required></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Parts Replaced</label>
+                        <input type="text" name="parts_replaced" placeholder="e.g. Filters, spark plug" class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-200">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Cost ($)</label>
+                            <input type="number" name="cost" step="0.01" min="0" placeholder="0.00" class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-200">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Duration (Hrs)</label>
+                            <input type="number" name="duration_hours" step="0.1" min="0" placeholder="0.0" class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-200">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Task Status</label>
+                            <select name="maintainance_status" class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-200">
+                                {% for status in status_choices %}
+                                    <option value="{{ status.0 }}">{{ status.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="flex items-center h-full pt-4">
+                            <label class="inline-flex items-center cursor-pointer select-none">
+                                <input type="checkbox" name="is_janitorial" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                <span class="ml-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Janitorial Task</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Notes / Attachments Note</label>
+                        <textarea name="attachments_note" rows="2" placeholder="Any additional notes..." class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-200"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full h-11 bg-[var(--primary-color)] text-white hover:bg-[var(--hover-color)] font-semibold rounded-lg shadow-sm transition-colors mt-2">
+                        Log Record
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    $('.select2-items').select2({
+        dropdownParent: $('body')
+    });
+});
+</script>
+{% endblock %}

@@ -4,6 +4,7 @@ import base64
 import logging
 import qrcode 
 import json
+import uuid
 import calendar
 from datetime import datetime, date 
 from urllib import request
@@ -50,12 +51,13 @@ from backend.models import (
     LoginLog, BackendMenu, UserMenuPermission, WebImages, SiteSettings,
     Division, SubDivision, Section, Building, EquipmentType, EquipmentTypeData, Equipment,
     Ticket, TicketComment, TicketActivityLog, AssignTechnician, Technician, AssignActivities,
-    ScheduledMaintenance, CriticalAlert, MaintenanceRecord,
+    ScheduledMaintenance, CriticalAlert, Maintenance, MaintenanceRecord,
 )
 from django.db.models import Count
 
 from backend.forms import (
     CustomUserLoginForm,
+    MaintenanceForm,
 )
 
 
@@ -1669,48 +1671,48 @@ def qr_equipement_views(request, data_id):
 
 # ======================================== Maintenance Record Review ========================================
 
-@login_required
-def maintenance_record_review(request, record_id):
-    """Approve or Reject a MaintenanceRecord from the equipment detail page."""
-    from django.utils import timezone as tz
+# @login_required
+# def maintenance_record_review(request, record_id):
+#     """Approve or Reject a MaintenanceRecord from the equipment detail page."""
+#     from django.utils import timezone as tz
 
-    record = get_object_or_404(MaintenanceRecord, pk=record_id, deleted=False)
-    referer = request.META.get('HTTP_REFERER')
-    fallback_url = reverse('backend:equipment_detail', kwargs={'data_id': record.equipment_id})
-    redirect_url = referer if referer else fallback_url
+#     record = get_object_or_404(MaintenanceRecord, pk=record_id, deleted=False)
+#     referer = request.META.get('HTTP_REFERER')
+#     fallback_url = reverse('backend:equipment_detail', kwargs={'data_id': record.equipment_id})
+#     redirect_url = referer if referer else fallback_url
 
-    if request.method != 'POST':
-        messages.error(request, 'Invalid request method.')
-        return redirect(redirect_url)
+#     if request.method != 'POST':
+#         messages.error(request, 'Invalid request method.')
+#         return redirect(redirect_url)
 
-    action = request.POST.get('action', '').strip()   # 'approve' or 'reject'
-    review_notes = request.POST.get('review_notes', '').strip()
+#     action = request.POST.get('action', '').strip()   # 'approve' or 'reject'
+#     review_notes = request.POST.get('review_notes', '').strip()
 
-    if action == 'approve':
-        record.review_status = 'approved'
-        record.review_notes = review_notes
-        record.reviewed_by = request.user
-        record.reviewed_at = tz.now()
-        record.updated_by = request.user
-        record.save()
-        messages.success(request, 'Maintenance record approved successfully.')
+#     if action == 'approve':
+#         record.review_status = 'approved'
+#         record.review_notes = review_notes
+#         record.reviewed_by = request.user
+#         record.reviewed_at = tz.now()
+#         record.updated_by = request.user
+#         record.save()
+#         messages.success(request, 'Maintenance record approved successfully.')
 
-    elif action == 'reject':
-        if not review_notes:
-            messages.error(request, 'Please provide a reason for rejection.')
-            return redirect(redirect_url)
-        record.review_status = 'rejected'
-        record.review_notes = review_notes
-        record.reviewed_by = request.user
-        record.reviewed_at = tz.now()
-        record.updated_by = request.user
-        record.save()
-        messages.success(request, 'Maintenance record rejected.')
+#     elif action == 'reject':
+#         if not review_notes:
+#             messages.error(request, 'Please provide a reason for rejection.')
+#             return redirect(redirect_url)
+#         record.review_status = 'rejected'
+#         record.review_notes = review_notes
+#         record.reviewed_by = request.user
+#         record.reviewed_at = tz.now()
+#         record.updated_by = request.user
+#         record.save()
+#         messages.success(request, 'Maintenance record rejected.')
 
-    else:
-        messages.error(request, 'Unknown action.')
+#     else:
+#         messages.error(request, 'Unknown action.')
 
-    return redirect(redirect_url)
+#     return redirect(redirect_url)
 
 @login_required
 def equipment_history(request):
@@ -2243,3 +2245,243 @@ def maintanaince_checklist(request):
         'high_count': high_count,
     }
     return render(request, 'maintainance/checklist.html', context)
+
+
+# ======================================== Maintenance Management ========================================
+
+@login_required
+def maintenance_list(request):
+    if not checkUserPermission(request, 'can_view', '/backend/maintenance/'):
+        messages.error(request, 'You do not have permission to view this page.')
+        return render(request, '403.html', status=403)
+
+    search = request.GET.get('search', '').strip()
+    qs = Maintenance.objects.filter(deleted=False)
+
+    if search:
+        qs = qs.filter(
+            Q(maintenance_serial__icontains=search) |
+            Q(qr_code__icontains=search)
+        )
+
+    qs = qs.annotate(num_records=Count('maintenance_records', filter=Q(maintenance_records__deleted=False))).order_by('-created_at')
+
+    page_num = request.GET.get('page', 1)
+    data_list, paginator_list, last_page = paginate_data(request, page_num, qs)
+
+    context = {
+        'data_list': data_list,
+        'paginator_list': paginator_list,
+        'last_page': last_page,
+        'search': search,
+    }
+    return render(request, 'maintenance/list.html', context)
+
+
+@login_required
+def maintenance_add(request):
+    if not checkUserPermission(request, 'can_add', '/backend/maintenance/'):
+        messages.error(request, 'You do not have permission to add a maintenance record.')
+        return render(request, '403.html', status=403)
+
+    if request.method == 'POST':
+        form = MaintenanceForm(request.POST)
+        if form.is_valid():
+            # Check for duplicate qr_code
+            qr_code = form.cleaned_data['qr_code']
+            if qr_code and Maintenance.objects.filter(qr_code=qr_code, deleted=False).exists():
+                messages.error(request, 'A maintenance record with this QR Code already exists.')
+            # Check for duplicate maintenance_serial
+            elif Maintenance.objects.filter(
+                maintenance_serial=form.cleaned_data['maintenance_serial'],
+                deleted=False
+            ).exclude(pk=None).exists():
+                messages.error(request, 'A maintenance record with this Serial already exists.')
+            else:
+                maintenance = form.save(commit=False)
+                maintenance.created_by = request.user
+                maintenance.is_active = True
+                maintenance.save()
+                form.save_m2m()  # Save the many-to-many equipment relationship
+                messages.success(request, 'Maintenance session created successfully.')
+                return redirect('backend:maintenance_detail', data_id=maintenance.id)
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+    else:
+        form = MaintenanceForm()
+
+    return render(request, 'maintenance/add.html', {'form': form, 'action': 'Add'})
+
+
+@login_required
+def maintenance_detail(request, data_id):
+    if not checkUserPermission(request, 'can_view', '/backend/maintenance/'):
+        messages.error(request, 'You do not have permission to view this page.')
+        return render(request, '403.html', status=403)
+
+    obj = get_object_or_404(Maintenance, pk=data_id, deleted=False)
+    records = obj.maintenance_records.filter(deleted=False).select_related(
+        'equipment', 'equipment__building', 'equipment__equipment_type',
+        'technician', 'assigned_to', 'ticket'
+    ).order_by('-maintenance_date', '-created_at')
+
+    # If they want to add a MaintenanceRecord to this session
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == 'add_record':
+            if not checkUserPermission(request, 'can_update', '/backend/maintenance/'):
+                messages.error(request, 'You do not have permission to update this record.')
+                return redirect('backend:maintenance_detail', data_id=obj.id)
+
+            equipment_id = request.POST.get('equipment_id')
+            record_type = request.POST.get('record_type', 'routine')
+            maintenance_date = request.POST.get('maintenance_date')
+            technician_id = request.POST.get('technician_id') or None
+            work_description = request.POST.get('work_description', '').strip()
+            parts_replaced = request.POST.get('parts_replaced', '').strip()
+            cost = request.POST.get('cost') or None
+            duration_hours = request.POST.get('duration_hours') or None
+            maintainance_status = request.POST.get('maintainance_status', 'pending')
+            is_janitorial = request.POST.get('is_janitorial') == 'on'
+            attachments_note = request.POST.get('attachments_note', '').strip()
+
+            if not equipment_id or not maintenance_date or not work_description:
+                messages.error(request, 'Equipment, date, and work description are required.')
+            else:
+                try:
+                    tech_user = None
+                    assigned_tech = None
+                    if technician_id:
+                        try:
+                            assigned_tech = Technician.objects.get(id=technician_id)
+                            tech_user = assigned_tech.user
+                        except Technician.DoesNotExist:
+                            pass
+
+                    record = MaintenanceRecord(
+                        equipment_id=equipment_id,
+                        maintenance=obj,
+                        record_type=record_type,
+                        maintenance_date=maintenance_date,
+                        technician=tech_user,
+                        assigned_to=assigned_tech,
+                        work_description=work_description,
+                        parts_replaced=parts_replaced,
+                        cost=cost,
+                        duration_hours=duration_hours,
+                        maintainance_status=maintainance_status,
+                        is_janitorial=is_janitorial,
+                        attachments_note=attachments_note,
+                        created_by=request.user
+                    )
+                    record.save()
+                    messages.success(request, 'Maintenance record added successfully.')
+                except Exception as e:
+                    messages.error(request, f'Error adding record: {str(e)}')
+                return redirect('backend:maintenance_detail', data_id=obj.id)
+
+        elif action == 'delete_record':
+            if not checkUserPermission(request, 'can_update', '/backend/maintenance/'):
+                messages.error(request, 'You do not have permission to delete this record.')
+                return redirect('backend:maintenance_detail', data_id=obj.id)
+            record_id = request.POST.get('record_id')
+            if record_id:
+                record = get_object_or_404(MaintenanceRecord, pk=record_id, maintenance=obj)
+                record.deleted = True
+                record.updated_by = request.user
+                record.save()
+                messages.success(request, 'Maintenance record deleted successfully.')
+            return redirect('backend:maintenance_detail', data_id=obj.id)
+
+    equipments = Equipment.objects.filter(deleted=False, is_active=True).select_related('building', 'equipment_type')
+    technicians = Technician.objects.filter(deleted=False, is_active=True)
+    
+    context = {
+        'obj': obj,
+        'records': records,
+        'equipments': equipments,
+        'technicians': technicians,
+        'record_type_choices': MaintenanceRecord.RECORD_TYPE_CHOICES,
+        'status_choices': MaintenanceRecord.MAINTAIANCE_STATUS_CHOICES,
+    }
+    return render(request, 'maintenance/detail.html', context)
+
+
+@login_required
+def maintenance_update(request, data_id):
+    if not checkUserPermission(request, 'can_update', '/backend/maintenance/'):
+        messages.error(request, 'You do not have permission to edit this record.')
+        return render(request, '403.html', status=403)
+
+    obj = get_object_or_404(Maintenance, pk=data_id, deleted=False)
+
+    if request.method == 'POST':
+        qr_code = request.POST.get('qr_code', '').strip()
+        maintenance_serial = request.POST.get('maintenance_serial', '').strip()
+
+        if qr_code and Maintenance.objects.filter(qr_code=qr_code, deleted=False).exclude(pk=data_id).exists():
+            messages.error(request, 'A maintenance record with this QR Code already exists.')
+        elif maintenance_serial and Maintenance.objects.filter(maintenance_serial=maintenance_serial, deleted=False).exclude(pk=data_id).exists():
+            messages.error(request, 'A maintenance record with this Serial already exists.')
+        else:
+            obj.qr_code = qr_code or f"QR-MT-{uuid.uuid4().hex[:8].upper()}"
+            if maintenance_serial:
+                obj.maintenance_serial = maintenance_serial
+            obj.updated_by = request.user
+            obj.save()
+            messages.success(request, 'Maintenance session updated successfully.')
+            return redirect('backend:maintenance')
+
+    return render(request, 'maintenance/update.html', {'obj': obj, 'action': 'Update'})
+
+
+@login_required
+def maintenance_status(request, data_id):
+    if not checkUserPermission(request, 'can_update', '/backend/maintenance/'):
+        messages.error(request, 'You do not have permission to change status of this maintenance record.')
+        return render(request, '403.html', status=403)
+
+    if request.method == 'POST':
+        obj = get_object_or_404(Maintenance, pk=data_id, deleted=False)
+        obj.is_active = not obj.is_active
+        obj.updated_by = request.user
+        obj.save()
+        status_text = "Active" if obj.is_active else "Inactive"
+        messages.success(request, f'Maintenance status changed to {status_text} successfully.')
+        return redirect('backend:maintenance')
+
+    messages.error(request, 'Invalid request method.')
+    return redirect('backend:maintenance')
+
+
+@login_required
+@require_GET
+def get_building_equipment(request):
+    """AJAX endpoint to get equipment for a selected building"""
+    building_id = request.GET.get('building_id')
+    
+    if not building_id:
+        return JsonResponse({'equipment': []})
+    
+    try:
+        # Fetch equipment for the building
+        equipment_list = Equipment.objects.filter(
+            building_id=building_id,
+            deleted=False,
+            is_active=True
+        ).values('id', 'equipment_id').order_by('equipment_id')
+        
+        equipment = [
+            {
+                'id': item['id'],
+                'equipment_id': item['equipment_id'],
+            }
+            for item in equipment_list
+        ]
+        
+        return JsonResponse({'equipment': equipment})
+    except Exception as e:
+        return JsonResponse({'error': str(e), 'equipment': []}, status=400)

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}{{ action }} Maintenance Session{% endblock %}
+{% block content %}
+    <section class="bg-[var(--bg-color)] text-[var(--text-color)] min-h-screen p-4">
+        <div class="bg-white rounded-lg p-6 shadow-sm ring-1 ring-[var(--border-color)] max-w-2xl mx-auto">
+            <h2 class="text-xl font-bold mb-4">{{ action }} Maintenance Session</h2>
+            <form method="post" enctype="multipart/form-data" class="space-y-4">
+                {% csrf_token %}
+                <div>
+                    <label class="block mb-1 font-semibold text-gray-700">Maintenance Serial</label>
+                    <input type="text"
+                           name="maintenance_serial"
+                           value="{{ obj.maintenance_serial }}"
+                           class="w-full border rounded p-2 focus:ring-2 focus:ring-[var(--primary-color)]/30 focus:border-[var(--primary-color)] outline-none"
+                           required>
+                </div>
+                <div>
+                    <label class="block mb-1 font-semibold text-gray-700">QR Code Value</label>
+                    <input type="text"
+                           name="qr_code"
+                           value="{{ obj.qr_code }}"
+                           class="w-full border rounded p-2 focus:ring-2 focus:ring-[var(--primary-color)]/30 focus:border-[var(--primary-color)] outline-none"
+                           required>
+                </div>
+                <div class="pt-4 flex gap-3">
+                    <button type="submit"
+                            class="h-11 px-6 rounded-md bg-[var(--primary-color)] text-white hover:bg-[var(--hover-color)] transition-colors font-medium">Save Changes</button>
+                    <a href="{% url 'backend:maintenance' %}"
+                       class="h-11 px-6 grid place-items-center border rounded-md hover:bg-gray-50 transition-colors font-medium">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </section>
+{% endblock %}
+{% block extra_js %}
+    <script>
+  $(document).ready(function () {
+    $('.select2-items').select2();
+  });
+    </script>
+{% endblock %}

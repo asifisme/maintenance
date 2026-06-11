@@ -286,5 +286,38 @@
       "is_sub_child_menu": true,
       "is_active": true
     }
+  },
+  {
+    "model": "backend.backendmenu",
+    "pk": 700,
+    "fields": {
+      "module_name": "Maintenance",
+      "menu_name": "Maintenance",
+      "menu_url": "maintenance",
+      "menu_icon": "fa-solid fa-calendar-check icon",
+      "menu_description": "Manage scheduled maintenance.",
+      "parent_id": null,
+      "is_main_menu": true,
+      "is_sub_menu": false,
+      "is_sub_child_menu": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "backend.backendmenu",
+    "pk": 701,
+    "fields": {
+      "module_name": "Maintenance",
+      "menu_name": "Maintenance List",
+      "menu_url": "/maintenance/",
+      "menu_icon": "fa-solid fa-calendar-check icon",
+      "menu_description": "Manage scheduled maintenance.",
+      "parent_id": 700,
+      "is_main_menu": false,
+      "is_sub_menu": true,
+      "is_sub_child_menu": false,
+      "is_active": true
+    }
+   
   }
 ]

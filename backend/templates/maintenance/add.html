@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% block title %}{{ action }} Maintenance Session{% endblock %}
+{% block content %}
+<section class="bg-[var(--bg-color)] text-[var(--text-color)] min-h-screen p-4">
+    <div class="bg-white rounded-lg p-6 shadow-sm ring-1 ring-[var(--border-color)] max-w-3xl mx-auto">
+        <h2 class="text-xl font-bold mb-6">{{ action }} Maintenance Session</h2>
+
+        {% if messages %}
+        <div class="space-y-2 mb-4">
+            {% for message in messages %}
+            <div
+                class="p-4 rounded-lg {% if message.tags %}bg-red-50 text-red-800{% else %}bg-blue-50 text-blue-800{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" class="space-y-5">
+            {% csrf_token %}
+
+            <!-- Building Selection -->
+            <div>
+                <label for="{{ form.building.id_for_label }}" class="block mb-2 font-semibold text-gray-700">
+                    {{ form.building.label }}
+                    <span class="text-red-600">*</span>
+                </label>
+                {{ form.building }}
+                {% if form.building.errors %}
+                <div class="text-red-600 text-sm mt-1">{{ form.building.errors }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Equipment Multi-Select -->
+            <div>
+                <label for="{{ form.equipment.id_for_label }}" class="block mb-2 font-semibold text-gray-700">
+                    {{ form.equipment.label }}
+                </label>
+                <div id="equipment_container"
+                    class="border rounded-lg p-4 bg-gray-50 ring-1 ring-[var(--border-color)]">
+                    <p class="text-gray-500 text-sm mb-3">Select a building first to load equipment</p>
+                    {{ form.equipment }}
+                </div>
+                {% if form.equipment.errors %}
+                <div class="text-red-600 text-sm mt-1">{{ form.equipment.errors }}</div>
+                {% endif %}
+            </div>
+
+
+
+
+
+            <!-- Buttons -->
+            <div class="pt-4 flex gap-3">
+                <button type="submit"
+                    class="h-11 px-6 rounded-md bg-[var(--primary-color)] text-white hover:bg-[var(--hover-color)] transition-colors font-medium">
+                    Save & Continue
+                </button>
+                <a href="{% url 'backend:maintenance' %}"
+                    class="h-11 px-6 grid place-items-center border rounded-md hover:bg-gray-50 transition-colors font-medium">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function () {
+        // Initialize Select2 for building dropdown
+        $('#building_select').select2({
+            placeholder: 'Select a building',
+            allowClear: true,
+            width: '100%'
+        });
+
+        // Handle building selection change
+        $('#building_select').on('change', function () {
+            const buildingId = $(this).val();
+            const equipmentContainer = $('#equipment_container');
+
+            if (!buildingId) {
+                // Reset equipment list
+                equipmentContainer.html(
+                    '<p class="text-gray-500 text-sm">Select a building first to load equipment</p>'
+                );
+                return;
+            }
+
+            // Show loading state
+            equipmentContainer.html(
+                '<p class="text-gray-500 text-sm">Loading equipment...</p>'
+            );
+
+            // Fetch equipment for this building via AJAX
+            $.ajax({
+                url: '{% url "backend:get_building_equipment" %}',
+                type: 'GET',
+                data: { building_id: buildingId },
+                success: function (response) {
+                    if (response.equipment && response.equipment.length > 0) {
+                        let html = '';
+                        response.equipment.forEach(item => {
+                            html += `
+                                    <label class="flex items-center p-2 hover:bg-white rounded cursor-pointer">
+                                        <input 
+                                            type="checkbox" 
+                                            name="equipment" 
+                                            value="${item.id}"
+                                            class="w-4 h-4 text-[var(--primary-color)] rounded cursor-pointer"
+                                        >
+                                        <span class="ml-2 text-gray-700">${item.equipment_id}</span>
+                                    </label>
+                                `;
+                        });
+                        equipmentContainer.html(html);
+                    } else {
+                        equipmentContainer.html(
+                            '<p class="text-gray-500 text-sm">No equipment found for this building</p>'
+                        );
+                    }
+                },
+                error: function () {
+                    equipmentContainer.html(
+                        '<p class="text-red-600 text-sm">Error loading equipment. Please try again.</p>'
+                    );
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

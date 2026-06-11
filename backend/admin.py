@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import (
     WebImages, PasswordResetCode, LoginLog, BackendMenu, UserMenuPermission, SiteSettings,
     Division, SubDivision, Section, Building, Technician, EquipmentType, EquipmentTypeData,
-    Equipment, MaintenanceRecord, MaintenanceAttachment, Ticket, TicketComment,
+    Equipment, Maintenance, MaintenanceRecord, MaintenanceAttachment, Ticket, TicketComment,
     TicketActivityLog, ScheduledMaintenance, CriticalAlert
 )
 
@@ -72,6 +72,11 @@ class EquipmentAdmin(admin.ModelAdmin):
     list_filter = ("status", "equipment_type", "building")
     search_fields = ("equipment_id", "brand", "model_number", "serial_number")
 
+@admin.register(Maintenance)
+class MaintenanceAdmin(admin.ModelAdmin):
+    list_display = ("maintenance_serial", "qr_code", "created_by", "created_at", "is_active")
+    list_filter = ("is_active", "created_at")
+
 @admin.register(MaintenanceRecord)
 class MaintenanceRecordAdmin(admin.ModelAdmin):
     list_display = ("equipment", "record_type", "maintenance_date", "technician", "review_status")
@@ -79,7 +84,7 @@ class MaintenanceRecordAdmin(admin.ModelAdmin):
 
 @admin.register(MaintenanceAttachment)
 class MaintenanceAttachmentAdmin(admin.ModelAdmin):
-    list_display = ("record", "uploaded_by", "caption")
+    list_display = ("maintenance", "uploaded_by", "caption")
 
 @admin.register(Ticket)
 class TicketAdmin(admin.ModelAdmin):
