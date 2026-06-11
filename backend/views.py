@@ -1835,9 +1835,28 @@ def ticket_detail(request, data_id):
 
     if request.method == 'POST':
         if not checkUserPermission(request, 'can_update', '/backend/ticket/ticket/'):
-            messages.error(request, 'You do not have permission to assign technicians.')
+            messages.error(request, 'You do not have permission to update this ticket.')
             return redirect('backend:ticket_detail', data_id=obj.id)
-            
+
+        # --- Handle comment submission ---
+        comment_body = request.POST.get('comment_body', '').strip()
+        if comment_body:
+            TicketComment.objects.create(
+                ticket=obj,
+                author=request.user,
+                body=comment_body,
+                created_by=request.user,
+            )
+            TicketActivityLog.objects.create(
+                ticket=obj,
+                actor=request.user,
+                action_type='comment_added',
+                description=comment_body,
+            )
+            messages.success(request, 'Comment added successfully.')
+            return redirect('backend:ticket_detail', data_id=obj.id)
+
+        # --- Handle technician assignment ---
         technician_id = request.POST.get('technician_id')
         if technician_id:
             try:

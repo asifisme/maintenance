@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Equipment {{ obj.equipment_id }}{% endblock %}
 {% block content %}
-    <section class="bg-slate-50 min-h-screen p-4 md:p-8 font-sans">
+    <section class="bg-[var(--bg-color)] min-h-screen p-4 md:p-2 font-sans">
         <div class="max-w-6xl mx-auto">
             <!-- Header -->
             <div class="flex items-center justify-between mb-8">
@@ -20,8 +20,8 @@
                         </svg>
                     </a>
                     <div>
-                        <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">{{ obj.equipment_id|default:obj.id }}</h2>
-                        <p class="text-sm text-gray-500 mt-1">{{ obj.equipment_type.name }} &bull; {{ obj.floor_location|default:"No Location specified" }}</p>
+                        <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">Back</h2>
+                        <!-- <p class="text-sm text-gray-500 mt-1">{{ obj.equipment_type.name }} &bull; {{ obj.floor_location|default:"No Location specified" }}</p> -->
                     </div>
                 </div>
                 <a href="{% url 'backend:equipment_qr' obj.id %}"
