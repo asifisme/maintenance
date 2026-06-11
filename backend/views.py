@@ -2152,6 +2152,16 @@ def maintainance_detail(request, pk):
 
 
 @login_required
+def maintanaince_create(request):
+    if not checkUserPermission(request, "can_view", 'maintainance'):
+        messages.error(request, 'You do not have permission to create maintainance task.')
+        return render(request, '403.html', status=403)
+
+    context = {}
+    return render(request, 'maintainance/create.html', context) 
+
+
+@login_required
 def maintanaince_checklist(request):
     if not checkUserPermission(request, "can_view", 'maintainance'):
         messages.error(request, 'You do not have permission to view maintainance checklist.')
