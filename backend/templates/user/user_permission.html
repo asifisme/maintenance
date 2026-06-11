@@ -12,173 +12,173 @@
         <div class="content p-4 md:p-0 ">
             <form id="user-permission-form" method="post" class="new-common space-y-6">
                 {% csrf_token %}
-    <!-- User summary -->
-    <div class="rounded-lg bg-[var(--bg-color)] ring-1 ring-[var(--border-color)] p-4">
-        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <div class="filter-input-field">
-                <label for="full_name" class="mb-1 block text-sm font-medium">Full Name</label>
-                <input type="text"
-                       id="full_name"
-                       name="full_name"
-                       value="{{ user.admin.get_full_name }}"
-                       readonly
-                       class="form-control w-full rounded-md h-10 mt-2 ring-1 ring-[var(--border-color)] bg-white/70 dark:bg-white/5 px-3 py-2 text-sm text-[var(--text-color)] cursor-not-allowed">
-            </div>
-            <div class="filter-input-field">
-                <label for="username" class="mb-1 block text-sm font-medium">Username</label>
-                <input type="text"
-                       id="username"
-                       name="username"
-                       value="{{ user.username }}"
-                       readonly
-                       class="form-control w-full rounded-md h-10 mt-2 ring-1 ring-[var(--border-color)] bg-white/70 dark:bg-white/5 px-3 py-2 text-sm text-[var(--text-color)] cursor-not-allowed">
-            </div>
-            <div class="filter-input-field">
-                <label for="email" class="mb-1 block text-sm font-medium">User Email</label>
-                <input type="email"
-                       id="email"
-                       name="email"
-                       value="{{ user.email }}"
-                       readonly
-                       class="form-control w-full rounded-md h-10 mt-2 ring-1 ring-[var(--border-color)] bg-white/70 dark:bg-white/5 px-3 py-2 text-sm text-[var(--text-color)] cursor-not-allowed">
-            </div>
-            <div class="filter-input-field">
-                <label for="user_status" class="mb-1 block text-sm font-medium">User Status</label>
-                <select id="user_status"
-                        name="user_status"
-                        class="user_status w-full rounded-md ring-1 ring-[var(--border-color)] bg-[var(--bg-color)] px-3 py-2 text-sm">
-                    <option value="1" {% if user.is_active == True %}selected{% endif %}>Active</option>
-                    <option value="0" {% if user.is_active == False %}selected{% endif %}>Inactive</option>
-                </select>
-            </div>
+                <!-- User summary -->
+                <div class="rounded-lg bg-[var(--bg-color)] ring-1 ring-[var(--border-color)] p-4">
+                    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                        <div class="filter-input-field">
+                            <label for="full_name" class="mb-1 block text-sm font-medium">Full Name</label>
+                            <input type="text"
+                                   id="full_name"
+                                   name="full_name"
+                                   value="{{ user.admin.get_full_name }}"
+                                   readonly
+                                   class="form-control w-full rounded-md h-10 mt-2 ring-1 ring-[var(--border-color)] bg-white/70 dark:bg-white/5 px-3 py-2 text-sm text-[var(--text-color)] cursor-not-allowed">
+                        </div>
+                        <div class="filter-input-field">
+                            <label for="username" class="mb-1 block text-sm font-medium">Username</label>
+                            <input type="text"
+                                   id="username"
+                                   name="username"
+                                   value="{{ user.username }}"
+                                   readonly
+                                   class="form-control w-full rounded-md h-10 mt-2 ring-1 ring-[var(--border-color)] bg-white/70 dark:bg-white/5 px-3 py-2 text-sm text-[var(--text-color)] cursor-not-allowed">
+                        </div>
+                        <div class="filter-input-field">
+                            <label for="email" class="mb-1 block text-sm font-medium">User Email</label>
+                            <input type="email"
+                                   id="email"
+                                   name="email"
+                                   value="{{ user.email }}"
+                                   readonly
+                                   class="form-control w-full rounded-md h-10 mt-2 ring-1 ring-[var(--border-color)] bg-white/70 dark:bg-white/5 px-3 py-2 text-sm text-[var(--text-color)] cursor-not-allowed">
+                        </div>
+                        <div class="filter-input-field">
+                            <label for="user_status" class="mb-1 block text-sm font-medium">User Status</label>
+                            <select id="user_status"
+                                    name="user_status"
+                                    class="user_status w-full rounded-md ring-1 ring-[var(--border-color)] bg-[var(--bg-color)] px-3 py-2 text-sm">
+                                <option value="1" {% if user.is_active == True %}selected{% endif %}>Active</option>
+                                <option value="0" {% if user.is_active == False %}selected{% endif %}>Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <!-- Permissions table -->
+                <div class="listing-box group-permission-box">
+                    <div class="rounded-lg bg-[var(--bg-color)] ring-1 ring-[var(--border-color)] overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table id="group-permission"
+                                   class="table table-bordered w-full min-w-[1000px] text-sm">
+                                <!-- Keep header as a direct TR (your JS rebuild relies on this) -->
+                                <tr class="bg-[var(--bg-color)] text-[var(--text-color)]">
+                                    <th class="px-3 py-3 text-left">#</th>
+                                    <th class="px-3 py-3 text-left">
+                                        <label class="inline-flex items-center gap-2">
+                                            <input type="checkbox"
+                                                   id="parentCheckbox"
+                                                   name="parentCheckbox"
+                                                   value="{{ data.pk }}"
+                                                   onchange="checkUncheckAllMenu()"
+                                                   class="h-4 w-4 rounded border border-[var(--border-color)] text-[var(--primary-color)]">
+                                            <span class="font-medium">Menu Name</span>
+                                        </label>
+                                    </th>
+                                    <th class="px-3 py-3 text-left">Module Name</th>
+                                    <th class="px-3 py-3 text-left">Menu URL</th>
+                                    <th class="px-3 py-3 text-center">
+                                        <label class="inline-flex items-center gap-2 justify-center">
+                                            <input type="checkbox"
+                                                   id="parentCanViewCheckbox"
+                                                   name="parentCanViewCheckbox"
+                                                   value="{{ data.pk }}"
+                                                   onchange="checkUncheckCanView()"
+                                                   class="h-4 w-4 rounded border border-[var(--border-color)] text-[var(--primary-color)]">
+                                            <span class="font-medium">Can View</span>
+                                        </label>
+                                    </th>
+                                    <th class="px-3 py-3 text-center">
+                                        <label class="inline-flex items-center gap-2 justify-center">
+                                            <input type="checkbox"
+                                                   id="parentCanAddCheckbox"
+                                                   name="parentCanAddCheckbox"
+                                                   value="{{ data.pk }}"
+                                                   onchange="checkUncheckCanAdd()"
+                                                   class="h-4 w-4 rounded border border-[var(--border-color)] text-[var(--primary-color)]">
+                                            <span class="font-medium">Can Add</span>
+                                        </label>
+                                    </th>
+                                    <th class="px-3 py-3 text-center">
+                                        <label class="inline-flex items-center gap-2 justify-center">
+                                            <input type="checkbox"
+                                                   id="parentCanUpdateCheckbox"
+                                                   name="parentCanUpdateCheckbox"
+                                                   value="{{ data.pk }}"
+                                                   onchange="checkUncheckCanUpdate()"
+                                                   class="h-4 w-4 rounded border border-[var(--border-color)] text-[var(--primary-color)]">
+                                            <span class="font-medium">Can Update</span>
+                                        </label>
+                                    </th>
+                                    <th class="px-3 py-3 text-center">
+                                        <label class="inline-flex items-center gap-2 justify-center">
+                                            <input type="checkbox"
+                                                   id="parentCanDeleteCheckbox"
+                                                   name="parentCanDeleteCheckbox"
+                                                   value="{{ data.pk }}"
+                                                   onchange="checkUncheckCanDelete()"
+                                                   class="h-4 w-4 rounded border border-[var(--border-color)] text-[var(--primary-color)]">
+                                            <span class="font-medium">Can Delete</span>
+                                        </label>
+                                    </th>
+                                </tr>
+                                {% for data in menu_list %}
+                                    <tr class="border-t border-[var(--border-color)] hover:bg-[var(--bg-color)]/30">
+                                        <td class="px-3 py-2 align-top">{{ forloop.counter }}</td>
+                                        <td class="px-3 py-2 align-top">
+                                            <label class="inline-flex items-start gap-2">
+                                                <input type="checkbox"
+                                                       class="childRowCheckbox h-4 w-4 rounded border border-[var(--border-color)] text-[var(--primary-color)]"
+                                                       id="{{ data.pk }}"
+                                                       name="selected_menus"
+                                                       value="{{ data.pk }}"
+                                                       {% if data.pk == data.user_menu_id %}checked{% endif %}>
+                                                <span>{{ data.menu_name }}</span>
+                                            </label>
+                                        </td>
+                                        <td class="px-3 py-2 align-top">{{ data.module_name }}</td>
+                                        <td class="px-3 py-2 align-top">
+                                            <a href="{{ data.menu_url }}"
+                                               class="text-[var(--primary-color)] hover:underline">{{ data.menu_url }}</a>
+                                        </td>
+                                        <td class="px-3 py-2 text-center align-top">
+                                            <input type="checkbox"
+                                                   class="childRowCanViewCheckbox h-4 w-4 rounded border border-[var(--border-color)] text-[var(--primary-color)]"
+                                                   name="can_view"
+                                                   value="{{ data.pk }}"
+                                                   {% if data.can_view %}checked{% endif %}>
+                                        </td>
+                                        <td class="px-3 py-2 text-center align-top">
+                                            <input type="checkbox"
+                                                   class="childRowCanAddCheckbox h-4 w-4 rounded border border-[var(--border-color)] text-[var(--primary-color)]"
+                                                   name="can_add"
+                                                   value="{{ data.pk }}"
+                                                   {% if data.can_add %}checked{% endif %}>
+                                        </td>
+                                        <td class="px-3 py-2 text-center align-top">
+                                            <input type="checkbox"
+                                                   class="childRowCanUpdateCheckbox h-4 w-4 rounded border border-[var(--border-color)] text-[var(--primary-color)]"
+                                                   name="can_update"
+                                                   value="{{ data.pk }}"
+                                                   {% if data.can_update %}checked{% endif %}>
+                                        </td>
+                                        <td class="px-3 py-2 text-center align-top">
+                                            <input type="checkbox"
+                                                   class="childRowCanDeleteCheckbox h-4 w-4 rounded border border-[var(--border-color)] text-[var(--primary-color)]"
+                                                   name="can_delete"
+                                                   value="{{ data.pk }}"
+                                                   {% if data.can_delete %}checked{% endif %}>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Permissions table -->
+            </form>
         </div>
-    </div>
-    <!-- Permissions table -->
-    <div class="listing-box group-permission-box">
-        <div class="rounded-lg bg-[var(--bg-color)] ring-1 ring-[var(--border-color)] overflow-hidden">
-            <div class="overflow-x-auto">
-                <table id="group-permission"
-                       class="table table-bordered w-full min-w-[1000px] text-sm">
-                    <!-- Keep header as a direct TR (your JS rebuild relies on this) -->
-                    <tr class="bg-[var(--bg-color)] text-[var(--text-color)]">
-                        <th class="px-3 py-3 text-left">#</th>
-                        <th class="px-3 py-3 text-left">
-                            <label class="inline-flex items-center gap-2">
-                                <input type="checkbox"
-                                       id="parentCheckbox"
-                                       name="parentCheckbox"
-                                       value="{{ data.pk }}"
-                                       onchange="checkUncheckAllMenu()"
-                                       class="h-4 w-4 rounded border border-[var(--border-color)] text-[var(--primary-color)]">
-                                <span class="font-medium">Menu Name</span>
-                            </label>
-                        </th>
-                        <th class="px-3 py-3 text-left">Module Name</th>
-                        <th class="px-3 py-3 text-left">Menu URL</th>
-                        <th class="px-3 py-3 text-center">
-                            <label class="inline-flex items-center gap-2 justify-center">
-                                <input type="checkbox"
-                                       id="parentCanViewCheckbox"
-                                       name="parentCanViewCheckbox"
-                                       value="{{ data.pk }}"
-                                       onchange="checkUncheckCanView()"
-                                       class="h-4 w-4 rounded border border-[var(--border-color)] text-[var(--primary-color)]">
-                                <span class="font-medium">Can View</span>
-                            </label>
-                        </th>
-                        <th class="px-3 py-3 text-center">
-                            <label class="inline-flex items-center gap-2 justify-center">
-                                <input type="checkbox"
-                                       id="parentCanAddCheckbox"
-                                       name="parentCanAddCheckbox"
-                                       value="{{ data.pk }}"
-                                       onchange="checkUncheckCanAdd()"
-                                       class="h-4 w-4 rounded border border-[var(--border-color)] text-[var(--primary-color)]">
-                                <span class="font-medium">Can Add</span>
-                            </label>
-                        </th>
-                        <th class="px-3 py-3 text-center">
-                            <label class="inline-flex items-center gap-2 justify-center">
-                                <input type="checkbox"
-                                       id="parentCanUpdateCheckbox"
-                                       name="parentCanUpdateCheckbox"
-                                       value="{{ data.pk }}"
-                                       onchange="checkUncheckCanUpdate()"
-                                       class="h-4 w-4 rounded border border-[var(--border-color)] text-[var(--primary-color)]">
-                                <span class="font-medium">Can Update</span>
-                            </label>
-                        </th>
-                        <th class="px-3 py-3 text-center">
-                            <label class="inline-flex items-center gap-2 justify-center">
-                                <input type="checkbox"
-                                       id="parentCanDeleteCheckbox"
-                                       name="parentCanDeleteCheckbox"
-                                       value="{{ data.pk }}"
-                                       onchange="checkUncheckCanDelete()"
-                                       class="h-4 w-4 rounded border border-[var(--border-color)] text-[var(--primary-color)]">
-                                <span class="font-medium">Can Delete</span>
-                            </label>
-                        </th>
-                    </tr>
-                    {% for data in menu_list %}
-                        <tr class="border-t border-[var(--border-color)] hover:bg-[var(--bg-color)]/30">
-                            <td class="px-3 py-2 align-top">{{ forloop.counter }}</td>
-                            <td class="px-3 py-2 align-top">
-                                <label class="inline-flex items-start gap-2">
-                                    <input type="checkbox"
-                                           class="childRowCheckbox h-4 w-4 rounded border border-[var(--border-color)] text-[var(--primary-color)]"
-                                           id="{{ data.pk }}"
-                                           name="selected_menus"
-                                           value="{{ data.pk }}"
-                                           {% if data.pk == data.user_menu_id %}checked{% endif %}>
-                                    <span>{{ data.menu_name }}</span>
-                                </label>
-                            </td>
-                            <td class="px-3 py-2 align-top">{{ data.module_name }}</td>
-                            <td class="px-3 py-2 align-top">
-                                <a href="{{ data.menu_url }}"
-                                   class="text-[var(--primary-color)] hover:underline">{{ data.menu_url }}</a>
-                            </td>
-                            <td class="px-3 py-2 text-center align-top">
-                                <input type="checkbox"
-                                       class="childRowCanViewCheckbox h-4 w-4 rounded border border-[var(--border-color)] text-[var(--primary-color)]"
-                                       name="can_view"
-                                       value="{{ data.pk }}"
-                                       {% if data.can_view %}checked{% endif %}>
-                            </td>
-                            <td class="px-3 py-2 text-center align-top">
-                                <input type="checkbox"
-                                       class="childRowCanAddCheckbox h-4 w-4 rounded border border-[var(--border-color)] text-[var(--primary-color)]"
-                                       name="can_add"
-                                       value="{{ data.pk }}"
-                                       {% if data.can_add %}checked{% endif %}>
-                            </td>
-                            <td class="px-3 py-2 text-center align-top">
-                                <input type="checkbox"
-                                       class="childRowCanUpdateCheckbox h-4 w-4 rounded border border-[var(--border-color)] text-[var(--primary-color)]"
-                                       name="can_update"
-                                       value="{{ data.pk }}"
-                                       {% if data.can_update %}checked{% endif %}>
-                            </td>
-                            <td class="px-3 py-2 text-center align-top">
-                                <input type="checkbox"
-                                       class="childRowCanDeleteCheckbox h-4 w-4 rounded border border-[var(--border-color)] text-[var(--primary-color)]"
-                                       name="can_delete"
-                                       value="{{ data.pk }}"
-                                       {% if data.can_delete %}checked{% endif %}>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            </div>
-        </div>
-    </div>
-    <!-- /Permissions table -->
-</form>
-</div>
-</section>
-<!-- Keep your existing scripts as-is -->
-<script>
+    </section>
+    <!-- Keep your existing scripts as-is -->
+    <script>
   function checkUncheckAllMenu(){ /* unchanged */ 
     var parentCheckbox = document.getElementById('parentCheckbox');
     var checkboxes = document.querySelectorAll('.childRowCheckbox'); 
@@ -257,11 +257,11 @@
         });
       }).catch(error => { console.error("Request failed:", error); });
   });
-</script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
-        integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer"></script>
-<script>$(".user_status").select2();</script>
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
+            integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"></script>
+    <script>$(".user_status").select2();</script>
 {% endblock %}

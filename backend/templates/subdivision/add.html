@@ -8,7 +8,9 @@
                 {% csrf_token %}
                 <div>
                     <label class="block mb-1">Division</label>
-                    <select name="division" class="w-full border rounded p-2 select2-items" required>
+                    <select name="division"
+                            class="w-full border rounded p-2 select2-items"
+                            required>
                         <option value="">Select Division</option>
                         {% for d in divisions %}
                             <option value="{{ d.id }}"
@@ -43,9 +45,9 @@
     </section>
 {% endblock %}
 {% block extra_js %}
-<script>
+    <script>
   $(document).ready(function () {
     $('.select2-items').select2();
   });
-</script>
-{% endblock %} 
+    </script>
+{% endblock %}

@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+{% block title %}My Maintenance Tasks{% endblock %}
+{% block content %}
+<section class="bg-slate-50 min-h-screen p-4 md:p-8 font-sans">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">My Tasks</h2>
+                <p class="text-sm text-gray-500 mt-1">
+                    {% if technician %}
+                        Welcome back, <span class="font-semibold text-gray-700">{{ technician.display_name }}</span>
+                    {% else %}
+                        <span class="text-amber-600 font-medium">⚠ No technician profile linked to your account</span>
+                    {% endif %}
+                </p>
+            </div>
+            <a href="{% url 'backend:maintanaince_checklist' %}"
+               class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-lg flex items-center gap-2 transition duration-200 shadow-sm text-sm">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M9 11l3 3L22 4" />
+                    <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+                </svg>
+                <span>Checklist</span>
+            </a>
+        </div>
+
+        <!-- Stat Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-gray-900">{{ total_tasks }}</p>
+                        <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">Total Tasks</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-amber-100 p-5 hover:shadow-md transition-shadow">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-amber-600">{{ pending_count }}</p>
+                        <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">Pending</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-green-100 p-5 hover:shadow-md transition-shadow">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-green-50 text-green-600 flex items-center justify-center">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-green-600">{{ completed_count }}</p>
+                        <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">Completed</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-red-100 p-5 hover:shadow-md transition-shadow">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-red-50 text-red-600 flex items-center justify-center">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                            <line x1="12" y1="9" x2="12" y2="13" />
+                            <line x1="12" y1="17" x2="12.01" y2="17" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-red-600">{{ overdue_count }}</p>
+                        <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">Overdue</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter & Table Card -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <!-- Filters -->
+            <div class="p-5 border-b border-gray-100">
+                <form method="get" class="flex flex-col md:flex-row gap-4 items-end">
+                    <div class="w-full md:w-44">
+                        <label class="block text-xs font-semibold text-gray-500 mb-1.5 tracking-wider uppercase">Acceptance</label>
+                        <select name="status"
+                                class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none transition-colors"
+                                onchange="this.form.submit()">
+                            <option value="">All</option>
+                            <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+                            <option value="accepted" {% if status_filter == 'accepted' %}selected{% endif %}>Accepted</option>
+                            <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>Rejected</option>
+                        </select>
+                    </div>
+                    <div class="w-full md:w-44">
+                        <label class="block text-xs font-semibold text-gray-500 mb-1.5 tracking-wider uppercase">Completion</label>
+                        <select name="completion"
+                                class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none transition-colors"
+                                onchange="this.form.submit()">
+                            <option value="">All</option>
+                            <option value="pending" {% if completion_filter == 'pending' %}selected{% endif %}>Pending</option>
+                            <option value="completed" {% if completion_filter == 'completed' %}selected{% endif %}>Completed</option>
+                            <option value="skipped" {% if completion_filter == 'skipped' %}selected{% endif %}>Skipped</option>
+                            <option value="overdue" {% if completion_filter == 'overdue' %}selected{% endif %}>Overdue</option>
+                            <option value="cancelled" {% if completion_filter == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="w-full md:w-44">
+                        <label class="block text-xs font-semibold text-gray-500 mb-1.5 tracking-wider uppercase">Priority</label>
+                        <select name="priority"
+                                class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none transition-colors"
+                                onchange="this.form.submit()">
+                            <option value="">All Priorities</option>
+                            <option value="critical" {% if priority_filter == 'critical' %}selected{% endif %}>Critical</option>
+                            <option value="high" {% if priority_filter == 'high' %}selected{% endif %}>High</option>
+                            <option value="medium" {% if priority_filter == 'medium' %}selected{% endif %}>Medium</option>
+                            <option value="low" {% if priority_filter == 'low' %}selected{% endif %}>Low</option>
+                        </select>
+                    </div>
+                    {% if status_filter or completion_filter or priority_filter %}
+                        <div>
+                            <a href="{% url 'backend:maintainance_task' %}"
+                               class="h-10 px-4 flex items-center justify-center text-sm font-semibold text-gray-500 hover:text-gray-700 transition-colors mb-1">
+                                Reset
+                            </a>
+                        </div>
+                    {% endif %}
+                </form>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left whitespace-nowrap">
+                    <thead class="text-xs text-gray-500 uppercase bg-white border-b border-gray-100">
+                        <tr>
+                            <th class="px-6 py-4 font-bold tracking-wider">Ticket</th>
+                            <th class="px-6 py-4 font-bold tracking-wider">Equipment</th>
+                            <th class="px-6 py-4 font-bold tracking-wider">Building</th>
+                            <th class="px-6 py-4 font-bold tracking-wider">Priority</th>
+                            <th class="px-6 py-4 font-bold tracking-wider">Status</th>
+                            <th class="px-6 py-4 font-bold tracking-wider">Progress</th>
+                            <th class="px-6 py-4 font-bold tracking-wider">Assigned</th>
+                            <th class="px-6 py-4 font-bold tracking-wider text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                        {% for act in activities %}
+                            <tr class="hover:bg-gray-50/80 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div>
+                                        <p class="font-bold text-gray-900">#{{ act.ticket.id }}</p>
+                                        <p class="text-xs text-gray-500 truncate max-w-[180px]">{{ act.ticket.title }}</p>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div>
+                                        <p class="font-medium text-gray-900">{{ act.ticket.equipment.equipment_id }}</p>
+                                        <p class="text-xs text-gray-500">{{ act.ticket.equipment.equipment_type.name }}</p>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-gray-600">{{ act.ticket.building.name|truncatewords:3 }}</td>
+                                <td class="px-6 py-4">
+                                    {% if act.ticket.priority == 'critical' %}
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span> Critical
+                                        </span>
+                                    {% elif act.ticket.priority == 'high' %}
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-700">High</span>
+                                    {% elif act.ticket.priority == 'medium' %}
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">Medium</span>
+                                    {% else %}
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">Low</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {% if act.status == 'pending' %}
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700">Pending</span>
+                                    {% elif act.status == 'accepted' %}
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Accepted</span>
+                                    {% elif act.status == 'rejected' %}
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">Rejected</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {% if act.completion_status == 'pending' %}
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600">Pending</span>
+                                    {% elif act.completion_status == 'completed' %}
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">Completed</span>
+                                    {% elif act.completion_status == 'skipped' %}
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">Skipped</span>
+                                    {% elif act.completion_status == 'overdue' %}
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">Overdue</span>
+                                    {% elif act.completion_status == 'cancelled' %}
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-200 text-gray-500">Cancelled</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4 text-gray-500 text-xs">{{ act.assigned_at|date:"M d, Y" }}</td>
+                                <td class="px-6 py-4 text-right">
+                                    <a href="{% url 'backend:maintainance_detail' act.pk %}"
+                                       class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                            <circle cx="12" cy="12" r="3" />
+                                        </svg>
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="8" class="px-6 py-16 text-center text-gray-500">
+                                    <div class="flex flex-col items-center">
+                                        <svg class="w-14 h-14 text-gray-200 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                        </svg>
+                                        <span class="text-sm font-medium">No tasks assigned to you.</span>
+                                        <span class="text-xs text-gray-400 mt-1">Tasks assigned to your technician profile will appear here.</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block extra_js %}
+<script>
+$(document).ready(function () {
+    $('.select2-items').select2();
+});
+</script>
+{% endblock %}

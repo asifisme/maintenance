@@ -50,10 +50,12 @@
                                         <button data-menu-btn
                                                 class="p-1 text-[var(--text-light-color)] hover:text-[var(--primary-color)] transition-colors rounded-full hover:bg-[var(--bg-color)]">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z">
+                                                </path>
                                             </svg>
                                         </button>
-                                        <div data-menu class="hidden absolute right-0 mt-2 w-36 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+                                        <div data-menu
+                                             class="hidden absolute right-0 mt-2 w-36 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
                                             <div class="py-1">
                                                 <a href="{% url 'backend:division_update' data.id %}"
                                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">Edit</a>
@@ -62,7 +64,11 @@
                                                     <button type="submit"
                                                             class="block px-4 py-2 text-sm {% if data.is_active %}text-red-600 hover:bg-red-50{% else %}text-green-600 hover:bg-green-50{% endif %} w-full text-left"
                                                             onclick="return confirm('Are you sure you want to change status?')">
-                                                        {% if data.is_active %} Inactive{% else %}Active{% endif %}
+                                                        {% if data.is_active %}
+                                                            Inactive
+                                                        {% else %}
+                                                            Active
+                                                        {% endif %}
                                                     </button>
                                                 </form>
                                             </div>
@@ -92,9 +98,9 @@
     </section>
 {% endblock %}
 {% block extra_js %}
-<script>
+    <script>
   $(document).ready(function () {
     $('.select2-items').select2();
   });
-</script>
-{% endblock %} 
+    </script>
+{% endblock %}

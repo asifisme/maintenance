@@ -1,283 +1,309 @@
 {% extends 'base.html' %}
 {% block page_title %}{{ building.name }}{% endblock %}
-
 {% block breadcrumb %}
-<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-</svg>
-<a href="{% url 'backend:building_list' %}" class="hover:text-[var(--primary-color)] transition-colors">Building Management</a>
-<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-</svg>
-<span class="font-medium text-[var(--primary-color)]">{{ building.name }}</span>
-{% endblock %}
-
-{% block back_button %}
-<a href="{% url 'backend:building_list' %}" class="text-gray-700 hover:text-gray-900 transition-colors mr-2">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M15 18l-6-6 6-6"/>
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
     </svg>
-</a>
+    <a href="{% url 'backend:building_list' %}"
+       class="hover:text-[var(--primary-color)] transition-colors">Building Management</a>
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+    </svg>
+    <span class="font-medium text-[var(--primary-color)]">{{ building.name }}</span>
 {% endblock %}
-
+{% block back_button %}
+    <a href="{% url 'backend:building_list' %}"
+       class="text-gray-700 hover:text-gray-900 transition-colors mr-2">
+        <svg width="24"
+             height="24"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2.5"
+             stroke-linecap="round"
+             stroke-linejoin="round">
+            <path d="M15 18l-6-6 6-6" />
+        </svg>
+    </a>
+{% endblock %}
 {% block title %}
-<div class="flex items-center gap-3">
-    <span class="text-xl md:text-2xl font-extrabold text-gray-900">{{ building.name }}</span>
-    {% if building.status == 'Active' %}
-        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#E6F4EA] text-[#137333] border border-[#CEEAD6]">Active</span>
-    {% elif building.status == 'Inactive' %}
-        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#F1F3F4] text-[#3C4043] border border-[#DADCE0]">Inactive</span>
-    {% elif building.status == 'Under Maintenance' %}
-        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#FEF7E0] text-[#B06000] border border-[#FEEFC3]">Maintenance</span>
-    {% else %}
-        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#FCE8E6] text-[#C5221F] border border-[#FAD2CF]">{{ building.status }}</span>
-    {% endif %}
-</div>
-{% endblock %}
-
-{% block subtitle %}
-<p class="text-xs font-semibold tracking-wider text-gray-400 mt-1 uppercase">
-    {{ building.building_id|default:"-" }} &mdash; {{ building.surname|default:"-" }}
-</p>
-{% endblock %}
-
-{% block header_actions %}
-<a href="{% url 'backend:building_update' building.id %}" class="bg-white hover:bg-gray-50 border border-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg text-sm shadow-sm transition duration-200">
-    Edit Building
-</a>
-{% endblock %}
-
-{% block content %}
-<section class="min-h-screen font-sans bg-[var(--bg-color)]">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        <!-- Left Column: Building Information & Quick Actions -->
-        <div class="space-y-6">
-            
-            <!-- Building Information Card -->
-            <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
-                <h3 class="text-base font-bold text-gray-800 mb-6 border-b border-gray-50 pb-3">Building Information</h3>
-                
-                <div class="space-y-5">
-                    <div>
-                        <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Building ID</div>
-                        <div class="text-sm font-semibold text-gray-700 mt-1">{{ building.building_id|default:"-" }}</div>
-                    </div>
-                    <div>
-                        <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Surname</div>
-                        <div class="text-sm font-semibold text-gray-700 mt-1">{{ building.surname|default:"-" }}</div>
-                    </div>
-                    <div>
-                        <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Division</div>
-                        <div class="text-sm font-semibold text-gray-700 mt-1">{{ building.division.name|default:"-" }}</div>
-                    </div>
-                    <div>
-                        <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Subdivision</div>
-                        <div class="text-sm font-semibold text-gray-700 mt-1">{{ building.subdivision.name|default:"-" }}</div>
-                    </div>
-                    <div>
-                        <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Section</div>
-                        <div class="text-sm font-semibold text-gray-700 mt-1">{{ building.section.name|default:"-" }}</div>
-                    </div>
-                    <div>
-                        <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Address</div>
-                        <div class="text-sm font-semibold text-gray-700 mt-1 flex items-start gap-1.5">
-                            <svg class="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            <span>{{ building.address|default:"-" }}</span>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Coordinates</div>
-                        <div class="text-sm font-semibold text-gray-700 mt-1">
-                            {% if building.latitude and building.longitude %}
-                                {{ building.latitude }}, {{ building.longitude }}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Quick Actions Card -->
-            <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
-                <h3 class="text-base font-bold text-gray-800 mb-4 pb-3 border-b border-gray-50">Quick Actions</h3>
-                
-                <div class="space-y-3">
-                    <!-- Add New Equipment -->
-                    <a href="/admin/backend/equipment/add/?building={{ building.id }}" class="flex items-center justify-between p-3.5 rounded-lg bg-[#EEF3FF] hover:bg-blue-100/70 text-[#2252EC] font-semibold text-xs transition-colors">
-                        <span>Add New Equipment</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                        </svg>
-                    </a>
-                    
-                    <!-- Create Support Ticket -->
-                    <a href="/admin/backend/ticket/add/?building={{ building.id }}" class="flex items-center justify-between p-3.5 rounded-lg bg-[#F3F4F6] hover:bg-gray-200/70 text-[#374151] font-semibold text-xs transition-colors">
-                        <span>Create Support Ticket</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                        </svg>
-                    </a>
-                </div>
-            </div>
-            
-        </div>
-        
-        <!-- Right Column: Metrics & Equipment Inventory -->
-        <div class="lg:col-span-2 space-y-6">
-            
-            <!-- Metrics Row -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                
-                <!-- Total Assets -->
-                <div class="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
-                    <div class="w-10 h-10 rounded-lg bg-[#EEF2FF] flex items-center justify-center mb-4">
-                        <svg class="w-5 h-5 text-[#3B5998]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                        </svg>
-                    </div>
-                    <div class="text-2xl font-extrabold text-gray-900">{{ total_assets }}</div>
-                    <div class="text-[9px] font-bold text-gray-400 tracking-wider uppercase mt-1">Total Assets</div>
-                </div>
-
-                <!-- Lifts -->
-                <div class="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
-                    <div class="w-10 h-10 rounded-lg bg-[#FFF7ED] flex items-center justify-center mb-4">
-                        <svg class="w-5 h-5 text-[#EA580C]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                        </svg>
-                    </div>
-                    <div class="text-2xl font-extrabold text-gray-900">{{ lifts_count }}</div>
-                    <div class="text-[9px] font-bold text-gray-400 tracking-wider uppercase mt-1">Lifts</div>
-                </div>
-
-                <!-- AC Units -->
-                <div class="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
-                    <div class="w-10 h-10 rounded-lg bg-[#ECFDF5] flex items-center justify-center mb-4">
-                        <svg class="w-5 h-5 text-[#059669]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4M20 16H4M20 8H4M10 4h4v16h-4z" class="hidden" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18M6 8h12M8 16h8" />
-                        </svg>
-                    </div>
-                    <div class="text-2xl font-extrabold text-gray-900">{{ ac_count }}</div>
-                    <div class="text-[9px] font-bold text-gray-400 tracking-wider uppercase mt-1">AC Units</div>
-                </div>
-
-                <!-- Sub-stations -->
-                <div class="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
-                    <div class="w-10 h-10 rounded-lg bg-[#FEF08A]/30 flex items-center justify-center mb-4">
-                        <svg class="w-5 h-5 text-[#CA8A04]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                    </div>
-                    <div class="text-2xl font-extrabold text-gray-900">{{ substations_count }}</div>
-                    <div class="text-[9px] font-bold text-gray-400 tracking-wider uppercase mt-1">Sub-Stations</div>
-                </div>
-                
-            </div>
-            
-            <!-- Equipment Inventory Table Card -->
-            <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-                
-                <!-- Card Header -->
-                <div class="px-6 py-5 border-b border-gray-50 flex items-center justify-between">
-                    <h3 class="text-base font-bold text-gray-800">Equipment Inventory</h3>
-                    <span class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">{{ total_assets }} Total</span>
-                </div>
-
-                <!-- Table -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left whitespace-nowrap">
-                        <thead class="text-[10px] font-bold text-gray-400 tracking-wider uppercase bg-[#F9FAFB] border-b border-gray-100">
-                            <tr>
-                                <th class="px-6 py-4">ID / Type</th>
-                                <th class="px-6 py-4">Brand</th>
-                                <th class="px-6 py-4">Status</th>
-                                <th class="px-6 py-4">Location</th>
-                                <th class="px-6 py-4 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-150">
-                            {% for eq in equipment_list %}
-                                <tr class="hover:bg-gray-50/40 transition-colors">
-                                    <td class="px-6 py-4">
-                                        <div class="font-bold text-gray-900">{{ eq.equipment_id|default:"-" }}</div>
-                                        <div class="text-[11px] text-gray-400 mt-0.5">{{ eq.equipment_type.name }}</div>
-                                    </td>
-                                    <td class="px-6 py-4 text-gray-600 text-sm">
-                                        {{ eq.brand|default:"-" }}
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        {% if eq.status == 'active' %}
-                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#E6F4EA] text-[#137333] border border-[#CEEAD6]">
-                                                Operational
-                                            </span>
-                                        {% elif eq.status == 'under_maintenance' %}
-                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#FEF7E0] text-[#B06000] border border-[#FEEFC3]">
-                                                Maintenance
-                                            </span>
-                                        {% elif eq.status == 'in_repair' %}
-                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#FFF7ED] text-[#C2410C] border border-[#FFEDD5]">
-                                                In Repair
-                                            </span>
-                                        {% elif eq.status == 'inactive' %}
-                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#F1F3F4] text-[#3C4043] border border-[#DADCE0]">
-                                                Inactive
-                                            </span>
-                                        {% else %}
-                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#FCE8E6] text-[#C5221F] border border-[#FAD2CF]">
-                                                {{ eq.get_status_display }}
-                                            </span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="px-6 py-4 text-gray-600 text-sm">
-                                        {{ eq.floor_location|default:"-" }}
-                                    </td>
-                                    <td class="px-6 py-4 text-right">
-                                        <div class="inline-block" data-menu-wrap>
-                                            <button type="button" data-menu-btn class="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors">
-                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                                    <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
-                                                </svg>
-                                            </button>
-                                            <!-- Actions Menu (uses base.html positioning script) -->
-                                            <div data-menu class="hidden py-1 w-36" role="menu">
-                                                <a href="/admin/backend/equipment/{{ eq.id }}/change/" class="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50" role="menuitem">Edit Equipment</a>
-                                                <a href="/admin/backend/maintenancerecord/add/?equipment={{ eq.id }}" class="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50" role="menuitem">Log Maintenance</a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% empty %}
-                                <tr>
-                                    <td colspan="5" class="px-6 py-12 text-center text-gray-500">
-                                        <div class="flex flex-col items-center">
-                                            <svg class="w-10 h-10 text-gray-300 mb-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"></path>
-                                            </svg>
-                                            <span class="text-xs text-gray-400">No equipment found for this building.</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-        </div>
-        
+    <div class="flex items-center gap-3">
+        <span class="text-xl md:text-2xl font-extrabold text-gray-900">{{ building.name }}</span>
+        {% if building.status == 'Active' %}
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#E6F4EA] text-[#137333] border border-[#CEEAD6]">Active</span>
+        {% elif building.status == 'Inactive' %}
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#F1F3F4] text-[#3C4043] border border-[#DADCE0]">Inactive</span>
+        {% elif building.status == 'Under Maintenance' %}
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#FEF7E0] text-[#B06000] border border-[#FEEFC3]">Maintenance</span>
+        {% else %}
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#FCE8E6] text-[#C5221F] border border-[#FAD2CF]">{{ building.status }}</span>
+        {% endif %}
     </div>
-</section>
+{% endblock %}
+{% block subtitle %}
+    <p class="text-xs font-semibold tracking-wider text-gray-400 mt-1 uppercase">
+        {{ building.building_id|default:"-" }} &mdash; {{ building.surname|default:"-" }}
+    </p>
+{% endblock %}
+{% block header_actions %}
+    <a href="{% url 'backend:building_update' building.id %}"
+       class="bg-white hover:bg-gray-50 border border-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg text-sm shadow-sm transition duration-200">
+        Edit Building
+    </a>
+{% endblock %}
+{% block content %}
+    <section class="min-h-screen font-sans bg-[var(--bg-color)]">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Column: Building Information & Quick Actions -->
+            <div class="space-y-6">
+                <!-- Building Information Card -->
+                <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
+                    <h3 class="text-base font-bold text-gray-800 mb-6 border-b border-gray-50 pb-3">Building Information</h3>
+                    <div class="space-y-5">
+                        <div>
+                            <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Building ID</div>
+                            <div class="text-sm font-semibold text-gray-700 mt-1">{{ building.building_id|default:"-" }}</div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Surname</div>
+                            <div class="text-sm font-semibold text-gray-700 mt-1">{{ building.surname|default:"-" }}</div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Division</div>
+                            <div class="text-sm font-semibold text-gray-700 mt-1">{{ building.division.name|default:"-" }}</div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Subdivision</div>
+                            <div class="text-sm font-semibold text-gray-700 mt-1">{{ building.subdivision.name|default:"-" }}</div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Section</div>
+                            <div class="text-sm font-semibold text-gray-700 mt-1">{{ building.section.name|default:"-" }}</div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Address</div>
+                            <div class="text-sm font-semibold text-gray-700 mt-1 flex items-start gap-1.5">
+                                <svg class="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2"
+                                     viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <span>{{ building.address|default:"-" }}</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Coordinates</div>
+                            <div class="text-sm font-semibold text-gray-700 mt-1">
+                                {% if building.latitude and building.longitude %}
+                                    {{ building.latitude }}, {{ building.longitude }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Quick Actions Card -->
+                <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
+                    <h3 class="text-base font-bold text-gray-800 mb-4 pb-3 border-b border-gray-50">Quick Actions</h3>
+                    <div class="space-y-3">
+                        <!-- Add New Equipment -->
+                        <a href="/admin/backend/equipment/add/?building={{ building.id }}"
+                           class="flex items-center justify-between p-3.5 rounded-lg bg-[#EEF3FF] hover:bg-blue-100/70 text-[#2252EC] font-semibold text-xs transition-colors">
+                            <span>Add New Equipment</span>
+                            <svg class="w-4 h-4"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2.5"
+                                 viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                            </svg>
+                        </a>
+                        <!-- Create Support Ticket -->
+                        <a href="/admin/backend/ticket/add/?building={{ building.id }}"
+                           class="flex items-center justify-between p-3.5 rounded-lg bg-[#F3F4F6] hover:bg-gray-200/70 text-[#374151] font-semibold text-xs transition-colors">
+                            <span>Create Support Ticket</span>
+                            <svg class="w-4 h-4"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2.5"
+                                 viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Right Column: Metrics & Equipment Inventory -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Metrics Row -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <!-- Total Assets -->
+                    <div class="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
+                        <div class="w-10 h-10 rounded-lg bg-[#EEF2FF] flex items-center justify-center mb-4">
+                            <svg class="w-5 h-5 text-[#3B5998]"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2"
+                                 viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                        </div>
+                        <div class="text-2xl font-extrabold text-gray-900">{{ total_assets }}</div>
+                        <div class="text-[9px] font-bold text-gray-400 tracking-wider uppercase mt-1">Total Assets</div>
+                    </div>
+                    <!-- Lifts -->
+                    <div class="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
+                        <div class="w-10 h-10 rounded-lg bg-[#FFF7ED] flex items-center justify-center mb-4">
+                            <svg class="w-5 h-5 text-[#EA580C]"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2.5"
+                                 viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                            </svg>
+                        </div>
+                        <div class="text-2xl font-extrabold text-gray-900">{{ lifts_count }}</div>
+                        <div class="text-[9px] font-bold text-gray-400 tracking-wider uppercase mt-1">Lifts</div>
+                    </div>
+                    <!-- AC Units -->
+                    <div class="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
+                        <div class="w-10 h-10 rounded-lg bg-[#ECFDF5] flex items-center justify-center mb-4">
+                            <svg class="w-5 h-5 text-[#059669]"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2"
+                                 viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4M20 16H4M20 8H4M10 4h4v16h-4z" class="hidden" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18M6 8h12M8 16h8" />
+                            </svg>
+                        </div>
+                        <div class="text-2xl font-extrabold text-gray-900">{{ ac_count }}</div>
+                        <div class="text-[9px] font-bold text-gray-400 tracking-wider uppercase mt-1">AC Units</div>
+                    </div>
+                    <!-- Sub-stations -->
+                    <div class="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
+                        <div class="w-10 h-10 rounded-lg bg-[#FEF08A]/30 flex items-center justify-center mb-4">
+                            <svg class="w-5 h-5 text-[#CA8A04]"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2"
+                                 viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                        <div class="text-2xl font-extrabold text-gray-900">{{ substations_count }}</div>
+                        <div class="text-[9px] font-bold text-gray-400 tracking-wider uppercase mt-1">Sub-Stations</div>
+                    </div>
+                </div>
+                <!-- Equipment Inventory Table Card -->
+                <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+                    <!-- Card Header -->
+                    <div class="px-6 py-5 border-b border-gray-50 flex items-center justify-between">
+                        <h3 class="text-base font-bold text-gray-800">Equipment Inventory</h3>
+                        <span class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">{{ total_assets }} Total</span>
+                    </div>
+                    <!-- Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left whitespace-nowrap">
+                            <thead class="text-[10px] font-bold text-gray-400 tracking-wider uppercase bg-[#F9FAFB] border-b border-gray-100">
+                                <tr>
+                                    <th class="px-6 py-4">ID / Type</th>
+                                    <th class="px-6 py-4">Brand</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4">Location</th>
+                                    <th class="px-6 py-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-150">
+                                {% for eq in equipment_list %}
+                                    <tr class="hover:bg-gray-50/40 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <div class="font-bold text-gray-900">{{ eq.equipment_id|default:"-" }}</div>
+                                            <div class="text-[11px] text-gray-400 mt-0.5">{{ eq.equipment_type.name }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 text-gray-600 text-sm">{{ eq.brand|default:"-" }}</td>
+                                        <td class="px-6 py-4">
+                                            {% if eq.status == 'active' %}
+                                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#E6F4EA] text-[#137333] border border-[#CEEAD6]">
+                                                    Operational
+                                                </span>
+                                            {% elif eq.status == 'under_maintenance' %}
+                                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#FEF7E0] text-[#B06000] border border-[#FEEFC3]">
+                                                    Maintenance
+                                                </span>
+                                            {% elif eq.status == 'in_repair' %}
+                                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#FFF7ED] text-[#C2410C] border border-[#FFEDD5]">
+                                                    In Repair
+                                                </span>
+                                            {% elif eq.status == 'inactive' %}
+                                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#F1F3F4] text-[#3C4043] border border-[#DADCE0]">
+                                                    Inactive
+                                                </span>
+                                            {% else %}
+                                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#FCE8E6] text-[#C5221F] border border-[#FAD2CF]">
+                                                    {{ eq.get_status_display }}
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="px-6 py-4 text-gray-600 text-sm">{{ eq.floor_location|default:"-" }}</td>
+                                        <td class="px-6 py-4 text-right">
+                                            <div class="inline-block" data-menu-wrap>
+                                                <button type="button"
+                                                        data-menu-btn
+                                                        class="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors">
+                                                    <svg width="18"
+                                                         height="18"
+                                                         viewBox="0 0 24 24"
+                                                         fill="none"
+                                                         stroke="currentColor"
+                                                         stroke-width="2.5">
+                                                        <circle cx="12" cy="5" r="1.5" /><circle cx="12" cy="12" r="1.5" /><circle cx="12" cy="19" r="1.5" />
+                                                    </svg>
+                                                </button>
+                                                <!-- Actions Menu (uses base.html positioning script) -->
+                                                <div data-menu class="hidden py-1 w-36" role="menu">
+                                                    <a href="/admin/backend/equipment/{{ eq.id }}/change/"
+                                                       class="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
+                                                       role="menuitem">Edit Equipment</a>
+                                                    <a href="/admin/backend/maintenancerecord/add/?equipment={{ eq.id }}"
+                                                       class="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
+                                                       role="menuitem">Log Maintenance</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                                            <div class="flex flex-col items-center">
+                                                <svg class="w-10 h-10 text-gray-300 mb-2.5"
+                                                     fill="none"
+                                                     stroke="currentColor"
+                                                     viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z">
+                                                    </path>
+                                                </svg>
+                                                <span class="text-xs text-gray-400">No equipment found for this building.</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 {% endblock %}
 {% block extra_js %}
+    <script>
+$(document).ready(function () {
+$('.select2-items').select2();
+});
 <script>
-  $(document).ready(function () {
-    $('.select2-items').select2();
-  });
-<script>
-{% endblock %} 
+{% endblock %}

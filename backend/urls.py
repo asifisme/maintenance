@@ -25,6 +25,12 @@ urlpatterns = [
     path('user/password/reset/<str:data_id>/', views.reset_password, name='reset_password'),
     path('user/permission/<int:user_id>/', views.user_permission, name='user_permission'),
 
+    # Technician Management
+    path('technician/', views.technician_list, name='technician_list'),
+    path('technician/add/', views.technician_add, name='technician_add'),
+    path('technician/update/<int:data_id>/', views.technician_update, name='technician_update'),
+    path('technician/delete/<int:data_id>/', views.technician_delete, name='technician_delete'),
+
     # Division
     path('division/', views.division_list, name='division_list'),
     path('division/add/', views.division_add, name='division_add'),
@@ -80,4 +86,9 @@ urlpatterns = [
     path('ticket/detail/<int:data_id>/', views.ticket_detail, name='ticket_detail'),
     path('ticket/update/<int:data_id>/', views.ticket_update, name='ticket_update'),
     path('ticket/status/<int:data_id>/', views.ticket_status, name='ticket_status'),
+
+    # Maintainance
+    path('maintainance/task/', views.maintainance_task, name='maintainance_task'),
+    path('maintainance/detail/<int:pk>/', views.maintainance_detail, name='maintainance_detail'),
+    path('maintainance/checklist/', views.maintanaince_checklist, name='maintanaince_checklist'),
 ]

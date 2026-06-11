@@ -1,16 +1,172 @@
 [
     {
         "model": "backend.technician",
-        "pk": 1,
+        "pk": 2,
         "fields": {
-            "user": 1,
-            "phone_number": "+1234567890",
-            "about": "Senior HVAC Specialist",
+            "user": null,
+            "first_name": "Michael",
+            "last_name": "Chen",
+            "email": "m.chen@exoveon.com",
+            "phone_number": "+1555010201",
+            "about": "Specializes in commercial HVAC systems and refrigeration. 8 years experience.",
             "created_by": 1,
             "is_active": true,
             "deleted": false,
-            "created_at": "2026-06-10T07:34:21Z",
-            "updated_at": "2026-06-10T07:34:21Z"
+            "created_at": "2026-06-11T09:30:00Z",
+            "updated_at": "2026-06-11T09:30:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 3,
+        "fields": {
+            "user": null,
+            "first_name": "Sarah",
+            "last_name": "Jenkins",
+            "email": "s.jenkins@exoveon.com",
+            "phone_number": "+1555010202",
+            "about": "Certified electrician with a focus on high-voltage systems and smart grid integration.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-11T09:30:00Z",
+            "updated_at": "2026-06-11T09:30:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 4,
+        "fields": {
+            "user": null,
+            "first_name": "David",
+            "last_name": "Okonjo",
+            "email": "d.okonjo@exoveon.com",
+            "phone_number": "+1555010203",
+            "about": "Elevator mechanic and lift inspector. 12 years of hands-on mechanical experience.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-11T09:30:00Z",
+            "updated_at": "2026-06-11T09:30:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 5,
+        "fields": {
+            "user": null,
+            "first_name": "Elena",
+            "last_name": "Rodriguez",
+            "email": "e.rodriguez@exoveon.com",
+            "phone_number": "+1555010204",
+            "about": "Plumbing expert. Specializes in multi-story residential building water systems.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-11T09:30:00Z",
+            "updated_at": "2026-06-11T09:30:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 6,
+        "fields": {
+            "user": null,
+            "first_name": "James",
+            "last_name": "O'Connor",
+            "email": "j.oconnor@exoveon.com",
+            "phone_number": "+1555010205",
+            "about": "General maintenance technician. Expert in drywall, painting, and superficial repairs.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-11T09:30:00Z",
+            "updated_at": "2026-06-11T09:30:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 7,
+        "fields": {
+            "user": null,
+            "first_name": "Aisha",
+            "last_name": "Patel",
+            "email": "a.patel@exoveon.com",
+            "phone_number": "+1555010206",
+            "about": "IT hardware technician and network installer. Handles server room maintenance.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-11T09:30:00Z",
+            "updated_at": "2026-06-11T09:30:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 8,
+        "fields": {
+            "user": null,
+            "first_name": "Marcus",
+            "last_name": "Johnson",
+            "email": "m.johnson@exoveon.com",
+            "phone_number": "+1555010207",
+            "about": "Fire safety systems technician. Specializes in sprinkler and alarm testing.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-11T09:30:00Z",
+            "updated_at": "2026-06-11T09:30:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 9,
+        "fields": {
+            "user": null,
+            "first_name": "Liam",
+            "last_name": "Wong",
+            "email": "l.wong@exoveon.com",
+            "phone_number": "+1555010208",
+            "about": "Solar panel installer and renewable energy maintenance coordinator.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-11T09:30:00Z",
+            "updated_at": "2026-06-11T09:30:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 10,
+        "fields": {
+            "user": null,
+            "first_name": "Sophia",
+            "last_name": "Martinez",
+            "email": "s.martinez@exoveon.com",
+            "phone_number": "+1555010209",
+            "about": "Security systems expert. Handles CCTV, access control, and turnstiles.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-11T09:30:00Z",
+            "updated_at": "2026-06-11T09:30:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 11,
+        "fields": {
+            "user": null,
+            "first_name": "Oliver",
+            "last_name": "Smith",
+            "email": "o.smith@exoveon.com",
+            "phone_number": "+1555010210",
+            "about": "Substation maintenance engineer. Handles heavy electrical loads and transformers.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-06-11T09:30:00Z",
+            "updated_at": "2026-06-11T09:30:00Z"
         }
     }
 ]

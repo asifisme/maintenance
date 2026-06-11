@@ -49,8 +49,8 @@ from backend.forms import UserCreateForm
 from backend.models import (
     LoginLog, BackendMenu, UserMenuPermission, WebImages, SiteSettings,
     Division, SubDivision, Section, Building, EquipmentType, EquipmentTypeData, Equipment,
-    Ticket, TicketComment, TicketActivityLog,
-    ScheduledMaintenance, CriticalAlert,
+    Ticket, TicketComment, TicketActivityLog, AssignTechnician, Technician, AssignActivities,
+    ScheduledMaintenance, CriticalAlert, MaintenanceRecord,
 )
 from django.db.models import Count
 
@@ -1084,6 +1084,7 @@ def building_details(request, data_id):
     }
     return render(request, 'building/details.html', context)
 
+
 @login_required
 def dash_board(request):
     today = date.today()
@@ -1179,11 +1180,119 @@ def dash_board(request):
 
 
 
+@login_required
+def technician_list(request):
+    if not checkUserPermission(request, 'can_view', '/backend/technician/'):
+        messages.error(request, 'You do not have permission to view this page.')
+        return render(request, '403.html', status=403)
+    
+    technicians = Technician.objects.filter(deleted=False)
+    return render(request, 'technician/list.html', {'technicians': technicians}) 
 
 
+@login_required
+def technician_add(request):
+    if not checkUserPermission(request, 'can_add', '/backend/technician/'):
+        messages.error(request, 'You do not have permission to add a technician.')
+        return render(request, '403.html', status=403)
+    
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        first_name = request.POST.get('first_name', '').strip()
+        last_name = request.POST.get('last_name', '').strip()
+        email = request.POST.get('email', '').strip()
+        phone_number = request.POST.get('phone_number', '').strip()
+        about = request.POST.get('about', '').strip() 
+        
+        if not user_id and not first_name:
+            messages.error(request, 'Please provide either a User Account or a First Name.')
+        else:
+            selected_user = None
+            if user_id:
+                try:
+                    selected_user = User.objects.get(id=user_id)
+                    if Technician.objects.filter(user=selected_user, deleted=False).exists():
+                        messages.error(request, 'This user is already a technician.')
+                        return redirect('backend:technician_add')
+                except User.DoesNotExist:
+                    messages.error(request, 'Selected user does not exist.')
+                    return redirect('backend:technician_add')
+            
+            obj = Technician(
+                user=selected_user,
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                phone_number=phone_number,
+                about=about,
+                created_by=request.user,
+                is_active=True, 
+            )
+            obj.save()
+            messages.success(request, 'Technician added successfully.')
+            return redirect('backend:technician_list')
+     
+    users = User.objects.filter(is_active=True, technician_profile__isnull=True)
+    context = {
+        'users': users
+    }
+    
+    return render(request, 'technician/add.html', context)
 
 
+@login_required
+def technician_update(request, data_id):
+    if not checkUserPermission(request, 'can_update', '/backend/technician/'):
+        messages.error(request, 'You do not have permission to edit this technician.')
+        return render(request, '403.html', status=403)
+    
+    obj = get_object_or_404(Technician, pk=data_id, deleted=False)
+    
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        first_name = request.POST.get('first_name', '').strip()
+        last_name = request.POST.get('last_name', '').strip()
+        email = request.POST.get('email', '').strip()
+        phone_number = request.POST.get('phone_number', '').strip()
+        about = request.POST.get('about', '').strip() 
+        
+        if user_id:
+            try:
+                obj.user = User.objects.get(id=user_id)
+            except User.DoesNotExist:
+                pass
+        
+        obj.first_name = first_name
+        obj.last_name = last_name
+        obj.email = email
+        obj.phone_number = phone_number
+        obj.about = about
+        obj.updated_by = request.user
+        obj.save()
+        messages.success(request, 'Technician updated successfully.')
+        return redirect('backend:technician_list')
 
+    users = User.objects.filter(is_active=True, technician_profile__isnull=True)
+    context = {
+        'obj': obj,
+        'users': users
+    }
+    return render(request, 'technician/update.html', context)
+
+
+@login_required
+def technician_delete(request, data_id):
+    if not checkUserPermission(request, 'can_delete', '/backend/technician/'):
+        messages.error(request, 'You do not have permission to delete this technician.')
+        return render(request, '403.html', status=403)
+    
+    obj = get_object_or_404(Technician, pk=data_id, deleted=False)
+    obj.deleted = True
+    obj.deleted_by = request.user
+    obj.updated_at = timezone.now()
+    obj.save()
+    messages.success(request, 'Technician deleted successfully.')
+    return redirect('backend:technician_list')
 
 
 
@@ -1566,10 +1675,13 @@ def maintenance_record_review(request, record_id):
     from django.utils import timezone as tz
 
     record = get_object_or_404(MaintenanceRecord, pk=record_id, deleted=False)
+    referer = request.META.get('HTTP_REFERER')
+    fallback_url = reverse('backend:equipment_detail', kwargs={'data_id': record.equipment_id})
+    redirect_url = referer if referer else fallback_url
 
     if request.method != 'POST':
         messages.error(request, 'Invalid request method.')
-        return redirect('backend:equipment_detail', data_id=record.equipment_id)
+        return redirect(redirect_url)
 
     action = request.POST.get('action', '').strip()   # 'approve' or 'reject'
     review_notes = request.POST.get('review_notes', '').strip()
@@ -1586,7 +1698,7 @@ def maintenance_record_review(request, record_id):
     elif action == 'reject':
         if not review_notes:
             messages.error(request, 'Please provide a reason for rejection.')
-            return redirect('backend:equipment_detail', data_id=record.equipment_id)
+            return redirect(redirect_url)
         record.review_status = 'rejected'
         record.review_notes = review_notes
         record.reviewed_by = request.user
@@ -1598,7 +1710,7 @@ def maintenance_record_review(request, record_id):
     else:
         messages.error(request, 'Unknown action.')
 
-    return redirect('backend:equipment_detail', data_id=record.equipment_id)
+    return redirect(redirect_url)
 
 @login_required
 def equipment_history(request):
@@ -1720,9 +1832,60 @@ def ticket_detail(request, data_id):
         return render(request, '403.html', status=403)
     
     obj = get_object_or_404(Ticket, pk=data_id, deleted=False)
+
+    if request.method == 'POST':
+        if not checkUserPermission(request, 'can_update', '/backend/ticket/ticket/'):
+            messages.error(request, 'You do not have permission to assign technicians.')
+            return redirect('backend:ticket_detail', data_id=obj.id)
+            
+        technician_id = request.POST.get('technician_id')
+        if technician_id:
+            try:
+                technician_obj = Technician.objects.get(id=technician_id)
+                
+                # Check if already assigned
+                if not AssignTechnician.objects.filter(ticket=obj, technician=technician_obj, deleted=False).exists():
+                    AssignTechnician.objects.create(
+                        ticket=obj,
+                        technician=technician_obj,
+                        assign_by=request.user
+                    )
+
+                    # Also create an AssignActivities record so it appears on the technician's task list
+                    if not AssignActivities.objects.filter(ticket=obj, technician=technician_obj, is_active=True).exists():
+                        AssignActivities.objects.create(
+                            ticket=obj,
+                            technician=technician_obj,
+                            status='pending',
+                            completion_status='pending',
+                            created_by=request.user,
+                        )
+                    
+                    if obj.status == 'open':
+                        obj.status = 'assigned'
+                        obj.assigned_at = timezone.now()
+                        obj.save()
+                        
+                    TicketActivityLog.objects.create(
+                        ticket=obj,
+                        actor=request.user,
+                        action_type='assigned',
+                        description=f"Assigned technician: {technician_obj.display_name}"
+                    )
+                    
+                    messages.success(request, 'Technician assigned successfully.')
+                else:
+                    messages.warning(request, 'Technician is already assigned to this ticket.')
+            except Technician.DoesNotExist:
+                messages.error(request, 'Selected technician does not exist.')
+                
+        return redirect('backend:ticket_detail', data_id=obj.id)
+        
+    technicians = Technician.objects.filter(deleted=False, is_active=True)
     
     context = {
         'obj': obj,
+        'technicians': technicians,
     }
     return render(request, 'ticket/detail.html', context) 
 
@@ -1811,6 +1974,7 @@ def ticket_update(request, data_id):
     }
     return render(request, 'ticket/update.html', context)
 
+
 @login_required
 def ticket_status(request, data_id):
     if not checkUserPermission(request, 'can_update', '/backend/ticket/ticket/'):
@@ -1828,3 +1992,225 @@ def ticket_status(request, data_id):
 
     messages.error(request, 'Invalid request method.')
     return redirect('backend:ticket_list')
+
+
+@login_required
+def maintainance_task(request):
+    if not checkUserPermission(request, "can_view", 'maintainance'):
+        messages.error(request, 'You do not have permission to view maintainance tasks.')
+        return render(request, '403.html', status=403)
+
+    # Get current user's technician profile
+    technician = None
+    try:
+        technician = request.user.technician_profile
+    except Technician.DoesNotExist:
+        pass
+
+    activities = AssignActivities.objects.none()
+    if technician:
+        activities = AssignActivities.objects.filter(
+            technician=technician,
+            is_active=True,
+        ).select_related(
+            'ticket', 'ticket__equipment', 'ticket__equipment__equipment_type',
+            'ticket__building', 'technician',
+        ).order_by('-assigned_at')
+
+    # Filters
+    status_filter = request.GET.get('status', '')
+    completion_filter = request.GET.get('completion', '')
+    priority_filter = request.GET.get('priority', '')
+
+    if status_filter:
+        activities = activities.filter(status=status_filter)
+    if completion_filter:
+        activities = activities.filter(completion_status=completion_filter)
+    if priority_filter:
+        activities = activities.filter(ticket__priority=priority_filter)
+
+    # Stats
+    total_tasks = activities.count()
+    pending_count = activities.filter(completion_status='pending').count()
+    completed_count = activities.filter(completion_status='completed').count()
+    overdue_count = activities.filter(completion_status='overdue').count()
+
+    context = {
+        'activities': activities,
+        'technician': technician,
+        'status_filter': status_filter,
+        'completion_filter': completion_filter,
+        'priority_filter': priority_filter,
+        'total_tasks': total_tasks,
+        'pending_count': pending_count,
+        'completed_count': completed_count,
+        'overdue_count': overdue_count,
+    }
+    return render(request, 'maintainance/task.html', context)
+
+
+@login_required
+def maintainance_detail(request, pk):
+    if not checkUserPermission(request, "can_view", 'maintainance'):
+        messages.error(request, 'You do not have permission to view maintainance task.')
+        return render(request, '403.html', status=403)
+
+    activity = get_object_or_404(
+        AssignActivities.objects.select_related(
+            'ticket', 'ticket__equipment', 'ticket__equipment__equipment_type',
+            'ticket__building', 'technician', 'technician__user',
+        ),
+        pk=pk, is_active=True,
+    )
+
+    ticket = activity.ticket
+    equipment = ticket.equipment
+    building = ticket.building
+
+    # Handle POST actions (accept/reject, mark completion)
+    if request.method == 'POST':
+        action = request.POST.get('action', '')
+
+        if action == 'accept':
+            activity.status = 'accepted'
+            activity.updated_by = request.user
+            activity.save()
+            # Update ticket status
+            if ticket.status in ('open', 'assigned'):
+                ticket.status = 'in_progress'
+                ticket.save()
+            TicketActivityLog.objects.create(
+                ticket=ticket, actor=request.user,
+                action_type='status_changed',
+                description=f"Technician {activity.technician.display_name} accepted the task."
+            )
+            messages.success(request, 'Task accepted successfully.')
+
+        elif action == 'reject':
+            activity.status = 'rejected'
+            activity.completion_status = 'cancelled'
+            activity.updated_by = request.user
+            activity.save()
+            TicketActivityLog.objects.create(
+                ticket=ticket, actor=request.user,
+                action_type='status_changed',
+                description=f"Technician {activity.technician.display_name} rejected the task."
+            )
+            messages.success(request, 'Task rejected.')
+
+        elif action == 'complete':
+            activity.completion_status = 'completed'
+            activity.completed_at = timezone.now()
+            activity.updated_by = request.user
+            activity.save()
+            # Check if all activities for this ticket are completed
+            all_done = not AssignActivities.objects.filter(
+                ticket=ticket, is_active=True
+            ).exclude(completion_status__in=['completed', 'cancelled', 'skipped']).exists()
+            if all_done:
+                ticket.status = 'resolved'
+                ticket.resolved_at = timezone.now()
+                ticket.save()
+            TicketActivityLog.objects.create(
+                ticket=ticket, actor=request.user,
+                action_type='resolved',
+                description=f"Technician {activity.technician.display_name} marked task as completed."
+            )
+            messages.success(request, 'Task marked as completed.')
+
+        elif action == 'skip':
+            activity.completion_status = 'skipped'
+            activity.updated_by = request.user
+            activity.save()
+            messages.success(request, 'Task skipped.')
+
+        return redirect('backend:maintainance_detail', pk=activity.pk)
+
+    # Activity log for this ticket
+    activity_logs = TicketActivityLog.objects.filter(ticket=ticket).order_by('-created_at')[:20]
+
+    # Other technicians assigned to this ticket
+    other_assignments = AssignTechnician.objects.filter(
+        ticket=ticket, deleted=False
+    ).select_related('technician', 'technician__user')
+
+    # Maintenance records for this equipment
+    maintenance_records = MaintenanceRecord.objects.filter(
+        equipment=equipment, deleted=False
+    ).order_by('-maintenance_date')[:5]
+
+    context = {
+        'activity': activity,
+        'ticket': ticket,
+        'equipment': equipment,
+        'building': building,
+        'activity_logs': activity_logs,
+        'other_assignments': other_assignments,
+        'maintenance_records': maintenance_records,
+    }
+    return render(request, 'maintainance/detail.html', context)
+
+
+@login_required
+def maintanaince_checklist(request):
+    if not checkUserPermission(request, "can_view", 'maintainance'):
+        messages.error(request, 'You do not have permission to view maintainance checklist.')
+        return render(request, '403.html', status=403)
+
+    # Get current user's technician profile
+    technician = None
+    try:
+        technician = request.user.technician_profile
+    except Technician.DoesNotExist:
+        pass
+
+    checklist_items = AssignActivities.objects.none()
+    if technician:
+        checklist_items = AssignActivities.objects.filter(
+            technician=technician,
+            is_active=True,
+            status__in=['pending', 'accepted'],
+            completion_status__in=['pending'],
+        ).select_related(
+            'ticket', 'ticket__equipment', 'ticket__equipment__equipment_type',
+            'ticket__building', 'technician',
+        ).order_by(
+            '-ticket__priority', '-assigned_at'
+        )
+
+    # Handle bulk action
+    if request.method == 'POST':
+        item_id = request.POST.get('item_id', '')
+        action = request.POST.get('action', '')
+        if item_id and action:
+            try:
+                item = AssignActivities.objects.get(pk=item_id, technician=technician, is_active=True)
+                if action == 'complete':
+                    item.completion_status = 'completed'
+                    item.completed_at = timezone.now()
+                    item.status = 'accepted'
+                    item.updated_by = request.user
+                    item.save()
+                    messages.success(request, 'Checklist item completed.')
+                elif action == 'skip':
+                    item.completion_status = 'skipped'
+                    item.updated_by = request.user
+                    item.save()
+                    messages.success(request, 'Checklist item skipped.')
+            except AssignActivities.DoesNotExist:
+                messages.error(request, 'Checklist item not found.')
+        return redirect('backend:maintanaince_checklist')
+
+    # Summary stats
+    total_pending = checklist_items.count()
+    critical_count = checklist_items.filter(ticket__priority='critical').count()
+    high_count = checklist_items.filter(ticket__priority='high').count()
+
+    context = {
+        'checklist_items': checklist_items,
+        'technician': technician,
+        'total_pending': total_pending,
+        'critical_count': critical_count,
+        'high_count': high_count,
+    }
+    return render(request, 'maintainance/checklist.html', context)

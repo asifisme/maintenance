@@ -1,146 +1,174 @@
 {% extends 'base.html' %}
 {% block title %}{{ action }} Equipment{% endblock %}
 {% block content %}
-<section class="bg-slate-50 min-h-screen p-4 md:p-8 font-sans">
-    <div class="max-w-4xl mx-auto">
-        <!-- Header -->
-        <div class="flex items-center gap-4 mb-6">
-            <a href="{% url 'backend:equipment_list' %}" class="text-gray-600 hover:text-gray-900">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M15 18l-6-6 6-6"/>
-                </svg>
-            </a>
-            <h2 class="text-2xl font-bold text-gray-900">{{ action }} Equipment</h2>
-        </div>
-
-        <form method="post" enctype="multipart/form-data" class="space-y-6">
-            {% csrf_token %}
-            
-            <!-- Basic & General Info -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h3 class="text-lg font-bold text-gray-900 mb-6 border-b border-gray-100 pb-2">Basic & General Info</h3>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Equipment ID <span class="text-red-500">*</span></label>
-                        <input type="text" name="equipment_id" value="{{ obj.equipment_id|default:'' }}" class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none" required placeholder="e.g. EQ-1710">
+    <section class="bg-slate-50 min-h-screen p-4 md:p-8 font-sans">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="flex items-center gap-4 mb-6">
+                <a href="{% url 'backend:equipment_list' %}"
+                   class="text-gray-600 hover:text-gray-900">
+                    <svg width="24"
+                         height="24"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2"
+                         stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <path d="M15 18l-6-6 6-6" />
+                    </svg>
+                </a>
+                <h2 class="text-2xl font-bold text-gray-900">{{ action }} Equipment</h2>
+            </div>
+            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                <!-- Basic & General Info -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-6 border-b border-gray-100 pb-2">Basic & General Info</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Equipment ID <span class="text-red-500">*</span></label>
+                            <input type="text"
+                                   name="equipment_id"
+                                   value="{{ obj.equipment_id|default:'' }}"
+                                   class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
+                                   required
+                                   placeholder="e.g. EQ-1710">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Type <span class="text-red-500">*</span></label>
+                            <select name="equipment_type_id"
+                                    class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
+                                    required>
+                                <option value="">Select Type</option>
+                                {% for t in equipment_types %}
+                                    <option value="{{ t.id }}"
+                                            {% if obj.equipment_type_id == t.id %}selected{% endif %}>{{ t.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Type <span class="text-red-500">*</span></label>
-                        <select name="equipment_type_id" class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none" required>
-                            <option value="">Select Type</option>
-                            {% for t in equipment_types %}
-                                <option value="{{ t.id }}" {% if obj.equipment_type_id == t.id %}selected{% endif %}>{{ t.name }}</option>
+                    <div class="mb-6">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Building <span class="text-red-500">*</span></label>
+                        <select name="building_id"
+                                class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
+                                required>
+                            <option value="">Select Building</option>
+                            {% for b in buildings %}
+                                <option value="{{ b.id }}"
+                                        {% if obj.building_id == b.id %}selected{% endif %}>[{{ b.id }}] — {{ b.name }}
+                                    {% if b.surname %}({{ b.surname }}){% endif %}
+                                </option>
                             {% endfor %}
                         </select>
                     </div>
-                </div>
-
-                <div class="mb-6">
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Building <span class="text-red-500">*</span></label>
-                    <select name="building_id" class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none" required>
-                        <option value="">Select Building</option>
-                        {% for b in buildings %}
-                            <option value="{{ b.id }}" {% if obj.building_id == b.id %}selected{% endif %}>[{{ b.id }}] — {{ b.name }} {% if b.surname %}({{ b.surname }}){% endif %}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Brand</label>
-                        <input type="text" name="brand" value="{{ obj.brand|default:'' }}" class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none" placeholder="e.g. Otis, Daikin">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Floor / Location</label>
-                        <input type="text" name="floor_location" value="{{ obj.floor_location|default:'' }}" class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none" placeholder="e.g. Level 4 Lobby">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Maintenance Scheduling -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <div class="flex items-center gap-2 mb-6 pb-2 border-b border-gray-100">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-600">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
-                    <h3 class="text-lg font-bold text-gray-900">Maintenance Scheduling</h3>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Maintenance Period (Days)</label>
-                        <div class="relative">
-                            <input type="number" name="maintenance_period_days" value="{{ obj.maintenance_period_days|default:'90' }}" class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 pr-12 outline-none">
-                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-xs font-bold text-gray-400">
-                                DAYS
-                            </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Brand</label>
+                            <input type="text"
+                                   name="brand"
+                                   value="{{ obj.brand|default:'' }}"
+                                   class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
+                                   placeholder="e.g. Otis, Daikin">
                         </div>
-                        <p class="text-xs text-gray-500 mt-2">Frequency of routine checks after installation.</p>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Next Service Due</label>
-                        <input type="date" name="next_service_due" value="{{ obj.next_service_due|date:'Y-m-d'|default:'' }}" class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Floor / Location</label>
+                            <input type="text"
+                                   name="floor_location"
+                                   value="{{ obj.floor_location|default:'' }}"
+                                   class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
+                                   placeholder="e.g. Level 4 Lobby">
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            {% if action == 'Update' %}
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h3 class="text-lg font-bold text-gray-400 uppercase tracking-wider mb-6 pb-2 border-b border-gray-100">Status & Details</h3>
-                
-                <div class="mb-6">
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Status</label>
-                    <select name="status" class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none">
-                        <option value="active" {% if obj.status == 'active' %}selected{% endif %}>Active</option>
-                        <option value="in_repair" {% if obj.status == 'in_repair' %}selected{% endif %}>In Repair</option>
-                        <option value="under_maintenance" {% if obj.status == 'under_maintenance' %}selected{% endif %}>Under Maintenance</option>
-                        <option value="inactive" {% if obj.status == 'inactive' %}selected{% endif %}>Inactive</option>
-                        <option value="decommissioned" {% if obj.status == 'decommissioned' %}selected{% endif %}>Decommissioned</option>
-                    </select>
+                <!-- Maintenance Scheduling -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <div class="flex items-center gap-2 mb-6 pb-2 border-b border-gray-100">
+                        <svg width="20"
+                             height="20"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="2"
+                             stroke-linecap="round"
+                             stroke-linejoin="round"
+                             class="text-blue-600">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <h3 class="text-lg font-bold text-gray-900">Maintenance Scheduling</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Maintenance Period (Days)</label>
+                            <div class="relative">
+                                <input type="number"
+                                       name="maintenance_period_days"
+                                       value="{{ obj.maintenance_period_days|default:'90' }}"
+                                       class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 pr-12 outline-none">
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-xs font-bold text-gray-400">
+                                    DAYS
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2">Frequency of routine checks after installation.</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Next Service Due</label>
+                            <input type="date"
+                                   name="next_service_due"
+                                   value="{{ obj.next_service_due|date:'Y-m-d'|default:'' }}"
+                                   class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none">
+                        </div>
+                    </div>
                 </div>
-            </div>
-            {% endif %}
-
-            <!-- Form Actions -->
-            <div class="flex items-center gap-4 mt-6 pb-8">
-                <button type="submit" class="flex-1 md:flex-none md:w-64 bg-[#3B5998] hover:bg-blue-800 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 ease-in-out text-center">
-                    Save Equipment
-                </button>
-                <a href="{% url 'backend:equipment_list' %}" class="flex-1 md:flex-none bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3 px-6 rounded-lg transition duration-200 ease-in-out text-center">
-                    Cancel
-                </a>
-                
-<<<<<<< HEAD
                 {% if action == 'Update' %}
-                <div class="ml-auto">
-                    <button type="button" onclick="if(confirm('Are you sure you want to change status?')) { document.getElementById('status-form').submit(); }" class="{% if obj.is_active %}text-red-500 hover:text-red-700{% else %}text-green-500 hover:text-green-700{% endif %} font-semibold py-3 px-4 transition duration-200 text-sm">
-                        {% if obj.is_active %}Make Inactive{% else %}Make Active{% endif %}
-                    </button>
-                </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                        <h3 class="text-lg font-bold text-gray-400 uppercase tracking-wider mb-6 pb-2 border-b border-gray-100">Status & Details</h3>
+                        <div class="mb-6">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Status</label>
+                            <select name="status"
+                                    class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none">
+                                <option value="active" {% if obj.status == 'active' %}selected{% endif %}>Active</option>
+                                <option value="in_repair"
+                                        {% if obj.status == 'in_repair' %}selected{% endif %}>In Repair</option>
+                                <option value="under_maintenance"
+                                        {% if obj.status == 'under_maintenance' %}selected{% endif %}>Under Maintenance</option>
+                                <option value="inactive" {% if obj.status == 'inactive' %}selected{% endif %}>Inactive</option>
+                                <option value="decommissioned"
+                                        {% if obj.status == 'decommissioned' %}selected{% endif %}>Decommissioned</option>
+                            </select>
+                        </div>
+                    </div>
                 {% endif %}
-=======
-             
->>>>>>> origin
-            </div>
-        </form>
-        
-        {% if action == 'Update' %}
-        <form id="status-form" action="{% url 'backend:equipment_status' obj.id %}" method="post" style="display: none;">
-            {% csrf_token %}
-        </form>
-        {% endif %}
-    </div>
-</section>
+                <!-- Form Actions -->
+                <div class="flex items-center gap-4 mt-6 pb-8">
+                    <button type="submit"
+                            class="flex-1 md:flex-none md:w-64 bg-[#3B5998] hover:bg-blue-800 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 ease-in-out text-center">
+                        Save Equipment
+                    </button>
+                    <a href="{% url 'backend:equipment_list' %}"
+                       class="flex-1 md:flex-none bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3 px-6 rounded-lg transition duration-200 ease-in-out text-center">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+            {% if action == 'Update' %}
+                <form id="status-form"
+                      action="{% url 'backend:equipment_status' obj.id %}"
+                      method="post"
+                      style="display: none">
+                    {% csrf_token %}
+                </form>
+            {% endif %}
+        </div>
+    </section>
 {% endblock %}
 {% block extra_js %}
-<script>
+    <script>
   $(document).ready(function () {
     $('.select2-items').select2();
   });
-</script>
-{% endblock %} 
+    </script>
+{% endblock %}

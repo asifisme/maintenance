@@ -97,6 +97,22 @@
   },
   {
     "model": "backend.backendmenu",
+    "pk": 404,
+    "fields": {
+      "module_name": "Building",
+      "menu_name": "Technician",
+      "menu_url": "/technician/",
+      "menu_icon": "fa-solid fa-user-gear icon",
+      "menu_description": "Manage technician information.",
+      "parent_id": 400,
+      "is_main_menu": false,
+      "is_sub_menu": false,
+      "is_sub_child_menu": true,
+      "is_active": true
+    }
+  },
+  {
+    "model": "backend.backendmenu",
     "pk": 450,
     "fields": {
       "module_name": "Building",

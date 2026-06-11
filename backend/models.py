@@ -259,6 +259,13 @@ class Building(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
     deleted = models.BooleanField(default=False) 
+
+    def save(self, *args, **kwargs):
+        if not self.building_id:
+            base_id = slugify(self.name)[:30].upper()
+            unique_suffix = uuid.uuid4().hex[:6].upper()
+            self.building_id = f"{base_id}-{unique_suffix}"
+        super().save(*args, **kwargs) 
  
  
     def __str__(self):
@@ -267,7 +274,10 @@ class Building(models.Model):
  
 
 class Technician(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="technician_profile")
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="technician_profile", null=True, blank=True)
+    first_name = models.CharField(max_length=50, blank=True)
+    last_name = models.CharField(max_length=50, blank=True)
+    email = models.EmailField(blank=True) 
     phone_number = models.CharField(max_length=20, blank=True)
     about = models.TextField(blank=True)
 
@@ -279,7 +289,20 @@ class Technician(models.Model):
     deleted = models.BooleanField(default=False) 
  
     def __str__(self):
-        return self.user.get_full_name() or self.user.username
+        return self.display_name
+
+    @property
+    def display_name(self):
+        if self.user:
+            return self.user.get_full_name() or self.user.username
+        if self.first_name or self.last_name:
+            return f"{self.first_name} {self.last_name}".strip()
+        return "No User Assigned"
+
+    @property
+    def first_initial(self):
+        name = self.display_name
+        return name[0].upper() if name else "T"
 
 
 class EquipmentType(models.Model):
@@ -531,11 +554,57 @@ class TicketActivityLog(models.Model):
     action_type = models.CharField(max_length=30, choices=ACTION_TYPES)
     description = models.TextField()
     metadata    = models.JSONField(default=dict, blank=True,)
+    created_at  = models.DateTimeField(auto_now_add=True)
 
 
  
     def __str__(self):
         return f"{self.action_type} on {self.ticket.id} @ {self.created_at:%Y-%m-%d %H:%M}"
+    
+
+class AssignTechnician(models.Model):
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="assigned_technicians")
+    technician = models.ForeignKey(Technician, on_delete=models.SET_NULL, null=True, blank=True, related_name="assigned_tickets") 
+    assign_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="ticket_assignments") 
+    assigned_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True) 
+    deleted = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.technician}" 
+
+
+
+class AssignActivities(models.Model):
+
+    STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("accepted", "Accepted"),
+        ("rejected", "Rejected"),
+    ]
+
+    COMPLATE_STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("completed", "Completed"),
+        ("skipped", "Skipped"),
+        ('overdue', "Overdue"),
+        ("cancelled", "Cancelled"),
+    ]
+
+    technician = models.ForeignKey(Technician, on_delete=models.CASCADE, related_name="activities")
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="activities")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
+    completion_status = models.CharField(max_length=20, choices=COMPLATE_STATUS_CHOICES, default="pending")
+    
+    assigned_at = models.DateTimeField(auto_now_add=True)
+    completed_at = models.DateTimeField(null=True, blank=True) 
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assign_activity_created_by', blank=True, null=True)
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assign_activity_updated_by', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True) 
+
+
  
  
 
