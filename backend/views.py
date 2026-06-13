@@ -1664,8 +1664,12 @@ def equipment_detail(request, data_id):
     
     obj = get_object_or_404(Equipment, pk=data_id, deleted=False)
     
+    # Get active components
+    components = obj.components.filter(deleted=False).order_by('name')
+    
     context = {
         'obj': obj,
+        'components': components,
     }
     return render(request, 'equipment/detail.html', context)
 
