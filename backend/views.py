@@ -2322,7 +2322,7 @@ def maintenance_add(request):
         if qr_code and Maintenance.objects.filter(qr_code=qr_code, deleted=False).exists():
             errors.append("A maintenance record with this QR Code already exists.")
 
-        submitted_records = []
+            submitted_records = []
         for idx in indexes:
             eq_id = request.POST.get(f'records[{idx}][equipment_id]')
             rec_type = request.POST.get(f'records[{idx}][record_type]', 'routine')
@@ -2333,8 +2333,6 @@ def maintenance_add(request):
             cost = request.POST.get(f'records[{idx}][cost]') or None
             duration = request.POST.get(f'records[{idx}][duration_hours]') or None
             status = request.POST.get(f'records[{idx}][maintainance_status]', 'pending')
-            is_janitorial = request.POST.get(f'records[{idx}][is_janitorial]') == 'on'
-            attach_note = request.POST.get(f'records[{idx}][attachments_note]', '').strip()
 
             record_data = {
                 'equipment_id': eq_id,
@@ -2346,8 +2344,6 @@ def maintenance_add(request):
                 'cost': cost,
                 'duration_hours': duration,
                 'maintainance_status': status,
-                'is_janitorial': is_janitorial,
-                'attachments_note': attach_note,
             }
             submitted_records.append(record_data)
 
@@ -2405,7 +2401,6 @@ def maintenance_add(request):
                             tech_user = assigned_tech.user
                         except Technician.DoesNotExist:
                             pass
-
                     record = MaintenanceRecord(
                         equipment_id=rec['equipment_id'],
                         maintenance=maintenance,
@@ -2418,8 +2413,6 @@ def maintenance_add(request):
                         cost=rec['cost'],
                         duration_hours=rec['duration_hours'],
                         maintainance_status=rec['maintainance_status'],
-                        is_janitorial=rec['is_janitorial'],
-                        attachments_note=rec['attachments_note'],
                         created_by=request.user
                     )
                     record.save()
@@ -2546,8 +2539,6 @@ def maintenance_update(request, data_id):
             cost = request.POST.get(f'records[{idx}][cost]') or None
             duration = request.POST.get(f'records[{idx}][duration_hours]') or None
             status = request.POST.get(f'records[{idx}][maintainance_status]', 'pending')
-            is_janitorial = request.POST.get(f'records[{idx}][is_janitorial]') == 'on'
-            attach_note = request.POST.get(f'records[{idx}][attachments_note]', '').strip()
 
             record_data = {
                 'id': rec_id,
@@ -2560,8 +2551,6 @@ def maintenance_update(request, data_id):
                 'cost': cost,
                 'duration_hours': duration,
                 'maintainance_status': status,
-                'is_janitorial': is_janitorial,
-                'attachments_note': attach_note,
             }
             submitted_records.append(record_data)
 
@@ -2602,8 +2591,8 @@ def maintenance_update(request, data_id):
         try:
             with transaction.atomic():
                 obj.building_id = building_id
-                obj.maintenance_serial = maintenance_serial or f"MT-{uuid.uuid4().hex[:8].upper()}"
-                obj.qr_code = qr_code or f"QR-MT-{uuid.uuid4().hex[:8].upper()}"
+                obj.maintenance_serial = maintenance_serial or obj.maintenance_serial or f"MT-{uuid.uuid4().hex[:8].upper()}"
+                obj.qr_code = qr_code or obj.qr_code or f"QR-MT-{uuid.uuid4().hex[:8].upper()}"
                 obj.updated_by = request.user
                 obj.save()
 
@@ -2643,8 +2632,6 @@ def maintenance_update(request, data_id):
                         record.cost = rec['cost']
                         record.duration_hours = rec['duration_hours']
                         record.maintainance_status = rec['maintainance_status']
-                        record.is_janitorial = rec['is_janitorial']
-                        record.attachments_note = rec['attachments_note']
                         record.updated_by = request.user
                         record.save()
                     else:
@@ -2661,8 +2648,6 @@ def maintenance_update(request, data_id):
                             cost=rec['cost'],
                             duration_hours=rec['duration_hours'],
                             maintainance_status=rec['maintainance_status'],
-                            is_janitorial=rec['is_janitorial'],
-                            attachments_note=rec['attachments_note'],
                             created_by=request.user
                         )
                         record.save()
@@ -2691,8 +2676,6 @@ def maintenance_update(request, data_id):
             'cost': str(r.cost) if r.cost is not None else '',
             'duration_hours': str(r.duration_hours) if r.duration_hours is not None else '',
             'maintainance_status': r.maintainance_status,
-            'is_janitorial': r.is_janitorial,
-            'attachments_note': r.attachments_note,
         })
 
     context = {

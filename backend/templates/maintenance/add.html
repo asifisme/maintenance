@@ -62,7 +62,7 @@
             <div class="space-y-4">
                 <div class="flex justify-between items-center pb-2 border-b border-gray-100">
                     <h3 class="text-base font-bold text-gray-800 flex items-center gap-2">
-                        <i class="fas fa-clipboard-list text-indigo-500"></i> Equipment Maintenance 
+                        <i class="fas fa-clipboard-list text-indigo-500"></i> Equipment Maintenance
                     </h3>
                     <button type="button" id="add_record_btn"
                         class="inline-flex items-center gap-2 h-9 px-4 rounded-md bg-indigo-600 text-white hover:bg-indigo-700 transition-colors font-semibold text-xs shadow-sm">
@@ -259,7 +259,6 @@
             const workDesc = data ? data.work_description : '';
             const parts = data ? data.parts_replaced : '';
             const duration = data ? data.duration_hours : '';
-            const isJanitorial = (data && data.is_janitorial) ? 'checked' : '';
             const note = data ? data.attachments_note : '';
 
             const cardHtml = `
@@ -292,50 +291,24 @@
                             </div>
                         </div>
 
-                        <!-- Row 2: Assigned Tech, Status, Janitorial -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Assigned Technician</label>
-                                <select name="records[${idx}][technician_id]" class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-100 select2-dynamic">
-                                    ${techOptions}
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Task Status</label>
-                                <select name="records[${idx}][maintainance_status]" class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-100">
-                                    ${statusOptions}
-                                </select>
-                            </div>
-                            <div class="flex items-center pt-6">
-                                <label class="inline-flex items-center cursor-pointer select-none">
-                                    <input type="checkbox" name="records[${idx}][is_janitorial]" ${isJanitorial} class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4">
-                                    <span class="ml-2 text-xs font-bold text-gray-500 uppercase tracking-wider">Janitorial Task</span>
-                                </label>
-                            </div>
+                        <!-- Row 2: Assigned Tech -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Assigned Technician</label>
+                            <select name="records[${idx}][technician_id]" class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-100 select2-dynamic">
+                                ${techOptions}
+                            </select>
                         </div>
 
-                        <!-- Row 3: Parts Replaced, Duration -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Parts Replaced</label>
-                                <input type="text" name="records[${idx}][parts_replaced]" value="${parts}" placeholder="e.g. Filters, spark plug" class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-100">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Duration (Hrs)</label>
-                                <input type="number" name="records[${idx}][duration_hours]" value="${duration}" step="0.1" min="0" placeholder="0.0" class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-100">
-                            </div>
+                        <!-- Row 3: Parts Replaced -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Parts Replaced</label>
+                            <input type="text" name="records[${idx}][parts_replaced]" value="${parts}" placeholder="e.g. Filters, spark plug" class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-100">
                         </div>
 
-                        <!-- Row 4: Work Description, Notes -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Work Description / Issue <span class="text-red-500">*</span></label>
-                                <textarea name="records[${idx}][work_description]" rows="3" placeholder="Describe the issue or work done..." class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-100" required>${workDesc}</textarea>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Notes / Attachments Note</label>
-                                <textarea name="records[${idx}][attachments_note]" rows="3" placeholder="Any additional notes..." class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-100">${note}</textarea>
-                            </div>
+                        <!-- Row 4: Work Description -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Work Description / Issue <span class="text-red-500">*</span></label>
+                            <textarea name="records[${idx}][work_description]" rows="3" placeholder="Describe the issue or work done..." class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-100" required>${workDesc}</textarea>
                         </div>
                     </div>
                 </div>

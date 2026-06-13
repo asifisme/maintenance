@@ -474,10 +474,7 @@ class MaintenanceRecord(models.Model):
     reviewed_by       = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="reviewed_maintenance_records")
     reviewed_at       = models.DateTimeField(null=True, blank=True)
     review_notes      = models.TextField(blank=True, help_text="Reviewer comment (required on rejection).")
- 
-    # Optional flag 
-    is_janitorial     = models.BooleanField(default=False)
-    attachments_note  = models.TextField(blank=True)
+    
 
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='maintenance_record_created_by', blank=True, null=True)
     updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='maintenance_record_updated_by', blank=True, null=True)
