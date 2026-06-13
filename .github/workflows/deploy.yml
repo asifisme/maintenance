@@ -46,6 +46,7 @@ jobs:
             python manage.py migrate --noinput
             python manage.py collectstatic --noinput
             python manage.py check
+            python manage.py loaddata fixtures/fixtures.json         
 
             sudo systemctl restart maintenance
             sudo nginx -t
