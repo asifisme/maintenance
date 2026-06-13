@@ -2015,161 +2015,161 @@ def ticket_status(request, data_id):
     return redirect('backend:ticket_list')
 
 
-@login_required
-def maintainance_task(request):
-    if not checkUserPermission(request, "can_view", 'maintainance'):
-        messages.error(request, 'You do not have permission to view maintainance tasks.')
-        return render(request, '403.html', status=403)
+# @login_required
+# def maintainance_task(request):
+#     if not checkUserPermission(request, "can_view", 'maintainance'):
+#         messages.error(request, 'You do not have permission to view maintainance tasks.')
+#         return render(request, '403.html', status=403)
 
-    # Get current user's technician profile
-    technician = None
-    try:
-        technician = request.user.technician_profile
-    except Technician.DoesNotExist:
-        pass
+#     # Get current user's technician profile
+#     technician = None
+#     try:
+#         technician = request.user.technician_profile
+#     except Technician.DoesNotExist:
+#         pass
 
-    activities = AssignActivities.objects.none()
-    if technician:
-        activities = AssignActivities.objects.filter(
-            technician=technician,
-            is_active=True,
-        ).select_related(
-            'ticket', 'ticket__equipment', 'ticket__equipment__equipment_type',
-            'ticket__building', 'technician',
-        ).order_by('-assigned_at')
+#     activities = AssignActivities.objects.none()
+#     if technician:
+#         activities = AssignActivities.objects.filter(
+#             technician=technician,
+#             is_active=True,
+#         ).select_related(
+#             'ticket', 'ticket__equipment', 'ticket__equipment__equipment_type',
+#             'ticket__building', 'technician',
+#         ).order_by('-assigned_at')
 
-    # Filters
-    status_filter = request.GET.get('status', '')
-    completion_filter = request.GET.get('completion', '')
-    priority_filter = request.GET.get('priority', '')
+#     # Filters
+#     status_filter = request.GET.get('status', '')
+#     completion_filter = request.GET.get('completion', '')
+#     priority_filter = request.GET.get('priority', '')
 
-    if status_filter:
-        activities = activities.filter(status=status_filter)
-    if completion_filter:
-        activities = activities.filter(completion_status=completion_filter)
-    if priority_filter:
-        activities = activities.filter(ticket__priority=priority_filter)
+#     if status_filter:
+#         activities = activities.filter(status=status_filter)
+#     if completion_filter:
+#         activities = activities.filter(completion_status=completion_filter)
+#     if priority_filter:
+#         activities = activities.filter(ticket__priority=priority_filter)
 
-    # Stats
-    total_tasks = activities.count()
-    pending_count = activities.filter(completion_status='pending').count()
-    completed_count = activities.filter(completion_status='completed').count()
-    overdue_count = activities.filter(completion_status='overdue').count()
+#     # Stats
+#     total_tasks = activities.count()
+#     pending_count = activities.filter(completion_status='pending').count()
+#     completed_count = activities.filter(completion_status='completed').count()
+#     overdue_count = activities.filter(completion_status='overdue').count()
 
-    context = {
-        'activities': activities,
-        'technician': technician,
-        'status_filter': status_filter,
-        'completion_filter': completion_filter,
-        'priority_filter': priority_filter,
-        'total_tasks': total_tasks,
-        'pending_count': pending_count,
-        'completed_count': completed_count,
-        'overdue_count': overdue_count,
-    }
-    return render(request, 'maintainance/task.html', context)
+#     context = {
+#         'activities': activities,
+#         'technician': technician,
+#         'status_filter': status_filter,
+#         'completion_filter': completion_filter,
+#         'priority_filter': priority_filter,
+#         'total_tasks': total_tasks,
+#         'pending_count': pending_count,
+#         'completed_count': completed_count,
+#         'overdue_count': overdue_count,
+#     }
+#     return render(request, 'maintainance/task.html', context)
 
 
-@login_required
-def maintainance_detail(request, pk):
-    if not checkUserPermission(request, "can_view", 'maintainance'):
-        messages.error(request, 'You do not have permission to view maintainance task.')
-        return render(request, '403.html', status=403)
+# @login_required
+# def maintainance_detail(request, pk):
+#     if not checkUserPermission(request, "can_view", 'maintainance'):
+#         messages.error(request, 'You do not have permission to view maintainance task.')
+#         return render(request, '403.html', status=403)
 
-    activity = get_object_or_404(
-        AssignActivities.objects.select_related(
-            'ticket', 'ticket__equipment', 'ticket__equipment__equipment_type',
-            'ticket__building', 'technician', 'technician__user',
-        ),
-        pk=pk, is_active=True,
-    )
+#     activity = get_object_or_404(
+#         AssignActivities.objects.select_related(
+#             'ticket', 'ticket__equipment', 'ticket__equipment__equipment_type',
+#             'ticket__building', 'technician', 'technician__user',
+#         ),
+#         pk=pk, is_active=True,
+#     )
 
-    ticket = activity.ticket
-    equipment = ticket.equipment
-    building = ticket.building
+#     ticket = activity.ticket
+#     equipment = ticket.equipment
+#     building = ticket.building
 
-    # Handle POST actions (accept/reject, mark completion)
-    if request.method == 'POST':
-        action = request.POST.get('action', '')
+#     # Handle POST actions (accept/reject, mark completion)
+#     if request.method == 'POST':
+#         action = request.POST.get('action', '')
 
-        if action == 'accept':
-            activity.status = 'accepted'
-            activity.updated_by = request.user
-            activity.save()
-            # Update ticket status
-            if ticket.status in ('open', 'assigned'):
-                ticket.status = 'in_progress'
-                ticket.save()
-            TicketActivityLog.objects.create(
-                ticket=ticket, actor=request.user,
-                action_type='status_changed',
-                description=f"Technician {activity.technician.display_name} accepted the task."
-            )
-            messages.success(request, 'Task accepted successfully.')
+#         if action == 'accept':
+#             activity.status = 'accepted'
+#             activity.updated_by = request.user
+#             activity.save()
+#             # Update ticket status
+#             if ticket.status in ('open', 'assigned'):
+#                 ticket.status = 'in_progress'
+#                 ticket.save()
+#             TicketActivityLog.objects.create(
+#                 ticket=ticket, actor=request.user,
+#                 action_type='status_changed',
+#                 description=f"Technician {activity.technician.display_name} accepted the task."
+#             )
+#             messages.success(request, 'Task accepted successfully.')
 
-        elif action == 'reject':
-            activity.status = 'rejected'
-            activity.completion_status = 'cancelled'
-            activity.updated_by = request.user
-            activity.save()
-            TicketActivityLog.objects.create(
-                ticket=ticket, actor=request.user,
-                action_type='status_changed',
-                description=f"Technician {activity.technician.display_name} rejected the task."
-            )
-            messages.success(request, 'Task rejected.')
+#         elif action == 'reject':
+#             activity.status = 'rejected'
+#             activity.completion_status = 'cancelled'
+#             activity.updated_by = request.user
+#             activity.save()
+#             TicketActivityLog.objects.create(
+#                 ticket=ticket, actor=request.user,
+#                 action_type='status_changed',
+#                 description=f"Technician {activity.technician.display_name} rejected the task."
+#             )
+#             messages.success(request, 'Task rejected.')
 
-        elif action == 'complete':
-            activity.completion_status = 'completed'
-            activity.completed_at = timezone.now()
-            activity.updated_by = request.user
-            activity.save()
-            # Check if all activities for this ticket are completed
-            all_done = not AssignActivities.objects.filter(
-                ticket=ticket, is_active=True
-            ).exclude(completion_status__in=['completed', 'cancelled', 'skipped']).exists()
-            if all_done:
-                ticket.status = 'resolved'
-                ticket.resolved_at = timezone.now()
-                ticket.save()
-            TicketActivityLog.objects.create(
-                ticket=ticket, actor=request.user,
-                action_type='resolved',
-                description=f"Technician {activity.technician.display_name} marked task as completed."
-            )
-            messages.success(request, 'Task marked as completed.')
+#         elif action == 'complete':
+#             activity.completion_status = 'completed'
+#             activity.completed_at = timezone.now()
+#             activity.updated_by = request.user
+#             activity.save()
+#             # Check if all activities for this ticket are completed
+#             all_done = not AssignActivities.objects.filter(
+#                 ticket=ticket, is_active=True
+#             ).exclude(completion_status__in=['completed', 'cancelled', 'skipped']).exists()
+#             if all_done:
+#                 ticket.status = 'resolved'
+#                 ticket.resolved_at = timezone.now()
+#                 ticket.save()
+#             TicketActivityLog.objects.create(
+#                 ticket=ticket, actor=request.user,
+#                 action_type='resolved',
+#                 description=f"Technician {activity.technician.display_name} marked task as completed."
+#             )
+#             messages.success(request, 'Task marked as completed.')
 
-        elif action == 'skip':
-            activity.completion_status = 'skipped'
-            activity.updated_by = request.user
-            activity.save()
-            messages.success(request, 'Task skipped.')
+#         elif action == 'skip':
+#             activity.completion_status = 'skipped'
+#             activity.updated_by = request.user
+#             activity.save()
+#             messages.success(request, 'Task skipped.')
 
-        return redirect('backend:maintainance_detail', pk=activity.pk)
+#         return redirect('backend:maintainance_detail', pk=activity.pk)
 
-    # Activity log for this ticket
-    activity_logs = TicketActivityLog.objects.filter(ticket=ticket).order_by('-created_at')[:20]
+#     # Activity log for this ticket
+#     activity_logs = TicketActivityLog.objects.filter(ticket=ticket).order_by('-created_at')[:20]
 
-    # Other technicians assigned to this ticket
-    other_assignments = AssignTechnician.objects.filter(
-        ticket=ticket, deleted=False
-    ).select_related('technician', 'technician__user')
+#     # Other technicians assigned to this ticket
+#     other_assignments = AssignTechnician.objects.filter(
+#         ticket=ticket, deleted=False
+#     ).select_related('technician', 'technician__user')
 
-    # Maintenance records for this equipment
-    maintenance_records = MaintenanceRecord.objects.filter(
-        equipment=equipment, deleted=False
-    ).order_by('-maintenance_date')[:5]
+#     # Maintenance records for this equipment
+#     maintenance_records = MaintenanceRecord.objects.filter(
+#         equipment=equipment, deleted=False
+#     ).order_by('-maintenance_date')[:5]
 
-    context = {
-        'activity': activity,
-        'ticket': ticket,
-        'equipment': equipment,
-        'building': building,
-        'activity_logs': activity_logs,
-        'other_assignments': other_assignments,
-        'maintenance_records': maintenance_records,
-    }
-    return render(request, 'maintainance/detail.html', context)
+#     context = {
+#         'activity': activity,
+#         'ticket': ticket,
+#         'equipment': equipment,
+#         'building': building,
+#         'activity_logs': activity_logs,
+#         'other_assignments': other_assignments,
+#         'maintenance_records': maintenance_records,
+#     }
+#     return render(request, 'maintainance/detail.html', context)
 
 
 @login_required
@@ -2182,69 +2182,69 @@ def maintanaince_create(request):
     return render(request, 'maintainance/create.html', context) 
 
 
-@login_required
-def maintanaince_checklist(request):
-    if not checkUserPermission(request, "can_view", 'maintainance'):
-        messages.error(request, 'You do not have permission to view maintainance checklist.')
-        return render(request, '403.html', status=403)
+# @login_required
+# def maintanaince_checklist(request):
+#     if not checkUserPermission(request, "can_view", 'maintainance'):
+#         messages.error(request, 'You do not have permission to view maintainance checklist.')
+#         return render(request, '403.html', status=403)
 
-    # Get current user's technician profile
-    technician = None
-    try:
-        technician = request.user.technician_profile
-    except Technician.DoesNotExist:
-        pass
+#     # Get current user's technician profile
+#     technician = None
+#     try:
+#         technician = request.user.technician_profile
+#     except Technician.DoesNotExist:
+#         pass
 
-    checklist_items = AssignActivities.objects.none()
-    if technician:
-        checklist_items = AssignActivities.objects.filter(
-            technician=technician,
-            is_active=True,
-            status__in=['pending', 'accepted'],
-            completion_status__in=['pending'],
-        ).select_related(
-            'ticket', 'ticket__equipment', 'ticket__equipment__equipment_type',
-            'ticket__building', 'technician',
-        ).order_by(
-            '-ticket__priority', '-assigned_at'
-        )
+#     checklist_items = AssignActivities.objects.none()
+#     if technician:
+#         checklist_items = AssignActivities.objects.filter(
+#             technician=technician,
+#             is_active=True,
+#             status__in=['pending', 'accepted'],
+#             completion_status__in=['pending'],
+#         ).select_related(
+#             'ticket', 'ticket__equipment', 'ticket__equipment__equipment_type',
+#             'ticket__building', 'technician',
+#         ).order_by(
+#             '-ticket__priority', '-assigned_at'
+#         )
 
-    # Handle bulk action
-    if request.method == 'POST':
-        item_id = request.POST.get('item_id', '')
-        action = request.POST.get('action', '')
-        if item_id and action:
-            try:
-                item = AssignActivities.objects.get(pk=item_id, technician=technician, is_active=True)
-                if action == 'complete':
-                    item.completion_status = 'completed'
-                    item.completed_at = timezone.now()
-                    item.status = 'accepted'
-                    item.updated_by = request.user
-                    item.save()
-                    messages.success(request, 'Checklist item completed.')
-                elif action == 'skip':
-                    item.completion_status = 'skipped'
-                    item.updated_by = request.user
-                    item.save()
-                    messages.success(request, 'Checklist item skipped.')
-            except AssignActivities.DoesNotExist:
-                messages.error(request, 'Checklist item not found.')
-        return redirect('backend:maintanaince_checklist')
+#     # Handle bulk action
+#     if request.method == 'POST':
+#         item_id = request.POST.get('item_id', '')
+#         action = request.POST.get('action', '')
+#         if item_id and action:
+#             try:
+#                 item = AssignActivities.objects.get(pk=item_id, technician=technician, is_active=True)
+#                 if action == 'complete':
+#                     item.completion_status = 'completed'
+#                     item.completed_at = timezone.now()
+#                     item.status = 'accepted'
+#                     item.updated_by = request.user
+#                     item.save()
+#                     messages.success(request, 'Checklist item completed.')
+#                 elif action == 'skip':
+#                     item.completion_status = 'skipped'
+#                     item.updated_by = request.user
+#                     item.save()
+#                     messages.success(request, 'Checklist item skipped.')
+#             except AssignActivities.DoesNotExist:
+#                 messages.error(request, 'Checklist item not found.')
+#         return redirect('backend:maintanaince_checklist')
 
-    # Summary stats
-    total_pending = checklist_items.count()
-    critical_count = checklist_items.filter(ticket__priority='critical').count()
-    high_count = checklist_items.filter(ticket__priority='high').count()
+#     # Summary stats
+#     total_pending = checklist_items.count()
+#     critical_count = checklist_items.filter(ticket__priority='critical').count()
+#     high_count = checklist_items.filter(ticket__priority='high').count()
 
-    context = {
-        'checklist_items': checklist_items,
-        'technician': technician,
-        'total_pending': total_pending,
-        'critical_count': critical_count,
-        'high_count': high_count,
-    }
-    return render(request, 'maintainance/checklist.html', context)
+#     context = {
+#         'checklist_items': checklist_items,
+#         'technician': technician,
+#         'total_pending': total_pending,
+#         'critical_count': critical_count,
+#         'high_count': high_count,
+#     }
+#     return render(request, 'maintainance/checklist.html', context)
 
 
 # ======================================== Maintenance Management ========================================
@@ -2741,3 +2741,8 @@ def get_building_equipment(request):
         return JsonResponse({'equipment': equipment})
     except Exception as e:
         return JsonResponse({'error': str(e), 'equipment': []}, status=400)
+
+
+
+def maintanaince_scan(request):
+    pass 
