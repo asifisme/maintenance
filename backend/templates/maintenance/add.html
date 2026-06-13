@@ -2,12 +2,13 @@
 {% block title %}{{ action }} Maintenance Session{% endblock %}
 {% block content %}
 <section class="bg-[var(--bg-color)] text-[var(--text-color)] min-h-screen p-4">
-    <div class="bg-white rounded-lg p-6 shadow-sm ring-1 ring-[var(--border-color)] max-w-6xl mx-auto">
-        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
-
-            <div>
+    <div class="bg-white rounded-2xl p-6 shadow-sm ring-1 ring-[var(--border-color)] max-w-6xl mx-auto">
+        <!-- Page Header -->
+        <div class="flex items-center gap-4 mb-6 pb-4 border-b border-gray-100">
+            
+            <div> 
                 <h2 class="text-xl font-bold text-gray-900">{{ action }} Maintenance Session</h2>
-                <p class="text-xs text-gray-500">Create a new session, associate equipment, and write issues/logs.</p>
+                <p class="text-xs text-gray-500">Log a new maintenance session, assign a technician, and fill out the checklist.</p>
             </div>
         </div>
 
@@ -26,11 +27,11 @@
             {% csrf_token %}
 
             <!-- Top Header Metadata Settings -->
-            <div class="bg-slate-50 rounded-xl p-5 border border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-slate-50/50 rounded-2xl border border-slate-100 mb-6">
                 <!-- Building Selection -->
                 <div>
                     <label for="building_select"
-                        class="block mb-2 font-bold text-xs uppercase tracking-wider text-gray-600">
+                        class="block mb-1.5 font-bold text-xs uppercase tracking-wider text-gray-500">
                         Select Building <span class="text-red-600">*</span>
                     </label>
                     <select id="building_select" name="building" class="w-full select2-items" required>
@@ -46,53 +47,103 @@
                 <!-- Maintenance Date -->
                 <div>
                     <label for="maintenance_date"
-                        class="block mb-2 font-bold text-xs uppercase tracking-wider text-gray-600">
+                        class="block mb-1.5 font-bold text-xs uppercase tracking-wider text-gray-500">
                         Maintenance Date <span class="text-red-600">*</span>
                     </label>
                     <input type="date" id="maintenance_date" name="maintenance_date"
                         value="{{ submitted_date|default:default_date }}"
-                        class="w-full border border-gray-300 rounded p-2 focus:ring-2 focus:ring-indigo-200 outline-none text-sm h-[40px]"
+                        class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-100/50 focus:border-indigo-400 outline-none text-sm h-[40px] transition-all bg-white shadow-sm"
                         required>
                 </div>
             </div>
 
-            <!-- Dynamic Equipment Records Section -->
+            <!-- Equipment Maintenance Log Card Section -->
             <div class="space-y-4">
-                <div class="flex justify-between items-center pb-2 border-b border-gray-100">
-                    <h3 class="text-base font-bold text-gray-800 flex items-center gap-2">
-                        Equipment Maintenance
-                    </h3>
-                    <button type="button" id="add_record_btn"
-                        class="inline-flex items-center gap-2 h-9 px-4 rounded-md bg-indigo-600 text-white hover:bg-indigo-700 transition-colors font-semibold text-xs shadow-sm">
-                        <i class="fas fa-plus"></i> Add Equipment Record
-                    </button>
-                </div>
-
-                <!-- Empty State -->
-                <div id="empty_state" class="border-2 border-dashed border-gray-200 rounded-xl p-10 text-center">
-                    <div class="text-gray-400 mb-3">
-                        <i class="fas fa-city text-4xl"></i>
+                <!-- Empty State --> 
+                <div id="empty_state" class="border border-dashed border-slate-200 bg-slate-50/50 rounded-2xl p-12 text-center transition-all duration-300">
+                    <div class="w-16 h-16 bg-slate-100 text-[#4354a3] rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
+                        <i class="fas fa-city text-2xl"></i>
                     </div>
-                    <h4 class="text-sm font-semibold text-gray-700 mb-1">Select Building First</h4>
-                    <p class="text-xs text-gray-500 max-w-sm mx-auto">Please select a building above to load assets and
-                        begin logging maintenance records.</p>
+                    <h4 class="text-sm font-bold text-gray-700 mb-1">Select a Building</h4>
+                    <p class="text-xs text-gray-400 max-w-xs mx-auto leading-relaxed">Choose a building from the dropdown above to load active equipment and open the maintenance log.</p>
                 </div>
 
-                <!-- Records Container -->
-                <div id="records_container"></div>
+                <!-- Static Equipment Record Card -->
+                <div id="equipment_record_card" class="record-card bg-white rounded-2xl border border-slate-100 overflow-hidden mb-6 transition-all duration-200 hidden shadow-sm" data-index="0">
+                    <!-- Card Header -->
+                    <div class="bg-slate-50/70 px-6 py-4 border-b border-slate-100">
+                        <span class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                             Equipment Maintenance Log
+                        </span>
+                    </div>
+                    
+                    <!-- Card Body -->
+                    <div class="p-6 space-y-6">
+                        <!-- Row 1: Equipment, Type, Technician -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block mb-1.5 font-semibold text-[11px] uppercase tracking-wider text-gray-500">Equipment <span class="text-red-500">*</span></label>
+                                <select id="equipment_select" name="records[0][equipment_id]" class="w-full border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-100 select2-dynamic" required>
+                                    <option value="">Select Equipment</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block mb-1.5 font-semibold text-[11px] uppercase tracking-wider text-gray-500">Record Type</label>
+                                <select id="record_type_select" name="records[0][record_type]" class="w-full border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-100 h-[42px] bg-white outline-none">
+                                    {% for val, name in record_type_choices %}
+                                    <option value="{{ val }}">{{ name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block mb-1.5 font-semibold text-[11px] uppercase tracking-wider text-gray-500">Assigned Technician</label>
+                                <select id="technician_select" name="records[0][technician_id]" class="w-full border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-100 select2-dynamic">
+                                    <option value="">Select Technician</option>
+                                    {% for tech in technicians %}
+                                    <option value="{{ tech.id }}">{{ tech.display_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
 
-                <!-- No Records Warning Message -->
-                <div id="no_records_msg"
-                    class="hidden p-4 rounded-lg bg-amber-50 text-amber-800 ring-1 ring-amber-200 text-sm font-medium flex items-center gap-2">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    Please add at least one equipment record before saving.
+                        <!-- Row 2: Work Description -->
+                        <div>
+                            <label class="block mb-1.5 font-semibold text-[11px] uppercase tracking-wider text-gray-500">Work Description / Issue <span class="text-red-500">*</span></label>
+                            <textarea id="work_description" name="records[0][work_description]" rows="4" placeholder="Describe the issue discovered or the maintenance work performed in detail..." class="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-100/50 focus:border-indigo-400 outline-none transition-all shadow-sm" required></textarea>
+                        </div>
+
+                        <!-- Row 3: Components Checklist -->
+                        <div class="mt-6 pt-6 border-t border-slate-100">
+                            <label class="block mb-3 font-semibold text-[11px] uppercase tracking-wider text-gray-500">
+                                Components Checklist & Details
+                            </label>
+                            
+                            <!-- Container for loaded components checklist -->
+                            <div id="components_container" class="components-container space-y-3 mb-4" data-record-idx="0">
+                                <div class="text-xs text-gray-400 italic">No equipment selected or components not loaded yet.</div>
+                            </div>
+                            
+                            <!-- Add custom component -->
+                            <div class="flex items-center gap-2 max-w-md mt-4">
+                                <div class="relative flex-1">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                        <i class="fas fa-plus-circle text-xs"></i>
+                                    </div>
+                                    <input type="text" id="new_component_name" class="new-component-name w-full pl-8 pr-3 py-2 border border-slate-200 rounded-lg text-xs outline-none focus:ring-2 focus:ring-indigo-100/50 focus:border-indigo-400 transition-all h-[34px]" placeholder="Add custom component name...">
+                                </div>
+                                <button type="button" id="add_custom_comp_btn" class="add-custom-comp-btn h-[34px] px-4 rounded-lg bg-[#4354a3] hover:bg-[#323f80] text-white font-semibold text-xs shadow-sm transition-colors">
+                                    Add Component
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- Buttons -->
             <div class="pt-6 flex gap-3 border-t border-gray-100">
                 <button type="submit"
-                    class="h-11 px-6 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-colors shadow-sm text-sm">
+                    class="h-11 px-6 rounded-lg bg-[#4354a3] text-white font-semibold transition-colors shadow-sm text-sm">
                     Save Maintenance Session
                 </button>
                 <a href="{% url 'backend:maintenance' %}"
@@ -125,8 +176,12 @@
             width: '100%'
         });
 
+        // Initialize Select2 on the static dynamic dropdowns
+        $('.select2-dynamic').select2({
+            width: '100%'
+        });
+
         let currentBuildingEquipment = [];
-        let recordIndex = 0;
         let previousBuildingId = $('#building_select').val();
 
         // If a building is pre-selected (like on validation error redirect), load the equipment immediately
@@ -139,9 +194,10 @@
             const buildingId = $(this).val();
             if (buildingId === previousBuildingId) return;
 
-            const rowCount = $('#records_container .record-card').length;
-            if (rowCount > 0) {
-                if (!confirm("Changing the building will clear all added equipment records. Do you want to proceed?")) {
+            // Since it's a single form, check if they typed anything in work description
+            const hasData = $('#work_description').val().trim() !== '' || $('#equipment_select').val() !== '';
+            if (hasData) {
+                if (!confirm("Changing the building will reset the equipment record. Do you want to proceed?")) {
                     $(this).val(previousBuildingId).trigger('change.select2');
                     return;
                 }
@@ -154,15 +210,14 @@
         // Load Building Equipment via AJAX
         function loadBuildingEquipment(buildingId, isOnLoad = false) {
             if (!buildingId) {
-                $('#records_container').empty();
+                $('#equipment_record_card').addClass('hidden');
                 $('#empty_state').removeClass('hidden');
                 currentBuildingEquipment = [];
-                updateRowIndices();
                 return;
             }
 
             // Show loading placeholder
-            $('#empty_state').html(`
+            $('#empty_state').removeClass('hidden').html(`
                 <div class="text-gray-400 mb-3">
                     <i class="fas fa-spinner fa-spin text-3xl text-indigo-500"></i>
                 </div>
@@ -175,22 +230,59 @@
                 data: { building_id: buildingId },
                 success: function (response) {
                     currentBuildingEquipment = response.equipment || [];
-                    $('#records_container').empty();
 
                     if (currentBuildingEquipment.length > 0) {
                         $('#empty_state').addClass('hidden');
+                        $('#equipment_record_card').removeClass('hidden');
 
-                        // If returning from validation error, rebuild rows
+                        // Rebuild equipment dropdown options
+                        let eqOptions = '<option value="">Select Equipment</option>';
+                        currentBuildingEquipment.forEach(item => {
+                            eqOptions += `<option value="${item.id}">${item.equipment_id}</option>`;
+                        });
+                        $('#equipment_select').html(eqOptions).trigger('change.select2');
+
+                        // If returning from validation error, pre-populate the static fields
                         if (isOnLoad && submittedRecords && submittedRecords.length > 0) {
-                            submittedRecords.forEach(function (rec) {
-                                addRecordRow(rec);
-                            });
+                            const rec = submittedRecords[0];
+                            if (rec.equipment_id) {
+                                $('#equipment_select').val(rec.equipment_id).trigger('change.select2');
+                            }
+                            if (rec.record_type) {
+                                $('#record_type_select').val(rec.record_type);
+                            }
+                            if (rec.technician_id) {
+                                $('#technician_select').val(rec.technician_id).trigger('change.select2');
+                            }
+                            if (rec.work_description) {
+                                $('#work_description').val(rec.work_description);
+                            }
+                            
+                            // Load components
+                            if (rec.components && rec.components.length > 0) {
+                                $('#components_container').empty();
+                                rec.components.forEach((comp, c_idx) => {
+                                    addComponentRow(c_idx, comp, comp.is_checked);
+                                });
+                            } else if (rec.equipment_id) {
+                                loadEquipmentComponents(rec.equipment_id);
+                            }
                             submittedRecords = []; // Clear
                         } else {
-                            // Automatically add one row to start
-                            addRecordRow();
+                            // Reset/clear fields if new building selection
+                            if (!isOnLoad) {
+                                $('#work_description').val('');
+                                $('#components_container').html('<div class="text-xs text-gray-400 italic">No equipment selected or components not loaded yet.</div>');
+                                // Preselect logged-in technician by default
+                                if (loggedInTechId) {
+                                    $('#technician_select').val(loggedInTechId).trigger('change.select2');
+                                } else {
+                                    $('#technician_select').val('').trigger('change.select2');
+                                }
+                            }
                         }
                     } else {
+                        $('#equipment_record_card').addClass('hidden');
                         $('#empty_state').removeClass('hidden').html(`
                             <div class="text-amber-500 mb-3">
                                 <i class="fas fa-exclamation-triangle text-3xl"></i>
@@ -198,10 +290,10 @@
                             <h4 class="text-sm font-semibold text-gray-700">No Equipment Found</h4>
                             <p class="text-xs text-gray-500 max-w-sm mx-auto">This building does not have any active equipment. Please configure equipment first.</p>
                         `);
-                        updateRowIndices();
                     }
                 },
                 error: function () {
+                    $('#equipment_record_card').addClass('hidden');
                     $('#empty_state').removeClass('hidden').html(`
                         <div class="text-red-500 mb-3">
                             <i class="fas fa-times-circle text-3xl"></i>
@@ -209,178 +301,24 @@
                         <h4 class="text-sm font-semibold text-red-600">Error Loading Assets</h4>
                         <p class="text-xs text-gray-500">Something went wrong. Please refresh the page and try again.</p>
                     `);
-                    updateRowIndices();
                 }
             });
-        }
-
-        // Add Row Button click handler
-        $('#add_record_btn').on('click', function () {
-            const buildingId = $('#building_select').val();
-            if (!buildingId) {
-                alert("Please select a building first.");
-                return;
-            }
-            if (currentBuildingEquipment.length === 0) {
-                alert("No equipment available for this building.");
-                return;
-            }
-            addRecordRow();
-        });
-
-        // Add a single equipment record card to container
-        function addRecordRow(data = null) {
-            const idx = recordIndex++;
-
-            // Build equipment choices
-            let eqOptions = '<option value="">Select Equipment</option>';
-            currentBuildingEquipment.forEach(item => {
-                const isSel = (data && String(data.equipment_id) === String(item.id)) ? 'selected' : '';
-                eqOptions += `<option value="${item.id}" ${isSel}>${item.equipment_id}</option>`;
-            });
-
-            // Build select options using Django contexts
-            let typeOptions = '';
-            {% for val, name in record_type_choices %}
-            typeOptions += `<option value="{{ val }}" ${data && data.record_type === '{{ val }}' ? 'selected' : ''}>{{ name }}</option>`;
-            {% endfor %}
-
-            let techOptions = '<option value="">Select Technician</option>';
-            {% for tech in technicians %}
-            {
-                let isTechSelected = '';
-                if (data && String(data.technician_id) === '{{ tech.id }}') {
-                    isTechSelected = 'selected';
-                } else if (!data && loggedInTechId && String(loggedInTechId) === '{{ tech.id }}') {
-                    isTechSelected = 'selected';
-                }
-                techOptions += `<option value="{{ tech.id }}" ${isTechSelected}>{{ tech.display_name }}</option>`;
-            }
-            {% endfor %}
-
-            let statusOptions = '';
-            {% for val, name in status_choices %}
-            statusOptions += `<option value="{{ val }}" ${data && data.maintainance_status === '{{ val }}' ? 'selected' : ''}>{{ name }}</option>`;
-            {% endfor %}
-
-            // Field values
-            const workDesc = (data && data.work_description) ? data.work_description : '';
-            const parts = (data && data.parts_replaced) ? data.parts_replaced : '';
-            const duration = (data && data.duration_hours) ? data.duration_hours : '';
-            const note = (data && data.attachments_note) ? data.attachments_note : '';
-
-            const cardHtml = `
-                <div class="record-card bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-5 transition-all duration-200 hover:shadow-md" data-index="${idx}">
-                    <!-- Card Header -->
-                    <div class="bg-slate-50 px-4 py-3 border-b border-gray-200 flex justify-between items-center">
-                        <span class="text-sm font-bold text-slate-700 flex items-center gap-2">
-                             Equipment Record #${idx + 1}
-                        </span>
-                        <button type="button" class="remove-btn text-xs font-semibold text-red-500 hover:text-red-700 transition-colors flex items-center gap-1">
-                            <i class="fas fa-trash-alt"></i> Remove
-                        </button>
-                    </div>
-                    
-                    <!-- Card Body -->
-                    <div class="p-5 space-y-4">
-                        <!-- Row 1: Equipment, Type -->
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            <div class="md:col-span-3">
-                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Equipment <span class="text-red-500">*</span></label>
-                                <select name="records[${idx}][equipment_id]" class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-100 select2-dynamic" required>
-                                    ${eqOptions}
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Record Type</label>
-                                <select name="records[${idx}][record_type]" class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-100">
-                                    ${typeOptions}
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Row 2: Assigned Tech -->
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Assigned Technician</label>
-                            <select name="records[${idx}][technician_id]" class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-100 select2-dynamic">
-                                ${techOptions}
-                            </select>
-                        </div>
-
-                        <!-- Row 3: Parts Replaced -->
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Parts Replaced</label>
-                            <input type="text" name="records[${idx}][parts_replaced]" value="${parts}" placeholder="e.g. Filters, spark plug" class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-100">
-                        </div>
-
-                        <!-- Row 4: Work Description -->
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Work Description / Issue <span class="text-red-500">*</span></label>
-                            <textarea name="records[${idx}][work_description]" rows="3" placeholder="Describe the issue or work done..." class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-100" required>${workDesc}</textarea>
-                        </div>
-
-                        <!-- Row 5: Components Checklist -->
-                        <div class="mt-4 pt-4 border-t border-gray-100">
-                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-                                Components Checklist & Details
-                            </label>
-                            
-                            <!-- Container for loaded components checklist -->
-                            <div class="components-container space-y-3 mb-4" data-record-idx="${idx}">
-                                <div class="text-xs text-gray-400 italic">No equipment selected or components not loaded yet.</div>
-                            </div>
-                            
-                            <!-- Add custom component -->
-                            <div class="flex items-center gap-2 max-w-md">
-                                <input type="text" class="new-component-name border rounded px-3 py-1.5 text-xs flex-1 outline-none focus:ring-2 focus:ring-indigo-100" placeholder="Custom component name...">
-                                <button type="button" class="add-custom-comp-btn h-8 px-3 rounded bg-indigo-600 text-white hover:bg-indigo-700 font-semibold text-xs transition-colors">
-                                    Add Component
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            $('#records_container').append(cardHtml);
-
-            // Initialize select2 on the newly created dropdowns
-            $(`.record-card[data-index="${idx}"] .select2-dynamic`).select2({
-                width: '100%'
-            });
-
-            // If data is provided, load components
-            const card = $(`.record-card[data-index="${idx}"]`);
-            const compContainer = card.find('.components-container');
-
-            if (data && data.equipment_id) {
-                if (data.components && data.components.length > 0) {
-                    compContainer.empty();
-                    data.components.forEach((comp, c_idx) => {
-                        addComponentRow(idx, c_idx, comp, compContainer, comp.is_checked);
-                    });
-                } else {
-                    loadEquipmentComponents(idx, data.equipment_id, compContainer);
-                }
-            }
-
-            updateRowIndices();
         }
 
         // Helper to load components via AJAX
-        function loadEquipmentComponents(idx, eqId, container, selectedComps = null) {
+        function loadEquipmentComponents(eqId, selectedComps = null) {
             if (!eqId) {
-                container.html('<div class="text-xs text-gray-400 italic">No equipment selected or components not loaded yet.</div>');
+                $('#components_container').html('<div class="text-xs text-gray-400 italic">No equipment selected or components not loaded yet.</div>');
                 return;
             }
-            container.html('<div class="text-xs text-gray-500"><i class="fas fa-spinner fa-spin mr-1"></i> Loading components...</div>');
+            $('#components_container').html('<div class="text-xs text-gray-500"><i class="fas fa-spinner fa-spin mr-1"></i> Loading components...</div>');
 
             $.ajax({
                 url: '{% url "backend:get_equipment_components" %}',
                 type: 'GET',
                 data: { equipment_id: eqId },
                 success: function (response) {
-                    container.empty();
+                    $('#components_container').empty();
                     const components = response.components || [];
                     if (components.length > 0) {
                         components.forEach((comp, c_idx) => {
@@ -395,67 +333,61 @@
                                     suggestion = matched.suggestion || '';
                                 }
                             }
-                            addComponentRow(idx, c_idx, { name: comp.name, remark: remark, suggestion: suggestion }, container, isChecked);
+                            addComponentRow(c_idx, { name: comp.name, remark: remark, suggestion: suggestion }, isChecked);
                         });
                     } else {
-                        container.html('<div class="text-xs text-gray-400 italic">No components pre-configured for this equipment. You can add custom ones below.</div>');
+                        $('#components_container').html('<div class="text-xs text-gray-400 italic">No components pre-configured for this equipment. You can add custom ones below.</div>');
                     }
                 },
                 error: function () {
-                    container.html('<div class="text-xs text-red-500">Error loading components.</div>');
+                    $('#components_container').html('<div class="text-xs text-red-500">Error loading components.</div>');
                 }
             });
         }
 
         // Helper to append a single component row in the checklist
-        function addComponentRow(idx, c_idx, comp, container, isChecked = false) {
+        function addComponentRow(c_idx, comp, isChecked = false) {
             // Remove empty/placeholder state if it exists
-            container.find('.text-gray-400, .text-red-500, .text-gray-500').remove();
+            $('#components_container').find('.text-gray-400, .text-red-500, .text-gray-500').remove();
 
             const compRowHtml = `
-                <div class="component-row grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-50 p-2.5 rounded-lg border border-slate-100" data-comp-idx="${c_idx}">
-                    <!-- Checkbox + Name -->
-                    <div class="md:col-span-4 flex items-center gap-2">
-                        <input type="checkbox" name="records[${idx}][components][${c_idx}][is_checked]" id="comp_${idx}_${c_idx}" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" ${isChecked ? 'checked' : ''}>
-                        <label for="comp_${idx}_${c_idx}" class="text-xs font-semibold text-slate-700 break-all cursor-pointer">${comp.name}</label>
-                        <input type="hidden" name="records[${idx}][components][${c_idx}][name]" value="${comp.name}">
+                <div class="component-row flex flex-col md:flex-row items-center gap-3 p-3 bg-slate-50/50 rounded-xl border border-slate-100 hover:border-slate-200 transition-all duration-200" data-comp-idx="${c_idx}">
+                    <!-- Checkbox + Label -->
+                    <div class="w-full md:w-1/3 flex items-center gap-3">
+                        <input type="checkbox" name="records[0][components][${c_idx}][is_checked]" id="comp_0_${c_idx}" class="w-4 h-4 text-[#4354a3] border-gray-300 rounded focus:ring-[#4354a3]/20" ${isChecked ? 'checked' : ''}>
+                        <label for="comp_0_${c_idx}" class="text-xs font-semibold text-gray-700 select-none cursor-pointer break-all">${comp.name}</label>
+                        <input type="hidden" name="records[0][components][${c_idx}][name]" value="${comp.name}">
                     </div>
-                    <!-- Remark -->
-                    <div class="md:col-span-4">
-                        <input type="text" name="records[${idx}][components][${c_idx}][remark]" value="${comp.remark || ''}" placeholder="Remark (optional)" class="w-full border border-gray-200 rounded p-1 text-xs outline-none focus:ring-2 focus:ring-indigo-100">
+                    <!-- Remark Input -->
+                    <div class="w-full md:w-1/3">
+                        <input type="text" name="records[0][components][${c_idx}][remark]" value="${comp.remark || ''}" placeholder="Remark (optional)" class="w-full border border-slate-200 rounded-lg px-3 py-1.5 text-xs outline-none focus:ring-2 focus:ring-indigo-100/50 focus:border-indigo-400 transition-all">
                     </div>
-                    <!-- Suggestion -->
-                    <div class="md:col-span-3">
-                        <input type="text" name="records[${idx}][components][${c_idx}][suggestion]" value="${comp.suggestion || ''}" placeholder="Suggestion (optional)" class="w-full border border-gray-200 rounded p-1 text-xs outline-none focus:ring-2 focus:ring-indigo-100">
+                    <!-- Suggestion Input -->
+                    <div class="w-full md:w-1/4">
+                        <input type="text" name="records[0][components][${c_idx}][suggestion]" value="${comp.suggestion || ''}" placeholder="Suggestion (optional)" class="w-full border border-slate-200 rounded-lg px-3 py-1.5 text-xs outline-none focus:ring-2 focus:ring-indigo-100/50 focus:border-indigo-400 transition-all">
                     </div>
-                    <!-- Remove Button -->
-                    <div class="md:col-span-1 text-right">
-                        <button type="button" class="remove-comp-btn text-red-500 hover:text-red-700 text-xs font-bold transition-colors">
-                            <i class="fas fa-trash-alt"></i>
+                    <!-- Delete Action -->
+                    <div class="w-auto ml-auto md:ml-0">
+                        <button type="button" class="remove-comp-btn text-gray-400 hover:text-red-500 p-1 rounded-lg hover:bg-red-50 transition-colors">
+                            <i class="fas fa-trash-alt text-sm"></i>
                         </button>
                     </div>
                 </div>
             `;
-            container.append(compRowHtml);
+            $('#components_container').append(compRowHtml);
         }
 
-        // Handle equipment change in any record card
-        $(document).on('change', 'select[name$="[equipment_id]"]', function () {
-            const selectEl = $(this);
-            const card = selectEl.closest('.record-card');
-            const idx = card.data('index');
-            const eqId = selectEl.val();
-            const compContainer = card.find('.components-container');
-
-            loadEquipmentComponents(idx, eqId, compContainer);
+        // Handle equipment change
+        $('#equipment_select').on('change', function () {
+            const eqId = $(this).val();
+            // Don't trigger loading components if we're in the middle of pre-populating validation error records
+            if (submittedRecords && submittedRecords.length > 0) return;
+            loadEquipmentComponents(eqId);
         });
 
         // Handle adding a custom component
-        $(document).on('click', '.add-custom-comp-btn', function () {
-            const btn = $(this);
-            const card = btn.closest('.record-card');
-            const idx = card.data('index');
-            const input = card.find('.new-component-name');
+        $('#add_custom_comp_btn').on('click', function () {
+            const input = $('#new_component_name');
             const compName = input.val().trim();
 
             if (!compName) {
@@ -463,11 +395,9 @@
                 return;
             }
 
-            const compContainer = card.find('.components-container');
-
             // Find max c_idx currently in the container
             let max_c_idx = -1;
-            compContainer.find('.component-row').each(function () {
+            $('#components_container .component-row').each(function () {
                 const c_idx = parseInt($(this).data('comp-idx'));
                 if (c_idx > max_c_idx) {
                     max_c_idx = c_idx;
@@ -475,46 +405,20 @@
             });
             const next_c_idx = max_c_idx + 1;
 
-            addComponentRow(idx, next_c_idx, { name: compName }, compContainer, true); // Checked by default when added manually
+            addComponentRow(next_c_idx, { name: compName }, true); // Checked by default when added manually
             input.val(''); // Clear input
         });
 
         // Handle component removal
         $(document).on('click', '.remove-comp-btn', function () {
             const row = $(this).closest('.component-row');
-            const container = row.parent();
             row.remove();
 
             // If empty, show placeholder
-            if (container.find('.component-row').length === 0) {
-                container.html('<div class="text-xs text-gray-400 italic">No components pre-configured for this equipment. You can add custom ones below.</div>');
+            if ($('#components_container .component-row').length === 0) {
+                $('#components_container').html('<div class="text-xs text-gray-400 italic">No components pre-configured for this equipment. You can add custom ones below.</div>');
             }
         });
-
-        // Handle record removal
-        $(document).on('click', '.remove-btn', function () {
-            const card = $(this).closest('.record-card');
-            card.slideUp(200, function () {
-                card.remove();
-                updateRowIndices();
-            });
-        });
-
-        // Update card label numbers and toggle warnings
-        function updateRowIndices() {
-            const cards = $('#records_container .record-card');
-            if (cards.length === 0) {
-                $('#no_records_msg').removeClass('hidden');
-            } else {
-                $('#no_records_msg').addClass('hidden');
-            }
-
-            cards.each(function (index) {
-                $(this).find('.bg-slate-50 span').html(`
-                    <i class="fas fa-tools text-indigo-500"></i> Equipment Record #${index + 1}
-                `);
-            });
-        }
     });
 </script>
 {% endblock %}
