@@ -1,0 +1,5 @@
+nginx -t
+systemctl restart nginx
+
+systemctl restart maintenance
+systemctl status maintenance

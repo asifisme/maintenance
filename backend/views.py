@@ -4,6 +4,7 @@ import base64
 import logging
 import qrcode 
 import json
+import uuid
 import calendar
 from datetime import datetime, date 
 from urllib import request
@@ -50,12 +51,14 @@ from backend.models import (
     LoginLog, BackendMenu, UserMenuPermission, WebImages, SiteSettings,
     Division, SubDivision, Section, Building, EquipmentType, EquipmentTypeData, Equipment,
     Ticket, TicketComment, TicketActivityLog, AssignTechnician, Technician, AssignActivities,
-    ScheduledMaintenance, CriticalAlert, MaintenanceRecord,
+    ScheduledMaintenance, CriticalAlert, Maintenance, MaintenanceRecord, MaintenanceAttachment,
+    EquipmentComponents, MaintenanceComponent,
 )
 from django.db.models import Count
 
 from backend.forms import (
     CustomUserLoginForm,
+    MaintenanceForm,
 )
 
 
@@ -1478,7 +1481,7 @@ def equipment_list(request):
     type_id = request.GET.get('type_id', '').strip()
     status = request.GET.get('status', '').strip()
     
-    qs = Equipment.objects.filter(deleted=False).select_related('equipment_type', 'building')
+    qs = Equipment.objects.filter(deleted=False).select_related('equipment_type', 'building').annotate(components_count=Count('components'))
     
     if search:
         qs = qs.filter(Q(equipment_id__icontains=search) | Q(brand__icontains=search) | Q(building__name__icontains=search))
@@ -1504,6 +1507,7 @@ def equipment_list(request):
     }   
     return render(request, 'equipment/list.html', context)
 
+from backend.models import EquipmentComponents 
 
 @login_required
 def equipment_add(request):
@@ -1520,6 +1524,10 @@ def equipment_add(request):
         building_id = request.POST.get('building_id', '')
         brand = request.POST.get('brand', '').strip()
         floor_location = request.POST.get('floor_location', '').strip()
+
+        # components 
+        component_names = request.POST.getlist('component_name[]')
+        component_descriptions = request.POST.getlist('component_description[]')
         
         maintenance_period_days = request.POST.get('maintenance_period_days', '90')
         next_service_due = request.POST.get('next_service_due', '')
@@ -1538,6 +1546,19 @@ def equipment_add(request):
                 created_by=request.user
             )
             obj.save()
+            
+            # Save components
+            for i in range(len(component_names)):
+                c_name = component_names[i].strip()
+                c_desc = component_descriptions[i].strip() if i < len(component_descriptions) else ''
+                if c_name:
+                    EquipmentComponents.objects.create(
+                        equipment=obj,
+                        name=c_name,
+                        description=c_desc,
+                        created_by=request.user
+                    )
+            
             messages.success(request, 'Equipment added successfully.')
             return redirect('backend:equipment_list')
     
@@ -1567,6 +1588,10 @@ def equipment_update(request, data_id):
         brand = request.POST.get('brand', '').strip()
         floor_location = request.POST.get('floor_location', '').strip()
         
+        # components
+        component_names = request.POST.getlist('component_name[]')
+        component_descriptions = request.POST.getlist('component_description[]')
+        
         maintenance_period_days = request.POST.get('maintenance_period_days', '90')
         next_service_due = request.POST.get('next_service_due', '')
         
@@ -1586,6 +1611,20 @@ def equipment_update(request, data_id):
             
             obj.updated_by = request.user
             obj.save()
+            
+            # Recreate components
+            obj.components.all().delete()
+            for i in range(len(component_names)):
+                c_name = component_names[i].strip()
+                c_desc = component_descriptions[i].strip() if i < len(component_descriptions) else ''
+                if c_name:
+                    EquipmentComponents.objects.create(
+                        equipment=obj,
+                        name=c_name,
+                        description=c_desc,
+                        created_by=request.user
+                    )
+                    
             messages.success(request, 'Equipment updated successfully.')
             return redirect('backend:equipment_list')
     
@@ -1624,11 +1663,13 @@ def equipment_detail(request, data_id):
         return render(request, '403.html', status=403)
     
     obj = get_object_or_404(Equipment, pk=data_id, deleted=False)
-    maintenance_records = obj.maintenance_records.filter(deleted=False).order_by('-maintenance_date')
+    
+    # Get active components
+    components = obj.components.filter(deleted=False).order_by('name')
     
     context = {
         'obj': obj,
-        'maintenance_records': maintenance_records
+        'components': components,
     }
     return render(request, 'equipment/detail.html', context)
 
@@ -1651,21 +1692,27 @@ from io import BytesIO
 @login_required
 def qr_equipement_views(request, data_id):
     obj = get_object_or_404(Equipment, pk=data_id, deleted=False)
-    last_maintenance = obj.maintenance_records.filter(deleted=False).order_by('-maintenance_date').first()
     
-    qr_base64 = None
-    if obj.qr_code:
-        img = generate_qr_code(obj.qr_code)
+    if request.GET.get('view') == '1':
+        last_maintenance = obj.maintenance_records.filter(deleted=False).order_by('-maintenance_date').first()
+        
+        add_url = request.build_absolute_uri(reverse('backend:static_otp_verification'))
+        qr_data = f"{add_url}?building={obj.building.id}&equipment={obj.id}"
+        img = generate_qr_code(qr_data)
         buffer = BytesIO()
         img.save(buffer, format="PNG")
         qr_base64 = base64.b64encode(buffer.getvalue()).decode()
 
-    context = {
-        'obj': obj,
-        'last_maintenance': last_maintenance,
-        'qr_base64': qr_base64,
-    }
-    return render(request, "equipment/qr.html", context)
+        context = {
+            'obj': obj,
+            'last_maintenance': last_maintenance,
+            'qr_base64': qr_base64,
+        }
+        return render(request, "equipment/qr.html", context)
+    
+    # Redirect to static_otp_verification with auto-fill parameters
+    redirect_url = reverse('backend:static_otp_verification')
+    return redirect(f"{redirect_url}?building={obj.building.id}&equipment={obj.id}")
 
 # ======================================== Maintenance Record Review ========================================
 
@@ -1944,10 +1991,31 @@ def ticket_add(request):
             messages.success(request, 'Ticket created successfully.')
             return redirect('backend:ticket_list')
     
+    # Pre-fill equipment and building from GET parameters if provided
+    initial_eq = request.GET.get('equipment_id') or request.GET.get('equipment')
+    initial_b = request.GET.get('building_id') or request.GET.get('building')
+    
+    obj = None
+    if initial_eq or initial_b:
+        class DummyObj:
+            def __init__(self, eq_id, b_id):
+                try:
+                    self.equipment_id = int(eq_id) if eq_id else None
+                except ValueError:
+                    self.equipment_id = None
+                try:
+                    self.building_id = int(b_id) if b_id else None
+                except ValueError:
+                    self.building_id = None
+                self.status = 'open'
+                self.issue_type = 'breakdown'
+        obj = DummyObj(initial_eq, initial_b)
+
     context = {
         'action': 'Add',
         'equipments': equipments,
         'buildings': buildings,
+        'obj': obj,
     }
     return render(request, 'ticket/add.html', context)
 
@@ -2013,161 +2081,161 @@ def ticket_status(request, data_id):
     return redirect('backend:ticket_list')
 
 
-@login_required
-def maintainance_task(request):
-    if not checkUserPermission(request, "can_view", 'maintainance'):
-        messages.error(request, 'You do not have permission to view maintainance tasks.')
-        return render(request, '403.html', status=403)
+# @login_required
+# def maintainance_task(request):
+#     if not checkUserPermission(request, "can_view", 'maintainance'):
+#         messages.error(request, 'You do not have permission to view maintainance tasks.')
+#         return render(request, '403.html', status=403)
 
-    # Get current user's technician profile
-    technician = None
-    try:
-        technician = request.user.technician_profile
-    except Technician.DoesNotExist:
-        pass
+#     # Get current user's technician profile
+#     technician = None
+#     try:
+#         technician = request.user.technician_profile
+#     except Technician.DoesNotExist:
+#         pass
 
-    activities = AssignActivities.objects.none()
-    if technician:
-        activities = AssignActivities.objects.filter(
-            technician=technician,
-            is_active=True,
-        ).select_related(
-            'ticket', 'ticket__equipment', 'ticket__equipment__equipment_type',
-            'ticket__building', 'technician',
-        ).order_by('-assigned_at')
+#     activities = AssignActivities.objects.none()
+#     if technician:
+#         activities = AssignActivities.objects.filter(
+#             technician=technician,
+#             is_active=True,
+#         ).select_related(
+#             'ticket', 'ticket__equipment', 'ticket__equipment__equipment_type',
+#             'ticket__building', 'technician',
+#         ).order_by('-assigned_at')
 
-    # Filters
-    status_filter = request.GET.get('status', '')
-    completion_filter = request.GET.get('completion', '')
-    priority_filter = request.GET.get('priority', '')
+#     # Filters
+#     status_filter = request.GET.get('status', '')
+#     completion_filter = request.GET.get('completion', '')
+#     priority_filter = request.GET.get('priority', '')
 
-    if status_filter:
-        activities = activities.filter(status=status_filter)
-    if completion_filter:
-        activities = activities.filter(completion_status=completion_filter)
-    if priority_filter:
-        activities = activities.filter(ticket__priority=priority_filter)
+#     if status_filter:
+#         activities = activities.filter(status=status_filter)
+#     if completion_filter:
+#         activities = activities.filter(completion_status=completion_filter)
+#     if priority_filter:
+#         activities = activities.filter(ticket__priority=priority_filter)
 
-    # Stats
-    total_tasks = activities.count()
-    pending_count = activities.filter(completion_status='pending').count()
-    completed_count = activities.filter(completion_status='completed').count()
-    overdue_count = activities.filter(completion_status='overdue').count()
+#     # Stats
+#     total_tasks = activities.count()
+#     pending_count = activities.filter(completion_status='pending').count()
+#     completed_count = activities.filter(completion_status='completed').count()
+#     overdue_count = activities.filter(completion_status='overdue').count()
 
-    context = {
-        'activities': activities,
-        'technician': technician,
-        'status_filter': status_filter,
-        'completion_filter': completion_filter,
-        'priority_filter': priority_filter,
-        'total_tasks': total_tasks,
-        'pending_count': pending_count,
-        'completed_count': completed_count,
-        'overdue_count': overdue_count,
-    }
-    return render(request, 'maintainance/task.html', context)
+#     context = {
+#         'activities': activities,
+#         'technician': technician,
+#         'status_filter': status_filter,
+#         'completion_filter': completion_filter,
+#         'priority_filter': priority_filter,
+#         'total_tasks': total_tasks,
+#         'pending_count': pending_count,
+#         'completed_count': completed_count,
+#         'overdue_count': overdue_count,
+#     }
+#     return render(request, 'maintainance/task.html', context)
 
 
-@login_required
-def maintainance_detail(request, pk):
-    if not checkUserPermission(request, "can_view", 'maintainance'):
-        messages.error(request, 'You do not have permission to view maintainance task.')
-        return render(request, '403.html', status=403)
+# @login_required
+# def maintainance_detail(request, pk):
+#     if not checkUserPermission(request, "can_view", 'maintainance'):
+#         messages.error(request, 'You do not have permission to view maintainance task.')
+#         return render(request, '403.html', status=403)
 
-    activity = get_object_or_404(
-        AssignActivities.objects.select_related(
-            'ticket', 'ticket__equipment', 'ticket__equipment__equipment_type',
-            'ticket__building', 'technician', 'technician__user',
-        ),
-        pk=pk, is_active=True,
-    )
+#     activity = get_object_or_404(
+#         AssignActivities.objects.select_related(
+#             'ticket', 'ticket__equipment', 'ticket__equipment__equipment_type',
+#             'ticket__building', 'technician', 'technician__user',
+#         ),
+#         pk=pk, is_active=True,
+#     )
 
-    ticket = activity.ticket
-    equipment = ticket.equipment
-    building = ticket.building
+#     ticket = activity.ticket
+#     equipment = ticket.equipment
+#     building = ticket.building
 
-    # Handle POST actions (accept/reject, mark completion)
-    if request.method == 'POST':
-        action = request.POST.get('action', '')
+#     # Handle POST actions (accept/reject, mark completion)
+#     if request.method == 'POST':
+#         action = request.POST.get('action', '')
 
-        if action == 'accept':
-            activity.status = 'accepted'
-            activity.updated_by = request.user
-            activity.save()
-            # Update ticket status
-            if ticket.status in ('open', 'assigned'):
-                ticket.status = 'in_progress'
-                ticket.save()
-            TicketActivityLog.objects.create(
-                ticket=ticket, actor=request.user,
-                action_type='status_changed',
-                description=f"Technician {activity.technician.display_name} accepted the task."
-            )
-            messages.success(request, 'Task accepted successfully.')
+#         if action == 'accept':
+#             activity.status = 'accepted'
+#             activity.updated_by = request.user
+#             activity.save()
+#             # Update ticket status
+#             if ticket.status in ('open', 'assigned'):
+#                 ticket.status = 'in_progress'
+#                 ticket.save()
+#             TicketActivityLog.objects.create(
+#                 ticket=ticket, actor=request.user,
+#                 action_type='status_changed',
+#                 description=f"Technician {activity.technician.display_name} accepted the task."
+#             )
+#             messages.success(request, 'Task accepted successfully.')
 
-        elif action == 'reject':
-            activity.status = 'rejected'
-            activity.completion_status = 'cancelled'
-            activity.updated_by = request.user
-            activity.save()
-            TicketActivityLog.objects.create(
-                ticket=ticket, actor=request.user,
-                action_type='status_changed',
-                description=f"Technician {activity.technician.display_name} rejected the task."
-            )
-            messages.success(request, 'Task rejected.')
+#         elif action == 'reject':
+#             activity.status = 'rejected'
+#             activity.completion_status = 'cancelled'
+#             activity.updated_by = request.user
+#             activity.save()
+#             TicketActivityLog.objects.create(
+#                 ticket=ticket, actor=request.user,
+#                 action_type='status_changed',
+#                 description=f"Technician {activity.technician.display_name} rejected the task."
+#             )
+#             messages.success(request, 'Task rejected.')
 
-        elif action == 'complete':
-            activity.completion_status = 'completed'
-            activity.completed_at = timezone.now()
-            activity.updated_by = request.user
-            activity.save()
-            # Check if all activities for this ticket are completed
-            all_done = not AssignActivities.objects.filter(
-                ticket=ticket, is_active=True
-            ).exclude(completion_status__in=['completed', 'cancelled', 'skipped']).exists()
-            if all_done:
-                ticket.status = 'resolved'
-                ticket.resolved_at = timezone.now()
-                ticket.save()
-            TicketActivityLog.objects.create(
-                ticket=ticket, actor=request.user,
-                action_type='resolved',
-                description=f"Technician {activity.technician.display_name} marked task as completed."
-            )
-            messages.success(request, 'Task marked as completed.')
+#         elif action == 'complete':
+#             activity.completion_status = 'completed'
+#             activity.completed_at = timezone.now()
+#             activity.updated_by = request.user
+#             activity.save()
+#             # Check if all activities for this ticket are completed
+#             all_done = not AssignActivities.objects.filter(
+#                 ticket=ticket, is_active=True
+#             ).exclude(completion_status__in=['completed', 'cancelled', 'skipped']).exists()
+#             if all_done:
+#                 ticket.status = 'resolved'
+#                 ticket.resolved_at = timezone.now()
+#                 ticket.save()
+#             TicketActivityLog.objects.create(
+#                 ticket=ticket, actor=request.user,
+#                 action_type='resolved',
+#                 description=f"Technician {activity.technician.display_name} marked task as completed."
+#             )
+#             messages.success(request, 'Task marked as completed.')
 
-        elif action == 'skip':
-            activity.completion_status = 'skipped'
-            activity.updated_by = request.user
-            activity.save()
-            messages.success(request, 'Task skipped.')
+#         elif action == 'skip':
+#             activity.completion_status = 'skipped'
+#             activity.updated_by = request.user
+#             activity.save()
+#             messages.success(request, 'Task skipped.')
 
-        return redirect('backend:maintainance_detail', pk=activity.pk)
+#         return redirect('backend:maintainance_detail', pk=activity.pk)
 
-    # Activity log for this ticket
-    activity_logs = TicketActivityLog.objects.filter(ticket=ticket).order_by('-created_at')[:20]
+#     # Activity log for this ticket
+#     activity_logs = TicketActivityLog.objects.filter(ticket=ticket).order_by('-created_at')[:20]
 
-    # Other technicians assigned to this ticket
-    other_assignments = AssignTechnician.objects.filter(
-        ticket=ticket, deleted=False
-    ).select_related('technician', 'technician__user')
+#     # Other technicians assigned to this ticket
+#     other_assignments = AssignTechnician.objects.filter(
+#         ticket=ticket, deleted=False
+#     ).select_related('technician', 'technician__user')
 
-    # Maintenance records for this equipment
-    maintenance_records = MaintenanceRecord.objects.filter(
-        equipment=equipment, deleted=False
-    ).order_by('-maintenance_date')[:5]
+#     # Maintenance records for this equipment
+#     maintenance_records = MaintenanceRecord.objects.filter(
+#         equipment=equipment, deleted=False
+#     ).order_by('-maintenance_date')[:5]
 
-    context = {
-        'activity': activity,
-        'ticket': ticket,
-        'equipment': equipment,
-        'building': building,
-        'activity_logs': activity_logs,
-        'other_assignments': other_assignments,
-        'maintenance_records': maintenance_records,
-    }
-    return render(request, 'maintainance/detail.html', context)
+#     context = {
+#         'activity': activity,
+#         'ticket': ticket,
+#         'equipment': equipment,
+#         'building': building,
+#         'activity_logs': activity_logs,
+#         'other_assignments': other_assignments,
+#         'maintenance_records': maintenance_records,
+#     }
+#     return render(request, 'maintainance/detail.html', context)
 
 
 @login_required
@@ -2180,66 +2248,808 @@ def maintanaince_create(request):
     return render(request, 'maintainance/create.html', context) 
 
 
+# @login_required
+# def maintanaince_checklist(request):
+#     if not checkUserPermission(request, "can_view", 'maintainance'):
+#         messages.error(request, 'You do not have permission to view maintainance checklist.')
+#         return render(request, '403.html', status=403)
+
+#     # Get current user's technician profile
+#     technician = None
+#     try:
+#         technician = request.user.technician_profile
+#     except Technician.DoesNotExist:
+#         pass
+
+#     checklist_items = AssignActivities.objects.none()
+#     if technician:
+#         checklist_items = AssignActivities.objects.filter(
+#             technician=technician,
+#             is_active=True,
+#             status__in=['pending', 'accepted'],
+#             completion_status__in=['pending'],
+#         ).select_related(
+#             'ticket', 'ticket__equipment', 'ticket__equipment__equipment_type',
+#             'ticket__building', 'technician',
+#         ).order_by(
+#             '-ticket__priority', '-assigned_at'
+#         )
+
+#     # Handle bulk action
+#     if request.method == 'POST':
+#         item_id = request.POST.get('item_id', '')
+#         action = request.POST.get('action', '')
+#         if item_id and action:
+#             try:
+#                 item = AssignActivities.objects.get(pk=item_id, technician=technician, is_active=True)
+#                 if action == 'complete':
+#                     item.completion_status = 'completed'
+#                     item.completed_at = timezone.now()
+#                     item.status = 'accepted'
+#                     item.updated_by = request.user
+#                     item.save()
+#                     messages.success(request, 'Checklist item completed.')
+#                 elif action == 'skip':
+#                     item.completion_status = 'skipped'
+#                     item.updated_by = request.user
+#                     item.save()
+#                     messages.success(request, 'Checklist item skipped.')
+#             except AssignActivities.DoesNotExist:
+#                 messages.error(request, 'Checklist item not found.')
+#         return redirect('backend:maintanaince_checklist')
+
+#     # Summary stats
+#     total_pending = checklist_items.count()
+#     critical_count = checklist_items.filter(ticket__priority='critical').count()
+#     high_count = checklist_items.filter(ticket__priority='high').count()
+
+#     context = {
+#         'checklist_items': checklist_items,
+#         'technician': technician,
+#         'total_pending': total_pending,
+#         'critical_count': critical_count,
+#         'high_count': high_count,
+#     }
+#     return render(request, 'maintainance/checklist.html', context)
+
+
+# ======================================== Maintenance Management ========================================
+
 @login_required
-def maintanaince_checklist(request):
-    if not checkUserPermission(request, "can_view", 'maintainance'):
-        messages.error(request, 'You do not have permission to view maintainance checklist.')
+def maintenance_list(request):
+    if not checkUserPermission(request, 'can_view', '/backend/maintenance/'):
+        messages.error(request, 'You do not have permission to view this page.')
         return render(request, '403.html', status=403)
 
-    # Get current user's technician profile
+    search = request.GET.get('search', '').strip()
+    qs = Maintenance.objects.filter(deleted=False).prefetch_related(
+        'equipment',
+        'equipment__equipment_type'
+    )
+
+    if search:
+        qs = qs.filter(
+            Q(maintenance_serial__icontains=search) |
+            Q(qr_code__icontains=search)
+        )
+
+    qs = qs.annotate(
+        num_records=Count(
+            'equipment__maintenance_records',
+            filter=Q(equipment__maintenance_records__deleted=False),
+            distinct=True
+        )
+    ).order_by('-created_at')
+
+    page_num = request.GET.get('page', 1)
+    data_list, paginator_list, last_page = paginate_data(request, page_num, qs)
+
+    context = {
+        'data_list': data_list,
+        'paginator_list': paginator_list,
+        'last_page': last_page,
+        'search': search,
+    }
+    return render(request, 'maintenance/list.html', context)
+
+
+@login_required
+def maintenance_add(request):
+    if not checkUserPermission(request, 'can_add', '/backend/maintenance/'):
+        messages.error(request, 'You do not have permission to add a maintenance record.')
+        return render(request, '403.html', status=403)
+
+    buildings = Building.objects.filter(deleted=False, is_active=True)
+    technicians = Technician.objects.filter(deleted=False, is_active=True)
+    
+    logged_in_tech_id = None
+    if request.user.is_authenticated:
+        try:
+            logged_in_tech_id = request.user.technician_profile.id
+        except (AttributeError, Technician.DoesNotExist):
+            pass
+
+    if request.method == 'POST':
+        building_id = request.POST.get('building')
+        maintenance_serial = request.POST.get('maintenance_serial', '').strip() or None
+        qr_code = request.POST.get('qr_code', '').strip() or None
+        maintenance_date = request.POST.get('maintenance_date')
+
+        # Gather dynamic records
+        indexes = []
+        for key in request.POST.keys():
+            if key.startswith('records[') and key.endswith('][equipment_id]'):
+                try:
+                    idx = key.split('[')[1].split(']')[0]
+                    indexes.append(int(idx))
+                except (IndexError, ValueError):
+                    pass
+        indexes.sort()
+
+        errors = []
+        if not building_id:
+            errors.append("Building is required.")
+        else:
+            try:
+                building = Building.objects.get(id=building_id, deleted=False)
+            except Building.DoesNotExist:
+                errors.append("Selected building does not exist.")
+
+        if not maintenance_date:
+            errors.append("Maintenance Date is required.")
+
+        if maintenance_serial and Maintenance.objects.filter(maintenance_serial=maintenance_serial, deleted=False).exists():
+            errors.append("A maintenance record with this Serial already exists.")
+        
+        if qr_code and Maintenance.objects.filter(qr_code=qr_code, deleted=False).exists():
+            errors.append("A maintenance record with this QR Code already exists.")
+
+        submitted_records = []
+        for idx in indexes:
+            eq_id = request.POST.get(f'records[{idx}][equipment_id]')
+            rec_type = request.POST.get(f'records[{idx}][record_type]', 'routine')
+            maint_date = maintenance_date
+            tech_id = request.POST.get(f'records[{idx}][technician_id]') or None
+            work_desc = request.POST.get(f'records[{idx}][work_description]', '').strip()
+            parts = request.POST.get(f'records[{idx}][parts_replaced]', '').strip()
+            cost = request.POST.get(f'records[{idx}][cost]') or None
+            duration = request.POST.get(f'records[{idx}][duration_hours]') or None
+            status = request.POST.get(f'records[{idx}][maintainance_status]', 'pending')
+
+            # Parse checklist components
+            components_data = []
+            comp_indexes = []
+            prefix = f'records[{idx}][components]['
+            for key in request.POST.keys():
+                if key.startswith(prefix) and key.endswith('][name]'):
+                    try:
+                        c_idx = key.split(prefix)[1].split(']')[0]
+                        comp_indexes.append(int(c_idx))
+                    except (IndexError, ValueError):
+                        pass
+            comp_indexes.sort()
+
+            for c_idx in comp_indexes:
+                comp_name = request.POST.get(f'{prefix}{c_idx}][name]')
+                is_checked = request.POST.get(f'{prefix}{c_idx}][is_checked]') in ('true', 'on')
+                remark = request.POST.get(f'{prefix}{c_idx}][remark]', '').strip()
+                suggestion = request.POST.get(f'{prefix}{c_idx}][suggestion]', '').strip()
+                components_data.append({
+                    'name': comp_name,
+                    'is_checked': is_checked,
+                    'remark': remark,
+                    'suggestion': suggestion
+                })
+
+            record_data = {
+                'equipment_id': eq_id,
+                'record_type': rec_type,
+                'maintenance_date': maint_date,
+                'technician_id': tech_id,
+                'work_description': work_desc,
+                'parts_replaced': parts,
+                'cost': cost,
+                'duration_hours': duration,
+                'maintainance_status': status,
+                'components': components_data,
+            }
+            submitted_records.append(record_data)
+
+            if not eq_id:
+                errors.append(f"Row {idx + 1}: Equipment is required.")
+            else:
+                if not Equipment.objects.filter(id=eq_id, building_id=building_id, deleted=False).exists():
+                    errors.append(f"Row {idx + 1}: Selected equipment does not belong to the selected building.")
+            if not maint_date:
+                errors.append(f"Row {idx + 1}: Maintenance Date is required.")
+            if not work_desc:
+                errors.append(f"Row {idx + 1}: Work Description / Issue is required.")
+
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            
+            # Pass back context to reconstruct the page
+            context = {
+                'action': 'Add',
+                'buildings': buildings,
+                'technicians': technicians,
+                'record_type_choices': MaintenanceRecord.RECORD_TYPE_CHOICES,
+                'status_choices': MaintenanceRecord.MAINTAIANCE_STATUS_CHOICES,
+                'submitted_building_id': building_id,
+                'submitted_serial': maintenance_serial,
+                'submitted_qr_code': qr_code,
+                'submitted_date': maintenance_date,
+                'default_date': date.today().strftime('%Y-%m-%d'),
+                'submitted_records': json.dumps(submitted_records),
+                'logged_in_tech_id': logged_in_tech_id,
+            }
+            return render(request, 'maintenance/add.html', context)
+
+        from django.db import transaction
+        try:
+            with transaction.atomic():
+                maintenance = Maintenance(
+                    building_id=building_id,
+                    maintenance_serial=maintenance_serial,
+                    qr_code=qr_code,
+                    created_by=request.user,
+                    is_active=True
+                )
+                maintenance.save()
+
+                for rec in submitted_records:
+                    tech_user = None
+                    assigned_tech = None
+                    if rec['technician_id']:
+                        try:
+                            assigned_tech = Technician.objects.get(id=rec['technician_id'])
+                            tech_user = assigned_tech.user
+                        except Technician.DoesNotExist:
+                            pass
+                    record = MaintenanceRecord(
+                        equipment_id=rec['equipment_id'],
+                        maintenance=maintenance,
+                        record_type=rec['record_type'],
+                        maintenance_date=rec['maintenance_date'],
+                        technician=tech_user,
+                        assigned_to=assigned_tech,
+                        work_description=rec['work_description'],
+                        parts_replaced=rec['parts_replaced'],
+                        cost=rec['cost'],
+                        duration_hours=rec['duration_hours'],
+                        maintainance_status=rec['maintainance_status'],
+                        created_by=request.user
+                    )
+                    record.save()
+                    maintenance.equipment.add(rec['equipment_id'])
+
+                    # Save components checklist
+                    for comp in rec.get('components', []):
+                        MaintenanceComponent.objects.create(
+                            maintenance_record=record,
+                            name=comp['name'],
+                            is_checked=comp['is_checked'],
+                            remark=comp['remark'],
+                            suggestion=comp['suggestion'],
+                            created_by=request.user
+                        )
+                        # Ensure exists in EquipmentComponents
+                        if not EquipmentComponents.objects.filter(equipment_id=rec['equipment_id'], name__iexact=comp['name'], deleted=False).exists():
+                            EquipmentComponents.objects.create(
+                                equipment_id=rec['equipment_id'],
+                                name=comp['name'],
+                                created_by=request.user
+                            )
+
+                messages.success(request, 'Maintenance session created successfully.')
+                return redirect('backend:maintenance_detail', data_id=maintenance.id)
+        except Exception as e:
+            messages.error(request, f"Error saving maintenance session: {str(e)}")
+
+    submitted_building_id = request.GET.get('building')
+    submitted_records = []
+    if request.GET.get('equipment'):
+        record = {'equipment_id': request.GET.get('equipment')}
+        if logged_in_tech_id:
+            record['technician_id'] = str(logged_in_tech_id)
+        submitted_records.append(record)
+
+    context = {
+        'action': 'Add',
+        'buildings': buildings,
+        'technicians': technicians,
+        'record_type_choices': MaintenanceRecord.RECORD_TYPE_CHOICES,
+        'status_choices': MaintenanceRecord.MAINTAIANCE_STATUS_CHOICES,
+        'default_date': date.today().strftime('%Y-%m-%d'),
+        'submitted_building_id': submitted_building_id,
+        'submitted_records': json.dumps(submitted_records),
+        'logged_in_tech_id': logged_in_tech_id,
+    }
+    return render(request, 'maintenance/add.html', context)
+
+
+@login_required
+def maintenance_detail(request, data_id):
+    obj = get_object_or_404(Maintenance, pk=data_id, deleted=False)
+
+    # Get user's technician profile
     technician = None
     try:
         technician = request.user.technician_profile
-    except Technician.DoesNotExist:
+    except Exception:
         pass
 
-    checklist_items = AssignActivities.objects.none()
+    # Check if technician is assigned to any records in this maintenance session
+    is_assigned = False
     if technician:
-        checklist_items = AssignActivities.objects.filter(
-            technician=technician,
-            is_active=True,
-            status__in=['pending', 'accepted'],
-            completion_status__in=['pending'],
-        ).select_related(
-            'ticket', 'ticket__equipment', 'ticket__equipment__equipment_type',
-            'ticket__building', 'technician',
-        ).order_by(
-            '-ticket__priority', '-assigned_at'
-        )
+        is_assigned = obj.maintenance_records.filter(assigned_to=technician, deleted=False).exists()
 
-    # Handle bulk action
+    has_general_permission = checkUserPermission(request, 'can_view', '/backend/maintenance/')
+
+    if not has_general_permission and not is_assigned:
+        messages.error(request, 'You do not have permission to view this page.')
+        return render(request, '403.html', status=403)
+
+    session_records = obj.maintenance_records.filter(deleted=False).select_related(
+        'equipment', 'equipment__building', 'equipment__equipment_type',
+        'technician', 'assigned_to', 'ticket'
+    ).order_by('-maintenance_date', '-created_at')
+
+    session_date = None
+    first_session_rec = session_records.first()
+    if first_session_rec:
+        session_date = first_session_rec.maintenance_date
+
+    # Since there will only be one equipment for one maintenance session,
+    # find the equipment of this session.
+    equipment = None
+    if first_session_rec:
+        equipment = first_session_rec.equipment
+    else:
+        equipment = obj.equipment.first()
+
+    # Query all maintenance records for that equipment (all times history)
+    if equipment:
+        records = MaintenanceRecord.objects.filter(equipment=equipment, deleted=False).select_related(
+            'equipment', 'equipment__building', 'equipment__equipment_type',
+            'technician', 'assigned_to', 'ticket'
+        ).order_by('-maintenance_date', '-created_at')
+    else:
+        records = session_records
+
+    # If technician and no general permission, only show records assigned to them
+    if technician and not has_general_permission:
+        records = records.filter(assigned_to=technician)
+
     if request.method == 'POST':
-        item_id = request.POST.get('item_id', '')
-        action = request.POST.get('action', '')
-        if item_id and action:
-            try:
-                item = AssignActivities.objects.get(pk=item_id, technician=technician, is_active=True)
-                if action == 'complete':
-                    item.completion_status = 'completed'
-                    item.completed_at = timezone.now()
-                    item.status = 'accepted'
-                    item.updated_by = request.user
-                    item.save()
-                    messages.success(request, 'Checklist item completed.')
-                elif action == 'skip':
-                    item.completion_status = 'skipped'
-                    item.updated_by = request.user
-                    item.save()
-                    messages.success(request, 'Checklist item skipped.')
-            except AssignActivities.DoesNotExist:
-                messages.error(request, 'Checklist item not found.')
-        return redirect('backend:maintanaince_checklist')
+        action = request.POST.get('action')
+        if action == 'delete_record':
+            if not checkUserPermission(request, 'can_update', '/backend/maintenance/'):
+                messages.error(request, 'You do not have permission to delete this record.')
+                return redirect('backend:maintenance_detail', data_id=obj.id)
+            record_id = request.POST.get('record_id')
+            if record_id:
+                record = get_object_or_404(MaintenanceRecord, pk=record_id, maintenance=obj)
+                record.deleted = True
+                record.updated_by = request.user
+                record.save()
+                messages.success(request, 'Maintenance record deleted successfully.')
+            return redirect('backend:maintenance_detail', data_id=obj.id)
 
-    # Summary stats
-    total_pending = checklist_items.count()
-    critical_count = checklist_items.filter(ticket__priority='critical').count()
-    high_count = checklist_items.filter(ticket__priority='high').count()
+    qr_base64 = None
+    if obj.qr_code:
+        try:
+            scan_url = request.build_absolute_uri(reverse('backend:maintanaince_scan', kwargs={'qr_code': obj.qr_code}))
+            img = generate_qr_code(scan_url)
+            buffer = BytesIO()
+            img.save(buffer, format="PNG")
+            qr_base64 = base64.b64encode(buffer.getvalue()).decode()
+        except Exception as e:
+            pass
 
     context = {
-        'checklist_items': checklist_items,
-        'technician': technician,
-        'total_pending': total_pending,
-        'critical_count': critical_count,
-        'high_count': high_count,
+        'obj': obj,
+        'records': records,
+        'session_date': session_date,
+        'qr_base64': qr_base64,
+        'record_type_choices': MaintenanceRecord.RECORD_TYPE_CHOICES,
+        'status_choices': MaintenanceRecord.MAINTAIANCE_STATUS_CHOICES,
     }
-    return render(request, 'maintainance/checklist.html', context)
+    return render(request, 'maintenance/detail.html', context)
+
+
+@login_required
+def maintenance_update(request, data_id):
+    if not checkUserPermission(request, 'can_update', '/backend/maintenance/'):
+        messages.error(request, 'You do not have permission to edit this record.')
+        return render(request, '403.html', status=403)
+
+    obj = get_object_or_404(Maintenance, pk=data_id, deleted=False)
+    buildings = Building.objects.filter(deleted=False, is_active=True)
+    technicians = Technician.objects.filter(deleted=False, is_active=True)
+
+    if request.method == 'POST':
+        building_id = request.POST.get('building')
+        maintenance_serial = request.POST.get('maintenance_serial', '').strip() or None
+        qr_code = request.POST.get('qr_code', '').strip() or None
+        maintenance_date = request.POST.get('maintenance_date')
+
+        # Gather dynamic records
+        indexes = []
+        for key in request.POST.keys():
+            if key.startswith('records[') and key.endswith('][equipment_id]'):
+                try:
+                    idx = key.split('[')[1].split(']')[0]
+                    indexes.append(int(idx))
+                except (IndexError, ValueError):
+                    pass
+        indexes.sort()
+
+        errors = []
+        if not building_id:
+            errors.append("Building is required.")
+        else:
+            try:
+                building = Building.objects.get(id=building_id, deleted=False)
+            except Building.DoesNotExist:
+                errors.append("Selected building does not exist.")
+
+        if not maintenance_date:
+            errors.append("Maintenance Date is required.")
+
+        if maintenance_serial and Maintenance.objects.filter(maintenance_serial=maintenance_serial, deleted=False).exclude(pk=data_id).exists():
+            errors.append("A maintenance record with this Serial already exists.")
+        
+        if qr_code and Maintenance.objects.filter(qr_code=qr_code, deleted=False).exclude(pk=data_id).exists():
+            errors.append("A maintenance record with this QR Code already exists.")
+
+        submitted_records = []
+        for idx in indexes:
+            rec_id = request.POST.get(f'records[{idx}][id]') or None
+            eq_id = request.POST.get(f'records[{idx}][equipment_id]')
+            rec_type = request.POST.get(f'records[{idx}][record_type]', 'routine')
+            maint_date = maintenance_date
+            tech_id = request.POST.get(f'records[{idx}][technician_id]') or None
+            work_desc = request.POST.get(f'records[{idx}][work_description]', '').strip()
+            parts = request.POST.get(f'records[{idx}][parts_replaced]', '').strip()
+            cost = request.POST.get(f'records[{idx}][cost]') or None
+            duration = request.POST.get(f'records[{idx}][duration_hours]') or None
+            status = request.POST.get(f'records[{idx}][maintainance_status]', 'pending')
+
+            # Parse checklist components
+            components_data = []
+            comp_indexes = []
+            prefix = f'records[{idx}][components]['
+            for key in request.POST.keys():
+                if key.startswith(prefix) and key.endswith('][name]'):
+                    try:
+                        c_idx = key.split(prefix)[1].split(']')[0]
+                        comp_indexes.append(int(c_idx))
+                    except (IndexError, ValueError):
+                        pass
+            comp_indexes.sort()
+
+            for c_idx in comp_indexes:
+                comp_name = request.POST.get(f'{prefix}{c_idx}][name]')
+                is_checked = request.POST.get(f'{prefix}{c_idx}][is_checked]') in ('true', 'on')
+                remark = request.POST.get(f'{prefix}{c_idx}][remark]', '').strip()
+                suggestion = request.POST.get(f'{prefix}{c_idx}][suggestion]', '').strip()
+                components_data.append({
+                    'name': comp_name,
+                    'is_checked': is_checked,
+                    'remark': remark,
+                    'suggestion': suggestion
+                })
+
+            record_data = {
+                'id': rec_id,
+                'equipment_id': eq_id,
+                'record_type': rec_type,
+                'maintenance_date': maint_date,
+                'technician_id': tech_id,
+                'work_description': work_desc,
+                'parts_replaced': parts,
+                'cost': cost,
+                'duration_hours': duration,
+                'maintainance_status': status,
+                'components': components_data,
+            }
+            submitted_records.append(record_data)
+
+            if not eq_id:
+                errors.append(f"Row {idx + 1}: Equipment is required.")
+            else:
+                if not Equipment.objects.filter(id=eq_id, building_id=building_id, deleted=False).exists():
+                    errors.append(f"Row {idx + 1}: Selected equipment does not belong to the selected building.")
+            if not maint_date:
+                errors.append(f"Row {idx + 1}: Maintenance Date is required.")
+            if not work_desc:
+                errors.append(f"Row {idx + 1}: Work Description / Issue is required.")
+
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            
+            # Pass back context to reconstruct
+            context = {
+                'action': 'Update',
+                'obj': obj,
+                'buildings': buildings,
+                'technicians': technicians,
+                'record_type_choices': MaintenanceRecord.RECORD_TYPE_CHOICES,
+                'status_choices': MaintenanceRecord.MAINTAIANCE_STATUS_CHOICES,
+                'submitted_building_id': building_id,
+                'submitted_serial': maintenance_serial,
+                'submitted_qr_code': qr_code,
+                'submitted_date': maintenance_date,
+                'submitted_records': json.dumps(submitted_records),
+            }
+            return render(request, 'maintenance/update.html', context)
+
+        from django.db import transaction
+        try:
+            with transaction.atomic():
+                obj.building_id = building_id
+                obj.maintenance_serial = maintenance_serial or obj.maintenance_serial or f"MT-{uuid.uuid4().hex[:8].upper()}"
+                obj.qr_code = qr_code or obj.qr_code or f"QR-MT-{uuid.uuid4().hex[:8].upper()}"
+                obj.updated_by = request.user
+                obj.save()
+
+                # Get existing record IDs in database
+                existing_db_records = obj.maintenance_records.filter(deleted=False)
+                existing_db_ids = set(str(r.id) for r in existing_db_records)
+
+                submitted_ids = set(rec['id'] for rec in submitted_records if rec['id'])
+
+                # Delete those that were removed
+                deleted_ids = existing_db_ids - submitted_ids
+                if deleted_ids:
+                    MaintenanceRecord.objects.filter(id__in=deleted_ids).update(deleted=True, updated_by=request.user)
+
+                obj.equipment.clear()
+
+                for rec in submitted_records:
+                    tech_user = None
+                    assigned_tech = None
+                    if rec['technician_id']:
+                        try:
+                            assigned_tech = Technician.objects.get(id=rec['technician_id'])
+                            tech_user = assigned_tech.user
+                        except Technician.DoesNotExist:
+                            pass
+
+                    if rec['id'] and rec['id'] in existing_db_ids:
+                        # Update existing
+                        record = MaintenanceRecord.objects.get(id=rec['id'])
+                        record.equipment_id = rec['equipment_id']
+                        record.record_type = rec['record_type']
+                        record.maintenance_date = rec['maintenance_date']
+                        record.technician = tech_user
+                        record.assigned_to = assigned_tech
+                        record.work_description = rec['work_description']
+                        record.parts_replaced = rec['parts_replaced']
+                        record.cost = rec['cost']
+                        record.duration_hours = rec['duration_hours']
+                        record.maintainance_status = rec['maintainance_status']
+                        record.updated_by = request.user
+                        record.save()
+                    else:
+                        # Create new
+                        record = MaintenanceRecord(
+                            equipment_id=rec['equipment_id'],
+                            maintenance=obj,
+                            record_type=rec['record_type'],
+                            maintenance_date=rec['maintenance_date'],
+                            technician=tech_user,
+                            assigned_to=assigned_tech,
+                            work_description=rec['work_description'],
+                            parts_replaced=rec['parts_replaced'],
+                            cost=rec['cost'],
+                            duration_hours=rec['duration_hours'],
+                            maintainance_status=rec['maintainance_status'],
+                            created_by=request.user
+                        )
+                        record.save()
+
+                    # Save components checklist: delete old components first, then recreate
+                    record.components.all().delete()
+                    for comp in rec.get('components', []):
+                        MaintenanceComponent.objects.create(
+                            maintenance_record=record,
+                            name=comp['name'],
+                            is_checked=comp['is_checked'],
+                            remark=comp['remark'],
+                            suggestion=comp['suggestion'],
+                            created_by=request.user
+                        )
+                        # Ensure exists in EquipmentComponents
+                        if not EquipmentComponents.objects.filter(equipment_id=rec['equipment_id'], name__iexact=comp['name'], deleted=False).exists():
+                            EquipmentComponents.objects.create(
+                                equipment_id=rec['equipment_id'],
+                                name=comp['name'],
+                                created_by=request.user
+                            )
+
+                    obj.equipment.add(rec['equipment_id'])
+
+                messages.success(request, 'Maintenance session updated successfully.')
+                return redirect('backend:maintenance_detail', data_id=obj.id)
+        except Exception as e:
+            messages.error(request, f"Error updating maintenance session: {str(e)}")
+
+    # GET request: serialize current records
+    existing_records = []
+    submitted_date = date.today().strftime('%Y-%m-%d')
+    for r in obj.maintenance_records.filter(deleted=False):
+        if r.maintenance_date:
+            submitted_date = r.maintenance_date.strftime('%Y-%m-%d')
+            
+        # Serialize existing components
+        components_data = []
+        for comp in r.components.filter(deleted=False):
+            components_data.append({
+                'name': comp.name,
+                'is_checked': comp.is_checked,
+                'remark': comp.remark or '',
+                'suggestion': comp.suggestion or '',
+            })
+            
+        existing_records.append({
+            'id': str(r.id),
+            'equipment_id': r.equipment_id,
+            'record_type': r.record_type,
+            'maintenance_date': r.maintenance_date.strftime('%Y-%m-%d') if r.maintenance_date else '',
+            'technician_id': r.assigned_to_id or '',
+            'work_description': r.work_description,
+            'parts_replaced': r.parts_replaced,
+            'cost': str(r.cost) if r.cost is not None else '',
+            'duration_hours': str(r.duration_hours) if r.duration_hours is not None else '',
+            'maintainance_status': r.maintainance_status,
+            'components': components_data,
+        })
+
+    context = {
+        'action': 'Update',
+        'obj': obj,
+        'buildings': buildings,
+        'technicians': technicians,
+        'record_type_choices': MaintenanceRecord.RECORD_TYPE_CHOICES,
+        'status_choices': MaintenanceRecord.MAINTAIANCE_STATUS_CHOICES,
+        'submitted_building_id': str(obj.building_id) if obj.building_id else '',
+        'submitted_serial': obj.maintenance_serial,
+        'submitted_qr_code': obj.qr_code,
+        'submitted_date': submitted_date,
+        'submitted_records': json.dumps(existing_records),
+    }
+    return render(request, 'maintenance/update.html', context)
+
+
+@login_required
+def maintenance_status(request, data_id):
+    if not checkUserPermission(request, 'can_update', '/backend/maintenance/'):
+        messages.error(request, 'You do not have permission to change status of this maintenance record.')
+        return render(request, '403.html', status=403)
+
+    if request.method == 'POST':
+        obj = get_object_or_404(Maintenance, pk=data_id, deleted=False)
+        obj.is_active = not obj.is_active
+        obj.updated_by = request.user
+        obj.save()
+        status_text = "Active" if obj.is_active else "Inactive"
+        messages.success(request, f'Maintenance status changed to {status_text} successfully.')
+        return redirect('backend:maintenance')
+
+    messages.error(request, 'Invalid request method.')
+    return redirect('backend:maintenance')
+
+
+@login_required
+@require_GET
+def get_building_equipment(request):
+    """AJAX endpoint to get equipment for a selected building"""
+    building_id = request.GET.get('building_id')
+    
+    if not building_id:
+        return JsonResponse({'equipment': []})
+    
+    try:
+        # Fetch equipment for the building
+        equipment_list = Equipment.objects.filter(
+            building_id=building_id,
+            deleted=False,
+            is_active=True
+        ).values('id', 'equipment_id').order_by('equipment_id')
+        
+        equipment = [
+            {
+                'id': item['id'],
+                'equipment_id': item['equipment_id'],
+            }
+            for item in equipment_list
+        ]
+        
+        return JsonResponse({'equipment': equipment})
+    except Exception as e:
+        return JsonResponse({'error': str(e), 'equipment': []}, status=400)
+
+
+@login_required
+def maintanaince_scan(request, qr_code=None):
+    if not qr_code:
+        qr_code = request.GET.get('qr_code', '').strip()
+    
+    if not qr_code:
+        messages.error(request, "No QR Code provided.")
+        return redirect('backend:dash_board')
+        
+    maintenance = get_object_or_404(Maintenance, qr_code=qr_code, deleted=False)
+    
+    # Check if user has a technician profile
+    technician = None
+    try:
+        technician = request.user.technician_profile
+    except Exception:
+        pass
+
+    if technician:
+        # Check if the technician is assigned to any records in this maintenance session
+        assigned_records_exist = maintenance.maintenance_records.filter(
+            assigned_to=technician, deleted=False
+        ).exists()
+        
+        if assigned_records_exist:
+            # Redirect to the maintenance detail page where they will see their assigned tasks
+            return redirect('backend:maintenance_detail', data_id=maintenance.id)
+        else:
+            # If they are not assigned to this session, check if they have general view permission
+            if checkUserPermission(request, 'can_view', '/backend/maintenance/'):
+                return redirect('backend:maintenance_detail', data_id=maintenance.id)
+            else:
+                messages.error(request, "You are not assigned to this maintenance session.")
+                return redirect('backend:dash_board')
+    else:
+        # If they are an administrator or other user, check if they have general view permission
+        if checkUserPermission(request, 'can_view', '/backend/maintenance/'):
+            return redirect('backend:maintenance_detail', data_id=maintenance.id)
+        else:
+            messages.error(request, "You do not have permission to view this maintenance session.")
+            return redirect('backend:dash_board') 
+
+
+@login_required
+@require_GET
+def get_equipment_components(request):
+    """AJAX endpoint to get components for a selected equipment"""
+    equipment_id = request.GET.get('equipment_id')
+    if not equipment_id:
+        return JsonResponse({'components': []})
+    try:
+        components_list = EquipmentComponents.objects.filter(
+            equipment_id=equipment_id,
+            deleted=False,
+            is_active=True
+        ).values('id', 'name', 'description').order_by('name')
+        
+        components = [
+            {
+                'id': item['id'],
+                'name': item['name'],
+                'description': item['description'],
+            }
+            for item in components_list
+        ]
+        return JsonResponse({'components': components})
+    except Exception as e:
+        return JsonResponse({'error': str(e), 'components': []}, status=400)
+
+
+@login_required
+def static_otp_verification(request):
+    building_id = request.GET.get('building')
+    equipment_id = request.GET.get('equipment')
+    context = {
+        'building_id': building_id,
+        'equipment_id': equipment_id,
+    }
+    return render(request, 'maintenance/static_otp.html', context) 

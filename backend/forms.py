@@ -2,6 +2,9 @@ from django import forms
 from django.contrib.auth.models import User
 from backend.models import (
     WebImages,
+    Maintenance,
+    Equipment,
+    Building,
 )
 
 TAILWIND_TEXT = (
@@ -103,7 +106,6 @@ class UserCreateForm(forms.ModelForm):
         required=False,
         widget=forms.ClearableFileInput(attrs={
             "accept": "image/*",
-            # we'll hide this in the template with sr-only
             "class": "sr-only",
             "id": "profile_image",
         })
@@ -115,7 +117,6 @@ class UserCreateForm(forms.ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data.get("email")
-        # When editing, allow current user's email
         user_id = self.instance.user.pk if getattr(self.instance, "user", None) else None
         qs = User.objects.exclude(pk=user_id) if user_id else User.objects.all()
         if qs.filter(email=email).exists():
@@ -123,12 +124,7 @@ class UserCreateForm(forms.ModelForm):
         return email
 
     def save(self, commit=True):
-        """
-        Create/update the related auth User and the AdminUser profile.
-        """
         admin_user = super().save(commit=False)
-
-        # Use existing related user if editing; otherwise create new
         user = getattr(self.instance, "user", None)
         if not user:
             user = User()
@@ -136,9 +132,8 @@ class UserCreateForm(forms.ModelForm):
         user.first_name = self.cleaned_data.get("first_name", "")
         user.last_name = self.cleaned_data.get("last_name", "")
         user.email = self.cleaned_data.get("email")
-        user.username = user.email  # use email as username
+        user.username = user.email
 
-        # Set a default password only when creating a new user
         if not user.pk:
             user.set_password("12345678")
 
@@ -146,4 +141,63 @@ class UserCreateForm(forms.ModelForm):
             user.save()
             admin_user.user = user
             admin_user.save()
-            # handle file after save_m2m if you add more relations later
+
+        return admin_user
+
+
+class MaintenanceForm(forms.ModelForm):
+    """Form for creating and editing Maintenance sessions"""
+    
+    building = forms.ModelChoiceField(
+        queryset=Building.objects.filter(deleted=False, is_active=True),
+        required=True,
+        widget=forms.Select(attrs={
+            'class': f'{TAILWIND_SELECT} select2-items',
+            'id': 'building_select',
+        }),
+        label="Building"
+    )
+    
+    equipment = forms.ModelMultipleChoiceField(
+        queryset=Equipment.objects.none(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple(attrs={
+            'class': 'equipment-checkbox',
+            'id': 'equipment_select',
+        }),
+        label="Equipment"
+    )
+    
+    maintenance_serial = forms.CharField(
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Leave empty to auto-generate (e.g. MT-XXXXXX)',
+            'class': TAILWIND_TEXT,
+        }),
+        label="Maintenance Serial"
+    )
+    
+    qr_code = forms.CharField(
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Leave empty to auto-generate QR code',
+            'class': TAILWIND_TEXT,
+        }),
+        label="QR Code Value"
+    )
+    
+    class Meta:
+        model = Maintenance
+        fields = ['building', 'equipment', 'maintenance_serial', 'qr_code']
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # If editing, load equipment for the selected building
+        if self.instance and self.instance.building_id:
+            self.fields['equipment'].queryset = Equipment.objects.filter(
+                building=self.instance.building,
+                deleted=False,
+                is_active=True
+            )

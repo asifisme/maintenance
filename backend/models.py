@@ -357,7 +357,7 @@ class Equipment(models.Model):
     serial_number  = models.CharField(max_length=100, blank=True)
 
     installation_year = models.PositiveSmallIntegerField(null=True, blank=True)
-    qr_code        = models.CharField(max_length=100, blank=True, unique=True) 
+    qr_code        = models.CharField(max_length=100, blank=True, null=True, unique=True) 
 
     image          = models.ImageField(upload_to="equipment/", null=True, blank=True)
     notes          = models.TextField(blank=True)
@@ -374,8 +374,9 @@ class Equipment(models.Model):
     updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipment_updated_by', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True) 
     deleted = models.BooleanField(default=False)
+
 
     def save(self, *args, **kwargs):
         if not self.qr_code:
@@ -386,24 +387,44 @@ class Equipment(models.Model):
         return f"[{self.equipment_id}] {self.equipment_type.name} at {self.building.name}"
  
 
-class EquipmentMaintenanceQRCode(models.Model):
-    equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, related_name="maintenance_qr_code")
-    qr_code   = models.CharField(max_length=255) 
 
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipment_qr_code_created_by', blank=True, null=True)
-    updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipment_qr_code_updated_by', blank=True, null=True)
+class EquipmentComponents(models.Model):
+    equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE, related_name="components")
+    name      = models.CharField(max_length=100)
+    description = models.TextField(blank=True) 
+
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipment_component_created_by', blank=True, null=True)
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipment_component_updated_by', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
     deleted = models.BooleanField(default=False) 
+ 
+    def __str__(self):
+        return f"{self.name} ({self.equipment.equipment_id})"
+
+
+class Maintenance(models.Model):
+    maintenance_serial = models.CharField(max_length=100, blank=True, unique=True, null= True)
+    qr_code = models.CharField(max_length=100, blank=True, unique=True) 
+    building = models.ForeignKey(Building, on_delete=models.SET_NULL, null=True, blank=True, related_name="maintenance_sessions")
+    equipment = models.ManyToManyField(Equipment, related_name="maintenance_sessions", blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='maintenance_created_by', blank=True, null=True)
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='maintenance_updated_by', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    deleted = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
+        if not self.maintenance_serial:
+            self.maintenance_serial = f"MT-{uuid.uuid4().hex[:8].upper()}" 
         if not self.qr_code:
-            self.qr_code = str(uuid.uuid4())
-        super().save(*args, **kwargs) 
+            self.qr_code = f"QR-MT-{uuid.uuid4().hex[:8].upper()}"
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"QR Code for {self.equipment}"
+        return f"Maintenance {self.maintenance_serial}"
 
 
 class MaintenanceRecord(models.Model):
@@ -431,12 +452,12 @@ class MaintenanceRecord(models.Model):
 
     # Core relation
     equipment    = models.ForeignKey(Equipment, on_delete=models.PROTECT, related_name="maintenance_records")
-    qr           = models.ForeignKey(EquipmentMaintenanceQRCode, on_delete=models.SET_NULL, null=True, blank=True, related_name="maintenance_records" ) 
+    maintenance  = models.ForeignKey(Maintenance, on_delete=models.CASCADE, related_name="maintenance_records", null=True, blank=True) 
     ticket       = models.ForeignKey('backend.Ticket', on_delete=models.SET_NULL, null=True, blank=True, related_name="maintenance_records")
     
     maintainance_status = models.CharField(max_length=20, choices=MAINTAIANCE_STATUS_CHOICES, default="pending", db_index=True) 
     opt         = models.CharField(max_length=255, blank=True) 
-    assigned_to   = models.ForeignKey(Technician, on_delete=models.SET_NULL, null=True, blank=True, related_name="assigned_maintenance_records", limit_choices_to={"role": "technician"},) 
+    assigned_to   = models.ForeignKey(Technician, on_delete=models.SET_NULL, null=True, blank=True, related_name="assigned_maintenance_records") 
 
     # Record metadata
     record_type       = models.CharField(max_length=20, choices=RECORD_TYPE_CHOICES, default="routine")
@@ -452,10 +473,7 @@ class MaintenanceRecord(models.Model):
     reviewed_by       = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="reviewed_maintenance_records")
     reviewed_at       = models.DateTimeField(null=True, blank=True)
     review_notes      = models.TextField(blank=True, help_text="Reviewer comment (required on rejection).")
- 
-    # Optional flag (seen in UI: 'Not a technical maintenance task — janitorial')
-    is_janitorial     = models.BooleanField(default=False)
-    attachments_note  = models.TextField(blank=True)
+    
 
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='maintenance_record_created_by', blank=True, null=True)
     updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='maintenance_record_updated_by', blank=True, null=True)
@@ -465,17 +483,35 @@ class MaintenanceRecord(models.Model):
     deleted = models.BooleanField(default=False) 
 
     def save(self, *args, **kwargs):
-        if not self.otp:
-            self.otp = ''.join(random.choices(string.digits, k=6))
+        if not self.opt:
+            self.opt = ''.join(random.choices(string.digits, k=6))
         super().save(*args, **kwargs) 
 
     def __str__(self):
         return f"{self.record_type.title()} maintenance for {self.equipment} on {self.maintenance_date}" 
  
+
+class MaintenanceComponent(models.Model):
+    maintenance_record = models.ForeignKey(MaintenanceRecord, on_delete=models.CASCADE, related_name="components")
+    name               = models.CharField(max_length=100)
+    description        = models.TextField(blank=True) 
+    is_checked         = models.BooleanField(default=False)
+    remark             = models.TextField(blank=True, null=True)
+    suggestion         = models.TextField(blank=True, null=True)
+
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='maintenance_component_created_by', blank=True, null=True)
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='maintenance_component_updated_by', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    deleted = models.BooleanField(default=False) 
+ 
+    def __str__(self):
+        return f"{self.name} ({self.maintenance_record})" 
  
  
 class MaintenanceAttachment(models.Model):
-    record      = models.ForeignKey(MaintenanceRecord, on_delete=models.CASCADE, related_name="attachments")
+    maintenance = models.ForeignKey(Maintenance, on_delete=models.CASCADE, related_name="attachments", null=True, blank=True)
     uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="maintenance_attachments")
     file        = models.FileField(upload_to="maintenance/attachments/%Y/%m/")
     caption     = models.CharField(max_length=200, blank=True)
@@ -489,7 +525,7 @@ class MaintenanceAttachment(models.Model):
     deleted = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Attachment for {self.record} by {self.uploaded_by}" 
+        return f"Attachment for {self.maintenance} by {self.uploaded_by}" 
  
 
 
@@ -591,7 +627,7 @@ class TicketActivityLog(models.Model):
     action_type = models.CharField(max_length=30, choices=ACTION_TYPES)
     description = models.TextField()
     metadata    = models.JSONField(default=dict, blank=True,)
-    created_at  = models.DateTimeField(auto_now_add=True)
+    created_at  = models.DateTimeField(default=timezone.now)
 
 
  
@@ -642,8 +678,6 @@ class AssignActivities(models.Model):
     is_active = models.BooleanField(default=True) 
 
 
- 
- 
 
 class ScheduledMaintenance(models.Model):
     RECURRENCE_CHOICES = [
@@ -668,7 +702,7 @@ class ScheduledMaintenance(models.Model):
     scheduled_date   = models.DateField(db_index=True)
 
     recurrence       = models.CharField(max_length=15, choices=RECURRENCE_CHOICES, default="once")
-    assigned_to      = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="scheduled_maintenances", limit_choices_to={"role": "technician"},) 
+    assigned_to      = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="scheduled_maintenances") 
     status           = models.CharField(max_length=15, choices=SCHEDUL_STATUS_CHOICES, default="pending", db_index=True)
     completed_record = models.OneToOneField(MaintenanceRecord, on_delete=models.SET_NULL, null=True, blank=True, related_name="scheduled_maintenance", help_text="Filled in when this schedule is fulfilled.",)
     estimated_cost   = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
@@ -720,4 +754,4 @@ class CriticalAlert(models.Model):
  
     def __str__(self):
         return f"[{self.severity.upper()}] {self.title}"
- 
+

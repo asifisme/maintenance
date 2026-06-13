@@ -46,10 +46,12 @@
     </p>
 {% endblock %}
 {% block header_actions %}
-    <a href="{% url 'backend:building_update' building.id %}"
-       class="bg-white hover:bg-gray-50 border border-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg text-sm shadow-sm transition duration-200">
-        Edit Building
-    </a>
+    <div class="flex items-center gap-2">
+        <a href="{% url 'backend:building_update' building.id %}"
+           class="bg-white hover:bg-gray-50 border border-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg text-sm shadow-sm transition duration-200">
+            Edit Building
+        </a>
+    </div>
 {% endblock %}
 {% block content %}
     <section class="min-h-screen font-sans bg-[var(--bg-color)]">
@@ -305,5 +307,5 @@
 $(document).ready(function () {
 $('.select2-items').select2();
 });
-<script>
+    </script>
 {% endblock %}
