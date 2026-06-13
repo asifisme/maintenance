@@ -38,8 +38,7 @@
                     <select id="building_select" name="building" class="w-full select2-items" required>
                         <option value="">Select a building</option>
                         {% for b in buildings %}
-                        <option value="{{ b.id }}" {% if b.id|stringformat:"i"==submitted_building_id %}selected{% endif
-                            %}>
+                        <option value="{{ b.id }}" {% if b.id|stringformat:"i" == submitted_building_id %}selected{% endif %}>
                             {{ b.name }}
                         </option>
                         {% endfor %}
@@ -63,7 +62,7 @@
             <div class="space-y-4">
                 <div class="flex justify-between items-center pb-2 border-b border-gray-100">
                     <h3 class="text-base font-bold text-gray-800 flex items-center gap-2">
-                        <i class="fas fa-clipboard-list text-indigo-500"></i> Equipment Maintenance Logs
+                        <i class="fas fa-clipboard-list text-indigo-500"></i> Equipment Maintenance 
                     </h3>
                     <button type="button" id="add_record_btn"
                         class="inline-flex items-center gap-2 h-9 px-4 rounded-md bg-indigo-600 text-white hover:bg-indigo-700 transition-colors font-semibold text-xs shadow-sm">
