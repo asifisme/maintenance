@@ -1663,11 +1663,9 @@ def equipment_detail(request, data_id):
         return render(request, '403.html', status=403)
     
     obj = get_object_or_404(Equipment, pk=data_id, deleted=False)
-    maintenance_records = obj.maintenance_records.filter(deleted=False).order_by('-maintenance_date')
     
     context = {
         'obj': obj,
-        'maintenance_records': maintenance_records
     }
     return render(request, 'equipment/detail.html', context)
 
@@ -1694,7 +1692,7 @@ def qr_equipement_views(request, data_id):
     if request.GET.get('view') == '1':
         last_maintenance = obj.maintenance_records.filter(deleted=False).order_by('-maintenance_date').first()
         
-        add_url = request.build_absolute_uri(reverse('backend:maintenance_add'))
+        add_url = request.build_absolute_uri(reverse('backend:static_otp_verification'))
         qr_data = f"{add_url}?building={obj.building.id}&equipment={obj.id}"
         img = generate_qr_code(qr_data)
         buffer = BytesIO()
@@ -1708,8 +1706,8 @@ def qr_equipement_views(request, data_id):
         }
         return render(request, "equipment/qr.html", context)
     
-    # Redirect to maintenance_add with auto-fill parameters
-    redirect_url = reverse('backend:maintenance_add')
+    # Redirect to static_otp_verification with auto-fill parameters
+    redirect_url = reverse('backend:static_otp_verification')
     return redirect(f"{redirect_url}?building={obj.building.id}&equipment={obj.id}")
 
 # ======================================== Maintenance Record Review ========================================
@@ -2320,7 +2318,10 @@ def maintenance_list(request):
         return render(request, '403.html', status=403)
 
     search = request.GET.get('search', '').strip()
-    qs = Maintenance.objects.filter(deleted=False)
+    qs = Maintenance.objects.filter(deleted=False).prefetch_related(
+        'equipment',
+        'equipment__equipment_type'
+    )
 
     if search:
         qs = qs.filter(
@@ -2328,7 +2329,13 @@ def maintenance_list(request):
             Q(qr_code__icontains=search)
         )
 
-    qs = qs.annotate(num_records=Count('maintenance_records', filter=Q(maintenance_records__deleted=False))).order_by('-created_at')
+    qs = qs.annotate(
+        num_records=Count(
+            'equipment__maintenance_records',
+            filter=Q(equipment__maintenance_records__deleted=False),
+            distinct=True
+        )
+    ).order_by('-created_at')
 
     page_num = request.GET.get('page', 1)
     data_list, paginator_list, last_page = paginate_data(request, page_num, qs)
@@ -2580,10 +2587,32 @@ def maintenance_detail(request, data_id):
         messages.error(request, 'You do not have permission to view this page.')
         return render(request, '403.html', status=403)
 
-    records = obj.maintenance_records.filter(deleted=False).select_related(
+    session_records = obj.maintenance_records.filter(deleted=False).select_related(
         'equipment', 'equipment__building', 'equipment__equipment_type',
         'technician', 'assigned_to', 'ticket'
     ).order_by('-maintenance_date', '-created_at')
+
+    session_date = None
+    first_session_rec = session_records.first()
+    if first_session_rec:
+        session_date = first_session_rec.maintenance_date
+
+    # Since there will only be one equipment for one maintenance session,
+    # find the equipment of this session.
+    equipment = None
+    if first_session_rec:
+        equipment = first_session_rec.equipment
+    else:
+        equipment = obj.equipment.first()
+
+    # Query all maintenance records for that equipment (all times history)
+    if equipment:
+        records = MaintenanceRecord.objects.filter(equipment=equipment, deleted=False).select_related(
+            'equipment', 'equipment__building', 'equipment__equipment_type',
+            'technician', 'assigned_to', 'ticket'
+        ).order_by('-maintenance_date', '-created_at')
+    else:
+        records = session_records
 
     # If technician and no general permission, only show records assigned to them
     if technician and not has_general_permission:
@@ -2618,6 +2647,7 @@ def maintenance_detail(request, data_id):
     context = {
         'obj': obj,
         'records': records,
+        'session_date': session_date,
         'qr_base64': qr_base64,
         'record_type_choices': MaintenanceRecord.RECORD_TYPE_CHOICES,
         'status_choices': MaintenanceRecord.MAINTAIANCE_STATUS_CHOICES,
@@ -3009,3 +3039,13 @@ def get_equipment_components(request):
     except Exception as e:
         return JsonResponse({'error': str(e), 'components': []}, status=400)
 
+
+@login_required
+def static_otp_verification(request):
+    building_id = request.GET.get('building')
+    equipment_id = request.GET.get('equipment')
+    context = {
+        'building_id': building_id,
+        'equipment_id': equipment_id,
+    }
+    return render(request, 'maintenance/static_otp.html', context) 

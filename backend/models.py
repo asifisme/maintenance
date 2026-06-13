@@ -404,7 +404,6 @@ class EquipmentComponents(models.Model):
         return f"{self.name} ({self.model})"
 
 
-
 class Maintenance(models.Model):
     maintenance_serial = models.CharField(max_length=100, blank=True, unique=True, null= True)
     qr_code = models.CharField(max_length=100, blank=True, unique=True) 

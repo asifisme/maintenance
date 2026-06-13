@@ -93,7 +93,7 @@
                     <!-- Action Buttons -->
                     <div class="space-y-3 mb-8">
                         <!-- Link to create ticket or maintenance -->
-                        <a href="{% url 'backend:maintenance_add' %}?building={{ obj.building.id }}&equipment={{ obj.id }}"
+                        <a href="{% url 'backend:static_otp_verification' %}?building={{ obj.building.id }}&equipment={{ obj.id }}"
                            class="w-full bg-[#405DF9] hover:bg-blue-700 text-white text-[15px] font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 transition shadow-sm">
                             <svg width="18"
                                  height="18"

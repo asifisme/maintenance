@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% block title %}Verify OTP - Maintenance{% endblock %}
+
+{% block content %}
+<section class="min-h-[70vh] flex items-center justify-center p-4">
+    <style>
+        @keyframes otp-shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+        .otp-shake {
+            animation: otp-shake 0.2s ease-in-out 0s 2;
+        }
+    </style>
+    
+    <div id="otp_card" class="bg-white rounded-3xl p-8 shadow-2xl max-w-sm w-full border border-slate-100 flex flex-col items-center transform transition-all duration-500 scale-100">
+        <!-- Shield/Lock Icon -->
+        <div class="relative w-16 h-16 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mb-6">
+            <span class="absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-20 animate-ping"></span>
+            <i class="fas fa-shield-alt text-2xl"></i>
+        </div>
+        
+        <h3 class="text-xl font-bold text-slate-800 mb-1">Enter Verification Code</h3>
+        <p class="text-xs text-slate-500 text-center mb-6">A static 4-digit OTP is required to access the maintenance session form.</p>
+        
+        <!-- OTP Inputs -->
+        <div class="flex gap-2 justify-center mb-4" id="otp_inputs_container">
+            <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border border-slate-200 rounded-xl outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all" />
+            <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border border-slate-200 rounded-xl outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all" />
+            <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border border-slate-200 rounded-xl outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all" />
+            <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border border-slate-200 rounded-xl outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all" />
+        </div>
+        
+        <!-- Error Message -->
+        <div id="otp_error_msg" class="text-red-500 text-xs font-semibold mb-4 min-h-[1.25rem] text-center opacity-0 transition-opacity">
+            Incorrect code. Please try again.
+        </div>
+        
+        <!-- Submit Button -->
+        <button id="otp_verify_btn" class="w-full h-11 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg flex items-center justify-center gap-2">
+            Verify Code
+        </button>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function () {
+        const otpCard = $('#otp_card');
+        const otpInputs = $('.otp-input');
+        const otpVerifyBtn = $('#otp_verify_btn');
+        const otpErrorMsg = $('#otp_error_msg');
+        
+        // Auto focus first field
+        setTimeout(() => otpInputs.eq(0).focus(), 300);
+        
+        otpInputs.on('input', function (e) {
+            const val = $(this).val();
+            $(this).val(val.replace(/[^0-9]/g, ''));
+            
+            if ($(this).val().length === 1) {
+                const next = $(this).next('.otp-input');
+                if (next.length) {
+                    next.focus();
+                } else {
+                    verifyOTP();
+                }
+            }
+        });
+        
+        otpInputs.on('keydown', function (e) {
+            if (e.key === 'Backspace' && $(this).val().length === 0) {
+                const prev = $(this).prev('.otp-input');
+                if (prev.length) {
+                    prev.focus();
+                }
+            }
+        });
+
+        otpInputs.on('paste', function (e) {
+            e.preventDefault();
+            const text = (e.originalEvent.clipboardData || window.clipboardData).getData('text');
+            const digits = text.replace(/[^0-9]/g, '').slice(0, 4);
+            
+            otpInputs.each(function (index) {
+                if (digits[index]) {
+                    $(this).val(digits[index]);
+                }
+            });
+            
+            if (digits.length > 0) {
+                const focusIndex = Math.min(digits.length, 3);
+                otpInputs.eq(focusIndex).focus();
+            }
+            
+            if (digits.length === 4) {
+                verifyOTP();
+            }
+        });
+        
+        otpVerifyBtn.on('click', function () {
+            verifyOTP();
+        });
+        
+        function verifyOTP() {
+            let code = '';
+            otpInputs.each(function () {
+                code += $(this).val();
+            });
+            
+            if (code === '1234') {
+                otpErrorMsg.removeClass('opacity-100').addClass('opacity-0');
+                otpInputs.addClass('border-green-500 bg-green-50 text-green-700');
+                
+                const iconWrap = otpCard.find('.relative.w-16.h-16');
+                iconWrap.removeClass('bg-indigo-50 text-indigo-600').addClass('bg-green-50 text-green-600');
+                iconWrap.find('i').removeClass('fa-shield-alt').addClass('fa-check');
+                iconWrap.find('.animate-ping').removeClass('bg-indigo-400').addClass('bg-green-400');
+                
+                setTimeout(() => {
+                    otpCard.addClass('scale-95');
+                    
+                    // Build destination URL with building and equipment query parameters
+                    const buildingId = "{{ building_id|default:'' }}";
+                    const equipmentId = "{{ equipment_id|default:'' }}";
+                    let targetUrl = "{% url 'backend:maintenance_add' %}";
+                    
+                    const params = [];
+                    if (buildingId) params.push(`building=${buildingId}`);
+                    if (equipmentId) params.push(`equipment=${equipmentId}`);
+                    if (params.length > 0) {
+                        targetUrl += '?' + params.join('&');
+                    }
+                    
+                    window.location.href = targetUrl;
+                }, 600);
+                
+            } else {
+                otpCard.addClass('otp-shake');
+                otpInputs.addClass('border-red-500 bg-red-50 text-red-700');
+                otpErrorMsg.removeClass('opacity-0').addClass('opacity-100');
+                
+                setTimeout(() => {
+                    otpCard.removeClass('otp-shake');
+                    otpInputs.removeClass('border-red-500 bg-red-50 text-red-700').val('');
+                    otpInputs.eq(0).focus();
+                }, 1000);
+            }
+        }
+    });
+</script>
+{% endblock %}

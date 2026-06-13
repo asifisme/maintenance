@@ -28,6 +28,7 @@
                     <thead class="bg-[var(--table-header)] border-b border-[var(--border-color)]">
                         <tr>
                             <th class="px-4 py-3 font-bold whitespace-nowrap">Serial</th>
+                            <th class="px-4 py-3 font-bold whitespace-nowrap">Equipment Name</th>
                             <th class="px-4 py-3 font-bold whitespace-nowrap">QR Code</th>
                             <th class="px-4 py-3 font-bold whitespace-nowrap">Records Logged</th>
                             <th class="px-4 py-3 font-bold whitespace-nowrap">Created By</th>
@@ -41,6 +42,15 @@
                             <tr class="hover:bg-[var(--bg-color)]/50">
                                 <td class="px-4 py-3 whitespace-nowrap font-medium text-[var(--primary-color)]">
                                     <a href="{% url 'backend:maintenance_detail' data.id %}">{{ data.maintenance_serial }}</a>
+                                </td>
+                                <td class="px-4 py-3 whitespace-nowrap">
+                                    {% with eq=data.equipment.first %}
+                                        {% if eq %}
+                                            {{ eq.equipment_type.name }} ({{ eq.equipment_id }})
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    {% endwith %}
                                 </td>
                                 <td class="px-4 py-3 whitespace-nowrap">{{ data.qr_code|default:"" }}</td>
                                 <td class="px-4 py-3 whitespace-nowrap font-semibold">{{ data.num_records }}</td>
