@@ -90,6 +90,43 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Equipment Components Card -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-6">
+                    <div class="border-b border-gray-100 pb-4">
+                        <h3 class="text-lg font-bold text-gray-900">Equipment Components</h3>
+                        <p class="text-xs text-gray-500 mt-1">List of parts and components associated with this equipment.</p>
+                    </div>
+
+                    {% if components %}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {% for comp in components %}
+                        <div class="bg-gray-50 rounded-xl p-4 border border-gray-100 flex items-start justify-between hover:shadow-md transition-all duration-200 group">
+                            <div class="space-y-1">
+                                <h4 class="font-bold text-gray-800 text-sm flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                    {{ comp.name }}
+                                </h4>
+                                {% if comp.description %}
+                                <p class="text-xs text-gray-500 leading-relaxed pl-4">{{ comp.description }}</p>
+                                {% else %}
+                                <p class="text-xs text-gray-400 italic leading-relaxed pl-4">No description provided.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-8 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                        <h3 class="mt-2 text-sm font-semibold text-gray-900">No components</h3>
+                        <p class="mt-1 text-xs text-gray-500">No components are currently defined for this equipment.</p>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
             <!-- Right Column: Technical Specs -->
             <div class="lg:col-span-1">
