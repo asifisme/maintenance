@@ -4,9 +4,6 @@
 <section class="bg-[var(--bg-color)] text-[var(--text-color)] min-h-screen p-4">
     <div class="bg-white rounded-lg p-6 shadow-sm ring-1 ring-[var(--border-color)] max-w-6xl mx-auto">
         <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
-            <span class="grid h-10 w-10 place-items-center rounded-lg bg-indigo-50 text-indigo-600">
-                <i class="fas fa-edit text-lg"></i>
-            </span>
             <div>
                 <h2 class="text-xl font-bold text-gray-900">{{ action }} Maintenance Session</h2>
                 <p class="text-xs text-gray-500">Edit this session, update equipment records, add new ones, or delete
@@ -348,7 +345,7 @@
 
             cards.each(function (index) {
                 $(this).find('.bg-slate-50 span').html(`
-                    <i class="fas fa-tools text-indigo-500"></i> Equipment Record #${index + 1}
+                     Equipment Record #${index + 1}
                 `);
             });
         }

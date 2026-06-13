@@ -2322,7 +2322,7 @@ def maintenance_add(request):
         if qr_code and Maintenance.objects.filter(qr_code=qr_code, deleted=False).exists():
             errors.append("A maintenance record with this QR Code already exists.")
 
-            submitted_records = []
+        submitted_records = []
         for idx in indexes:
             eq_id = request.POST.get(f'records[{idx}][equipment_id]')
             rec_type = request.POST.get(f'records[{idx}][record_type]', 'routine')
