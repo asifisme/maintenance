@@ -2284,35 +2284,162 @@ def maintenance_add(request):
         messages.error(request, 'You do not have permission to add a maintenance record.')
         return render(request, '403.html', status=403)
 
+    buildings = Building.objects.filter(deleted=False, is_active=True)
+    technicians = Technician.objects.filter(deleted=False, is_active=True)
+
     if request.method == 'POST':
-        form = MaintenanceForm(request.POST)
-        if form.is_valid():
-            # Check for duplicate qr_code
-            qr_code = form.cleaned_data['qr_code']
-            if qr_code and Maintenance.objects.filter(qr_code=qr_code, deleted=False).exists():
-                messages.error(request, 'A maintenance record with this QR Code already exists.')
-            # Check for duplicate maintenance_serial
-            elif Maintenance.objects.filter(
-                maintenance_serial=form.cleaned_data['maintenance_serial'],
-                deleted=False
-            ).exclude(pk=None).exists():
-                messages.error(request, 'A maintenance record with this Serial already exists.')
+        building_id = request.POST.get('building')
+        maintenance_serial = request.POST.get('maintenance_serial', '').strip() or None
+        qr_code = request.POST.get('qr_code', '').strip() or None
+        maintenance_date = request.POST.get('maintenance_date')
+
+        # Gather dynamic records
+        indexes = []
+        for key in request.POST.keys():
+            if key.startswith('records[') and key.endswith('][equipment_id]'):
+                try:
+                    idx = key.split('[')[1].split(']')[0]
+                    indexes.append(int(idx))
+                except (IndexError, ValueError):
+                    pass
+        indexes.sort()
+
+        errors = []
+        if not building_id:
+            errors.append("Building is required.")
+        else:
+            try:
+                building = Building.objects.get(id=building_id, deleted=False)
+            except Building.DoesNotExist:
+                errors.append("Selected building does not exist.")
+
+        if not maintenance_date:
+            errors.append("Maintenance Date is required.")
+
+        if maintenance_serial and Maintenance.objects.filter(maintenance_serial=maintenance_serial, deleted=False).exists():
+            errors.append("A maintenance record with this Serial already exists.")
+        
+        if qr_code and Maintenance.objects.filter(qr_code=qr_code, deleted=False).exists():
+            errors.append("A maintenance record with this QR Code already exists.")
+
+        submitted_records = []
+        for idx in indexes:
+            eq_id = request.POST.get(f'records[{idx}][equipment_id]')
+            rec_type = request.POST.get(f'records[{idx}][record_type]', 'routine')
+            maint_date = maintenance_date
+            tech_id = request.POST.get(f'records[{idx}][technician_id]') or None
+            work_desc = request.POST.get(f'records[{idx}][work_description]', '').strip()
+            parts = request.POST.get(f'records[{idx}][parts_replaced]', '').strip()
+            cost = request.POST.get(f'records[{idx}][cost]') or None
+            duration = request.POST.get(f'records[{idx}][duration_hours]') or None
+            status = request.POST.get(f'records[{idx}][maintainance_status]', 'pending')
+            is_janitorial = request.POST.get(f'records[{idx}][is_janitorial]') == 'on'
+            attach_note = request.POST.get(f'records[{idx}][attachments_note]', '').strip()
+
+            record_data = {
+                'equipment_id': eq_id,
+                'record_type': rec_type,
+                'maintenance_date': maint_date,
+                'technician_id': tech_id,
+                'work_description': work_desc,
+                'parts_replaced': parts,
+                'cost': cost,
+                'duration_hours': duration,
+                'maintainance_status': status,
+                'is_janitorial': is_janitorial,
+                'attachments_note': attach_note,
+            }
+            submitted_records.append(record_data)
+
+            if not eq_id:
+                errors.append(f"Row {idx + 1}: Equipment is required.")
             else:
-                maintenance = form.save(commit=False)
-                maintenance.created_by = request.user
-                maintenance.is_active = True
+                if not Equipment.objects.filter(id=eq_id, building_id=building_id, deleted=False).exists():
+                    errors.append(f"Row {idx + 1}: Selected equipment does not belong to the selected building.")
+            if not maint_date:
+                errors.append(f"Row {idx + 1}: Maintenance Date is required.")
+            if not work_desc:
+                errors.append(f"Row {idx + 1}: Work Description / Issue is required.")
+
+        if not indexes:
+            errors.append("At least one equipment record must be added.")
+
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            
+            # Pass back context to reconstruct the page
+            context = {
+                'action': 'Add',
+                'buildings': buildings,
+                'technicians': technicians,
+                'record_type_choices': MaintenanceRecord.RECORD_TYPE_CHOICES,
+                'status_choices': MaintenanceRecord.MAINTAIANCE_STATUS_CHOICES,
+                'submitted_building_id': building_id,
+                'submitted_serial': maintenance_serial,
+                'submitted_qr_code': qr_code,
+                'submitted_date': maintenance_date,
+                'default_date': date.today().strftime('%Y-%m-%d'),
+                'submitted_records': json.dumps(submitted_records),
+            }
+            return render(request, 'maintenance/add.html', context)
+
+        from django.db import transaction
+        try:
+            with transaction.atomic():
+                maintenance = Maintenance(
+                    building_id=building_id,
+                    maintenance_serial=maintenance_serial,
+                    qr_code=qr_code,
+                    created_by=request.user,
+                    is_active=True
+                )
                 maintenance.save()
-                form.save_m2m()  # Save the many-to-many equipment relationship
+
+                for rec in submitted_records:
+                    tech_user = None
+                    assigned_tech = None
+                    if rec['technician_id']:
+                        try:
+                            assigned_tech = Technician.objects.get(id=rec['technician_id'])
+                            tech_user = assigned_tech.user
+                        except Technician.DoesNotExist:
+                            pass
+
+                    record = MaintenanceRecord(
+                        equipment_id=rec['equipment_id'],
+                        maintenance=maintenance,
+                        record_type=rec['record_type'],
+                        maintenance_date=rec['maintenance_date'],
+                        technician=tech_user,
+                        assigned_to=assigned_tech,
+                        work_description=rec['work_description'],
+                        parts_replaced=rec['parts_replaced'],
+                        cost=rec['cost'],
+                        duration_hours=rec['duration_hours'],
+                        maintainance_status=rec['maintainance_status'],
+                        is_janitorial=rec['is_janitorial'],
+                        attachments_note=rec['attachments_note'],
+                        created_by=request.user
+                    )
+                    record.save()
+                    maintenance.equipment.add(rec['equipment_id'])
+
                 messages.success(request, 'Maintenance session created successfully.')
                 return redirect('backend:maintenance_detail', data_id=maintenance.id)
-        else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field}: {error}")
-    else:
-        form = MaintenanceForm()
+        except Exception as e:
+            messages.error(request, f"Error saving maintenance session: {str(e)}")
 
-    return render(request, 'maintenance/add.html', {'form': form, 'action': 'Add'})
+    context = {
+        'action': 'Add',
+        'buildings': buildings,
+        'technicians': technicians,
+        'record_type_choices': MaintenanceRecord.RECORD_TYPE_CHOICES,
+        'status_choices': MaintenanceRecord.MAINTAIANCE_STATUS_CHOICES,
+        'default_date': date.today().strftime('%Y-%m-%d'),
+        'submitted_records': '[]',
+    }
+    return render(request, 'maintenance/add.html', context)
 
 
 @login_required
@@ -2327,63 +2454,9 @@ def maintenance_detail(request, data_id):
         'technician', 'assigned_to', 'ticket'
     ).order_by('-maintenance_date', '-created_at')
 
-    # If they want to add a MaintenanceRecord to this session
     if request.method == 'POST':
         action = request.POST.get('action')
-        
-        if action == 'add_record':
-            if not checkUserPermission(request, 'can_update', '/backend/maintenance/'):
-                messages.error(request, 'You do not have permission to update this record.')
-                return redirect('backend:maintenance_detail', data_id=obj.id)
-
-            equipment_id = request.POST.get('equipment_id')
-            record_type = request.POST.get('record_type', 'routine')
-            maintenance_date = request.POST.get('maintenance_date')
-            technician_id = request.POST.get('technician_id') or None
-            work_description = request.POST.get('work_description', '').strip()
-            parts_replaced = request.POST.get('parts_replaced', '').strip()
-            cost = request.POST.get('cost') or None
-            duration_hours = request.POST.get('duration_hours') or None
-            maintainance_status = request.POST.get('maintainance_status', 'pending')
-            is_janitorial = request.POST.get('is_janitorial') == 'on'
-            attachments_note = request.POST.get('attachments_note', '').strip()
-
-            if not equipment_id or not maintenance_date or not work_description:
-                messages.error(request, 'Equipment, date, and work description are required.')
-            else:
-                try:
-                    tech_user = None
-                    assigned_tech = None
-                    if technician_id:
-                        try:
-                            assigned_tech = Technician.objects.get(id=technician_id)
-                            tech_user = assigned_tech.user
-                        except Technician.DoesNotExist:
-                            pass
-
-                    record = MaintenanceRecord(
-                        equipment_id=equipment_id,
-                        maintenance=obj,
-                        record_type=record_type,
-                        maintenance_date=maintenance_date,
-                        technician=tech_user,
-                        assigned_to=assigned_tech,
-                        work_description=work_description,
-                        parts_replaced=parts_replaced,
-                        cost=cost,
-                        duration_hours=duration_hours,
-                        maintainance_status=maintainance_status,
-                        is_janitorial=is_janitorial,
-                        attachments_note=attachments_note,
-                        created_by=request.user
-                    )
-                    record.save()
-                    messages.success(request, 'Maintenance record added successfully.')
-                except Exception as e:
-                    messages.error(request, f'Error adding record: {str(e)}')
-                return redirect('backend:maintenance_detail', data_id=obj.id)
-
-        elif action == 'delete_record':
+        if action == 'delete_record':
             if not checkUserPermission(request, 'can_update', '/backend/maintenance/'):
                 messages.error(request, 'You do not have permission to delete this record.')
                 return redirect('backend:maintenance_detail', data_id=obj.id)
@@ -2396,14 +2469,20 @@ def maintenance_detail(request, data_id):
                 messages.success(request, 'Maintenance record deleted successfully.')
             return redirect('backend:maintenance_detail', data_id=obj.id)
 
-    equipments = Equipment.objects.filter(deleted=False, is_active=True).select_related('building', 'equipment_type')
-    technicians = Technician.objects.filter(deleted=False, is_active=True)
-    
+    qr_base64 = None
+    if obj.qr_code:
+        try:
+            img = generate_qr_code(obj.qr_code)
+            buffer = BytesIO()
+            img.save(buffer, format="PNG")
+            qr_base64 = base64.b64encode(buffer.getvalue()).decode()
+        except Exception as e:
+            pass
+
     context = {
         'obj': obj,
         'records': records,
-        'equipments': equipments,
-        'technicians': technicians,
+        'qr_base64': qr_base64,
         'record_type_choices': MaintenanceRecord.RECORD_TYPE_CHOICES,
         'status_choices': MaintenanceRecord.MAINTAIANCE_STATUS_CHOICES,
     }
@@ -2417,25 +2496,219 @@ def maintenance_update(request, data_id):
         return render(request, '403.html', status=403)
 
     obj = get_object_or_404(Maintenance, pk=data_id, deleted=False)
+    buildings = Building.objects.filter(deleted=False, is_active=True)
+    technicians = Technician.objects.filter(deleted=False, is_active=True)
 
     if request.method == 'POST':
-        qr_code = request.POST.get('qr_code', '').strip()
-        maintenance_serial = request.POST.get('maintenance_serial', '').strip()
+        building_id = request.POST.get('building')
+        maintenance_serial = request.POST.get('maintenance_serial', '').strip() or None
+        qr_code = request.POST.get('qr_code', '').strip() or None
+        maintenance_date = request.POST.get('maintenance_date')
 
-        if qr_code and Maintenance.objects.filter(qr_code=qr_code, deleted=False).exclude(pk=data_id).exists():
-            messages.error(request, 'A maintenance record with this QR Code already exists.')
-        elif maintenance_serial and Maintenance.objects.filter(maintenance_serial=maintenance_serial, deleted=False).exclude(pk=data_id).exists():
-            messages.error(request, 'A maintenance record with this Serial already exists.')
+        # Gather dynamic records
+        indexes = []
+        for key in request.POST.keys():
+            if key.startswith('records[') and key.endswith('][equipment_id]'):
+                try:
+                    idx = key.split('[')[1].split(']')[0]
+                    indexes.append(int(idx))
+                except (IndexError, ValueError):
+                    pass
+        indexes.sort()
+
+        errors = []
+        if not building_id:
+            errors.append("Building is required.")
         else:
-            obj.qr_code = qr_code or f"QR-MT-{uuid.uuid4().hex[:8].upper()}"
-            if maintenance_serial:
-                obj.maintenance_serial = maintenance_serial
-            obj.updated_by = request.user
-            obj.save()
-            messages.success(request, 'Maintenance session updated successfully.')
-            return redirect('backend:maintenance')
+            try:
+                building = Building.objects.get(id=building_id, deleted=False)
+            except Building.DoesNotExist:
+                errors.append("Selected building does not exist.")
 
-    return render(request, 'maintenance/update.html', {'obj': obj, 'action': 'Update'})
+        if not maintenance_date:
+            errors.append("Maintenance Date is required.")
+
+        if maintenance_serial and Maintenance.objects.filter(maintenance_serial=maintenance_serial, deleted=False).exclude(pk=data_id).exists():
+            errors.append("A maintenance record with this Serial already exists.")
+        
+        if qr_code and Maintenance.objects.filter(qr_code=qr_code, deleted=False).exclude(pk=data_id).exists():
+            errors.append("A maintenance record with this QR Code already exists.")
+
+        submitted_records = []
+        for idx in indexes:
+            rec_id = request.POST.get(f'records[{idx}][id]') or None
+            eq_id = request.POST.get(f'records[{idx}][equipment_id]')
+            rec_type = request.POST.get(f'records[{idx}][record_type]', 'routine')
+            maint_date = maintenance_date
+            tech_id = request.POST.get(f'records[{idx}][technician_id]') or None
+            work_desc = request.POST.get(f'records[{idx}][work_description]', '').strip()
+            parts = request.POST.get(f'records[{idx}][parts_replaced]', '').strip()
+            cost = request.POST.get(f'records[{idx}][cost]') or None
+            duration = request.POST.get(f'records[{idx}][duration_hours]') or None
+            status = request.POST.get(f'records[{idx}][maintainance_status]', 'pending')
+            is_janitorial = request.POST.get(f'records[{idx}][is_janitorial]') == 'on'
+            attach_note = request.POST.get(f'records[{idx}][attachments_note]', '').strip()
+
+            record_data = {
+                'id': rec_id,
+                'equipment_id': eq_id,
+                'record_type': rec_type,
+                'maintenance_date': maint_date,
+                'technician_id': tech_id,
+                'work_description': work_desc,
+                'parts_replaced': parts,
+                'cost': cost,
+                'duration_hours': duration,
+                'maintainance_status': status,
+                'is_janitorial': is_janitorial,
+                'attachments_note': attach_note,
+            }
+            submitted_records.append(record_data)
+
+            if not eq_id:
+                errors.append(f"Row {idx + 1}: Equipment is required.")
+            else:
+                if not Equipment.objects.filter(id=eq_id, building_id=building_id, deleted=False).exists():
+                    errors.append(f"Row {idx + 1}: Selected equipment does not belong to the selected building.")
+            if not maint_date:
+                errors.append(f"Row {idx + 1}: Maintenance Date is required.")
+            if not work_desc:
+                errors.append(f"Row {idx + 1}: Work Description / Issue is required.")
+
+        if not indexes:
+            errors.append("At least one equipment record must be added.")
+
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            
+            # Pass back context to reconstruct
+            context = {
+                'action': 'Update',
+                'obj': obj,
+                'buildings': buildings,
+                'technicians': technicians,
+                'record_type_choices': MaintenanceRecord.RECORD_TYPE_CHOICES,
+                'status_choices': MaintenanceRecord.MAINTAIANCE_STATUS_CHOICES,
+                'submitted_building_id': building_id,
+                'submitted_serial': maintenance_serial,
+                'submitted_qr_code': qr_code,
+                'submitted_date': maintenance_date,
+                'submitted_records': json.dumps(submitted_records),
+            }
+            return render(request, 'maintenance/update.html', context)
+
+        from django.db import transaction
+        try:
+            with transaction.atomic():
+                obj.building_id = building_id
+                obj.maintenance_serial = maintenance_serial or f"MT-{uuid.uuid4().hex[:8].upper()}"
+                obj.qr_code = qr_code or f"QR-MT-{uuid.uuid4().hex[:8].upper()}"
+                obj.updated_by = request.user
+                obj.save()
+
+                # Get existing record IDs in database
+                existing_db_records = obj.maintenance_records.filter(deleted=False)
+                existing_db_ids = set(str(r.id) for r in existing_db_records)
+
+                submitted_ids = set(rec['id'] for rec in submitted_records if rec['id'])
+
+                # Delete those that were removed
+                deleted_ids = existing_db_ids - submitted_ids
+                if deleted_ids:
+                    MaintenanceRecord.objects.filter(id__in=deleted_ids).update(deleted=True, updated_by=request.user)
+
+                obj.equipment.clear()
+
+                for rec in submitted_records:
+                    tech_user = None
+                    assigned_tech = None
+                    if rec['technician_id']:
+                        try:
+                            assigned_tech = Technician.objects.get(id=rec['technician_id'])
+                            tech_user = assigned_tech.user
+                        except Technician.DoesNotExist:
+                            pass
+
+                    if rec['id'] and rec['id'] in existing_db_ids:
+                        # Update existing
+                        record = MaintenanceRecord.objects.get(id=rec['id'])
+                        record.equipment_id = rec['equipment_id']
+                        record.record_type = rec['record_type']
+                        record.maintenance_date = rec['maintenance_date']
+                        record.technician = tech_user
+                        record.assigned_to = assigned_tech
+                        record.work_description = rec['work_description']
+                        record.parts_replaced = rec['parts_replaced']
+                        record.cost = rec['cost']
+                        record.duration_hours = rec['duration_hours']
+                        record.maintainance_status = rec['maintainance_status']
+                        record.is_janitorial = rec['is_janitorial']
+                        record.attachments_note = rec['attachments_note']
+                        record.updated_by = request.user
+                        record.save()
+                    else:
+                        # Create new
+                        record = MaintenanceRecord(
+                            equipment_id=rec['equipment_id'],
+                            maintenance=obj,
+                            record_type=rec['record_type'],
+                            maintenance_date=rec['maintenance_date'],
+                            technician=tech_user,
+                            assigned_to=assigned_tech,
+                            work_description=rec['work_description'],
+                            parts_replaced=rec['parts_replaced'],
+                            cost=rec['cost'],
+                            duration_hours=rec['duration_hours'],
+                            maintainance_status=rec['maintainance_status'],
+                            is_janitorial=rec['is_janitorial'],
+                            attachments_note=rec['attachments_note'],
+                            created_by=request.user
+                        )
+                        record.save()
+
+                    obj.equipment.add(rec['equipment_id'])
+
+                messages.success(request, 'Maintenance session updated successfully.')
+                return redirect('backend:maintenance_detail', data_id=obj.id)
+        except Exception as e:
+            messages.error(request, f"Error updating maintenance session: {str(e)}")
+
+    # GET request: serialize current records
+    existing_records = []
+    submitted_date = date.today().strftime('%Y-%m-%d')
+    for r in obj.maintenance_records.filter(deleted=False):
+        if r.maintenance_date:
+            submitted_date = r.maintenance_date.strftime('%Y-%m-%d')
+        existing_records.append({
+            'id': str(r.id),
+            'equipment_id': r.equipment_id,
+            'record_type': r.record_type,
+            'maintenance_date': r.maintenance_date.strftime('%Y-%m-%d') if r.maintenance_date else '',
+            'technician_id': r.assigned_to_id or '',
+            'work_description': r.work_description,
+            'parts_replaced': r.parts_replaced,
+            'cost': str(r.cost) if r.cost is not None else '',
+            'duration_hours': str(r.duration_hours) if r.duration_hours is not None else '',
+            'maintainance_status': r.maintainance_status,
+            'is_janitorial': r.is_janitorial,
+            'attachments_note': r.attachments_note,
+        })
+
+    context = {
+        'action': 'Update',
+        'obj': obj,
+        'buildings': buildings,
+        'technicians': technicians,
+        'record_type_choices': MaintenanceRecord.RECORD_TYPE_CHOICES,
+        'status_choices': MaintenanceRecord.MAINTAIANCE_STATUS_CHOICES,
+        'submitted_building_id': str(obj.building_id) if obj.building_id else '',
+        'submitted_serial': obj.maintenance_serial,
+        'submitted_qr_code': obj.qr_code,
+        'submitted_date': submitted_date,
+        'submitted_records': json.dumps(existing_records),
+    }
+    return render(request, 'maintenance/update.html', context)
 
 
 @login_required

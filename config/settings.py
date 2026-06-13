@@ -62,7 +62,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'mantainance_db',
         'USER': 'root',
-        'PASSWORD': 'admin', 
+        'PASSWORD': 'admin',  
         'HOST': 'localhost',
         'PORT': '3306', 
         

@@ -44,7 +44,13 @@
                                 </td>
                                 <td class="px-4 py-3 whitespace-nowrap">{{ data.qr_code|default:"" }}</td>
                                 <td class="px-4 py-3 whitespace-nowrap font-semibold">{{ data.num_records }}</td>
-                                <td class="px-4 py-3 whitespace-nowrap">{{ data.created_by.get_full_name|default:data.created_by.username }}</td>
+                                <td class="px-4 py-3 whitespace-nowrap">
+                                    {% if data.created_by %}
+                                        {{ data.created_by.get_full_name|default:data.created_by.username }}
+                                    {% else %}
+                                        System
+                                    {% endif %}
+                                </td>
                                 <td class="px-4 py-3 whitespace-nowrap">{{ data.created_at|date:"d-b-Y H:i" }}</td>
                                 <td class="px-4 py-3 whitespace-nowrap">
                                     {% if data.is_active %}
