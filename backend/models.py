@@ -386,24 +386,23 @@ class Equipment(models.Model):
         return f"[{self.equipment_id}] {self.equipment_type.name} at {self.building.name}"
  
 
-# class EquipmentMaintenanceQRCode(models.Model):
-#     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, related_name="maintenance_qr_code")
-#     qr_code   = models.CharField(max_length=255) 
 
-#     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipment_qr_code_created_by', blank=True, null=True)
-#     updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipment_qr_code_updated_by', blank=True, null=True)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-#     is_active = models.BooleanField(default=True)
-#     deleted = models.BooleanField(default=False) 
+class EquipmentComponents(models.Model):
+    equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE, related_name="components")
+    name      = models.CharField(max_length=100)
+    description = models.TextField(blank=True) 
 
-#     def save(self, *args, **kwargs):
-#         if not self.qr_code:
-#             self.qr_code = str(uuid.uuid4())
-#         super().save(*args, **kwargs) 
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipment_component_created_by', blank=True, null=True)
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipment_component_updated_by', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    deleted = models.BooleanField(default=False) 
+ 
+    def __str__(self):
+        return f"{self.name} ({self.model})"
 
-#     def __str__(self):
-#         return f"QR Code for {self.equipment}"
+
 
 class Maintenance(models.Model):
     maintenance_serial = models.CharField(max_length=100, blank=True, unique=True, null= True)
@@ -491,6 +490,21 @@ class MaintenanceRecord(models.Model):
     def __str__(self):
         return f"{self.record_type.title()} maintenance for {self.equipment} on {self.maintenance_date}" 
  
+
+class MaintenanceComponent(models.Model):
+    maintenance_record = models.ForeignKey(MaintenanceRecord, on_delete=models.CASCADE, related_name="components")
+    name               = models.CharField(max_length=100)
+    description        = models.TextField(blank=True) 
+
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='maintenance_component_created_by', blank=True, null=True)
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='maintenance_component_updated_by', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    deleted = models.BooleanField(default=False) 
+ 
+    def __str__(self):
+        return f"{self.name} ({self.maintenance_record})" 
  
  
 class MaintenanceAttachment(models.Model):
@@ -661,8 +675,6 @@ class AssignActivities(models.Model):
     is_active = models.BooleanField(default=True) 
 
 
- 
- 
 
 class ScheduledMaintenance(models.Model):
     RECURRENCE_CHOICES = [
@@ -739,4 +751,4 @@ class CriticalAlert(models.Model):
  
     def __str__(self):
         return f"[{self.severity.upper()}] {self.title}"
- 
+

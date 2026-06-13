@@ -51,7 +51,7 @@ from backend.models import (
     LoginLog, BackendMenu, UserMenuPermission, WebImages, SiteSettings,
     Division, SubDivision, Section, Building, EquipmentType, EquipmentTypeData, Equipment,
     Ticket, TicketComment, TicketActivityLog, AssignTechnician, Technician, AssignActivities,
-    ScheduledMaintenance, CriticalAlert, Maintenance, MaintenanceRecord,
+    ScheduledMaintenance, CriticalAlert, Maintenance, MaintenanceRecord, MaintenanceAttachment,
 )
 from django.db.models import Count
 
@@ -1506,6 +1506,7 @@ def equipment_list(request):
     }   
     return render(request, 'equipment/list.html', context)
 
+from backend.models import EquipmentComponents 
 
 @login_required
 def equipment_add(request):
@@ -1522,6 +1523,10 @@ def equipment_add(request):
         building_id = request.POST.get('building_id', '')
         brand = request.POST.get('brand', '').strip()
         floor_location = request.POST.get('floor_location', '').strip()
+
+        # components 
+        component_names = request.POST.getlist('component_name[]')
+        component_descriptions = request.POST.getlist('component_description[]')
         
         maintenance_period_days = request.POST.get('maintenance_period_days', '90')
         next_service_due = request.POST.get('next_service_due', '')
@@ -1540,6 +1545,19 @@ def equipment_add(request):
                 created_by=request.user
             )
             obj.save()
+            
+            # Save components
+            for i in range(len(component_names)):
+                c_name = component_names[i].strip()
+                c_desc = component_descriptions[i].strip() if i < len(component_descriptions) else ''
+                if c_name:
+                    EquipmentComponents.objects.create(
+                        equipment=obj,
+                        name=c_name,
+                        description=c_desc,
+                        created_by=request.user
+                    )
+            
             messages.success(request, 'Equipment added successfully.')
             return redirect('backend:equipment_list')
     
@@ -1569,6 +1587,10 @@ def equipment_update(request, data_id):
         brand = request.POST.get('brand', '').strip()
         floor_location = request.POST.get('floor_location', '').strip()
         
+        # components
+        component_names = request.POST.getlist('component_name[]')
+        component_descriptions = request.POST.getlist('component_description[]')
+        
         maintenance_period_days = request.POST.get('maintenance_period_days', '90')
         next_service_due = request.POST.get('next_service_due', '')
         
@@ -1588,6 +1610,20 @@ def equipment_update(request, data_id):
             
             obj.updated_by = request.user
             obj.save()
+            
+            # Recreate components
+            obj.components.all().delete()
+            for i in range(len(component_names)):
+                c_name = component_names[i].strip()
+                c_desc = component_descriptions[i].strip() if i < len(component_descriptions) else ''
+                if c_name:
+                    EquipmentComponents.objects.create(
+                        equipment=obj,
+                        name=c_name,
+                        description=c_desc,
+                        created_by=request.user
+                    )
+                    
             messages.success(request, 'Equipment updated successfully.')
             return redirect('backend:equipment_list')
     
@@ -1653,66 +1689,72 @@ from io import BytesIO
 @login_required
 def qr_equipement_views(request, data_id):
     obj = get_object_or_404(Equipment, pk=data_id, deleted=False)
-    last_maintenance = obj.maintenance_records.filter(deleted=False).order_by('-maintenance_date').first()
     
-    qr_base64 = None
-    if obj.qr_code:
-        img = generate_qr_code(obj.qr_code)
+    if request.GET.get('view') == '1':
+        last_maintenance = obj.maintenance_records.filter(deleted=False).order_by('-maintenance_date').first()
+        
+        add_url = request.build_absolute_uri(reverse('backend:maintenance_add'))
+        qr_data = f"{add_url}?building={obj.building.id}&equipment={obj.id}"
+        img = generate_qr_code(qr_data)
         buffer = BytesIO()
         img.save(buffer, format="PNG")
         qr_base64 = base64.b64encode(buffer.getvalue()).decode()
 
-    context = {
-        'obj': obj,
-        'last_maintenance': last_maintenance,
-        'qr_base64': qr_base64,
-    }
-    return render(request, "equipment/qr.html", context)
+        context = {
+            'obj': obj,
+            'last_maintenance': last_maintenance,
+            'qr_base64': qr_base64,
+        }
+        return render(request, "equipment/qr.html", context)
+    
+    # Redirect to maintenance_add with auto-fill parameters
+    redirect_url = reverse('backend:maintenance_add')
+    return redirect(f"{redirect_url}?building={obj.building.id}&equipment={obj.id}")
 
 # ======================================== Maintenance Record Review ========================================
 
-# @login_required
-# def maintenance_record_review(request, record_id):
-#     """Approve or Reject a MaintenanceRecord from the equipment detail page."""
-#     from django.utils import timezone as tz
+@login_required
+def maintenance_record_review(request, record_id):
+    """Approve or Reject a MaintenanceRecord from the equipment detail page."""
+    from django.utils import timezone as tz
 
-#     record = get_object_or_404(MaintenanceRecord, pk=record_id, deleted=False)
-#     referer = request.META.get('HTTP_REFERER')
-#     fallback_url = reverse('backend:equipment_detail', kwargs={'data_id': record.equipment_id})
-#     redirect_url = referer if referer else fallback_url
+    record = get_object_or_404(MaintenanceRecord, pk=record_id, deleted=False)
+    referer = request.META.get('HTTP_REFERER')
+    fallback_url = reverse('backend:equipment_detail', kwargs={'data_id': record.equipment_id})
+    redirect_url = referer if referer else fallback_url
 
-#     if request.method != 'POST':
-#         messages.error(request, 'Invalid request method.')
-#         return redirect(redirect_url)
+    if request.method != 'POST':
+        messages.error(request, 'Invalid request method.')
+        return redirect(redirect_url)
 
-#     action = request.POST.get('action', '').strip()   # 'approve' or 'reject'
-#     review_notes = request.POST.get('review_notes', '').strip()
+    action = request.POST.get('action', '').strip()   # 'approve' or 'reject'
+    review_notes = request.POST.get('review_notes', '').strip()
 
-#     if action == 'approve':
-#         record.review_status = 'approved'
-#         record.review_notes = review_notes
-#         record.reviewed_by = request.user
-#         record.reviewed_at = tz.now()
-#         record.updated_by = request.user
-#         record.save()
-#         messages.success(request, 'Maintenance record approved successfully.')
+    if action == 'approve':
+        record.review_status = 'approved'
+        record.review_notes = review_notes
+        record.reviewed_by = request.user
+        record.reviewed_at = tz.now()
+        record.updated_by = request.user
+        record.save()
+        messages.success(request, 'Maintenance record approved successfully.')
 
-#     elif action == 'reject':
-#         if not review_notes:
-#             messages.error(request, 'Please provide a reason for rejection.')
-#             return redirect(redirect_url)
-#         record.review_status = 'rejected'
-#         record.review_notes = review_notes
-#         record.reviewed_by = request.user
-#         record.reviewed_at = tz.now()
-#         record.updated_by = request.user
-#         record.save()
-#         messages.success(request, 'Maintenance record rejected.')
+    elif action == 'reject':
+        if not review_notes:
+            messages.error(request, 'Please provide a reason for rejection.')
+            return redirect(redirect_url)
+        record.review_status = 'rejected'
+        record.review_notes = review_notes
+        record.reviewed_by = request.user
+        record.reviewed_at = tz.now()
+        record.updated_by = request.user
+        record.save()
+        messages.success(request, 'Maintenance record rejected.')
 
-#     else:
-#         messages.error(request, 'Unknown action.')
+    else:
+        messages.error(request, 'Unknown action.')
 
-#     return redirect(redirect_url)
+    return redirect(redirect_url)
 
 @login_required
 def equipment_history(request):
@@ -1946,10 +1988,31 @@ def ticket_add(request):
             messages.success(request, 'Ticket created successfully.')
             return redirect('backend:ticket_list')
     
+    # Pre-fill equipment and building from GET parameters if provided
+    initial_eq = request.GET.get('equipment_id') or request.GET.get('equipment')
+    initial_b = request.GET.get('building_id') or request.GET.get('building')
+    
+    obj = None
+    if initial_eq or initial_b:
+        class DummyObj:
+            def __init__(self, eq_id, b_id):
+                try:
+                    self.equipment_id = int(eq_id) if eq_id else None
+                except ValueError:
+                    self.equipment_id = None
+                try:
+                    self.building_id = int(b_id) if b_id else None
+                except ValueError:
+                    self.building_id = None
+                self.status = 'open'
+                self.issue_type = 'breakdown'
+        obj = DummyObj(initial_eq, initial_b)
+
     context = {
         'action': 'Add',
         'equipments': equipments,
         'buildings': buildings,
+        'obj': obj,
     }
     return render(request, 'ticket/add.html', context)
 
@@ -2286,6 +2349,13 @@ def maintenance_add(request):
 
     buildings = Building.objects.filter(deleted=False, is_active=True)
     technicians = Technician.objects.filter(deleted=False, is_active=True)
+    
+    logged_in_tech_id = None
+    if request.user.is_authenticated:
+        try:
+            logged_in_tech_id = request.user.technician_profile.id
+        except (AttributeError, Technician.DoesNotExist):
+            pass
 
     if request.method == 'POST':
         building_id = request.POST.get('building')
@@ -2377,6 +2447,7 @@ def maintenance_add(request):
                 'submitted_date': maintenance_date,
                 'default_date': date.today().strftime('%Y-%m-%d'),
                 'submitted_records': json.dumps(submitted_records),
+                'logged_in_tech_id': logged_in_tech_id,
             }
             return render(request, 'maintenance/add.html', context)
 
@@ -2423,6 +2494,14 @@ def maintenance_add(request):
         except Exception as e:
             messages.error(request, f"Error saving maintenance session: {str(e)}")
 
+    submitted_building_id = request.GET.get('building')
+    submitted_records = []
+    if request.GET.get('equipment'):
+        record = {'equipment_id': request.GET.get('equipment')}
+        if logged_in_tech_id:
+            record['technician_id'] = str(logged_in_tech_id)
+        submitted_records.append(record)
+
     context = {
         'action': 'Add',
         'buildings': buildings,
@@ -2430,22 +2509,43 @@ def maintenance_add(request):
         'record_type_choices': MaintenanceRecord.RECORD_TYPE_CHOICES,
         'status_choices': MaintenanceRecord.MAINTAIANCE_STATUS_CHOICES,
         'default_date': date.today().strftime('%Y-%m-%d'),
-        'submitted_records': '[]',
+        'submitted_building_id': submitted_building_id,
+        'submitted_records': json.dumps(submitted_records),
+        'logged_in_tech_id': logged_in_tech_id,
     }
     return render(request, 'maintenance/add.html', context)
 
 
 @login_required
 def maintenance_detail(request, data_id):
-    if not checkUserPermission(request, 'can_view', '/backend/maintenance/'):
+    obj = get_object_or_404(Maintenance, pk=data_id, deleted=False)
+
+    # Get user's technician profile
+    technician = None
+    try:
+        technician = request.user.technician_profile
+    except Exception:
+        pass
+
+    # Check if technician is assigned to any records in this maintenance session
+    is_assigned = False
+    if technician:
+        is_assigned = obj.maintenance_records.filter(assigned_to=technician, deleted=False).exists()
+
+    has_general_permission = checkUserPermission(request, 'can_view', '/backend/maintenance/')
+
+    if not has_general_permission and not is_assigned:
         messages.error(request, 'You do not have permission to view this page.')
         return render(request, '403.html', status=403)
 
-    obj = get_object_or_404(Maintenance, pk=data_id, deleted=False)
     records = obj.maintenance_records.filter(deleted=False).select_related(
         'equipment', 'equipment__building', 'equipment__equipment_type',
         'technician', 'assigned_to', 'ticket'
     ).order_by('-maintenance_date', '-created_at')
+
+    # If technician and no general permission, only show records assigned to them
+    if technician and not has_general_permission:
+        records = records.filter(assigned_to=technician)
 
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -2465,7 +2565,8 @@ def maintenance_detail(request, data_id):
     qr_base64 = None
     if obj.qr_code:
         try:
-            img = generate_qr_code(obj.qr_code)
+            scan_url = request.build_absolute_uri(reverse('backend:maintanaince_scan', kwargs={'qr_code': obj.qr_code}))
+            img = generate_qr_code(scan_url)
             buffer = BytesIO()
             img.save(buffer, format="PNG")
             qr_base64 = base64.b64encode(buffer.getvalue()).decode()
@@ -2743,6 +2844,45 @@ def get_building_equipment(request):
         return JsonResponse({'error': str(e), 'equipment': []}, status=400)
 
 
+@login_required
+def maintanaince_scan(request, qr_code=None):
+    if not qr_code:
+        qr_code = request.GET.get('qr_code', '').strip()
+    
+    if not qr_code:
+        messages.error(request, "No QR Code provided.")
+        return redirect('backend:dash_board')
+        
+    maintenance = get_object_or_404(Maintenance, qr_code=qr_code, deleted=False)
+    
+    # Check if user has a technician profile
+    technician = None
+    try:
+        technician = request.user.technician_profile
+    except Exception:
+        pass
 
-def maintanaince_scan(request):
-    pass 
+    if technician:
+        # Check if the technician is assigned to any records in this maintenance session
+        assigned_records_exist = maintenance.maintenance_records.filter(
+            assigned_to=technician, deleted=False
+        ).exists()
+        
+        if assigned_records_exist:
+            # Redirect to the maintenance detail page where they will see their assigned tasks
+            return redirect('backend:maintenance_detail', data_id=maintenance.id)
+        else:
+            # If they are not assigned to this session, check if they have general view permission
+            if checkUserPermission(request, 'can_view', '/backend/maintenance/'):
+                return redirect('backend:maintenance_detail', data_id=maintenance.id)
+            else:
+                messages.error(request, "You are not assigned to this maintenance session.")
+                return redirect('backend:dash_board')
+    else:
+        # If they are an administrator or other user, check if they have general view permission
+        if checkUserPermission(request, 'can_view', '/backend/maintenance/'):
+            return redirect('backend:maintenance_detail', data_id=maintenance.id)
+        else:
+            messages.error(request, "You do not have permission to view this maintenance session.")
+            return redirect('backend:dash_board') 
+

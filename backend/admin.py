@@ -3,7 +3,7 @@ from .models import (
     WebImages, PasswordResetCode, LoginLog, BackendMenu, UserMenuPermission, SiteSettings,
     Division, SubDivision, Section, Building, Technician, EquipmentType, EquipmentTypeData,
     Equipment, Maintenance, MaintenanceRecord, MaintenanceAttachment, Ticket, TicketComment,
-    TicketActivityLog, ScheduledMaintenance, CriticalAlert
+    TicketActivityLog, ScheduledMaintenance, CriticalAlert,
 )
 
 @admin.register(WebImages)
@@ -111,3 +111,5 @@ class ScheduledMaintenanceAdmin(admin.ModelAdmin):
 class CriticalAlertAdmin(admin.ModelAdmin):
     list_display = ("title", "alert_type", "severity", "equipment", "is_acknowledged")
     list_filter = ("severity", "alert_type", "is_acknowledged")
+
+

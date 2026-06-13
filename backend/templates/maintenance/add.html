@@ -108,6 +108,8 @@
 {% block extra_js %}
 <script>
     $(document).ready(function () {
+        const loggedInTechId = "{{ logged_in_tech_id|default:'' }}";
+
         // Parse submitted records on page load (in case of validation failure)
         let submittedRecords = [];
         try {
@@ -245,7 +247,15 @@
 
             let techOptions = '<option value="">Select Technician</option>';
             {% for tech in technicians %}
-            techOptions += `<option value="{{ tech.id }}" ${data && String(data.technician_id) === '{{ tech.id }}' ? 'selected' : ''}>{{ tech.display_name }}</option>`;
+            {
+                let isTechSelected = '';
+                if (data && String(data.technician_id) === '{{ tech.id }}') {
+                    isTechSelected = 'selected';
+                } else if (!data && loggedInTechId && String(loggedInTechId) === '{{ tech.id }}') {
+                    isTechSelected = 'selected';
+                }
+                techOptions += `<option value="{{ tech.id }}" ${isTechSelected}>{{ tech.display_name }}</option>`;
+            }
             {% endfor %}
 
             let statusOptions = '';
@@ -254,10 +264,10 @@
             {% endfor %}
 
             // Field values
-            const workDesc = data ? data.work_description : '';
-            const parts = data ? data.parts_replaced : '';
-            const duration = data ? data.duration_hours : '';
-            const note = data ? data.attachments_note : '';
+            const workDesc = (data && data.work_description) ? data.work_description : '';
+            const parts = (data && data.parts_replaced) ? data.parts_replaced : '';
+            const duration = (data && data.duration_hours) ? data.duration_hours : '';
+            const note = (data && data.attachments_note) ? data.attachments_note : '';
 
             const cardHtml = `
                 <div class="record-card bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-5 transition-all duration-200 hover:shadow-md" data-index="${idx}">

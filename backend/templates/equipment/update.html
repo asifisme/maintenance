@@ -81,6 +81,21 @@
                         </div>
                     </div>
                 </div>
+                <!-- Equipment Components -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <div class="flex items-center justify-between mb-6 pb-2 border-b border-gray-100">
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-lg font-bold text-gray-900">Equipment Components</h3>
+                        </div>
+                        <button type="button" id="add_component_btn" class="text-sm bg-[#3B5998] hover:bg-blue-800 text-white px-3 py-1.5 rounded font-semibold transition-colors">
+                            + Add Component
+                        </button>
+                    </div>
+                    <div id="components_container" class="space-y-4">
+                        <!-- Dynamic components will go here -->
+                    </div>
+                </div>
+
                 <!-- Maintenance Scheduling -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                     <div class="flex items-center gap-2 mb-6 pb-2 border-b border-gray-100">
@@ -167,8 +182,46 @@
 {% endblock %}
 {% block extra_js %}
     <script>
-  $(document).ready(function () {
-    $('.select2-items').select2();
-  });
+    $(document).ready(function () {
+        $('.select2-items').select2();
+
+        function addComponentRow(name = '', desc = '') {
+            const html = `
+                <div class="component-row flex items-start gap-4 p-4 border border-gray-100 rounded-lg bg-slate-50">
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Component Name <span class="text-red-500">*</span></label>
+                        <input type="text" name="component_name[]" value="${name}" class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block p-2 outline-none" required placeholder="e.g. Compressor">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Description</label>
+                        <input type="text" name="component_description[]" value="${desc}" class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block p-2 outline-none" placeholder="e.g. Main cooling unit">
+                    </div>
+                    <div class="pt-6">
+                        <button type="button" class="remove-component text-red-500 hover:text-red-700 font-bold p-2 text-sm">Remove</button>
+                    </div>
+                </div>
+            `;
+            $('#components_container').append(html);
+        }
+
+        $('#add_component_btn').on('click', function() {
+            addComponentRow();
+        });
+
+        $(document).on('click', '.remove-component', function() {
+            $(this).closest('.component-row').remove();
+        });
+
+        // Load existing components
+        let hasComponents = false;
+        {% for comp in obj.components.all %}
+        hasComponents = true;
+        addComponentRow("{{ comp.name|escapejs }}", "{{ comp.description|escapejs }}");
+        {% endfor %}
+        
+        if (!hasComponents) {
+            addComponentRow();
+        }
+    });
     </script>
 {% endblock %}
