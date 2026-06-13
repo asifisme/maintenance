@@ -1,67 +1,73 @@
 {% extends 'base.html' %}
 {% block title %}Maintenance Session Details{% endblock %}
 {% block breadcrumb %}
-    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-    </svg>
-    <a href="{% url 'backend:maintenance' %}" class="hover:text-[var(--primary-color)] transition-colors">Maintenance Sessions</a>
-    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-    </svg>
-    <span class="font-medium text-[var(--primary-color)]">{{ obj.maintenance_serial }}</span>
+<svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<a href="{% url 'backend:maintenance' %}" class="hover:text-[var(--primary-color)] transition-colors">Maintenance
+    Sessions</a>
+<svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+<span class="font-medium text-[var(--primary-color)]">{{ obj.maintenance_serial }}</span>
 {% endblock %}
 
 {% block content %}
 <div class="space-y-6">
     <!-- Session Summary Card -->
-    <div class="bg-white rounded-lg p-6 shadow-sm ring-1 ring-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div
+        class="bg-white rounded-lg p-6 shadow-sm ring-1 ring-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div class="flex flex-col sm:flex-row sm:items-center gap-6">
             {% if qr_base64 %}
-            <div class="flex-shrink-0 flex items-center justify-center p-1 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div
+                class="flex-shrink-0 flex items-center justify-center p-1 bg-white border border-gray-200 rounded-lg shadow-sm">
                 <img src="data:image/png;base64,{{ qr_base64 }}" alt="QR Code" class="w-24 h-24">
             </div>
             {% endif %}
             <div class="space-y-2">
                 <div class="flex items-center gap-3">
-                    <span class="px-3 py-1 bg-indigo-50 text-indigo-700 font-semibold rounded-full text-xs">Maintenance Session</span>
+                    <span class="px-3 py-1 bg-indigo-50 text-indigo-700 font-semibold rounded-full text-xs">Maintenance
+                        Session</span>
                     <h2 class="text-2xl font-bold text-gray-900">{{ obj.maintenance_serial }}</h2>
                 </div>
-                <p class="text-sm text-gray-500">QR Code Value: <span class="font-mono text-gray-700 font-semibold">{{ obj.qr_code|default:"None" }}</span></p>
+                <p class="text-sm text-gray-500">QR Code Value: <span class="font-mono text-gray-700 font-semibold">{{
+                        obj.qr_code|default:"None" }}</span></p>
                 <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-400">
                     <span>Building: <strong class="text-gray-700">{{ obj.building.name }}</strong></span>
                     <span>•</span>
                     <span>Created by: <strong class="text-gray-700">
-                        {% if obj.created_by %}
+                            {% if obj.created_by %}
                             {{ obj.created_by.get_full_name|default:obj.created_by.username }}
-                        {% else %}
+                            {% else %}
                             System
-                        {% endif %}
-                    </strong></span>
+                            {% endif %}
+                        </strong></span>
                     <span>•</span>
-                    <span>Created at: <strong class="text-gray-700">{{ obj.created_at|date:"d-b-Y H:i:s" }}</strong></span>
+                    <span>Created at: <strong class="text-gray-700">{{ obj.created_at|date:"d-b-Y H:i:s"
+                            }}</strong></span>
                     <span>•</span>
                     <span>Maintenance Date: <strong class="text-gray-700">
-                        {% with first_rec=records|first %}
+                            {% with first_rec=records|first %}
                             {{ first_rec.maintenance_date|date:"d-b-Y"|default:"None" }}
-                        {% endwith %}
-                    </strong></span>
+                            {% endwith %}
+                        </strong></span>
                     <span>•</span>
-                    <span>Status: 
+                    <span>Status:
                         {% if obj.is_active %}
-                            <span class="text-green-600 font-semibold">Active</span>
+                        <span class="text-green-600 font-semibold">Active</span>
                         {% else %}
-                            <span class="text-red-600 font-semibold">Inactive</span>
+                        <span class="text-red-600 font-semibold">Inactive</span>
                         {% endif %}
                     </span>
                 </div>
             </div>
         </div>
-      
+
     </div>
 
     <!-- Records Table (Full Width) -->
-    <div class="bg-white rounded-lg shadow-sm ring-1 ring-gray-100"> 
-        
+    <div class="bg-white rounded-lg shadow-sm ring-1 ring-gray-100">
+
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-left">
                 <thead class="bg-gray-50 border-b border-gray-200">
@@ -77,51 +83,92 @@
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                     {% for rec in records %}
-                        <tr class="hover:bg-gray-50/50">
-                            <td class="px-4 py-3">
-                                <div class="font-semibold text-gray-900">{{ rec.equipment.equipment_id }}</div>
-                                <div class="text-xs text-gray-500">{{ rec.equipment.equipment_type.name }}</div>
-                            </td>
-                            <td class="px-4 py-3">
-                                <div class="capitalize text-gray-800 font-medium">{{ rec.record_type }}</div>
-                                <div class="text-xs text-gray-400">{{ rec.maintenance_date|date:"d-M-Y" }}</div>
-                            </td>
-                            <td class="px-4 py-3 text-gray-700 text-xs font-medium">
-                                {% if rec.assigned_to %}
-                                    {{ rec.assigned_to.display_name }}
-                                {% elif rec.technician %}
-                                    {{ rec.technician.get_full_name|default:rec.technician.username }}
-                                {% else %}
-                                    Unassigned
-                                {% endif %}
-                            </td>
-                            <td class="px-4 py-3 text-xs text-gray-600 max-w-xs break-words">
-                                {{ rec.work_description }}
-                            </td>
-                            <td class="px-4 py-3 text-xs text-gray-600 max-w-xs break-words">
-                                {{ rec.parts_replaced|default:"-" }}
-                            </td>
-                            <td class="px-4 py-3 text-right text-xs">
-                                <div class="font-semibold text-gray-900">${{ rec.cost|default:"0.00" }}</div>
-                                <div class="text-gray-400">{{ rec.duration_hours|default:"0.0" }} Hrs</div>
-                            </td>
-                            <td class="px-4 py-3 text-center">
-                                {% if rec.maintainance_status == 'completed' %}
-                                    <span class="inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-600/20">Completed</span>
-                                {% elif rec.maintainance_status == 'in_progress' %}
-                                    <span class="inline-flex items-center rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 ring-1 ring-inset ring-amber-600/20">In Progress</span>
-                                {% elif rec.maintainance_status == 'pending' %}
-                                    <span class="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-inset ring-blue-600/20">Pending</span>
-                                {% else %}
-                                    <span class="inline-flex items-center rounded-full bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700 ring-1 ring-inset ring-gray-600/20 capitalize">{{ rec.maintainance_status }}</span>
-                                {% endif %}
-                            </td>
-                           
-                        </tr>
+                    <tr class="hover:bg-gray-50/50">
+                        <td class="px-4 py-3">
+                            <div class="font-semibold text-gray-900">{{ rec.equipment.equipment_id }}</div>
+                            <div class="text-xs text-gray-500">{{ rec.equipment.equipment_type.name }}</div>
+                        </td>
+                        <td class="px-4 py-3">
+                            <div class="capitalize text-gray-800 font-medium">{{ rec.record_type }}</div>
+                            <div class="text-xs text-gray-400">{{ rec.maintenance_date|date:"d-M-Y" }}</div>
+                        </td>
+                        <td class="px-4 py-3 text-gray-700 text-xs font-medium">
+                            {% if rec.assigned_to %}
+                            {{ rec.assigned_to.display_name }}
+                            {% elif rec.technician %}
+                            {{ rec.technician.get_full_name|default:rec.technician.username }}
+                            {% else %}
+                            Unassigned
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-3 text-xs text-gray-600 max-w-xs break-words">
+                            <div class="font-medium text-gray-900 mb-1">{{ rec.work_description }}</div>
+                            {% if rec.components.exists %}
+                            <div class="mt-2 pt-2 border-t border-gray-100 space-y-1.5">
+                                <span
+                                    class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Components
+                                    Status:</span>
+                                <div class="space-y-1">
+                                    {% for comp in rec.components.all %}
+                                    <div class="text-[11px] leading-relaxed">
+                                        <div class="flex items-center gap-1.5 font-semibold text-gray-700">
+                                            {% if comp.is_checked %}
+                                            <span class="text-green-600 flex items-center gap-1"><i
+                                                    class="fas fa-check-circle"></i> {{ comp.name }}</span>
+                                            {% else %}
+                                            <span class="text-red-500 flex items-center gap-1"><i
+                                                    class="fas fa-times-circle"></i> {{ comp.name }}</span>
+                                            {% endif %}
+                                        </div>
+                                        {% if comp.remark or comp.suggestion %}
+                                        <div class="pl-4 text-[10px] text-gray-500 space-y-0.5">
+                                            {% if comp.remark %}
+                                            <div><span class="font-medium text-gray-600">Remark:</span> {{ comp.remark
+                                                }}</div>
+                                            {% endif %}
+                                            {% if comp.suggestion %}
+                                            <div><span class="font-medium text-gray-600">Suggestion:</span> {{
+                                                comp.suggestion }}</div>
+                                            {% endif %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-3 text-xs text-gray-600 max-w-xs break-words">
+                            {{ rec.parts_replaced|default:"-" }}
+                        </td>
+                        <td class="px-4 py-3 text-right text-xs">
+                            <div class="font-semibold text-gray-900">${{ rec.cost|default:"0.00" }}</div>
+                            <div class="text-gray-400">{{ rec.duration_hours|default:"0.0" }} Hrs</div>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            {% if rec.maintainance_status == 'completed' %}
+                            <span
+                                class="inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-600/20">Completed</span>
+                            {% elif rec.maintainance_status == 'in_progress' %}
+                            <span
+                                class="inline-flex items-center rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 ring-1 ring-inset ring-amber-600/20">In
+                                Progress</span>
+                            {% elif rec.maintainance_status == 'pending' %}
+                            <span
+                                class="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-inset ring-blue-600/20">Pending</span>
+                            {% else %}
+                            <span
+                                class="inline-flex items-center rounded-full bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700 ring-1 ring-inset ring-gray-600/20 capitalize">{{
+                                rec.maintainance_status }}</span>
+                            {% endif %}
+                        </td>
+
+                    </tr>
                     {% empty %}
-                        <tr>
-                            <td colspan="10" class="px-4 py-8 text-center text-gray-400">No records logged in this session yet.</td>
-                        </tr>
+                    <tr>
+                        <td colspan="10" class="px-4 py-8 text-center text-gray-400">No records logged in this session
+                            yet.</td>
+                    </tr>
                     {% endfor %}
                 </tbody>
             </table>

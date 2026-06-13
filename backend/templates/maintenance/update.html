@@ -311,6 +311,26 @@
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Work Description / Issue <span class="text-red-500">*</span></label>
                             <textarea name="records[${idx}][work_description]" rows="3" placeholder="Describe the issue or work done..." class="w-full border rounded p-2 focus:ring-2 focus:ring-indigo-100" required>${workDesc}</textarea>
                         </div>
+
+                        <!-- Row 5: Components Checklist -->
+                        <div class="mt-4 pt-4 border-t border-gray-100">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                                Components Checklist & Details
+                            </label>
+                            
+                            <!-- Container for loaded components checklist -->
+                            <div class="components-container space-y-3 mb-4" data-record-idx="${idx}">
+                                <div class="text-xs text-gray-400 italic">No equipment selected or components not loaded yet.</div>
+                            </div>
+                            
+                            <!-- Add custom component -->
+                            <div class="flex items-center gap-2 max-w-md">
+                                <input type="text" class="new-component-name border rounded px-3 py-1.5 text-xs flex-1 outline-none focus:ring-2 focus:ring-indigo-100" placeholder="Custom component name...">
+                                <button type="button" class="add-custom-comp-btn h-8 px-3 rounded bg-indigo-600 text-white hover:bg-indigo-700 font-semibold text-xs transition-colors">
+                                    Add Component
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -322,8 +342,147 @@
                 width: '100%'
             });
 
+            // If data is provided, load components
+            const card = $(`.record-card[data-index="${idx}"]`);
+            const compContainer = card.find('.components-container');
+            
+            if (data && data.equipment_id) {
+                if (data.components && data.components.length > 0) {
+                    compContainer.empty();
+                    data.components.forEach((comp, c_idx) => {
+                        addComponentRow(idx, c_idx, comp, compContainer, comp.is_checked);
+                    });
+                } else {
+                    loadEquipmentComponents(idx, data.equipment_id, compContainer);
+                }
+            }
+
             updateRowIndices();
         }
+
+        // Helper to load components via AJAX
+        function loadEquipmentComponents(idx, eqId, container, selectedComps = null) {
+            if (!eqId) {
+                container.html('<div class="text-xs text-gray-400 italic">No equipment selected or components not loaded yet.</div>');
+                return;
+            }
+            container.html('<div class="text-xs text-gray-500"><i class="fas fa-spinner fa-spin mr-1"></i> Loading components...</div>');
+            
+            $.ajax({
+                url: '{% url "backend:get_equipment_components" %}',
+                type: 'GET',
+                data: { equipment_id: eqId },
+                success: function (response) {
+                    container.empty();
+                    const components = response.components || [];
+                    if (components.length > 0) {
+                        components.forEach((comp, c_idx) => {
+                            let isChecked = false;
+                            let remark = '';
+                            let suggestion = '';
+                            if (selectedComps) {
+                                const matched = selectedComps.find(c => c.name.toLowerCase() === comp.name.toLowerCase());
+                                if (matched) {
+                                    isChecked = matched.is_checked;
+                                    remark = matched.remark || '';
+                                    suggestion = matched.suggestion || '';
+                                }
+                            }
+                            addComponentRow(idx, c_idx, { name: comp.name, remark: remark, suggestion: suggestion }, container, isChecked);
+                        });
+                    } else {
+                        container.html('<div class="text-xs text-gray-400 italic">No components pre-configured for this equipment. You can add custom ones below.</div>');
+                    }
+                },
+                error: function () {
+                    container.html('<div class="text-xs text-red-500">Error loading components.</div>');
+                }
+            });
+        }
+
+        // Helper to append a single component row in the checklist
+        function addComponentRow(idx, c_idx, comp, container, isChecked = false) {
+            // Remove empty/placeholder state if it exists
+            container.find('.text-gray-400, .text-red-500, .text-gray-500').remove();
+            
+            const compRowHtml = `
+                <div class="component-row grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-50 p-2.5 rounded-lg border border-slate-100" data-comp-idx="${c_idx}">
+                    <!-- Checkbox + Name -->
+                    <div class="md:col-span-4 flex items-center gap-2">
+                        <input type="checkbox" name="records[${idx}][components][${c_idx}][is_checked]" id="comp_${idx}_${c_idx}" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" ${isChecked ? 'checked' : ''}>
+                        <label for="comp_${idx}_${c_idx}" class="text-xs font-semibold text-slate-700 break-all cursor-pointer">${comp.name}</label>
+                        <input type="hidden" name="records[${idx}][components][${c_idx}][name]" value="${comp.name}">
+                    </div>
+                    <!-- Remark -->
+                    <div class="md:col-span-4">
+                        <input type="text" name="records[${idx}][components][${c_idx}][remark]" value="${comp.remark || ''}" placeholder="Remark (optional)" class="w-full border border-gray-200 rounded p-1 text-xs outline-none focus:ring-2 focus:ring-indigo-100">
+                    </div>
+                    <!-- Suggestion -->
+                    <div class="md:col-span-3">
+                        <input type="text" name="records[${idx}][components][${c_idx}][suggestion]" value="${comp.suggestion || ''}" placeholder="Suggestion (optional)" class="w-full border border-gray-200 rounded p-1 text-xs outline-none focus:ring-2 focus:ring-indigo-100">
+                    </div>
+                    <!-- Remove Button -->
+                    <div class="md:col-span-1 text-right">
+                        <button type="button" class="remove-comp-btn text-red-500 hover:text-red-700 text-xs font-bold transition-colors">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.append(compRowHtml);
+        }
+
+        // Handle equipment change in any record card
+        $(document).on('change', 'select[name$="[equipment_id]"]', function () {
+            const selectEl = $(this);
+            const card = selectEl.closest('.record-card');
+            const idx = card.data('index');
+            const eqId = selectEl.val();
+            const compContainer = card.find('.components-container');
+            
+            loadEquipmentComponents(idx, eqId, compContainer);
+        });
+
+        // Handle adding a custom component
+        $(document).on('click', '.add-custom-comp-btn', function () {
+            const btn = $(this);
+            const card = btn.closest('.record-card');
+            const idx = card.data('index');
+            const input = card.find('.new-component-name');
+            const compName = input.val().trim();
+            
+            if (!compName) {
+                alert("Please enter a component name.");
+                return;
+            }
+
+            const compContainer = card.find('.components-container');
+            
+            // Find max c_idx currently in the container
+            let max_c_idx = -1;
+            compContainer.find('.component-row').each(function () {
+                const c_idx = parseInt($(this).data('comp-idx'));
+                if (c_idx > max_c_idx) {
+                    max_c_idx = c_idx;
+                }
+            });
+            const next_c_idx = max_c_idx + 1;
+
+            addComponentRow(idx, next_c_idx, { name: compName }, compContainer, true); // Checked by default when added manually
+            input.val(''); // Clear input
+        });
+
+        // Handle component removal
+        $(document).on('click', '.remove-comp-btn', function () {
+            const row = $(this).closest('.component-row');
+            const container = row.parent();
+            row.remove();
+            
+            // If empty, show placeholder
+            if (container.find('.component-row').length === 0) {
+                container.html('<div class="text-xs text-gray-400 italic">No components pre-configured for this equipment. You can add custom ones below.</div>');
+            }
+        });
 
         // Handle record removal
         $(document).on('click', '.remove-btn', function () {
@@ -345,7 +504,7 @@
 
             cards.each(function (index) {
                 $(this).find('.bg-slate-50 span').html(`
-                     Equipment Record #${index + 1}
+                    <i class="fas fa-tools text-indigo-500"></i> Equipment Record #${index + 1}
                 `);
             });
         }

@@ -84,6 +84,7 @@ urlpatterns = [
     path('maintenance/update/<int:data_id>/',views.maintenance_update,name='maintenance_update'),
     path('maintenance/status/<int:data_id>/',views.maintenance_status,name='maintenance_status'),
     path('maintenance/api/get-equipment/',views.get_building_equipment,name='get_building_equipment'),
+    path('maintenance/api/get-equipment-components/', views.get_equipment_components, name='get_equipment_components'),
     path('maintenance/scan/<str:qr_code>/', views.maintanaince_scan, name='maintanaince_scan'),
     path('maintenance-record/<int:record_id>/review/', views.maintenance_record_review, name='maintenance_record_review'),
 

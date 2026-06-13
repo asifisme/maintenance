@@ -374,8 +374,9 @@ class Equipment(models.Model):
     updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipment_updated_by', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True) 
     deleted = models.BooleanField(default=False)
+
 
     def save(self, *args, **kwargs):
         if not self.qr_code:
@@ -495,6 +496,9 @@ class MaintenanceComponent(models.Model):
     maintenance_record = models.ForeignKey(MaintenanceRecord, on_delete=models.CASCADE, related_name="components")
     name               = models.CharField(max_length=100)
     description        = models.TextField(blank=True) 
+    is_checked         = models.BooleanField(default=False)
+    remark             = models.TextField(blank=True, null=True)
+    suggestion         = models.TextField(blank=True, null=True)
 
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='maintenance_component_created_by', blank=True, null=True)
     updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='maintenance_component_updated_by', blank=True, null=True)

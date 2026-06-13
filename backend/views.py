@@ -52,6 +52,7 @@ from backend.models import (
     Division, SubDivision, Section, Building, EquipmentType, EquipmentTypeData, Equipment,
     Ticket, TicketComment, TicketActivityLog, AssignTechnician, Technician, AssignActivities,
     ScheduledMaintenance, CriticalAlert, Maintenance, MaintenanceRecord, MaintenanceAttachment,
+    EquipmentComponents, MaintenanceComponent,
 )
 from django.db.models import Count
 
@@ -1480,7 +1481,7 @@ def equipment_list(request):
     type_id = request.GET.get('type_id', '').strip()
     status = request.GET.get('status', '').strip()
     
-    qs = Equipment.objects.filter(deleted=False).select_related('equipment_type', 'building')
+    qs = Equipment.objects.filter(deleted=False).select_related('equipment_type', 'building').annotate(components_count=Count('components'))
     
     if search:
         qs = qs.filter(Q(equipment_id__icontains=search) | Q(brand__icontains=search) | Q(building__name__icontains=search))
@@ -2404,6 +2405,31 @@ def maintenance_add(request):
             duration = request.POST.get(f'records[{idx}][duration_hours]') or None
             status = request.POST.get(f'records[{idx}][maintainance_status]', 'pending')
 
+            # Parse checklist components
+            components_data = []
+            comp_indexes = []
+            prefix = f'records[{idx}][components]['
+            for key in request.POST.keys():
+                if key.startswith(prefix) and key.endswith('][name]'):
+                    try:
+                        c_idx = key.split(prefix)[1].split(']')[0]
+                        comp_indexes.append(int(c_idx))
+                    except (IndexError, ValueError):
+                        pass
+            comp_indexes.sort()
+
+            for c_idx in comp_indexes:
+                comp_name = request.POST.get(f'{prefix}{c_idx}][name]')
+                is_checked = request.POST.get(f'{prefix}{c_idx}][is_checked]') in ('true', 'on')
+                remark = request.POST.get(f'{prefix}{c_idx}][remark]', '').strip()
+                suggestion = request.POST.get(f'{prefix}{c_idx}][suggestion]', '').strip()
+                components_data.append({
+                    'name': comp_name,
+                    'is_checked': is_checked,
+                    'remark': remark,
+                    'suggestion': suggestion
+                })
+
             record_data = {
                 'equipment_id': eq_id,
                 'record_type': rec_type,
@@ -2414,6 +2440,7 @@ def maintenance_add(request):
                 'cost': cost,
                 'duration_hours': duration,
                 'maintainance_status': status,
+                'components': components_data,
             }
             submitted_records.append(record_data)
 
@@ -2426,9 +2453,6 @@ def maintenance_add(request):
                 errors.append(f"Row {idx + 1}: Maintenance Date is required.")
             if not work_desc:
                 errors.append(f"Row {idx + 1}: Work Description / Issue is required.")
-
-        if not indexes:
-            errors.append("At least one equipment record must be added.")
 
         if errors:
             for error in errors:
@@ -2488,6 +2512,24 @@ def maintenance_add(request):
                     )
                     record.save()
                     maintenance.equipment.add(rec['equipment_id'])
+
+                    # Save components checklist
+                    for comp in rec.get('components', []):
+                        MaintenanceComponent.objects.create(
+                            maintenance_record=record,
+                            name=comp['name'],
+                            is_checked=comp['is_checked'],
+                            remark=comp['remark'],
+                            suggestion=comp['suggestion'],
+                            created_by=request.user
+                        )
+                        # Ensure exists in EquipmentComponents
+                        if not EquipmentComponents.objects.filter(equipment_id=rec['equipment_id'], name__iexact=comp['name'], deleted=False).exists():
+                            EquipmentComponents.objects.create(
+                                equipment_id=rec['equipment_id'],
+                                name=comp['name'],
+                                created_by=request.user
+                            )
 
                 messages.success(request, 'Maintenance session created successfully.')
                 return redirect('backend:maintenance_detail', data_id=maintenance.id)
@@ -2641,6 +2683,31 @@ def maintenance_update(request, data_id):
             duration = request.POST.get(f'records[{idx}][duration_hours]') or None
             status = request.POST.get(f'records[{idx}][maintainance_status]', 'pending')
 
+            # Parse checklist components
+            components_data = []
+            comp_indexes = []
+            prefix = f'records[{idx}][components]['
+            for key in request.POST.keys():
+                if key.startswith(prefix) and key.endswith('][name]'):
+                    try:
+                        c_idx = key.split(prefix)[1].split(']')[0]
+                        comp_indexes.append(int(c_idx))
+                    except (IndexError, ValueError):
+                        pass
+            comp_indexes.sort()
+
+            for c_idx in comp_indexes:
+                comp_name = request.POST.get(f'{prefix}{c_idx}][name]')
+                is_checked = request.POST.get(f'{prefix}{c_idx}][is_checked]') in ('true', 'on')
+                remark = request.POST.get(f'{prefix}{c_idx}][remark]', '').strip()
+                suggestion = request.POST.get(f'{prefix}{c_idx}][suggestion]', '').strip()
+                components_data.append({
+                    'name': comp_name,
+                    'is_checked': is_checked,
+                    'remark': remark,
+                    'suggestion': suggestion
+                })
+
             record_data = {
                 'id': rec_id,
                 'equipment_id': eq_id,
@@ -2652,6 +2719,7 @@ def maintenance_update(request, data_id):
                 'cost': cost,
                 'duration_hours': duration,
                 'maintainance_status': status,
+                'components': components_data,
             }
             submitted_records.append(record_data)
 
@@ -2664,9 +2732,6 @@ def maintenance_update(request, data_id):
                 errors.append(f"Row {idx + 1}: Maintenance Date is required.")
             if not work_desc:
                 errors.append(f"Row {idx + 1}: Work Description / Issue is required.")
-
-        if not indexes:
-            errors.append("At least one equipment record must be added.")
 
         if errors:
             for error in errors:
@@ -2753,6 +2818,25 @@ def maintenance_update(request, data_id):
                         )
                         record.save()
 
+                    # Save components checklist: delete old components first, then recreate
+                    record.components.all().delete()
+                    for comp in rec.get('components', []):
+                        MaintenanceComponent.objects.create(
+                            maintenance_record=record,
+                            name=comp['name'],
+                            is_checked=comp['is_checked'],
+                            remark=comp['remark'],
+                            suggestion=comp['suggestion'],
+                            created_by=request.user
+                        )
+                        # Ensure exists in EquipmentComponents
+                        if not EquipmentComponents.objects.filter(equipment_id=rec['equipment_id'], name__iexact=comp['name'], deleted=False).exists():
+                            EquipmentComponents.objects.create(
+                                equipment_id=rec['equipment_id'],
+                                name=comp['name'],
+                                created_by=request.user
+                            )
+
                     obj.equipment.add(rec['equipment_id'])
 
                 messages.success(request, 'Maintenance session updated successfully.')
@@ -2766,6 +2850,17 @@ def maintenance_update(request, data_id):
     for r in obj.maintenance_records.filter(deleted=False):
         if r.maintenance_date:
             submitted_date = r.maintenance_date.strftime('%Y-%m-%d')
+            
+        # Serialize existing components
+        components_data = []
+        for comp in r.components.filter(deleted=False):
+            components_data.append({
+                'name': comp.name,
+                'is_checked': comp.is_checked,
+                'remark': comp.remark or '',
+                'suggestion': comp.suggestion or '',
+            })
+            
         existing_records.append({
             'id': str(r.id),
             'equipment_id': r.equipment_id,
@@ -2777,6 +2872,7 @@ def maintenance_update(request, data_id):
             'cost': str(r.cost) if r.cost is not None else '',
             'duration_hours': str(r.duration_hours) if r.duration_hours is not None else '',
             'maintainance_status': r.maintainance_status,
+            'components': components_data,
         })
 
     context = {
@@ -2885,4 +2981,31 @@ def maintanaince_scan(request, qr_code=None):
         else:
             messages.error(request, "You do not have permission to view this maintenance session.")
             return redirect('backend:dash_board') 
+
+
+@login_required
+@require_GET
+def get_equipment_components(request):
+    """AJAX endpoint to get components for a selected equipment"""
+    equipment_id = request.GET.get('equipment_id')
+    if not equipment_id:
+        return JsonResponse({'components': []})
+    try:
+        components_list = EquipmentComponents.objects.filter(
+            equipment_id=equipment_id,
+            deleted=False,
+            is_active=True
+        ).values('id', 'name', 'description').order_by('name')
+        
+        components = [
+            {
+                'id': item['id'],
+                'name': item['name'],
+                'description': item['description'],
+            }
+            for item in components_list
+        ]
+        return JsonResponse({'components': components})
+    except Exception as e:
+        return JsonResponse({'error': str(e), 'components': []}, status=400)
 
