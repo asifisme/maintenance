@@ -196,6 +196,22 @@
     "pk": 502,
     "fields": {
       "module_name": "Equipment",
+      "menu_name": "Component Preset",
+      "menu_url": "/component-preset/",
+      "menu_icon": "fa-solid fa-database icon",
+      "menu_description": "Define dynamic data fields for equipment types.",
+      "parent_id": 500,
+      "is_main_menu": false,
+      "is_sub_menu": false,
+      "is_sub_child_menu": true,
+      "is_active": true
+    }
+  },
+  {
+    "model": "backend.backendmenu",
+    "pk": 503,
+    "fields": {
+      "module_name": "Equipment",
       "menu_name": "Equipment Fields Setup",
       "menu_url": "/equipment-type-data/",
       "menu_icon": "fa-solid fa-database icon",
