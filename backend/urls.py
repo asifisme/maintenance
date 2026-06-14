@@ -68,6 +68,13 @@ urlpatterns = [
     path('equipment-type-data/update/<int:data_id>/', views.equipment_type_data_update, name='equipment_type_data_update'),
     path('equipment-type-data/status/<int:data_id>/', views.equipment_type_data_status, name='equipment_type_data_status'),
 
+    # Equipment Component Preset
+    path('component-preset/', views.equipment_component_preset_list, name='equipment_component_preset_list'),
+    path('component-preset/add/', views.equipment_component_preset_add, name='equipment_component_preset_add'),
+    path('component-preset/update/<int:data_id>/', views.equipment_component_preset_update, name='equipment_component_preset_update'),
+    path('component-preset/delete/<int:data_id>/', views.equipment_component_preset_delete, name='equipment_component_preset_delete'),
+    path('component-preset/status/<int:data_id>/', views.equipment_component_preset_status, name='equipment_component_preset_status'),
+
     # Equipment
     path('equipment/', views.equipment_list, name='equipment_list'),
     path('equipment/add/', views.equipment_add, name='equipment_add'),

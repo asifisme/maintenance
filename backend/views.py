@@ -52,7 +52,7 @@ from backend.models import (
     Division, SubDivision, Section, Building, EquipmentType, EquipmentTypeData, Equipment,
     Ticket, TicketComment, TicketActivityLog, AssignTechnician, Technician, AssignActivities,
     ScheduledMaintenance, CriticalAlert, Maintenance, MaintenanceRecord, MaintenanceAttachment,
-    EquipmentComponents, MaintenanceComponent,
+    EquipmentComponents, MaintenanceComponent, EquipmentComponentPreset, 
 )
 from django.db.models import Count
 
@@ -1471,6 +1471,134 @@ def equipment_type_data_status(request, data_id):
     return redirect('backend:equipment_type_data_list')
 
 
+
+@login_required
+def equipment_component_preset_list(request):
+    if not checkUserPermission(request, "can_view", '/backend/component-preset/'):
+        messages.error(request, "You do not have permission to view this page.")
+        return render(request, '403.html', status=403)
+    
+    search = request.GET.get('search', '').strip()
+    equipment_type_id = request.GET.get('equipment_type', '').strip()
+    
+    qs = EquipmentComponentPreset.objects.filter(deleted=False).select_related('equipment_type')
+    if search:
+        qs = qs.filter(name__icontains=search)
+    if equipment_type_id:
+        qs = qs.filter(equipment_type_id=equipment_type_id)
+        
+    page_num = request.GET.get('page', 1)
+    data_list, paginator_list, last_page = paginate_data(request, page_num, qs)
+    
+    equipment_types = EquipmentType.objects.filter(deleted=False, is_active=True)
+    
+    context = {
+        'data_list': data_list,
+        'paginator_list': paginator_list,
+        'last_page': last_page,
+        'search': search,
+        'equipment_type_id': equipment_type_id,
+        'equipment_types': equipment_types,
+    }
+    return render(request, 'equipment-preset/list.html', context)
+
+
+@login_required
+def equipment_component_preset_add(request):
+    if not checkUserPermission(request, "can_add", '/backend/component-preset/'):
+        messages.error(request, "You do not have permission to add this page.")
+        return render(request, '403.html', status=403)
+    
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        equipment_type_id = request.POST.get('equipment_type', '').strip()
+        description = request.POST.get('description', '').strip()
+        
+        if not name or not equipment_type_id:
+            messages.error(request, 'Name and Equipment Type are required.')
+        else:
+            EquipmentComponentPreset.objects.create(
+                name=name,
+                equipment_type_id=equipment_type_id,
+                description=description,
+                created_by=request.user,
+                is_active=True
+            )
+            messages.success(request, 'Component Preset added successfully.')
+            return redirect('backend:equipment_component_preset_list')
+            
+    equipment_types = EquipmentType.objects.filter(deleted=False, is_active=True)
+    context = {
+        'action': 'Add',
+        'equipment_types': equipment_types,
+    }
+    return render(request, 'equipment-preset/add.html', context)
+
+
+@login_required
+def equipment_component_preset_update(request, data_id):
+    if not checkUserPermission(request, "can_update", '/backend/component-preset/'):
+        messages.error(request, "You do not have permission to update this page.")
+        return render(request, '403.html', status=403)
+    
+    obj = get_object_or_404(EquipmentComponentPreset, pk=data_id, deleted=False)
+    
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        equipment_type_id = request.POST.get('equipment_type', '').strip()
+        description = request.POST.get('description', '').strip()
+        
+        if not name or not equipment_type_id:
+            messages.error(request, 'Name and Equipment Type are required.')
+        else:
+            obj.name = name
+            obj.equipment_type_id = equipment_type_id
+            obj.description = description
+            obj.updated_by = request.user
+            obj.save()
+            messages.success(request, 'Component Preset updated successfully.')
+            return redirect('backend:equipment_component_preset_list')
+            
+    equipment_types = EquipmentType.objects.filter(deleted=False, is_active=True)
+    context = {
+        'action': 'Update',
+        'obj': obj,
+        'equipment_types': equipment_types,
+    }
+    return render(request, 'equipment-preset/update.html', context)
+
+
+@login_required
+def equipment_component_preset_delete(request, data_id):
+    if not checkUserPermission(request, "can_delete", '/backend/component-preset/'):
+        messages.error(request, "You do not have permission to delete this page.")
+        return render(request, '403.html', status=403)
+    
+    obj = get_object_or_404(EquipmentComponentPreset, pk=data_id, deleted=False)
+    obj.deleted = True
+    obj.updated_by = request.user
+    obj.save()
+    messages.success(request, 'Component Preset deleted successfully.')
+    return redirect('backend:equipment_component_preset_list')
+
+
+@login_required
+def equipment_component_preset_status(request, data_id):
+    if not checkUserPermission(request, "can_update", '/backend/component-preset/'):
+        messages.error(request, "You do not have permission to update this page.")
+        return render(request, '403.html', status=403)
+        
+    if request.method == 'POST':
+        obj = get_object_or_404(EquipmentComponentPreset, pk=data_id, deleted=False)
+        obj.is_active = not obj.is_active
+        obj.updated_by = request.user
+        obj.save()
+        status_text = "Active" if obj.is_active else "Inactive"
+        messages.success(request, f'Component Preset status changed to {status_text} successfully.')
+    return redirect('backend:equipment_component_preset_list')
+    
+   
+
 @login_required
 def equipment_list(request):
     if not checkUserPermission(request, 'can_view', '/backend/equipment/equipment/'):
@@ -1517,6 +1645,7 @@ def equipment_add(request):
         
     equipment_types = EquipmentType.objects.filter(deleted=False, is_active=True)
     buildings = Building.objects.filter(deleted=False, is_active=True)
+    presets = EquipmentComponentPreset.objects.filter(deleted=False, is_active=True)
     
     if request.method == 'POST':
         equipment_id = request.POST.get('equipment_id', '').strip()
@@ -1524,6 +1653,9 @@ def equipment_add(request):
         building_id = request.POST.get('building_id', '')
         brand = request.POST.get('brand', '').strip()
         floor_location = request.POST.get('floor_location', '').strip()
+
+        # presets
+        component_preset_ids = request.POST.getlist('component_preset')
 
         # components 
         component_names = request.POST.getlist('component_name[]')
@@ -1547,6 +1679,10 @@ def equipment_add(request):
             )
             obj.save()
             
+            # Save presets relation
+            if component_preset_ids:
+                obj.component_preset.set(component_preset_ids)
+            
             # Save components
             for i in range(len(component_names)):
                 c_name = component_names[i].strip()
@@ -1565,7 +1701,8 @@ def equipment_add(request):
     context = {
         'action': 'Add',
         'equipment_types': equipment_types,
-        'buildings': buildings
+        'buildings': buildings,
+        'presets': presets,
     }
     return render(request, 'equipment/add.html', context)
 
@@ -1580,6 +1717,7 @@ def equipment_update(request, data_id):
     obj = get_object_or_404(Equipment, pk=data_id, deleted=False)
     equipment_types = EquipmentType.objects.filter(deleted=False, is_active=True)
     buildings = Building.objects.filter(deleted=False, is_active=True)
+    presets = EquipmentComponentPreset.objects.filter(deleted=False, is_active=True)
     
     if request.method == 'POST':
         equipment_id = request.POST.get('equipment_id', '').strip()
@@ -1588,6 +1726,9 @@ def equipment_update(request, data_id):
         brand = request.POST.get('brand', '').strip()
         floor_location = request.POST.get('floor_location', '').strip()
         
+        # presets
+        component_preset_ids = request.POST.getlist('component_preset')
+
         # components
         component_names = request.POST.getlist('component_name[]')
         component_descriptions = request.POST.getlist('component_description[]')
@@ -1612,6 +1753,9 @@ def equipment_update(request, data_id):
             obj.updated_by = request.user
             obj.save()
             
+            # Save presets relation
+            obj.component_preset.set(component_preset_ids)
+
             # Recreate components
             obj.components.all().delete()
             for i in range(len(component_names)):
@@ -1632,7 +1776,8 @@ def equipment_update(request, data_id):
         'action': 'Update',
         'obj': obj,
         'equipment_types': equipment_types,
-        'buildings': buildings
+        'buildings': buildings,
+        'presets': presets,
     }
     return render(request, 'equipment/update.html', context)
 
@@ -2081,163 +2226,6 @@ def ticket_status(request, data_id):
     return redirect('backend:ticket_list')
 
 
-# @login_required
-# def maintainance_task(request):
-#     if not checkUserPermission(request, "can_view", 'maintainance'):
-#         messages.error(request, 'You do not have permission to view maintainance tasks.')
-#         return render(request, '403.html', status=403)
-
-#     # Get current user's technician profile
-#     technician = None
-#     try:
-#         technician = request.user.technician_profile
-#     except Technician.DoesNotExist:
-#         pass
-
-#     activities = AssignActivities.objects.none()
-#     if technician:
-#         activities = AssignActivities.objects.filter(
-#             technician=technician,
-#             is_active=True,
-#         ).select_related(
-#             'ticket', 'ticket__equipment', 'ticket__equipment__equipment_type',
-#             'ticket__building', 'technician',
-#         ).order_by('-assigned_at')
-
-#     # Filters
-#     status_filter = request.GET.get('status', '')
-#     completion_filter = request.GET.get('completion', '')
-#     priority_filter = request.GET.get('priority', '')
-
-#     if status_filter:
-#         activities = activities.filter(status=status_filter)
-#     if completion_filter:
-#         activities = activities.filter(completion_status=completion_filter)
-#     if priority_filter:
-#         activities = activities.filter(ticket__priority=priority_filter)
-
-#     # Stats
-#     total_tasks = activities.count()
-#     pending_count = activities.filter(completion_status='pending').count()
-#     completed_count = activities.filter(completion_status='completed').count()
-#     overdue_count = activities.filter(completion_status='overdue').count()
-
-#     context = {
-#         'activities': activities,
-#         'technician': technician,
-#         'status_filter': status_filter,
-#         'completion_filter': completion_filter,
-#         'priority_filter': priority_filter,
-#         'total_tasks': total_tasks,
-#         'pending_count': pending_count,
-#         'completed_count': completed_count,
-#         'overdue_count': overdue_count,
-#     }
-#     return render(request, 'maintainance/task.html', context)
-
-
-# @login_required
-# def maintainance_detail(request, pk):
-#     if not checkUserPermission(request, "can_view", 'maintainance'):
-#         messages.error(request, 'You do not have permission to view maintainance task.')
-#         return render(request, '403.html', status=403)
-
-#     activity = get_object_or_404(
-#         AssignActivities.objects.select_related(
-#             'ticket', 'ticket__equipment', 'ticket__equipment__equipment_type',
-#             'ticket__building', 'technician', 'technician__user',
-#         ),
-#         pk=pk, is_active=True,
-#     )
-
-#     ticket = activity.ticket
-#     equipment = ticket.equipment
-#     building = ticket.building
-
-#     # Handle POST actions (accept/reject, mark completion)
-#     if request.method == 'POST':
-#         action = request.POST.get('action', '')
-
-#         if action == 'accept':
-#             activity.status = 'accepted'
-#             activity.updated_by = request.user
-#             activity.save()
-#             # Update ticket status
-#             if ticket.status in ('open', 'assigned'):
-#                 ticket.status = 'in_progress'
-#                 ticket.save()
-#             TicketActivityLog.objects.create(
-#                 ticket=ticket, actor=request.user,
-#                 action_type='status_changed',
-#                 description=f"Technician {activity.technician.display_name} accepted the task."
-#             )
-#             messages.success(request, 'Task accepted successfully.')
-
-#         elif action == 'reject':
-#             activity.status = 'rejected'
-#             activity.completion_status = 'cancelled'
-#             activity.updated_by = request.user
-#             activity.save()
-#             TicketActivityLog.objects.create(
-#                 ticket=ticket, actor=request.user,
-#                 action_type='status_changed',
-#                 description=f"Technician {activity.technician.display_name} rejected the task."
-#             )
-#             messages.success(request, 'Task rejected.')
-
-#         elif action == 'complete':
-#             activity.completion_status = 'completed'
-#             activity.completed_at = timezone.now()
-#             activity.updated_by = request.user
-#             activity.save()
-#             # Check if all activities for this ticket are completed
-#             all_done = not AssignActivities.objects.filter(
-#                 ticket=ticket, is_active=True
-#             ).exclude(completion_status__in=['completed', 'cancelled', 'skipped']).exists()
-#             if all_done:
-#                 ticket.status = 'resolved'
-#                 ticket.resolved_at = timezone.now()
-#                 ticket.save()
-#             TicketActivityLog.objects.create(
-#                 ticket=ticket, actor=request.user,
-#                 action_type='resolved',
-#                 description=f"Technician {activity.technician.display_name} marked task as completed."
-#             )
-#             messages.success(request, 'Task marked as completed.')
-
-#         elif action == 'skip':
-#             activity.completion_status = 'skipped'
-#             activity.updated_by = request.user
-#             activity.save()
-#             messages.success(request, 'Task skipped.')
-
-#         return redirect('backend:maintainance_detail', pk=activity.pk)
-
-#     # Activity log for this ticket
-#     activity_logs = TicketActivityLog.objects.filter(ticket=ticket).order_by('-created_at')[:20]
-
-#     # Other technicians assigned to this ticket
-#     other_assignments = AssignTechnician.objects.filter(
-#         ticket=ticket, deleted=False
-#     ).select_related('technician', 'technician__user')
-
-#     # Maintenance records for this equipment
-#     maintenance_records = MaintenanceRecord.objects.filter(
-#         equipment=equipment, deleted=False
-#     ).order_by('-maintenance_date')[:5]
-
-#     context = {
-#         'activity': activity,
-#         'ticket': ticket,
-#         'equipment': equipment,
-#         'building': building,
-#         'activity_logs': activity_logs,
-#         'other_assignments': other_assignments,
-#         'maintenance_records': maintenance_records,
-#     }
-#     return render(request, 'maintainance/detail.html', context)
-
-
 @login_required
 def maintanaince_create(request):
     if not checkUserPermission(request, "can_view", 'maintainance'):
@@ -2246,71 +2234,6 @@ def maintanaince_create(request):
 
     context = {}
     return render(request, 'maintainance/create.html', context) 
-
-
-# @login_required
-# def maintanaince_checklist(request):
-#     if not checkUserPermission(request, "can_view", 'maintainance'):
-#         messages.error(request, 'You do not have permission to view maintainance checklist.')
-#         return render(request, '403.html', status=403)
-
-#     # Get current user's technician profile
-#     technician = None
-#     try:
-#         technician = request.user.technician_profile
-#     except Technician.DoesNotExist:
-#         pass
-
-#     checklist_items = AssignActivities.objects.none()
-#     if technician:
-#         checklist_items = AssignActivities.objects.filter(
-#             technician=technician,
-#             is_active=True,
-#             status__in=['pending', 'accepted'],
-#             completion_status__in=['pending'],
-#         ).select_related(
-#             'ticket', 'ticket__equipment', 'ticket__equipment__equipment_type',
-#             'ticket__building', 'technician',
-#         ).order_by(
-#             '-ticket__priority', '-assigned_at'
-#         )
-
-#     # Handle bulk action
-#     if request.method == 'POST':
-#         item_id = request.POST.get('item_id', '')
-#         action = request.POST.get('action', '')
-#         if item_id and action:
-#             try:
-#                 item = AssignActivities.objects.get(pk=item_id, technician=technician, is_active=True)
-#                 if action == 'complete':
-#                     item.completion_status = 'completed'
-#                     item.completed_at = timezone.now()
-#                     item.status = 'accepted'
-#                     item.updated_by = request.user
-#                     item.save()
-#                     messages.success(request, 'Checklist item completed.')
-#                 elif action == 'skip':
-#                     item.completion_status = 'skipped'
-#                     item.updated_by = request.user
-#                     item.save()
-#                     messages.success(request, 'Checklist item skipped.')
-#             except AssignActivities.DoesNotExist:
-#                 messages.error(request, 'Checklist item not found.')
-#         return redirect('backend:maintanaince_checklist')
-
-#     # Summary stats
-#     total_pending = checklist_items.count()
-#     critical_count = checklist_items.filter(ticket__priority='critical').count()
-#     high_count = checklist_items.filter(ticket__priority='high').count()
-
-#     context = {
-#         'checklist_items': checklist_items,
-#         'technician': technician,
-#         'total_pending': total_pending,
-#         'critical_count': critical_count,
-#         'high_count': high_count,
-#     }
-#     return render(request, 'maintainance/checklist.html', context)
 
 
 # ======================================== Maintenance Management ========================================
@@ -3053,3 +2976,5 @@ def static_otp_verification(request):
         'equipment_id': equipment_id,
     }
     return render(request, 'maintenance/static_otp.html', context) 
+
+

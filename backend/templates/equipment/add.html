@@ -25,30 +25,7 @@
                 <!-- Basic & General Info -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                     <h3 class="text-lg font-bold text-gray-900 mb-6 border-b border-gray-100 pb-2">Basic & General Info</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Equipment ID <span class="text-red-500">*</span></label>
-                            <input type="text"
-                                   name="equipment_id"
-                                   value="{{ obj.equipment_id|default:'' }}"
-                                   class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
-                                   required
-                                   placeholder="e.g. EQ-1710">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Type <span class="text-red-500">*</span></label>
-                            <select name="equipment_type_id"
-                                    class="w-full select2-items bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
-                                    required>
-                                <option value="">Select Type</option>
-                                {% for t in equipment_types %}
-                                    <option value="{{ t.id }}"
-                                            {% if obj.equipment_type_id == t.id %}selected{% endif %}>{{ t.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="mb-6">
+                     <div class="mb-6">
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Building <span class="text-red-500">*</span></label>
                         <select name="building_id"
                                 class="w-full select2-items bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
@@ -62,6 +39,32 @@
                             {% endfor %}
                         </select>
                     </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                         <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Type <span class="text-red-500">*</span></label>
+                            <select name="equipment_type_id"
+                                    class="w-full select2-items bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
+                                    required>
+                                <option value="">Select Type</option>
+                                {% for t in equipment_types %}
+                                    <option value="{{ t.id }}"
+                                            {% if obj.equipment_type_id == t.id %}selected{% endif %}>{{ t.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Equipment ID <span class="text-red-500">*</span></label>
+                            <input type="text"
+                                   name="equipment_id"
+                                   value="{{ obj.equipment_id|default:'' }}"
+                                   class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
+                                   required
+                                   placeholder="e.g. EQ-1710">
+                        </div>
+                       
+                    </div>
+                   
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Brand</label>
@@ -77,9 +80,27 @@
                                    name="floor_location"
                                    value="{{ obj.floor_location|default:'' }}"
                                    class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
-                                   placeholder="e.g. Level 4 Lobby">
                         </div>
                     </div>
+                    <div class="mt-6">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Component Presets</label>
+                        <div id="presets_checkboxes_container" class="flex flex-wrap gap-3 p-4 border border-dashed border-gray-200 rounded-lg bg-slate-50 min-h-[60px] items-center">
+                            <span class="text-sm text-gray-400">Please select an Equipment Type first.</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">Check/uncheck presets to auto-populate components below, or type manually.</p>
+                    </div>
+                    <script id="presets-data" type="application/json">
+                        [
+                            {% for p in presets %}
+                                {
+                                    "id": {{ p.id }},
+                                    "type_id": {{ p.equipment_type_id }},
+                                    "name": "{{ p.name|escapejs }}",
+                                    "description": "{{ p.description|escapejs }}"
+                                }{% if not forloop.last %},{% endif %}
+                            {% endfor %}
+                        ]
+                    </script>
                 </div>
                 <!-- Maintenance Components -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
@@ -204,9 +225,9 @@
     $(document).ready(function () {
         $('.select2-items').select2();
 
-        function addComponentRow(name = '', desc = '') {
+        function addComponentRow(name = '', desc = '', presetId = '') {
             const html = `
-                <div class="component-row flex items-start gap-4 p-4 border border-gray-100 rounded-lg bg-slate-50">
+                <div class="component-row flex items-start gap-4 p-4 border border-gray-100 rounded-lg bg-slate-50" data-preset-id="${presetId}">
                     <div class="flex-1">
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Component Name <span class="text-red-500">*</span></label>
                         <input type="text" name="component_name[]" value="${name}" class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block p-2 outline-none" required placeholder="e.g. Compressor">
@@ -228,11 +249,98 @@
         });
 
         $(document).on('click', '.remove-component', function() {
-            $(this).closest('.component-row').remove();
+            const row = $(this).closest('.component-row');
+            const presetId = row.data('preset-id');
+            if (presetId) {
+                // Uncheck corresponding checkbox in the container
+                $(`.preset-checkbox[value="${presetId}"]`).prop('checked', false);
+            }
+            row.remove();
+            if ($('.component-row').length === 0) {
+                addComponentRow();
+            }
         });
 
-        // Add an initial row
-        addComponentRow();
+        // Load presets data from script tag
+        const allPresets = JSON.parse($('#presets-data').text() || '[]');
+
+        function filterAndRenderPresets() {
+            const selectedTypeId = $('select[name="equipment_type_id"]').val();
+            const container = $('#presets_checkboxes_container');
+            container.empty();
+            
+            if (!selectedTypeId) {
+                container.append('<span class="text-sm text-gray-400">Please select an Equipment Type first.</span>');
+                $('#components_container').empty();
+                addComponentRow();
+                return;
+            }
+            
+            const filteredPresets = allPresets.filter(function(preset) {
+                return String(preset.type_id) === String(selectedTypeId);
+            });
+            
+            if (filteredPresets.length === 0) {
+                container.append('<span class="text-sm text-gray-400">No presets available for this type.</span>');
+                $('#components_container').empty();
+                addComponentRow();
+                return;
+            }
+            
+            // Render checkboxes and auto-populate components list
+            $('#components_container').empty();
+            filteredPresets.forEach(function(preset) {
+                const isChecked = true;
+                const checkboxHtml = `
+                    <label class="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 select-none text-sm ring-1 ring-black/5">
+                        <input type="checkbox" name="component_preset" value="${preset.id}" class="preset-checkbox rounded text-blue-600 focus:ring-blue-500 border-gray-300" data-name="${preset.name}" data-description="${preset.description}" ${isChecked ? 'checked' : ''}>
+                        <span class="font-medium text-gray-700">${preset.name}</span>
+                    </label>
+                `;
+                container.append(checkboxHtml);
+                
+                if (isChecked) {
+                    addComponentRow(preset.name, preset.description, preset.id);
+                }
+            });
+            
+            if ($('.component-row').length === 0) {
+                addComponentRow();
+            }
+        }
+
+        // Handle Type selection changes
+        $('select[name="equipment_type_id"]').on('change', function() {
+            filterAndRenderPresets();
+        });
+
+        // Handle dynamically rendered checkbox clicks
+        $(document).on('change', '.preset-checkbox', function() {
+            const checkbox = $(this);
+            const presetId = checkbox.val();
+            const name = checkbox.data('name');
+            const desc = checkbox.data('description') || '';
+            
+            if (checkbox.is(':checked')) {
+                // If the initial placeholder row is present and empty, remove it
+                const rows = $('.component-row');
+                if (rows.length === 1 && !rows.first().data('preset-id') && !rows.find('input[name="component_name[]"]').val()) {
+                    rows.remove();
+                }
+
+                if ($(`.component-row[data-preset-id="${presetId}"]`).length === 0) {
+                    addComponentRow(name, desc, presetId);
+                }
+            } else {
+                $(`.component-row[data-preset-id="${presetId}"]`).remove();
+                if ($('.component-row').length === 0) {
+                    addComponentRow();
+                }
+            }
+        });
+
+        // Initial setup
+        filterAndRenderPresets();
     });
     </script>
 {% endblock %}

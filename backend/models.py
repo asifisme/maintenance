@@ -335,6 +335,22 @@ class EquipmentTypeData(models.Model):
  
     def __str__(self):
         return f"{self.equipment_type.name} - {self.field_name}"
+
+
+class EquipmentComponentPreset(models.Model):
+    equipment_type = models.ForeignKey(EquipmentType, on_delete=models.CASCADE, related_name="component_presets")
+    name = models.CharField(max_length=100)  
+    description = models.TextField(blank=True)
+ 
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipment_component_preset_created_by', blank=True, null=True)
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipment_component_preset_updated_by', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    deleted = models.BooleanField(default=False) 
+ 
+    def __str__(self):
+        return self.name 
  
 
 class Equipment(models.Model):
@@ -350,6 +366,7 @@ class Equipment(models.Model):
     equipment_id   = models.CharField(max_length=50, unique=True, blank=True) 
     equipment_type = models.ForeignKey(EquipmentType, on_delete=models.CASCADE, related_name="equipment")
     building       = models.ForeignKey(Building, on_delete=models.CASCADE, related_name="equipment")
+    component_preset = models.ManyToManyField(EquipmentComponentPreset, related_name="equipment", blank=True)
     brand          = models.CharField(max_length=100, blank=True, help_text="e.g. Otis, Daikin")
     floor_location = models.CharField(max_length=100, blank=True, help_text="e.g. Level 4 Lobby")
 
