@@ -1834,7 +1834,6 @@ def generate_qr_code(data):
 import base64
 from io import BytesIO
 
-@login_required
 def qr_equipement_views(request, data_id):
     obj = get_object_or_404(Equipment, pk=data_id, deleted=False)
     
@@ -2967,7 +2966,6 @@ def get_equipment_components(request):
         return JsonResponse({'error': str(e), 'components': []}, status=400)
 
 
-@login_required
 def static_otp_verification(request):
     building_id = request.GET.get('building')
     equipment_id = request.GET.get('equipment')
