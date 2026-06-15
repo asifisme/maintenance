@@ -883,7 +883,7 @@ def building_list(request):
     section_id = request.GET.get('section', '').strip()
     status = request.GET.get('status', '').strip()
 
-    qs = Building.objects.filter(deleted=False).select_related('division', 'subdivision', 'section')
+    qs = Building.objects.filter(deleted=False).select_related('division', 'subdivision', 'section').order_by('-created_at')
     
     if search:
         qs = qs.filter(Q(name__icontains=search) | Q(building_id__icontains=search) | Q(surname__icontains=search))
