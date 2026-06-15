@@ -1,278 +1,358 @@
 {% extends 'base.html' %}
 {% block title %}Ticket #{{ obj.id }}{% endblock %}
 {% block content %}
-<section class="bg-[var(--bg-color)] min-h-screen p-4 md:p-2 font-sans">
-    <div class="max-w-6xl mx-auto">
-        <!-- Header -->
-        <div class="flex items-center justify-between mb-8 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-            <div class="flex items-center gap-4"> 
-                <a href="{% url 'backend:ticket_list' %}"
-                   class="text-gray-600 hover:text-gray-900 bg-white p-2 rounded-lg transition">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M15 18l-6-6 6-6" />
-                    </svg>
-                </a>
-                <div>
-                    <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">{{ obj.ticket_id|default:obj.id }} - {{ obj.title|default:"TIC-1001" }}</h2>
-                    <p class="text-xs text-gray-500 mt-1 flex items-center gap-1">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <polyline points="12 6 12 12 16 14"></polyline>
+    <section class="bg-[var(--bg-color)] min-h-screen p-4 md:p-2 font-sans">
+        <div class="max-w-6xl mx-auto">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-8 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                <div class="flex items-center gap-4">
+                    <a href="{% url 'backend:ticket_list' %}"
+                       class="text-gray-600 hover:text-gray-900 bg-white p-2 rounded-lg transition">
+                        <svg width="20"
+                             height="20"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="2"
+                             stroke-linecap="round"
+                             stroke-linejoin="round">
+                            <path d="M15 18l-6-6 6-6" />
                         </svg>
-                        Last updated {{ obj.updated_at|date:"n/j/Y, g:i A" }}
-                    </p>
-                </div>
-            </div>
-            <div class="px-4 py-1.5 rounded-full text-sm font-semibold border {% if obj.status == 'open' %}bg-blue-50 text-blue-600 border-blue-100{% elif obj.status == 'resolved' or obj.status == 'closed' %}bg-green-50 text-green-600 border-green-100{% else %}bg-gray-50 text-gray-600 border-gray-100{% endif %}">
-                {{ obj.get_status_display }}
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Left Column -->
-            <div class="lg:col-span-2 space-y-6">
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-6">
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-6">EQUIPMENT DETAILS</h3>
-                    
-                    <div class="flex flex-wrap items-center gap-x-12 gap-y-6 mb-8 border-b border-gray-100 pb-6">
-                        <!-- Equipment -->
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center shrink-0">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 class="text-sm font-bold text-gray-900">{{ obj.equipment.qr_code|default:obj.equipment.equipment_id|default:obj.equipment.id|default:"EQ-001" }}</h4>
-                                <p class="text-xs text-gray-500 uppercase">{{ obj.equipment.equipment_type.name|default:"HVAC" }}</p>
-                            </div>
-                        </div>
-
-                        <!-- Location -->
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-lg bg-green-50 text-green-500 flex items-center justify-center shrink-0">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                    <circle cx="12" cy="10" r="3"></circle>
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 class="text-sm font-bold text-gray-900">{% if obj.building %}[{{ obj.building.building_id|default:"B1" }}] &mdash; {{ obj.building.name }}{% else %}[B1] &mdash; Main Tower (North Wing){% endif %}</h4>
-                                <p class="text-xs text-gray-500 uppercase">LOCATION</p>
-                            </div>
-                        </div>
-                        
-                        <!-- Reporter -->
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-lg bg-gray-50 text-gray-500 flex items-center justify-center shrink-0">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 class="text-sm font-bold text-gray-900">{{ obj.user.get_full_name|default:obj.user.username|default:"John Doe" }}</h4>
-                                <p class="text-xs text-gray-500 uppercase">REPORTER &bull; INTERNAL</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <h3 class="text-sm font-bold text-gray-900 mb-4">Issue Description</h3>
-                    <div class="bg-slate-50 rounded-lg p-4 text-sm text-gray-600 whitespace-pre-line leading-relaxed">
-                        {% if obj.issue_description %}{{ obj.issue_description }}{% else %}AC unit making loud grinding noise and leaking water.{% endif %}
-                    </div>
-                </div>
-
-                <!-- Activity Timeline -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mt-6">
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-6 flex items-center gap-2">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <polyline points="12 6 12 12 16 14"></polyline>
-                        </svg>
-                        ACTIVITY TIMELINE
-                    </h3>
-                    
-                    <div class="space-y-6">
-                        {% if not obj.activity_log.exists %}
-                            <div class="relative pl-6 pb-6">
-                                <div class="absolute w-3 h-3 bg-blue-500 rounded-full -left-[6px] top-1 border-2 border-white ring-2 ring-blue-50"></div>
-                                <div>
-                                    <div class="flex items-center gap-2 mb-1">
-                                        <h4 class="text-sm font-bold text-gray-900">Created Ticket</h4>
-                                        <span class="text-xs text-gray-400">&bull; {{ obj.created_at|date:"n/j/Y, g:i A" }}</span>
-                                    </div>
-                                    <p class="text-xs text-gray-500 mb-2">by <span class="font-semibold text-gray-900">{{ obj.user.get_full_name|default:obj.user.username|default:"John Doe" }}</span></p>
-                                    <div class="bg-slate-50 rounded text-sm text-gray-600 p-3 italic">
-                                        "Initial report"
-                                    </div>
-                                </div>
-                            </div>
-                        {% else %}
-                            {% for log in obj.activity_log.all %}
-                            <div class="relative pl-6 pb-6 {% if not forloop.last %}border-l border-gray-200{% endif %}">
-                                <div class="absolute w-3 h-3 bg-blue-500 rounded-full -left-[6px] top-1 border-2 border-white ring-2 ring-blue-50"></div>
-                                
-                                <div>
-                                    <div class="flex items-center gap-2 mb-1">
-                                        <h4 class="text-sm font-bold text-gray-900">{{ log.get_action_type_display }}</h4>
-                                    </div>
-                                    <p class="text-xs text-gray-500 mb-2">by <span class="font-semibold text-gray-900">{{ log.actor.get_full_name|default:log.actor.username|default:"System" }}</span></p>
-                                    {% if log.description %}
-                                        <div class="bg-slate-50 rounded text-sm text-gray-600 p-3 italic">
-                                            "{{ log.description }}"
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Column -->
-            <div class="lg:col-span-1 space-y-6">
-                <!-- Lifecycle Action -->
-                <div class="bg-white rounded-xl shadow-sm border border-blue-100 overflow-hidden">
-                    <div class="p-6">
-                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">LIFECYCLE ACTION</h3>
-                        <button type="button" 
-                                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition shadow-sm"
-                                onclick="document.getElementById('assignModal').classList.remove('hidden')">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="8.5" cy="7" r="4"></circle>
-                                <line x1="20" y1="8" x2="20" y2="14"></line>
-                                <line x1="23" y1="11" x2="17" y2="11"></line>
+                    </a>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">{{ obj.ticket_id|default:obj.id }} - {{ obj.title|default:"TIC-1001" }}</h2>
+                        <p class="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                            <svg width="12"
+                                 height="12"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
                             </svg>
-                            Assign Technician
-                        </button>
+                            Last updated {{ obj.updated_at|date:"n/j/Y, g:i A" }}
+                        </p>
                     </div>
                 </div>
-
-                <!-- Assigned Personnel -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">ASSIGNED PERSONNEL</h3>
-                    {% if obj.assigned_technicians.exists %}
-                        <div class="space-y-4">
-                            {% for assign in obj.assigned_technicians.all %}
-                                {% if not assign.deleted %}
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center font-bold text-sm shrink-0 uppercase">
-                                        {{ assign.technician.first_initial }}
+                <div class="px-4 py-1.5 rounded-full text-sm font-semibold border {% if obj.status == 'open' %}bg-blue-50 text-blue-600 border-blue-100{% elif obj.status == 'resolved' or obj.status == 'closed' %}bg-green-50 text-green-600 border-green-100{% else %}bg-gray-50 text-gray-600 border-gray-100{% endif %}">
+                    {{ obj.get_status_display }}
+                </div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left Column -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-6">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-6">EQUIPMENT DETAILS</h3>
+                        <div class="flex flex-wrap items-center gap-x-12 gap-y-6 mb-8 border-b border-gray-100 pb-6">
+                            <!-- Equipment -->
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center shrink-0">
+                                    <svg width="20"
+                                         height="20"
+                                         viewBox="0 0 24 24"
+                                         fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="2"
+                                         stroke-linecap="round"
+                                         stroke-linejoin="round">
+                                        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-gray-900">{{ obj.equipment.qr_code|default:obj.equipment.equipment_id|default:obj.equipment.id|default:"EQ-001" }}</h4>
+                                    <p class="text-xs text-gray-500 uppercase">{{ obj.equipment.equipment_type.name|default:"HVAC" }}</p>
+                                </div>
+                            </div>
+                            <!-- Location -->
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-lg bg-green-50 text-green-500 flex items-center justify-center shrink-0">
+                                    <svg width="20"
+                                         height="20"
+                                         viewBox="0 0 24 24"
+                                         fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="2"
+                                         stroke-linecap="round"
+                                         stroke-linejoin="round">
+                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                        <circle cx="12" cy="10" r="3"></circle>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-gray-900">
+                                        {% if obj.building %}
+                                            [{{ obj.building.building_id|default:"B1" }}] &mdash; {{ obj.building.name }}
+                                        {% else %}
+                                            [B1] &mdash; Main Tower (North Wing)
+                                        {% endif %}
+                                    </h4>
+                                    <p class="text-xs text-gray-500 uppercase">LOCATION</p>
+                                </div>
+                            </div>
+                            <!-- Reporter -->
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-lg bg-gray-50 text-gray-500 flex items-center justify-center shrink-0">
+                                    <svg width="20"
+                                         height="20"
+                                         viewBox="0 0 24 24"
+                                         fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="2"
+                                         stroke-linecap="round"
+                                         stroke-linejoin="round">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-gray-900">{{ obj.user.get_full_name|default:obj.user.username|default:"John Doe" }}</h4>
+                                    <p class="text-xs text-gray-500 uppercase">REPORTER &bull; INTERNAL</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h3 class="text-sm font-bold text-gray-900 mb-4">Issue Description</h3>
+                        <div class="bg-slate-50 rounded-lg p-4 text-sm text-gray-600 whitespace-pre-line leading-relaxed">
+                            {% if obj.issue_description %}
+                                {{ obj.issue_description }}
+                            {% else %}
+                                AC unit making loud grinding noise and leaking water.
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!-- Activity Timeline -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mt-6">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-6 flex items-center gap-2">
+                            <svg width="16"
+                                 height="16"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            ACTIVITY TIMELINE
+                        </h3>
+                        <div class="space-y-6">
+                            {% if not obj.activity_log.exists %}
+                                <div class="relative pl-6 pb-6">
+                                    <div class="absolute w-3 h-3 bg-blue-500 rounded-full -left-[6px] top-1 border-2 border-white ring-2 ring-blue-50">
                                     </div>
                                     <div>
-                                        <p class="text-sm font-semibold text-gray-900">{{ assign.technician.display_name }}</p>
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <h4 class="text-sm font-bold text-gray-900">Created Ticket</h4>
+                                            <span class="text-xs text-gray-400">&bull; {{ obj.created_at|date:"n/j/Y, g:i A" }}</span>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mb-2">by <span class="font-semibold text-gray-900">{{ obj.user.get_full_name|default:obj.user.username|default:"John Doe" }}</span></p>
+                                        <div class="bg-slate-50 rounded text-sm text-gray-600 p-3 italic">"Initial report"</div>
                                     </div>
                                 </div>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <div class="flex items-center gap-2 text-gray-400">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="12" y1="8" x2="12" y2="12"></line>
-                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                            </svg>
-                            <p class="text-sm italic">No technician assigned yet</p>
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Comments -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                        </svg>
-                        COMMENTS
-                    </h3>
-
-                    <!-- Existing comments -->
-                    {% if obj.comments.exists %}
-                        <div class="space-y-3 mb-4">
-                            {% for comment in obj.comments.all %}
-                                {% if not comment.deleted %}
-                                <div class="bg-slate-50 rounded-lg p-3">
-                                    <div class="flex items-center gap-2 mb-1">
-                                        <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold uppercase shrink-0">
-                                            {{ comment.author.username|first }}
-                                        </span>
-                                        <span class="text-xs font-semibold text-gray-700">{{ comment.author.get_full_name|default:comment.author.username }}</span>
-                                        <span class="text-xs text-gray-400 ml-auto">{{ comment.created_at|date:"n/j/Y, g:i A" }}</span>
+                            {% else %}
+                                {% for log in obj.activity_log.all %}
+                                    <div class="relative pl-6 pb-6 {% if not forloop.last %}border-l border-gray-200{% endif %}">
+                                        <div class="absolute w-3 h-3 bg-blue-500 rounded-full -left-[6px] top-1 border-2 border-white ring-2 ring-blue-50">
+                                        </div>
+                                        <div>
+                                            <div class="flex items-center gap-2 mb-1">
+                                                <h4 class="text-sm font-bold text-gray-900">{{ log.get_action_type_display }}</h4>
+                                            </div>
+                                            <p class="text-xs text-gray-500 mb-2">by <span class="font-semibold text-gray-900">{{ log.actor.get_full_name|default:log.actor.username|default:"System" }}</span></p>
+                                            {% if log.description %}
+                                                <div class="bg-slate-50 rounded text-sm text-gray-600 p-3 italic">"{{ log.description }}"</div>
+                                            {% endif %}
+                                        </div>
                                     </div>
-                                    <p class="text-sm text-gray-600 pl-8">{{ comment.body }}</p>
-                                </div>
-                                {% endif %}
-                            {% endfor %}
+                                {% endfor %}
+                            {% endif %}
                         </div>
-                    {% endif %}
-
-                    <!-- Add comment form -->
-                    <form method="POST" action="{% url 'backend:ticket_detail' obj.id %}" class="flex items-center gap-2">
-                        {% csrf_token %}
-                        <input type="text" name="comment_body" id="comment_body" placeholder="Type a comment..." 
-                               class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 outline-none" 
-                               autocomplete="off" />
-                        <button type="submit" class="bg-slate-100 text-slate-500 hover:bg-blue-50 hover:text-blue-600 p-2 rounded-lg transition border border-slate-200 hover:border-blue-100 shrink-0">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="12" y1="5" x2="12" y2="19"></line>
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                            </svg>
-                        </button>
-                    </form>
+                    </div>
                 </div>
-
+                <!-- Right Column -->
+                <div class="lg:col-span-1 space-y-6">
+                    <!-- Lifecycle Action -->
+                    <div class="bg-white rounded-xl shadow-sm border border-blue-100 overflow-hidden">
+                        <div class="p-6">
+                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">LIFECYCLE ACTION</h3>
+                            <button type="button"
+                                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition shadow-sm"
+                                    onclick="document.getElementById('assignModal').classList.remove('hidden')">
+                                <svg width="18"
+                                     height="18"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2"
+                                     stroke-linecap="round"
+                                     stroke-linejoin="round">
+                                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="8.5" cy="7" r="4"></circle>
+                                    <line x1="20" y1="8" x2="20" y2="14"></line>
+                                    <line x1="23" y1="11" x2="17" y2="11"></line>
+                                </svg>
+                                Assign Technician
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Assigned Personnel -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">ASSIGNED PERSONNEL</h3>
+                        {% if obj.assigned_technicians.exists %}
+                            <div class="space-y-4">
+                                {% for assign in obj.assigned_technicians.all %}
+                                    {% if not assign.deleted %}
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center font-bold text-sm shrink-0 uppercase">
+                                                {{ assign.technician.first_initial }}
+                                            </div>
+                                            <div>
+                                                <p class="text-sm font-semibold text-gray-900">{{ assign.technician.display_name }}</p>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="flex items-center gap-2 text-gray-400">
+                                <svg width="16"
+                                     height="16"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2"
+                                     stroke-linecap="round"
+                                     stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                </svg>
+                                <p class="text-sm italic">No technician assigned yet</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <!-- Comments -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <svg width="16"
+                                 height="16"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            COMMENTS
+                        </h3>
+                        <!-- Existing comments -->
+                        {% if obj.comments.exists %}
+                            <div class="space-y-3 mb-4">
+                                {% for comment in obj.comments.all %}
+                                    {% if not comment.deleted %}
+                                        <div class="bg-slate-50 rounded-lg p-3">
+                                            <div class="flex items-center gap-2 mb-1">
+                                                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold uppercase shrink-0">
+                                                    {{ comment.author.username|first }}
+                                                </span>
+                                                <span class="text-xs font-semibold text-gray-700">{{ comment.author.get_full_name|default:comment.author.username }}</span>
+                                                <span class="text-xs text-gray-400 ml-auto">{{ comment.created_at|date:"n/j/Y, g:i A" }}</span>
+                                            </div>
+                                            <p class="text-sm text-gray-600 pl-8">{{ comment.body }}</p>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <!-- Add comment form -->
+                        <form method="POST"
+                              action="{% url 'backend:ticket_detail' obj.id %}"
+                              class="flex items-center gap-2">
+                            {% csrf_token %}
+                            <input type="text"
+                                   name="comment_body"
+                                   id="comment_body"
+                                   placeholder="Type a comment..."
+                                   class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 outline-none"
+                                   autocomplete="off" />
+                            <button type="submit"
+                                    class="bg-slate-100 text-slate-500 hover:bg-blue-50 hover:text-blue-600 p-2 rounded-lg transition border border-slate-200 hover:border-blue-100 shrink-0">
+                                <svg width="20"
+                                     height="20"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2"
+                                     stroke-linecap="round"
+                                     stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
+    </section>
+    <!-- Modal for Assign Technician -->
+    <div id="assignModal"
+         class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
+            <form method="POST" action="{% url 'backend:ticket_detail' obj.id %}">
+                {% csrf_token %}
+                <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                    <h3 class="text-lg font-bold text-gray-900">Update Ticket Status</h3>
+                    <button type="button"
+                            class="text-gray-400 hover:text-gray-600"
+                            onclick="document.getElementById('assignModal').classList.add('hidden')">
+                        <svg width="20"
+                             height="20"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="2"
+                             stroke-linecap="round"
+                             stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="p-6">
+                    <label class="block text-sm font-semibold text-gray-900 mb-2">Select Technician</label>
+                    <select name="technician_id"
+                            required
+                            class="w-full border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm">
+                        <option value="" disabled selected>✓ Select someone...</option>
+                        {% for tech in technicians %}
+                            <option value="{{ tech.id }}">{{ tech.display_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 flex justify-end gap-3 rounded-b-xl border-t border-gray-100">
+                    <button type="button"
+                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+                            onclick="document.getElementById('assignModal').classList.add('hidden')">Cancel</button>
+                    <button type="submit"
+                            class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+                        Confirm Update
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-</section>
-
-<!-- Modal for Assign Technician -->
-<div id="assignModal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
-        <form method="POST" action="{% url 'backend:ticket_detail' obj.id %}">
-            {% csrf_token %}
-            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                <h3 class="text-lg font-bold text-gray-900">Update Ticket Status</h3>
-                <button type="button" class="text-gray-400 hover:text-gray-600" onclick="document.getElementById('assignModal').classList.add('hidden')">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-            </div>
-            
-            <div class="p-6">
-                <label class="block text-sm font-semibold text-gray-900 mb-2">Select Technician</label>
-                <select name="technician_id" required class="w-full border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm">
-                    <option value="" disabled selected>✓ Select someone...</option>
-                    {% for tech in technicians %}
-                        <option value="{{ tech.id }}">{{ tech.display_name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            
-            <div class="px-6 py-4 bg-gray-50 flex justify-end gap-3 rounded-b-xl border-t border-gray-100">
-                <button type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition" onclick="document.getElementById('assignModal').classList.add('hidden')">
-                    Cancel
-                </button>
-                <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
-                    Confirm Update
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script>
+    <script>
     // Close modal when clicking outside
     document.getElementById('assignModal').addEventListener('click', function(e) {
         if (e.target === this) {
             this.classList.add('hidden');
         }
     });
-</script>
+    </script>
 {% endblock %}

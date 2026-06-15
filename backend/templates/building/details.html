@@ -268,10 +268,10 @@
                                                 </button>
                                                 <!-- Actions Menu (uses base.html positioning script) -->
                                                 <div data-menu class="hidden py-1 w-36" role="menu">
-                                                     <a href="{% url 'backend:equipment_update' eq.id %}"
+                                                    <a href="{% url 'backend:equipment_update' eq.id %}"
                                                        class="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
                                                        role="menuitem">Edit Equipment</a>
-                                                     <a href="{% url 'backend:ticket_add' %}?equipment={{ eq.id }}"
+                                                    <a href="{% url 'backend:ticket_add' %}?equipment={{ eq.id }}"
                                                        class="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
                                                        role="menuitem">Log Maintenance</a>
                                                 </div>

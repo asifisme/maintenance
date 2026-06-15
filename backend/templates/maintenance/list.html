@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Maintenance Sessions{% endblock %}
+{% block title %}<span class="hidden">{{ action }} Maintenance</span>{% endblock %}
 {% block header_actions %}
     <a href="{% url 'backend:maintenance_add' %}"
        class="inline-flex items-center gap-2 h-11 px-3 rounded-md bg-[var(--primary-color)] text-[var(--button-text-color)]">
@@ -112,15 +112,15 @@
             </div>
             <!-- Pagination -->
             {% if last_page > 1 %}
-            <div class="p-4 border-t border-[var(--border-color)] flex justify-between items-center">
-                <span>Page {{ data_list.number }} of {{ last_page }}</span>
-                <div class="flex gap-1">
-                    {% for i in paginator_list %}
-                        <a href="?page={{ i }}&search={{ search }}"
-                           class="px-3 py-1 border rounded {% if data_list.number == i %}bg-[var(--primary-color)] text-white{% endif %}">{{ i }}</a>
-                    {% endfor %}
+                <div class="p-4 border-t border-[var(--border-color)] flex justify-between items-center">
+                    <span>Page {{ data_list.number }} of {{ last_page }}</span>
+                    <div class="flex gap-1">
+                        {% for i in paginator_list %}
+                            <a href="?page={{ i }}&search={{ search }}"
+                               class="px-3 py-1 border rounded {% if data_list.number == i %}bg-[var(--primary-color)] text-white{% endif %}">{{ i }}</a>
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
             {% endif %}
         </div>
     </section>

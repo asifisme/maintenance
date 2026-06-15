@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Component Presets{% endblock %}
+{% block title %}<span class="hidden">{{ action }} Component Preset</span>{% endblock %}
 {% block header_actions %}
     <a href="{% url 'backend:equipment_component_preset_add' %}"
        class="inline-flex items-center gap-2 h-11 px-3 rounded-md bg-[var(--primary-color)] text-[var(--button-text-color)]">
@@ -23,7 +23,8 @@
                     class="h-11 rounded-md px-3 border border-[var(--border-color)] select2-items min-w-[200px] bg-white text-gray-900">
                 <option value="">All Equipment Types</option>
                 {% for et in equipment_types %}
-                    <option value="{{ et.id }}" {% if equipment_type_id == et.id|stringformat:"s" %}selected{% endif %}>{{ et.name }}</option>
+                    <option value="{{ et.id }}"
+                            {% if equipment_type_id == et.id|stringformat:"s" %}selected{% endif %}>{{ et.name }}</option>
                 {% endfor %}
             </select>
             <button type="submit"
@@ -70,7 +71,8 @@
                                             <div class="py-1">
                                                 <a href="{% url 'backend:equipment_component_preset_update' data.id %}"
                                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">Edit</a>
-                                                <form action="{% url 'backend:equipment_component_preset_status' data.id %}" method="post">
+                                                <form action="{% url 'backend:equipment_component_preset_status' data.id %}"
+                                                      method="post">
                                                     {% csrf_token %}
                                                     <button type="submit"
                                                             class="block px-4 py-2 text-sm {% if data.is_active %}text-red-600 hover:bg-red-50{% else %}text-green-600 hover:bg-green-50{% endif %} w-full text-left"
@@ -100,15 +102,15 @@
             </div>
             <!-- Pagination -->
             {% if last_page > 1 %}
-            <div class="p-4 border-t border-[var(--border-color)] flex justify-between items-center">
-                <span>Page {{ data_list.number }} of {{ last_page }}</span>
-                <div class="flex gap-1">
-                    {% for i in paginator_list %}
-                        <a href="?page={{ i }}{% if search %}&search={{ search }}{% endif %}{% if equipment_type_id %}&equipment_type={{ equipment_type_id }}{% endif %}"
-                           class="px-3 py-1 border rounded {% if data_list.number == i %}bg-[var(--primary-color)] text-white{% endif %}">{{ i }}</a>
-                    {% endfor %}
+                <div class="p-4 border-t border-[var(--border-color)] flex justify-between items-center">
+                    <span>Page {{ data_list.number }} of {{ last_page }}</span>
+                    <div class="flex gap-1">
+                        {% for i in paginator_list %}
+                            <a href="?page={{ i }}{% if search %}&search={{ search }}{% endif %}{% if equipment_type_id %}&equipment_type={{ equipment_type_id }}{% endif %}"
+                               class="px-3 py-1 border rounded {% if data_list.number == i %}bg-[var(--primary-color)] text-white{% endif %}">{{ i }}</a>
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
             {% endif %}
         </div>
     </section>

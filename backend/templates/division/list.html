@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Division{% endblock %}
+{% block title %}<span class="hidden">{{ action }} Division</span>{% endblock %}
 {% block header_actions %}
     <a href="{% url 'backend:division_add' %}"
        class="inline-flex items-center gap-2 h-11 px-3 rounded-md bg-[var(--primary-color)] text-[var(--button-text-color)]">

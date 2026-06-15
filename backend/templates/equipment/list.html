@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Equipment{% endblock %}
+{% block title %}<span class="hidden">{{ action }} Equipment</span>{% endblock %}
 {% block content %}
     <section class="bg-[var(--bg-color)] min-h-screen p-4 md:p-2 font-sans">
         <div class="max-w-7xl mx-auto">
@@ -100,9 +100,7 @@
                                             -
                                         {% endif %}
                                     </td>
-                                    <td class="px-6 py-4 text-gray-600">
-                                        {{ data.components_count }}
-                                    </td>
+                                    <td class="px-6 py-4 text-gray-600">{{ data.components_count }}</td>
                                     <td class="px-6 py-4">
                                         {% if data.status == 'active' %}
                                             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">

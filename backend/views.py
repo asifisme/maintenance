@@ -1647,6 +1647,7 @@ def equipment_add(request):
     buildings = Building.objects.filter(deleted=False, is_active=True)
     presets = EquipmentComponentPreset.objects.filter(deleted=False, is_active=True)
     
+    obj = None
     if request.method == 'POST':
         equipment_id = request.POST.get('equipment_id', '').strip()
         equipment_type_id = request.POST.get('equipment_type_id', '')
@@ -1664,19 +1665,32 @@ def equipment_add(request):
         maintenance_period_days = request.POST.get('maintenance_period_days', '90')
         next_service_due = request.POST.get('next_service_due', '')
         
+        # Build obj for form re-population in case of error
+        try:
+            b_id = int(building_id) if building_id else None
+        except ValueError:
+            b_id = None
+        try:
+            t_id = int(equipment_type_id) if equipment_type_id else None
+        except ValueError:
+            t_id = None
+
+        obj = Equipment(
+            equipment_id=equipment_id,
+            equipment_type_id=t_id,
+            building_id=b_id,
+            brand=brand,
+            floor_location=floor_location,
+            maintenance_period_days=maintenance_period_days if maintenance_period_days else 90,
+            next_service_due=next_service_due if next_service_due else None,
+        )
+
         if not equipment_id or not equipment_type_id or not building_id:
             messages.error(request, 'Equipment ID, Type, and Building are required.')
+        elif Equipment.objects.filter(equipment_id=equipment_id).exists():
+            messages.error(request, f"Equipment ID '{equipment_id}' already exists. Please use a unique ID.")
         else:
-            obj = Equipment(
-                equipment_id=equipment_id,
-                equipment_type_id=equipment_type_id,
-                building_id=building_id,
-                brand=brand,
-                floor_location=floor_location,
-                maintenance_period_days=maintenance_period_days if maintenance_period_days else 90,
-                next_service_due=next_service_due if next_service_due else None,
-                created_by=request.user
-            )
+            obj.created_by = request.user
             obj.save()
             
             # Save presets relation
@@ -1700,6 +1714,7 @@ def equipment_add(request):
     
     context = {
         'action': 'Add',
+        'obj': obj,
         'equipment_types': equipment_types,
         'buildings': buildings,
         'presets': presets,
@@ -1738,18 +1753,30 @@ def equipment_update(request, data_id):
         
         status = request.POST.get('status', obj.status)
         
+        # Temporarily assign submitted values to obj for validation preservation
+        obj.equipment_id = equipment_id
+        try:
+            obj.equipment_type_id = int(equipment_type_id) if equipment_type_id else None
+        except ValueError:
+            pass
+        try:
+            obj.building_id = int(building_id) if building_id else None
+        except ValueError:
+            pass
+        obj.brand = brand
+        obj.floor_location = floor_location
+        try:
+            obj.maintenance_period_days = int(maintenance_period_days) if maintenance_period_days else 90
+        except ValueError:
+            pass
+        obj.next_service_due = next_service_due if next_service_due else None
+        obj.status = status
+        
         if not equipment_id or not equipment_type_id or not building_id:
             messages.error(request, 'Equipment ID, Type, and Building are required.')
+        elif Equipment.objects.filter(equipment_id=equipment_id).exclude(pk=obj.pk).exists():
+            messages.error(request, f"Equipment ID '{equipment_id}' already exists. Please use a unique ID.")
         else:
-            obj.equipment_id = equipment_id
-            obj.equipment_type_id = equipment_type_id
-            obj.building_id = building_id
-            obj.brand = brand
-            obj.floor_location = floor_location
-            obj.maintenance_period_days = maintenance_period_days if maintenance_period_days else 90
-            obj.next_service_due = next_service_due if next_service_due else None
-            obj.status = status
-            
             obj.updated_by = request.user
             obj.save()
             
