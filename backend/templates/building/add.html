@@ -79,7 +79,7 @@
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Division</label>
                             <select name="division"
-                                    class="w-full bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition">
+                                    class="w-full select2-items bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition">
                                 <option value="">Select Division</option>
                                 {% for d in divisions %}
                                     <option value="{{ d.id }}"
@@ -90,7 +90,7 @@
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Subdivision</label>
                             <select name="subdivision"
-                                    class="w-full bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition">
+                                    class="w-full select2-items bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition">
                                 <option value="">Select Subdivision</option>
                                 {% for s in subdivisions %}
                                     <option value="{{ s.id }}"
@@ -106,7 +106,7 @@
                                 <span class="text-red-500">*</span>
                             </label>
                             <select name="section"
-                                    class="w-full bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition"
+                                    class="w-full select2-items bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition"
                                     required>
                                 <option value="">Select Section</option>
                                 {% for s in sections %}
@@ -169,7 +169,7 @@
                     <a href="{% url 'backend:building_list' %}"
                        class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 font-semibold py-2.5 px-6 rounded-lg transition duration-200 text-sm">
                         Cancel
-                    </a>
+                     </a>
                     <button type="submit"
                             class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg transition duration-200 text-sm">
                         Save Building
@@ -182,7 +182,90 @@
 {% block extra_js %}
     <script>
     $(document).ready(function () {
-        $('.select2-items').select2();
+        $('.select2-items').select2({
+            width: '100%'
+        });
+
+        const divisionSelect = $('select[name="division"]');
+        const subdivisionSelect = $('select[name="subdivision"]');
+        const sectionSelect = $('select[name="section"]');
+
+        // Store initial selected values (for edit page / validation fail re-population)
+        const initialSubdivisionId = subdivisionSelect.val();
+        const initialSectionId = sectionSelect.val();
+
+        function updateSubdivisions(divisionId, callback) {
+            if (!divisionId) {
+                subdivisionSelect.html('<option value="">Select Subdivision</option>').val('').trigger('change');
+                sectionSelect.html('<option value="">Select Section</option>').val('').trigger('change');
+                if (callback) callback();
+                return;
+            }
+
+            $.ajax({
+                url: "{% url 'backend:get_division_subdivisions' %}",
+                data: { 'division_id': divisionId },
+                dataType: 'json',
+                success: function (data) {
+                    let options = '<option value="">Select Subdivision</option>';
+                    data.subdivisions.forEach(function (sub) {
+                        options += `<option value="${sub.id}">${sub.name}</option>`;
+                    });
+                    subdivisionSelect.html(options).trigger('change');
+                    if (callback) callback();
+                }
+            });
+        }
+
+        function updateSections(subdivisionId, callback) {
+            if (!subdivisionId) {
+                sectionSelect.html('<option value="">Select Section</option>').val('').trigger('change');
+                if (callback) callback();
+                return;
+            }
+
+            $.ajax({
+                url: "{% url 'backend:get_subdivision_sections' %}",
+                data: { 'subdivision_id': subdivisionId },
+                dataType: 'json',
+                success: function (data) {
+                    let options = '<option value="">Select Section</option>';
+                    data.sections.forEach(function (sec) {
+                        options += `<option value="${sec.id}">${sec.name}</option>`;
+                    });
+                    sectionSelect.html(options).trigger('change');
+                    if (callback) callback();
+                }
+            });
+        }
+
+        divisionSelect.on('change', function () {
+            const divisionId = $(this).val();
+            updateSubdivisions(divisionId);
+        });
+
+        subdivisionSelect.on('change', function () {
+            const subdivisionId = $(this).val();
+            updateSections(subdivisionId);
+        });
+
+        // Initial load check
+        const currentDivisionId = divisionSelect.val();
+        if (currentDivisionId) {
+            updateSubdivisions(currentDivisionId, function() {
+                if (initialSubdivisionId) {
+                    subdivisionSelect.val(initialSubdivisionId).trigger('change');
+                    updateSections(initialSubdivisionId, function() {
+                        if (initialSectionId) {
+                            sectionSelect.val(initialSectionId).trigger('change');
+                        }
+                    });
+                }
+            });
+        } else {
+            subdivisionSelect.html('<option value="">Select Subdivision</option>').trigger('change');
+            sectionSelect.html('<option value="">Select Section</option>').trigger('change');
+        }
     });
     </script>
 {% endblock %}

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}<span class="hidden">{{ action }} Building</span>{% endblock %}
+{% block title %}<span class="hidden">{{ action }} Equipment</span>{% endblock %}
 {% block content %}
     <section class="bg-[var(--bg-color)] min-h-screen p-4 md:p-2 font-sans">
         <div class="max-w-6xl mx-auto">
@@ -25,22 +25,24 @@
                 <!-- Basic & General Info -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                     <h3 class="text-lg font-bold text-gray-900 mb-6 border-b border-gray-100 pb-2">Basic & General Info</h3>
-                    <div class="mb-6">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Building <span class="text-red-500">*</span></label>
-                        <select name="building_id"
-                                class="w-full select2-items bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
-                                required>
-                            <option value="">Select Building</option>
-                            {% for b in buildings %}
-                                <option value="{{ b.id }}"
-                                        {% if obj.building_id == b.id %}selected{% endif %}>
-                                    [{{ b.id }}] — {{ b.name }}
-                                    {% if b.surname %}({{ b.surname }}){% endif %}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Building <span class="text-red-500">*</span></label>
+                            <select name="building_id"
+                                    class="w-full select2-items bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
+                                    required>
+                                <option value="">Select Building</option>
+                                {% for b in buildings %}
+                                    <option value="{{ b.id }}"
+                                            {% if obj.building_id == b.id %}selected{% endif %}>
+                                        [{{ b.id }}] — {{ b.name }}
+                                        {% if b.surname %}({{ b.surname }}){% endif %}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Type <span class="text-red-500">*</span></label>
                             <select name="equipment_type_id"
@@ -53,6 +55,10 @@
                                 {% endfor %}
                             </select>
                         </div>
+                    </div>
+
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Equipment ID <span class="text-red-500">*</span></label>
                             <input type="text"
@@ -62,6 +68,16 @@
                                    required
                                    placeholder="e.g. EQ-1710">
                         </div>
+
+                        <div>
+                            <label for="installment_date" class="block text-sm font-semibold text-gray-700 mb-2">Installment Date</label>
+                            <input type="date"
+                                   name="installment_date"
+                                   value="{{ obj.installment_date|default:'' }}"
+                                   class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none">
+                        </div>
+
+                      
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -74,9 +90,13 @@
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Floor / Location</label>
-                            <input type="text" name="floor_location" value="{{ obj.floor_location|default:'' }}" class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
-                            </div>
+                            <input type="text"
+                                   name="floor_location"
+                                   value="{{ obj.floor_location|default:'' }}"
+                                   class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
+                                   placeholder="e.g. 5th Floor, Room 502">
                         </div>
+                    </div>
                         <div class="mt-6">
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Component Presets</label>
                             <div id="presets_checkboxes_container"

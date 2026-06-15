@@ -1613,7 +1613,7 @@ def equipment_list(request):
     type_id = request.GET.get('type_id', '').strip()
     status = request.GET.get('status', '').strip()
     
-    qs = Equipment.objects.filter(deleted=False).select_related('equipment_type', 'building').annotate(components_count=Count('components'))
+    qs = Equipment.objects.filter(deleted=False).select_related('equipment_type', 'building').annotate(components_count=Count('components')).order_by('-created_at')
     
     if search:
         qs = qs.filter(Q(equipment_id__icontains=search) | Q(brand__icontains=search) | Q(building__name__icontains=search))
@@ -1625,7 +1625,7 @@ def equipment_list(request):
     page_num = request.GET.get('page', 1)
     data_list, paginator_list, last_page = paginate_data(request, page_num, qs)
     
-    equipment_types = EquipmentType.objects.filter(deleted=False, is_active=True)
+    equipment_types = EquipmentType.objects.filter(deleted=False, is_active=True).order_by('-created_at')
     
     context = {
         'data_list': data_list,
@@ -1648,7 +1648,7 @@ def equipment_add(request):
         return render(request, '403.html', status=403)
         
     equipment_types = EquipmentType.objects.filter(deleted=False, is_active=True)
-    buildings = Building.objects.filter(deleted=False, is_active=True)
+    buildings = Building.objects.filter(deleted=False, is_active=True).order_by('-created_at')
     presets = EquipmentComponentPreset.objects.filter(deleted=False, is_active=True)
     
     obj = None
@@ -1658,6 +1658,7 @@ def equipment_add(request):
         building_id = request.POST.get('building_id', '')
         brand = request.POST.get('brand', '').strip()
         floor_location = request.POST.get('floor_location', '').strip()
+        installment_date = request.POST.get('installment_date', '').strip() 
 
         # presets
         component_preset_ids = request.POST.getlist('component_preset')
@@ -1687,6 +1688,7 @@ def equipment_add(request):
             floor_location=floor_location,
             maintenance_period_days=maintenance_period_days if maintenance_period_days else 90,
             next_service_due=next_service_due if next_service_due else None,
+            installment_date=installment_date if installment_date else None,            
         )
 
         if not equipment_id or not equipment_type_id or not building_id:
@@ -1735,7 +1737,7 @@ def equipment_update(request, data_id):
     
     obj = get_object_or_404(Equipment, pk=data_id, deleted=False)
     equipment_types = EquipmentType.objects.filter(deleted=False, is_active=True)
-    buildings = Building.objects.filter(deleted=False, is_active=True)
+    buildings = Building.objects.filter(deleted=False, is_active=True).order_by('-created_at')
     presets = EquipmentComponentPreset.objects.filter(deleted=False, is_active=True)
     
     if request.method == 'POST':
@@ -1744,7 +1746,7 @@ def equipment_update(request, data_id):
         building_id = request.POST.get('building_id', '')
         brand = request.POST.get('brand', '').strip()
         floor_location = request.POST.get('floor_location', '').strip()
-        
+        installment_date = request.POST.get('installment_date', '').strip()
         # presets
         component_preset_ids = request.POST.getlist('component_preset')
 
@@ -1773,7 +1775,9 @@ def equipment_update(request, data_id):
             obj.maintenance_period_days = int(maintenance_period_days) if maintenance_period_days else 90
         except ValueError:
             pass
+
         obj.next_service_due = next_service_due if next_service_due else None
+        obj.installment_date = installment_date if installment_date else None
         obj.status = status
         
         if not equipment_id or not equipment_type_id or not building_id:
@@ -2137,7 +2141,7 @@ def ticket_add(request):
         return render(request, '403.html', status=403)
 
     equipments = Equipment.objects.filter(deleted=False, is_active=True)
-    buildings = Building.objects.filter(deleted=False, is_active=True)
+    buildings = Building.objects.filter(deleted=False, is_active=True).order_by('-created_at')
 
     if request.method == 'POST':
         title = request.POST.get('title', '').strip()
@@ -2202,7 +2206,7 @@ def ticket_update(request, data_id):
     
     obj = get_object_or_404(Ticket, pk=data_id, deleted=False)
     equipments = Equipment.objects.filter(deleted=False, is_active=True)
-    buildings = Building.objects.filter(deleted=False, is_active=True)
+    buildings = Building.objects.filter(deleted=False, is_active=True).order_by('-created_at')
     
     if request.method == 'POST':
         title = request.POST.get('title', '').strip()
@@ -2312,7 +2316,7 @@ def maintenance_add(request):
         messages.error(request, 'You do not have permission to add a maintenance record.')
         return render(request, '403.html', status=403)
 
-    buildings = Building.objects.filter(deleted=False, is_active=True)
+    buildings = Building.objects.filter(deleted=False, is_active=True).order_by('-created_at')
     technicians = Technician.objects.filter(deleted=False, is_active=True)
     
     logged_in_tech_id = None
@@ -2619,7 +2623,7 @@ def maintenance_update(request, data_id):
         return render(request, '403.html', status=403)
 
     obj = get_object_or_404(Maintenance, pk=data_id, deleted=False)
-    buildings = Building.objects.filter(deleted=False, is_active=True)
+    buildings = Building.objects.filter(deleted=False, is_active=True).order_by('-created_at')
     technicians = Technician.objects.filter(deleted=False, is_active=True)
 
     if request.method == 'POST':
@@ -3004,6 +3008,48 @@ def static_otp_verification(request):
         'building_id': building_id,
         'equipment_id': equipment_id,
     }
-    return render(request, 'maintenance/static_otp.html', context) 
+    return render(request, 'maintenance/static_otp.html', context)
+
+
+@require_GET
+def get_division_subdivisions(request):
+    """AJAX endpoint to get subdivisions for a selected division"""
+    division_id = request.GET.get('division_id')
+    if not division_id:
+        return JsonResponse({'subdivisions': []})
+    try:
+        subdivision_list = SubDivision.objects.filter(
+            division_id=division_id,
+            deleted=False,
+            is_active=True
+        ).values('id', 'name').order_by('name')
+        subdivisions = [
+            {'id': item['id'], 'name': item['name']}
+            for item in subdivision_list
+        ]
+        return JsonResponse({'subdivisions': subdivisions})
+    except Exception as e:
+        return JsonResponse({'error': str(e), 'subdivisions': []}, status=400)
+
+
+@require_GET
+def get_subdivision_sections(request):
+    """AJAX endpoint to get sections for a selected subdivision"""
+    subdivision_id = request.GET.get('subdivision_id')
+    if not subdivision_id:
+        return JsonResponse({'sections': []})
+    try:
+        section_list = Section.objects.filter(
+            subdivision_id=subdivision_id,
+            deleted=False,
+            is_active=True
+        ).values('id', 'name').order_by('name')
+        sections = [
+            {'id': item['id'], 'name': item['name']}
+            for item in section_list
+        ]
+        return JsonResponse({'sections': sections})
+    except Exception as e:
+        return JsonResponse({'error': str(e), 'sections': []}, status=400)
 
 

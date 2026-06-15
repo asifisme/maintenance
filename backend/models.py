@@ -370,6 +370,7 @@ class Equipment(models.Model):
     component_preset = models.ManyToManyField(EquipmentComponentPreset, related_name="equipment", blank=True)
     brand          = models.CharField(max_length=100, blank=True, help_text="e.g. Otis, Daikin")
     floor_location = models.CharField(max_length=100, blank=True, help_text="e.g. Level 4 Lobby")
+    installment_date = models.DateTimeField(null=True, blank=True)
 
     model_number   = models.CharField(max_length=100, blank=True)
     serial_number  = models.CharField(max_length=100, blank=True)

@@ -84,6 +84,7 @@
                                 <th class="px-6 py-4 font-bold tracking-wider">Building</th>
                                 <th class="px-6 py-4 font-bold tracking-wider">Components</th>
                                 <th class="px-6 py-4 font-bold tracking-wider">Status</th>
+                                <th class="px-6 py-4 font-bold tracking-wider">Installment Date</th>
                                 <th class="px-6 py-4 font-bold tracking-wider">Last Maint.</th>
                                 <th class="px-6 py-4 font-bold tracking-wider text-right">Actions</th>
                             </tr>
@@ -161,7 +162,8 @@
                                             </span>
                                         {% endif %}
                                     </td>
-                                    <td class="px-6 py-4 text-gray-600">{{ data.last_maintenance_date|date:"Y-m-d"|default:"-" }}</td>
+                                    <td class="px-6 py-4 text-gray-600">{{ data.installment_date|date:"d-b-y"|default:"-"}}</td> 
+                                    <td class="px-6 py-4 text-gray-600">{{ data.last_maintenance_date|date:"d-b-y"|default:"-" }}</td>
                                     <td class="px-6 py-4 text-right">
                                         <a href="{% url 'backend:equipment_detail' data.id %}"
                                            class="text-blue-600 hover:text-blue-800 font-medium">View</a>

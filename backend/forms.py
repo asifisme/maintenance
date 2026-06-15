@@ -149,7 +149,7 @@ class MaintenanceForm(forms.ModelForm):
     """Form for creating and editing Maintenance sessions"""
     
     building = forms.ModelChoiceField(
-        queryset=Building.objects.filter(deleted=False, is_active=True),
+        queryset=Building.objects.filter(deleted=False, is_active=True).order_by('-created_at'),
         required=True,
         widget=forms.Select(attrs={
             'class': f'{TAILWIND_SELECT} select2-items',
