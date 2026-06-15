@@ -224,8 +224,10 @@
                                 {% for eq in equipment_list %}
                                     <tr class="hover:bg-gray-50/40 transition-colors">
                                         <td class="px-6 py-4">
-                                            <div class="font-bold text-gray-900">{{ eq.equipment_id|default:"-" }}</div>
-                                            <div class="text-[11px] text-gray-400 mt-0.5">{{ eq.equipment_type.name }}</div>
+                                            <a href="{% url 'backend:equipment_detail' eq.id %}">
+                                                {{ eq.equipment_id|default:"-" }}
+                                            </a>
+                                            <div class="text-[11px] text-gray-400 mt-0.5"><a href="{% url 'backend:equipment_type_update' eq.equipment_type.id %}">{{ eq.equipment_type.name }}</a></div>
                                         </td>
                                         <td class="px-6 py-4 text-gray-600 text-sm">{{ eq.brand|default:"-" }}</td>
                                         <td class="px-6 py-4">

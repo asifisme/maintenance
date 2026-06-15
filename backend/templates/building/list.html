@@ -127,11 +127,14 @@
                             {% for data in data_list %}
                                 <tr class="hover:bg-gray-50/50 transition-colors">
                                     <td class="px-6 py-4">
-                                        <div class="font-bold text-gray-900 text-sm">{{ data.name|default:"-" }}</div>
-                                        <div class="text-[11px] text-gray-400 mt-0.5">
-                                            [{{ data.building_id|default:"-" }}]
-                                            &mdash; {{ data.surname|default:"-" }}
-                                        </div>
+                                        <a href="{% url 'backend:building_details' data.id %}">
+                                            <div class="font-bold text-gray-900 text-sm">{{ data.name|default:"-" }}</div>
+                                            <div class="text-[11px] text-gray-400 mt-0.5">
+                                                [{{ data.building_id|default:"-" }}]
+                                                &mdash; {{ data.surname|default:"-" }}
+                                            </div>
+                                        </a>
+                                        
                                     </td>
                                     <td class="px-6 py-4 text-gray-600 text-sm">{{ data.section.name|default:"-" }}</td>
                                     <td class="px-6 py-4 text-gray-600 text-sm whitespace-normal max-w-xs">{{ data.address|default:"-" }}</td>
