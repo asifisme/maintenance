@@ -117,6 +117,7 @@
                             <tr>
                                 <th class="px-6 py-4">Building Info</th>
                                 <th class="px-6 py-4">Section</th>
+                                <th class="px-6 py-4">Year of Establishment</th>
                                 <th class="px-6 py-4">Address</th>
                                 <th class="px-6 py-4">Status</th>
                                 <th class="px-6 py-4">Created</th>
@@ -137,6 +138,7 @@
                                         
                                     </td>
                                     <td class="px-6 py-4 text-gray-600 text-sm">{{ data.section.name|default:"-" }}</td>
+                                    <td class="px-6 py-4 text-gray-600 text-sm">{{ data.year_of_establishment|date:"d-b-y"|default:"-" }}</td>
                                     <td class="px-6 py-4 text-gray-600 text-sm whitespace-normal max-w-xs">{{ data.address|default:"-" }}</td>
                                     <td class="px-6 py-4">
                                         {% if data.is_active %}

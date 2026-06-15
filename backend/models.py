@@ -239,6 +239,7 @@ class Building(models.Model):
     building_id  = models.CharField(max_length=50, unique=True, null=True, blank=True)
     name         = models.CharField(max_length=200, unique=True)
     surname      = models.CharField(max_length=50, blank=True) 
+    year_of_establishment = models.DateTimeField(null=True, blank=True)
 
     # Hierarchy
     division     = models.ForeignKey(Division,    null=True, blank=True, on_delete=models.SET_NULL, related_name="buildings")

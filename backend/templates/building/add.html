@@ -52,13 +52,24 @@
                                    placeholder="e.g. Headquarters">
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Surname</label>
-                        <input type="text"
-                               name="surname"
-                               value="{{ obj.surname|default:'' }}"
-                               class="w-full bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition"
-                               placeholder="e.g. Main HQ">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Surname</label>
+                            <input type="text"
+                                   name="surname"
+                                   value="{{ obj.surname|default:'' }}"
+                                   class="w-full bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition"
+                                   placeholder="e.g. Main HQ">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
+                                Year of Establishment
+                            </label>
+                            <input type="date"
+                                   name="year_of_establishment"
+                                   value="{{ obj.year_of_establishment|date:'Y-m-d' }}"
+                                   class="w-full bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition">
+                        </div>
                     </div>
                 </div>
                 <!-- Location & Hierarchy Card -->

@@ -934,6 +934,7 @@ def building_add(request):
         building_id = request.POST.get('building_id', '').strip()
         name = request.POST.get('name', '').strip()
         surname = request.POST.get('surname', '').strip()
+        year_of_establishment = request.POST.get('year_of_establishment', '').strip() 
         division_id = request.POST.get('division') or None
         subdivision_id = request.POST.get('subdivision') or None
         section_id = request.POST.get('section') or None
@@ -969,6 +970,7 @@ def building_add(request):
                 building_id=building_id,
                 name=name,
                 surname=surname,
+                year_of_establishment=year_of_establishment if year_of_establishment else None, 
                 division_id=division_id,
                 subdivision_id=subdivision_id,
                 section_id=section_id,
@@ -997,6 +999,7 @@ def building_update(request, data_id):
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
         surname = request.POST.get('surname', '').strip()
+        year_of_establishment = request.POST.get('year_of_establishment', '').strip()
         division_id = request.POST.get('division') or None
         subdivision_id = request.POST.get('subdivision') or None
         section_id = request.POST.get('section') or None
@@ -1026,6 +1029,7 @@ def building_update(request, data_id):
         else:
             obj.name = name
             obj.surname = surname
+            obj.year_of_establishment = year_of_establishment if year_of_establishment else None
             obj.division_id = division_id
             obj.subdivision_id = subdivision_id
             obj.section_id = section_id
