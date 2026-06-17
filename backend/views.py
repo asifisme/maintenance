@@ -1636,6 +1636,7 @@ def equipment_list(request):
         'status': status,
         'equipment_types': equipment_types,
         'status_choices': Equipment.STATUS_CHOICES,
+        
     }   
     return render(request, 'equipment/list.html', context)
 
