@@ -2392,11 +2392,13 @@ def maintenance_add(request):
                 is_checked = request.POST.get(f'{prefix}{c_idx}][is_checked]') in ('true', 'on')
                 remark = request.POST.get(f'{prefix}{c_idx}][remark]', '').strip()
                 suggestion = request.POST.get(f'{prefix}{c_idx}][suggestion]', '').strip()
+                proceed = request.POST.get(f'{prefix}{c_idx}][proceed]') == 'true'
                 components_data.append({
                     'name': comp_name,
                     'is_checked': is_checked,
                     'remark': remark,
-                    'suggestion': suggestion
+                    'suggestion': suggestion,
+                    'proceed': proceed
                 })
 
             record_data = {
@@ -2490,6 +2492,7 @@ def maintenance_add(request):
                             is_checked=comp['is_checked'],
                             remark=comp['remark'],
                             suggestion=comp['suggestion'],
+                            proceed=comp.get('proceed', False),
                             created_by=request.user
                         )
                         # Ensure exists in EquipmentComponents
@@ -2693,11 +2696,13 @@ def maintenance_update(request, data_id):
                 is_checked = request.POST.get(f'{prefix}{c_idx}][is_checked]') in ('true', 'on')
                 remark = request.POST.get(f'{prefix}{c_idx}][remark]', '').strip()
                 suggestion = request.POST.get(f'{prefix}{c_idx}][suggestion]', '').strip()
+                proceed = request.POST.get(f'{prefix}{c_idx}][proceed]') == 'true'
                 components_data.append({
                     'name': comp_name,
                     'is_checked': is_checked,
                     'remark': remark,
-                    'suggestion': suggestion
+                    'suggestion': suggestion,
+                    'proceed': proceed
                 })
 
             record_data = {
@@ -2819,6 +2824,7 @@ def maintenance_update(request, data_id):
                             is_checked=comp['is_checked'],
                             remark=comp['remark'],
                             suggestion=comp['suggestion'],
+                            proceed=comp.get('proceed', False),
                             created_by=request.user
                         )
                         # Ensure exists in EquipmentComponents
@@ -2851,6 +2857,7 @@ def maintenance_update(request, data_id):
                 'is_checked': comp.is_checked,
                 'remark': comp.remark or '',
                 'suggestion': comp.suggestion or '',
+                'proceed': comp.proceed,
             })
             
         existing_records.append({
