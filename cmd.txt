@@ -4,3 +4,11 @@ systemctl restart nginx
 systemctl restart maintenance
 systemctl status maintenance
 
+
+sudo nano /etc/nginx/sites-available/mantainance
+
+sudo nano /etc/systemd/system/mantainance.service
+
+sudo systemctl daemon-reload
+sudo systemctl restart mantainance
+sudo systemctl status mantainance
