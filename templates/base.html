@@ -200,7 +200,7 @@
                     <img src="{% url 'backend:serve_optimized_image' 'no_image' %}?width=300&quality=100&image_path=logo"
                          class="h-9 w-9"
                          alt="">
-                    <span class="text-lg font-semibold">{{ site_setting.site_title|default:'' }}</span>
+                    <span class="text-sm font-semibold">{{ site_setting.site_title|default:'' }}</span>
                 </a>
                 <!-- close btn for mobile -->
                 <button id="btnCloseMobile"
@@ -278,7 +278,7 @@
                                 <img src="{% url 'backend:serve_optimized_image' 'no_image' %}?width=300&quality=100&image_path=logo"
                                      class="h-9 w-7"
                                      alt="">
-                                <span class="text-lg font-semibold">{{ site_setting.site_title|default:'' }}</span>
+                                <span class="text-sm font-semibold">{{ site_setting.site_title|default:'' }}</span>
                             </div>
                             <!-- desktop welcome -->
                             <div class="hidden lg:block ">
