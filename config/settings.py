@@ -9,7 +9,7 @@ SECRET_KEY = 'django-insecure-zpo+$jwa!&e7d1m!vdb!hq-@jk=pt1i!yrp4$8l-4)h*0n25ga
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['31.97.227.65', '*', ]
+ALLOWED_HOSTS = ['31.97.227.65']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
