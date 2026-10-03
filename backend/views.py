@@ -2986,12 +2986,13 @@ def get_building_equipment(request):
             building_id=building_id,
             deleted=False,
             is_active=True
-        ).values('id', 'equipment_id').order_by('equipment_id')
+        ).select_related('equipment_type').order_by('equipment_id')
         
         equipment = [
             {
-                'id': item['id'],
-                'equipment_id': item['equipment_id'],
+                'id': item.id,
+                'equipment_id': item.equipment_id,
+                'display_name': f"{item.equipment_id} - {item.equipment_type.name}" if (item.equipment_type and item.equipment_type.name) else item.equipment_id,
             }
             for item in equipment_list
         ]

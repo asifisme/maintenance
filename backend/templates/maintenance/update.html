@@ -253,7 +253,7 @@
                         // Rebuild equipment dropdown options
                         let eqOptions = '<option value="">Select Equipment</option>';
                         currentBuildingEquipment.forEach(item => {
-                            eqOptions += `<option value="${item.id}">${item.equipment_id}</option>`;
+                            eqOptions += `<option value="${item.id}">${item.display_name || item.equipment_id}</option>`;
                         });
                         $('#equipment_select').html(eqOptions).trigger('change.select2');
 

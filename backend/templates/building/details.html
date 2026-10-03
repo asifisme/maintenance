@@ -213,7 +213,8 @@
                         <table class="w-full text-sm text-left whitespace-nowrap">
                             <thead class="text-[10px] font-bold text-gray-400 tracking-wider uppercase bg-[#F9FAFB] border-b border-gray-100">
                                 <tr>
-                                    <th class="px-6 py-4">ID / Type</th>
+                                    <th class="px-6 py-4">ID</th>
+                                    <th class="px-6 py-4">Type</th>
                                     <th class="px-6 py-4">Brand</th>
                                     <th class="px-6 py-4">Status</th>
                                     <th class="px-6 py-4">Location</th>
@@ -223,11 +224,19 @@
                             <tbody class="divide-y divide-gray-150">
                                 {% for eq in equipment_list %}
                                     <tr class="hover:bg-gray-50/40 transition-colors">
-                                        <td class="px-6 py-4">
-                                            <a href="{% url 'backend:equipment_detail' eq.id %}">
+                                        <td class="px-6 py-4 font-semibold text-gray-900">
+                                            <a href="{% url 'backend:equipment_detail' eq.id %}" class="hover:text-blue-600 transition-colors">
                                                 {{ eq.equipment_id|default:"-" }}
                                             </a>
-                                            <div class="text-[11px] text-gray-400 mt-0.5"><a href="{% url 'backend:equipment_type_update' eq.equipment_type.id %}">{{ eq.equipment_type.name }}</a></div>
+                                        </td>
+                                        <td class="px-6 py-4 text-gray-700 text-sm">
+                                            {% if eq.equipment_type %}
+                                                <a href="{% url 'backend:equipment_type_update' eq.equipment_type.id %}" class="hover:text-blue-600 transition-colors">
+                                                    {{ eq.equipment_type.name }}
+                                                </a>
+                                            {% else %}
+                                                <span class="text-gray-400">-</span>
+                                            {% endif %}
                                         </td>
                                         <td class="px-6 py-4 text-gray-600 text-sm">{{ eq.brand|default:"-" }}</td>
                                         <td class="px-6 py-4">
@@ -271,18 +280,18 @@
                                                 <!-- Actions Menu (uses base.html positioning script) -->
                                                 <div data-menu class="hidden py-1 w-36" role="menu">
                                                     <a href="{% url 'backend:equipment_update' eq.id %}"
-                                                       class="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
-                                                       role="menuitem">Edit Equipment</a>
+                                                        class="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
+                                                        role="menuitem">Edit Equipment</a>
                                                     <a href="{% url 'backend:ticket_add' %}?equipment={{ eq.id }}"
-                                                       class="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
-                                                       role="menuitem">Log Maintenance</a>
+                                                        class="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
+                                                        role="menuitem">Log Maintenance</a>
                                                 </div>
                                             </div>
                                         </td>
                                     </tr>
                                 {% empty %}
                                     <tr>
-                                        <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                                        <td colspan="6" class="px-6 py-12 text-center text-gray-500">
                                             <div class="flex flex-col items-center">
                                                 <svg class="w-10 h-10 text-gray-300 mb-2.5"
                                                      fill="none"
