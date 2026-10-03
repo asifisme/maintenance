@@ -73,30 +73,14 @@
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Floor / Location</label>
-                            <input type="text" name="floor_location" value="{{ obj.floor_location|default:'' }}" class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
-                            </div>
+                            <input type="text"
+                                   name="floor_location"
+                                   value="{{ obj.floor_location|default:'' }}"
+                                   class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
+                                   placeholder="e.g. 5th Floor, Room 502">
                         </div>
-                        <div class="mt-6">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Component Presets</label>
-                            <div id="presets_checkboxes_container"
-                                 class="flex flex-wrap gap-3 p-4 border border-dashed border-gray-200 rounded-lg bg-slate-50 min-h-[60px] items-center">
-                                <span class="text-sm text-gray-400">Please select an Equipment Type first.</span>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-2">Check/uncheck presets to auto-populate components below, or type manually.</p>
-                        </div>
-                        <script id="presets-data" type="application/json">
-                        [
-                            {% for p in presets %}
-                                {
-                                    "id": {{ p.id }},
-                                    "type_id": {{ p.equipment_type_id }},
-                                    "name": "{{ p.name|escapejs }}",
-                                    "description": "{{ p.description|escapejs }}"
-                                }{% if not forloop.last %},{% endif %}
-                            {% endfor %}
-                        ]
-                        </script>
                     </div>
+                </div>
                     <!-- Equipment Components -->
                     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                         <div class="flex items-center justify-between mb-6 pb-2 border-b border-gray-100">
@@ -202,9 +186,9 @@
     $(document).ready(function () {
         $('.select2-items').select2();
 
-        function addComponentRow(name = '', desc = '', presetId = '') {
+        function addComponentRow(name = '', desc = '') {
             const html = `
-                <div class="component-row flex items-start gap-4 p-4 border border-gray-100 rounded-lg bg-slate-50" data-preset-id="${presetId}">
+                <div class="component-row flex items-start gap-4 p-4 border border-gray-100 rounded-lg bg-slate-50">
                     <div class="flex-1">
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Component Name <span class="text-red-500">*</span></label>
                         <input type="text" name="component_name[]" value="${name}" class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block p-2 outline-none" required placeholder="e.g. Compressor">
@@ -226,111 +210,9 @@
         });
 
         $(document).on('click', '.remove-component', function() {
-            const row = $(this).closest('.component-row');
-            const presetId = row.data('preset-id');
-            if (presetId) {
-                // Uncheck corresponding checkbox in the container
-                $(`.preset-checkbox[value="${presetId}"]`).prop('checked', false);
-            }
-            row.remove();
+            $(this).closest('.component-row').remove();
             if ($('.component-row').length === 0) {
                 addComponentRow();
-            }
-        });
-
-        // Load presets data from script tag
-        const allPresets = JSON.parse($('#presets-data').text() || '[]');
-
-        // Existing selected preset IDs
-        const existingPresetIds = [];
-        {% for p in obj.component_preset.all %}
-        existingPresetIds.push("{{ p.id }}");
-        {% endfor %}
-
-        function filterAndRenderPresets(autoSelect = false) {
-            const selectedTypeId = $('select[name="equipment_type_id"]').val();
-            const container = $('#presets_checkboxes_container');
-            container.empty();
-            
-            if (!selectedTypeId) {
-                container.append('<span class="text-sm text-gray-400">Please select an Equipment Type first.</span>');
-                if (autoSelect) {
-                    $('#components_container').empty();
-                    addComponentRow();
-                }
-                return;
-            }
-            
-            const filteredPresets = allPresets.filter(function(preset) {
-                return String(preset.type_id) === String(selectedTypeId);
-            });
-            
-            if (filteredPresets.length === 0) {
-                container.append('<span class="text-sm text-gray-400">No presets available for this type.</span>');
-                if (autoSelect) {
-                    $('#components_container').empty();
-                    addComponentRow();
-                }
-                return;
-            }
-            
-            // Re-populate component rows if autoSelect is true (meaning type changed)
-            if (autoSelect) {
-                $('#components_container').empty();
-            }
-            
-            filteredPresets.forEach(function(preset) {
-                let isChecked = false;
-                if (autoSelect) {
-                    isChecked = true; // Select all presets by default when type is changed
-                } else {
-                    isChecked = existingPresetIds.includes(String(preset.id));
-                }
-                
-                const checkboxHtml = `
-                    <label class="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 select-none text-sm ring-1 ring-black/5">
-                        <input type="checkbox" name="component_preset" value="${preset.id}" class="preset-checkbox rounded text-blue-600 focus:ring-blue-500 border-gray-300" data-name="${preset.name}" data-description="${preset.description}" ${isChecked ? 'checked' : ''}>
-                        <span class="font-medium text-gray-700">${preset.name}</span>
-                    </label>
-                `;
-                container.append(checkboxHtml);
-                
-                if (autoSelect && isChecked) {
-                    addComponentRow(preset.name, preset.description, preset.id);
-                }
-            });
-            
-            if (autoSelect && $('.component-row').length === 0) {
-                addComponentRow();
-            }
-        }
-
-        $('select[name="equipment_type_id"]').on('change', function() {
-            filterAndRenderPresets(true);
-        });
-
-        // Handle dynamically rendered checkbox clicks
-        $(document).on('change', '.preset-checkbox', function() {
-            const checkbox = $(this);
-            const presetId = checkbox.val();
-            const name = checkbox.data('name');
-            const desc = checkbox.data('description') || '';
-            
-            if (checkbox.is(':checked')) {
-                // If the initial placeholder row is present and empty, remove it
-                const rows = $('.component-row');
-                if (rows.length === 1 && !rows.first().data('preset-id') && !rows.find('input[name="component_name[]"]').val()) {
-                    rows.remove();
-                }
-
-                if ($(`.component-row[data-preset-id="${presetId}"]`).length === 0) {
-                    addComponentRow(name, desc, presetId);
-                }
-            } else {
-                $(`.component-row[data-preset-id="${presetId}"]`).remove();
-                if ($('.component-row').length === 0) {
-                    addComponentRow();
-                }
             }
         });
 
@@ -338,21 +220,12 @@
         let hasComponents = false;
         {% for comp in obj.components.all %}
         hasComponents = true;
-        let matchedPresetId = '';
-        {% for p in obj.component_preset.all %}
-        if ("{{ comp.name|escapejs }}" === "{{ p.name|escapejs }}") {
-            matchedPresetId = "{{ p.id }}";
-        }
-        {% endfor %}
-        addComponentRow("{{ comp.name|escapejs }}", "{{ comp.description|escapejs }}", matchedPresetId);
+        addComponentRow("{{ comp.name|escapejs }}", "{{ comp.description|escapejs }}");
         {% endfor %}
         
         if (!hasComponents) {
             addComponentRow();
         }
-
-        // Initial setup for presets dropdown (do not overwrite existing components)
-        filterAndRenderPresets(false);
     });
         </script>
     {% endblock %}
