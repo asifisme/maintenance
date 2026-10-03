@@ -12,3 +12,4 @@ sudo nano /etc/systemd/system/mantainance.service
 sudo systemctl daemon-reload
 sudo systemctl restart mantainance
 sudo systemctl status mantainance
+

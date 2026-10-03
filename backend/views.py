@@ -2307,19 +2307,25 @@ def maintenance_list(request):
     search = request.GET.get('search', '').strip()
     qs = Maintenance.objects.filter(deleted=False).prefetch_related(
         'equipment',
-        'equipment__equipment_type'
+        'equipment__equipment_type',
+        'maintenance_records',
+        'maintenance_records__equipment',
+        'maintenance_records__equipment__equipment_type'
     )
 
     if search:
         qs = qs.filter(
             Q(maintenance_serial__icontains=search) |
-            Q(qr_code__icontains=search)
-        )
+            Q(qr_code__icontains=search) |
+            Q(equipment__equipment_id__icontains=search) |
+            Q(equipment__equipment_type__name__icontains=search) |
+            Q(maintenance_records__equipment__equipment_id__icontains=search)
+        ).distinct()
 
     qs = qs.annotate(
         num_records=Count(
-            'equipment__maintenance_records',
-            filter=Q(equipment__maintenance_records__deleted=False),
+            'maintenance_records',
+            filter=Q(maintenance_records__deleted=False),
             distinct=True
         )
     ).order_by('-created_at')
@@ -2449,6 +2455,9 @@ def maintenance_add(request):
                 errors.append(f"Row {idx + 1}: Maintenance Date is required.")
             if not work_desc:
                 errors.append(f"Row {idx + 1}: Work Description / Issue is required.")
+
+        if not indexes or not submitted_records:
+            errors.append("Please select an equipment and enter the maintenance details.")
 
         if errors:
             for error in errors:
@@ -2791,6 +2800,9 @@ def maintenance_update(request, data_id):
                 errors.append(f"Row {idx + 1}: Maintenance Date is required.")
             if not work_desc:
                 errors.append(f"Row {idx + 1}: Work Description / Issue is required.")
+
+        if not indexes or not submitted_records:
+            errors.append("Please select an equipment and enter the maintenance details.")
 
         if errors:
             for error in errors:

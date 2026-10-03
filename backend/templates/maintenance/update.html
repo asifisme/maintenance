@@ -255,7 +255,7 @@
                         currentBuildingEquipment.forEach(item => {
                             eqOptions += `<option value="${item.id}">${item.display_name || item.equipment_id}</option>`;
                         });
-                        $('#equipment_select').html(eqOptions).trigger('change.select2');
+                        $('#equipment_select').html(eqOptions).trigger('change');
 
                         // If returning from validation error or database load, pre-populate the static fields
                         if (isOnLoad && submittedRecords && submittedRecords.length > 0) {
@@ -264,13 +264,13 @@
                                 $('#record_id').val(rec.id);
                             }
                             if (rec.equipment_id) {
-                                $('#equipment_select').val(rec.equipment_id).trigger('change.select2');
+                                $('#equipment_select').val(rec.equipment_id).trigger('change');
                             }
                             if (rec.record_type) {
                                 $('#record_type_select').val(rec.record_type);
                             }
                             if (rec.technician_id) {
-                                $('#technician_select').val(rec.technician_id).trigger('change.select2');
+                                $('#technician_select').val(rec.technician_id).trigger('change');
                             }
                             if (rec.work_description) {
                                 $('#work_description').val(rec.work_description);
@@ -291,7 +291,7 @@
                             if (!isOnLoad) {
                                 $('#work_description').val('');
                                 $('#components_container').html('<div class="text-xs text-gray-400 italic">No equipment selected or components not loaded yet.</div>');
-                                $('#technician_select').val('').trigger('change.select2');
+                                $('#technician_select').val('').trigger('change');
                                 $('#record_id').val('');
                             }
                         }
@@ -464,6 +464,32 @@
             } else {
                 noBtn.removeClass('text-slate-400 hover:text-slate-600').addClass('bg-rose-500 text-white shadow-sm');
                 yesBtn.removeClass('bg-emerald-500 text-white shadow-sm').addClass('text-slate-400 hover:text-slate-600');
+            }
+        });
+
+        // Form submit validation
+        $('form').on('submit', function (e) {
+            const buildingId = $('#building_select').val();
+            const equipmentId = $('#equipment_select').val();
+            const workDesc = $('#work_description').val().trim();
+
+            if (!buildingId) {
+                alert('Please select a building.');
+                $('#building_select').select2('open');
+                e.preventDefault();
+                return false;
+            }
+            if ($('#equipment_record_card').hasClass('hidden') || !equipmentId) {
+                alert('Please select an equipment for this maintenance session.');
+                $('#equipment_select').select2('open');
+                e.preventDefault();
+                return false;
+            }
+            if (!workDesc) {
+                alert('Please enter a work description / issue.');
+                $('#work_description').focus();
+                e.preventDefault();
+                return false;
             }
         });
     });

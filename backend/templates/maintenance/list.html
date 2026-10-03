@@ -44,13 +44,31 @@
                                     <a href="{% url 'backend:maintenance_detail' data.id %}">{{ data.maintenance_serial }}</a>
                                 </td>
                                 <td class="px-4 py-3 whitespace-nowrap">
-                                    {% with eq=data.equipment.first %}
-                                        {% if eq %}
-                                            {{ eq.equipment_type.name }} ({{ eq.equipment_id }})
-                                        {% else %}
-                                            -
-                                        {% endif %}
-                                    {% endwith %}
+                                    {% if data.equipment.all %}
+                                        {% for eq in data.equipment.all %}
+                                            <div>
+                                                {% if eq.equipment_type %}
+                                                    {{ eq.equipment_type.name }} ({{ eq.equipment_id }})
+                                                {% else %}
+                                                    {{ eq.equipment_id }}
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    {% elif data.maintenance_records.all %}
+                                        {% for rec in data.maintenance_records.all %}
+                                            {% if rec.equipment %}
+                                                <div>
+                                                    {% if rec.equipment.equipment_type %}
+                                                        {{ rec.equipment.equipment_type.name }} ({{ rec.equipment.equipment_id }})
+                                                    {% else %}
+                                                        {{ rec.equipment.equipment_id }}
+                                                    {% endif %}
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        <span class="text-gray-400">-</span>
+                                    {% endif %}
                                 </td>
                                 <td class="px-4 py-3 whitespace-nowrap">{{ data.qr_code|default:"" }}</td>
                                 <td class="px-4 py-3 whitespace-nowrap font-semibold">{{ data.num_records }}</td>
