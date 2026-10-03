@@ -1651,6 +1651,14 @@ def equipment_add(request):
     equipment_types = EquipmentType.objects.filter(deleted=False, is_active=True)
     buildings = Building.objects.filter(deleted=False, is_active=True).order_by('-created_at')
     presets = EquipmentComponentPreset.objects.filter(deleted=False, is_active=True)
+
+    from_building = request.POST.get('from_building') or request.GET.get('building') or request.GET.get('building_id')
+    from_building_id = None
+    if from_building:
+        try:
+            from_building_id = int(from_building)
+        except (ValueError, TypeError):
+            from_building_id = None
     
     obj = None
     if request.method == 'POST':
@@ -1717,7 +1725,23 @@ def equipment_add(request):
                     )
             
             messages.success(request, 'Equipment added successfully.')
+            if from_building_id:
+                return redirect('backend:building_details', data_id=from_building_id)
             return redirect('backend:equipment_list')
+    else:
+        initial_type = request.GET.get('equipment_type_id') or request.GET.get('type')
+        t_id = None
+        if initial_type:
+            try:
+                t_id = int(initial_type)
+            except (ValueError, TypeError):
+                t_id = None
+
+        if from_building_id or t_id:
+            obj = Equipment(
+                building_id=from_building_id,
+                equipment_type_id=t_id,
+            )
     
     context = {
         'action': 'Add',
@@ -1725,6 +1749,7 @@ def equipment_add(request):
         'equipment_types': equipment_types,
         'buildings': buildings,
         'presets': presets,
+        'from_building': from_building_id,
     }
     return render(request, 'equipment/add.html', context)
 
@@ -2618,6 +2643,43 @@ def maintenance_detail(request, data_id):
         'status_choices': MaintenanceRecord.MAINTAIANCE_STATUS_CHOICES,
     }
     return render(request, 'maintenance/detail.html', context)
+
+
+@login_required
+def maintenance_record_detail(request, record_id):
+    record = get_object_or_404(
+        MaintenanceRecord.objects.select_related(
+            'equipment', 'equipment__building', 'equipment__equipment_type',
+            'maintenance', 'maintenance__building', 'ticket',
+            'technician', 'assigned_to', 'reviewed_by', 'created_by', 'updated_by'
+        ),
+        pk=record_id,
+        deleted=False
+    )
+
+    technician = None
+    try:
+        technician = request.user.technician_profile
+    except Exception:
+        pass
+
+    is_assigned = (technician is not None and record.assigned_to == technician)
+    has_general_permission = checkUserPermission(request, 'can_view', '/backend/maintenance/')
+
+    if not has_general_permission and not is_assigned:
+        messages.error(request, 'You do not have permission to view this maintenance record.')
+        return render(request, '403.html', status=403)
+
+    components = record.components.filter(deleted=False)
+    can_review = checkUserPermission(request, 'can_edit', '/backend/maintenance/') or request.user.is_superuser
+
+    context = {
+        'record': record,
+        'obj': record,
+        'components': components,
+        'can_review': can_review,
+    }
+    return render(request, 'maintenance/record_detail.html', context)
 
 
 @login_required

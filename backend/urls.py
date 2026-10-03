@@ -89,6 +89,7 @@ urlpatterns = [
     path('maintenance/add/',views.maintenance_add,name='maintenance_add'),
     path('maintenance/otp/', views.static_otp_verification, name='static_otp_verification'),
     path('maintenance/detail/<int:data_id>/',views.maintenance_detail,name='maintenance_detail'),
+    path('maintenance/record/<int:record_id>/', views.maintenance_record_detail, name='maintenance_record_detail'),
     path('maintenance/update/<int:data_id>/',views.maintenance_update,name='maintenance_update'),
     path('maintenance/status/<int:data_id>/',views.maintenance_status,name='maintenance_status'),
     path('maintenance/api/get-equipment/',views.get_building_equipment,name='get_building_equipment'),

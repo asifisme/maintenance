@@ -54,7 +54,7 @@
                                 <option value="">Select Building</option>
                                 {% for b in buildings %}
                                     <option value="{{ b.id }}"
-                                            {% if obj.building_id == b.id %}selected{% endif %}>[{{ b.id }}] — {{ b.name }}</option>
+                                            {% if obj.building_id == b.id %}selected{% endif %}>{{ b.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
