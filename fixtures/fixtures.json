@@ -44,9 +44,9 @@
       "is_main_menu": false,
       "is_sub_menu": true,
       "is_sub_child_menu": false,
-      "is_active": true
+      "is_active": false
     }
-  }, 
+  },
   {
     "model": "backend.backendmenu",
     "pk": 451,
@@ -60,7 +60,7 @@
       "is_main_menu": false,
       "is_sub_menu": false,
       "is_sub_child_menu": true,
-      "is_active": true
+      "is_active": false
     }
   },
   {

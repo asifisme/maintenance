@@ -885,10 +885,20 @@ def building_list(request):
     section_id = request.GET.get('section', '').strip()
     status = request.GET.get('status', '').strip()
 
-    qs = Building.objects.filter(deleted=False).select_related('division', 'subdivision', 'section').order_by('-created_at')
+    # KPI stats across all non-deleted buildings
+    total_buildings_count = Building.objects.filter(deleted=False).count()
+    active_buildings_count = Building.objects.filter(deleted=False, is_active=True).exclude(status__in=['Inactive', 'Under Maintenance', 'Decommissioned']).count()
+    if active_buildings_count == 0 and total_buildings_count > 0:
+        active_buildings_count = Building.objects.filter(deleted=False, is_active=True).count()
+    under_maintenance_count = Building.objects.filter(deleted=False, status='Under Maintenance').count()
+    inactive_buildings_count = Building.objects.filter(deleted=False).filter(Q(is_active=False) | Q(status='Inactive')).count()
+
+    qs = Building.objects.filter(deleted=False).select_related('division', 'subdivision', 'section').annotate(
+        equipment_count=Count('equipment', filter=Q(equipment__deleted=False))
+    ).order_by('building_id', '-created_at')
     
     if search:
-        qs = qs.filter(Q(name__icontains=search) | Q(building_id__icontains=search) | Q(surname__icontains=search))
+        qs = qs.filter(Q(name__icontains=search) | Q(building_id__icontains=search) | Q(surname__icontains=search) | Q(address__icontains=search))
     if division_id:
         qs = qs.filter(division_id=division_id)
     if subdivision_id:
@@ -898,8 +908,30 @@ def building_list(request):
     if status:
         qs = qs.filter(status=status)
 
+    filtered_total_count = qs.count()
+
+    try:
+        per_page = int(request.GET.get('per_page', 10))
+        if per_page <= 0:
+            per_page = 10
+    except (ValueError, TypeError):
+        per_page = 10
+
     page_num = request.GET.get('page', 1)
-    data_list, paginator_list, last_page = paginate_data(request, page_num, qs)
+    paginator = Paginator(qs, per_page)
+    try:
+        data_list = paginator.page(page_num)
+    except PageNotAnInteger:
+        data_list = paginator.page(1)
+    except EmptyPage:
+        data_list = paginator.page(paginator.num_pages)
+
+    last_page = paginator.num_pages
+    current_page = data_list.number
+    start_p = max(1, current_page - 2)
+    end_p = min(last_page, current_page + 2)
+    paginator_list = list(range(start_p, end_p + 1))
+    all_pages = list(range(1, last_page + 1))
 
     # Fetch filter options
     divisions = Division.objects.filter(deleted=False, is_active=True)
@@ -910,7 +942,14 @@ def building_list(request):
     context = {
         'data_list': data_list,
         'paginator_list': paginator_list,
+        'all_pages': all_pages,
         'last_page': last_page,
+        'per_page': per_page,
+        'total_buildings_kpi': f"{total_buildings_count:02d}",
+        'active_buildings_kpi': f"{active_buildings_count:02d}",
+        'under_maintenance_kpi': f"{under_maintenance_count:02d}",
+        'inactive_buildings_kpi': f"{inactive_buildings_count:02d}",
+        'filtered_total_count': filtered_total_count,
         'search': search,
         'selected_division': division_id,
         'selected_subdivision': subdivision_id,
