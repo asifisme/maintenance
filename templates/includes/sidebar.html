@@ -1,0 +1,1000 @@
+<!-- Mobile Backdrop -->
+<div id="backdrop"
+     class="fixed inset-0 z-40 hidden bg-black/40 backdrop-blur-[2px] lg:hidden transition-opacity"></div>
+
+<style>
+    /* Sidebar Typography & Design Tokens (Geist Mono + Neutrals) */
+    #sidebar {
+        background-color: #EBEBEB;
+        border-right: 1px solid #DFDFDF;
+    }
+
+    .sidebar-mono {
+        font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        letter-spacing: -0.02em;
+    }
+
+    /* Brand mark box */
+    .sidebar-brand-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background-color: #FFFFFF;
+        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.06), 0px 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Collapse toggle button */
+    .sidebar-collapse-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 9999px;
+        border: 1px solid #D8D7D5;
+        color: #5C5B59;
+        background-color: transparent;
+        transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+    }
+    .sidebar-collapse-btn:hover {
+        background-color: #E0E0DF;
+        border-color: #C7C6C4;
+        color: #333333;
+    }
+
+    /* Search box — exact Figma specs (Fill 256px x 40px, radius 8px, padding 8px 8px 8px 12px) */
+    .sidebar-search-box {
+        width: 100%;
+        height: 40px;
+        border-radius: 8px;
+        padding: 8px 8px 8px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        background-color: #FFFFFF;
+        border: 1px solid transparent;
+        box-sizing: border-box;
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+    .sidebar-search-box:focus-within {
+        border-color: #CFCED0;
+        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.05);
+    }
+    #sidebarMenuSearch {
+        background-color: #FFFFFF !important;
+        border: 0 !important;
+        outline: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        height: 24px;
+        line-height: 24px;
+        font-size: 14px;
+        font-weight: 400;
+        color: #333333;
+    }
+    #sidebarMenuSearch::placeholder {
+        color: #9E9D9B;
+    }
+    .sidebar-search-kbd {
+        height: 24px;
+        padding: 0 9px;
+        border-radius: 9999px;
+        background-color: #EAEAE9;
+        color: #5A5957;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        flex-shrink: 0;
+        user-select: none;
+    }
+
+    /* Top-level nav items — exact Figma metrics (Fill 256px x 42px, radius 8px, padding 10px 11px, gap 8px) */
+    .sidebar-nav-item {
+        position: relative;
+        z-index: 2;
+        font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        width: 100%;
+        min-height: 42px;
+        padding: 10px 11px;
+        border-radius: 8px;
+        gap: 8px;
+        color: #716F6C;
+        border: 1px solid transparent;
+        box-sizing: border-box;
+        transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+    }
+    .sidebar-nav-item:hover:not(.is-active) {
+        background-color: #E2E2E2;
+        color: #333333;
+    }
+    .sidebar-nav-item.is-active {
+        background-color: #333333;
+        background-clip: padding-box;
+        color: #FFFFFF;
+        border: 1px solid #9D9C9A !important;
+        box-shadow:
+            inset 0px 0px 0px 1px rgba(157, 156, 154, 0.65),
+            0px 1px 2px 0px rgba(148, 148, 148, 0.30),
+            0px 5px 5px 0px rgba(148, 148, 148, 0.26),
+            0px 11px 7px 0px rgba(148, 148, 148, 0.14),
+            0px 20px 8px 0px rgba(148, 148, 148, 0.04);
+    }
+    .sidebar-nav-item > span:first-child > svg {
+        flex-shrink: 0;
+    }
+    .sidebar-nav-item:hover:not(.is-active) > span:first-child > svg [stroke] {
+        stroke: #333333;
+    }
+    .sidebar-nav-item.is-active > span:first-child > svg [stroke] {
+        stroke: #FFFFFF;
+    }
+
+    /* Submenu items — exact Figma metrics (Width: 232px inside 256px via 24px left indent, Height: 34px, Fill: #F2F2F2) */
+    .sidebar-submenu {
+        position: relative;
+        z-index: 1;
+        padding-left: 24px;
+        margin-top: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        list-style: none;
+    }
+    .sidebar-submenu.hidden {
+        display: none !important;
+    }
+    /* Tree branch connector lines — exact Figma specs (width: 11.5px, radius: 7px, border: 1px solid #BDBCBB) */
+    .sidebar-submenu > li {
+        position: relative;
+    }
+    /* Non-last items: continuous vertical trunk + horizontal T-branch */
+    .sidebar-submenu > li:not(:last-child)::before {
+        content: '';
+        position: absolute;
+        left: -11.5px;
+        top: -1px;
+        bottom: -4px;
+        width: 0;
+        border-left: 1px solid #BDBCBB;
+        pointer-events: none;
+    }
+    .sidebar-submenu > li:first-child:not(:last-child)::before {
+        top: -6px;
+    }
+    .sidebar-submenu > li:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        left: -11.5px;
+        top: 50%;
+        width: 11.5px;
+        height: 0;
+        border-top: 1px solid #BDBCBB;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+    /* Last item (and single-item submenu): curved bottom-left L-elbow ╰ */
+    .sidebar-submenu > li:last-child::before {
+        content: '';
+        position: absolute;
+        left: -11.5px;
+        top: -1px;
+        width: 11.5px;
+        height: calc(50% + 1.5px);
+        border-left: 1px solid #BDBCBB;
+        border-bottom: 1px solid #BDBCBB;
+        border-bottom-left-radius: 7px;
+        box-sizing: border-box;
+        pointer-events: none;
+    }
+    .sidebar-submenu > li:first-child:last-child::before {
+        top: -6px;
+        height: calc(50% + 6.5px);
+    }
+
+    .sidebar-sub-item {
+        font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        width: 100%;
+        min-height: 34px;
+        padding: 8px 9px 8px 10px;
+        border-radius: 8px;
+        gap: 6px;
+        color: #716F6C;
+        display: flex;
+        align-items: center;
+        transition: background-color 150ms ease, color 150ms ease;
+    }
+    .sidebar-sub-item:hover {
+        background-color: #F2F2F2;
+        color: #333333;
+    }
+    .sidebar-sub-item.is-active {
+        background-color: #F2F2F2;
+        color: #2B2A29;
+    }
+
+    /* Subtle scrollbar inside nav */
+    .sidebar-scroll::-webkit-scrollbar {
+        width: 4px;
+    }
+    .sidebar-scroll::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .sidebar-scroll::-webkit-scrollbar-thumb {
+        background: #D4D3D1;
+        border-radius: 9999px;
+    }
+    .sidebar-scroll::-webkit-scrollbar-thumb:hover {
+        background: #B8B7B5;
+    }
+
+    /* Desktop Collapsed / Minimized Sidebar State */
+    .sidebar-online-dot {
+        display: none;
+    }
+
+    @media (min-width: 1024px) {
+        body.sidebar-collapsed #sidebar {
+            width: 74px;
+            overflow: visible;
+        }
+        body.sidebar-collapsed #mainContentWrapper {
+            padding-left: 74px;
+        }
+        body.sidebar-collapsed #sidebar .sidebar-brand-text,
+        body.sidebar-collapsed #sidebar .sidebar-label,
+        body.sidebar-collapsed #sidebar .sidebar-submenu,
+        body.sidebar-collapsed #sidebar .sidebar-search-wrap,
+        body.sidebar-collapsed #sidebar .sidebar-user-meta,
+        body.sidebar-collapsed #sidebar .sidebar-user-dots {
+            display: none !important;
+        }
+        body.sidebar-collapsed #sidebar .sidebar-header-row {
+            position: relative;
+            justify-content: center;
+            padding: 24px 0 12px 0;
+        }
+        /* Floating white circular expand button straddling right edge */
+        body.sidebar-collapsed #sidebar #btnToggleSidebar {
+            position: absolute;
+            right: -18px;
+            top: 28px;
+            z-index: 60;
+            width: 36px;
+            height: 36px;
+            background-color: #FFFFFF;
+            border: 1px solid #E2E1DF;
+            color: #4A4947;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08), 0px 1px 2px rgba(0, 0, 0, 0.04);
+        }
+        body.sidebar-collapsed #sidebar #btnToggleSidebar:hover {
+            background-color: #F7F7F6;
+            border-color: #CFCED0;
+            color: #1F1E1D;
+        }
+        body.sidebar-collapsed #sidebar .sidebar-collapse-icon {
+            transform: rotate(180deg);
+        }
+        /* Centered vertical icon rail with generous spacing */
+        body.sidebar-collapsed #sidebar .sidebar-nav-section {
+            padding: 28px 0 16px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+        body.sidebar-collapsed #sidebar .sidebar-bottom-nav {
+            padding: 8px 0 16px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        body.sidebar-collapsed #sidebar .sidebar-item-wrap {
+            margin-top: 0 !important;
+            display: flex;
+            justify-content: center;
+        }
+        body.sidebar-collapsed #sidebar .sidebar-nav-item {
+            width: 48px;
+            height: 48px;
+            min-height: 48px;
+            padding: 0;
+            border-radius: 12px;
+            justify-content: center;
+            align-items: center;
+        }
+        body.sidebar-collapsed #sidebar .sidebar-nav-item > span:first-child {
+            justify-content: center;
+            gap: 0;
+        }
+        body.sidebar-collapsed #sidebar .sidebar-nav-item > span:first-child > svg {
+            width: 21px;
+            height: 21px;
+        }
+        body.sidebar-collapsed #sidebar .sidebar-nav-item > span:first-child > i {
+            font-size: 18px;
+            width: 21px;
+        }
+        body.sidebar-collapsed #sidebar .sidebar-divider {
+            margin-left: 16px;
+            margin-right: 16px;
+        }
+        body.sidebar-collapsed #sidebar .sidebar-footer-row {
+            justify-content: center;
+            padding: 18px 0 22px 0;
+        }
+        body.sidebar-collapsed #sidebar #sidebarUserProfileTrigger {
+            cursor: pointer;
+        }
+        body.sidebar-collapsed #sidebar .sidebar-avatar-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+        }
+        body.sidebar-collapsed #sidebar .sidebar-online-dot {
+            display: block;
+        }
+        body.sidebar-collapsed #sidebar #sidebarUserMenu {
+            left: 82px;
+            right: auto;
+            bottom: 14px;
+            width: 224px;
+        }
+    }
+</style>
+
+<!-- Sidebar -->
+<aside id="sidebar"
+       class="fixed inset-y-0 left-0 z-50 w-72 translate-x-[-100%] lg:translate-x-0 transition-[transform,width] duration-300 ease-in-out flex flex-col select-none">
+
+    <!-- Brand Header -->
+    <div class="sidebar-header-row flex items-center justify-between px-4 pt-5 pb-4 shrink-0">
+        <a href="{% url 'backend:dash_board' %}"
+           class="flex items-center gap-3 min-w-0 group"
+           title="{{ site_setting.site_title|default:'Building Management' }}">
+            <div class="sidebar-brand-icon flex items-center justify-center shrink-0 overflow-hidden">
+                {% if site_setting.logo %}
+                    <img src="{% url 'backend:serve_optimized_image' 'no_image' %}?width=120&quality=100&image_path=logo"
+                         alt="{{ site_setting.site_title|default:'Building Management' }}"
+                         class="w-7 h-7 object-contain">
+                {% else %}
+                    <!-- Orange Building Emblem -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M13.6 3.15C13.18 2.86 12.62 2.9 12.24 3.24L4.4 10.12C4.14 10.35 4 10.67 4 11.02V19.6C4 20.37 4.63 21 5.4 21H9.7V17.4C9.7 16.96 10.06 16.6 10.5 16.6H11.5V21H18.6C19.37 21 20 20.37 20 19.6V8.42C20 8.03 19.81 7.66 19.49 7.43L13.6 3.15ZM9.7 14.3H7.45V12.05H9.7V14.3ZM12.95 14.3H11.35V8.65L12.95 7.25V14.3Z"
+                              fill="#FF5A0A"/>
+                    </svg>
+                {% endif %}
+            </div>
+            <span class="sidebar-brand-text sidebar-mono text-[15px] font-medium leading-[1.25] text-[#3B3A38] group-hover:text-[#1F1E1D] transition-colors">
+                {% if site_setting.site_title and site_setting.site_title != 'Demo HRMS' %}
+                    {{ site_setting.site_title }}
+                {% else %}
+                    Building<br>Management
+                {% endif %}
+            </span>
+        </a>
+
+        <!-- Desktop Collapse / Mobile Close Button -->
+        <button id="btnToggleSidebar"
+                type="button"
+                aria-label="Toggle sidebar"
+                title="Collapse sidebar"
+                class="sidebar-collapse-btn flex items-center justify-center shrink-0">
+            <svg class="sidebar-collapse-icon w-[17px] h-[17px] transition-transform duration-200"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.65"
+                 stroke-linecap="round"
+                 stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="16" rx="3" />
+                <line x1="9" y1="4" x2="9" y2="20" />
+                <path d="M13.5 9.5L16 12L13.5 14.5" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="sidebar-search-wrap px-4 mb-5 shrink-0 relative">
+        <!-- Expanded Search Input -->
+        <div class="sidebar-search-expanded sidebar-search-box">
+            <div class="flex items-center gap-2 flex-1 min-w-0">
+                <svg class="w-[16px] h-[16px] text-[#9E9D9B] shrink-0"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.8"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="7.5" />
+                    <path d="M20.5 20.5L16.4 16.4" />
+                </svg>
+                <input id="sidebarMenuSearch"
+                       type="text"
+                       autocomplete="off"
+                       placeholder="Search"
+                       aria-label="Search menus"
+                       class="w-full min-w-0 flex-1">
+            </div>
+            <kbd class="sidebar-search-kbd">
+                <svg class="w-[12px] h-[12px] shrink-0"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                     aria-hidden="true">
+                    <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z" />
+                </svg>
+                <span>K</span>
+            </kbd>
+        </div>
+
+        <!-- Search Results Popover -->
+        <div id="sidebarSearchResults"
+             class="hidden absolute left-4 right-4 top-[46px] z-50 bg-white rounded-[8px] border border-[#E0DFDD] shadow-lg overflow-hidden max-h-72 overflow-y-auto">
+        </div>
+    </div>
+
+    <!-- Main Scrollable Navigation -->
+    <nav id="sidebarNav" class="sidebar-nav-section sidebar-scroll flex-1 overflow-y-auto px-4 pb-4 space-y-1.5">
+
+        <!-- Overview (Dashboard) -->
+        <div class="sidebar-item-wrap" data-menu-label="overview dashboard">
+            <a href="{% url 'backend:dash_board' %}"
+               data-tooltip="Overview"
+               class="sidebar-nav-item flex items-center {% if dashboard_active %}is-active{% endif %}">
+                <span class="flex items-center gap-2.5 min-w-0">
+                    <!-- 4-circle grid icon -->
+                    <svg class="w-[18px] h-[18px] shrink-0"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.65"
+                         stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <circle cx="8" cy="8" r="3" />
+                        <circle cx="16" cy="8" r="3" />
+                        <circle cx="8" cy="16" r="3" />
+                        <circle cx="16" cy="16" r="3" />
+                    </svg>
+                    <span class="sidebar-label truncate">Overview</span>
+                </span>
+            </a>
+        </div>
+
+        <!-- Dynamic Permission-Based Main Menus (excluding User Management, rendered below Help) -->
+        {% for menu in sidebar_main_menus %}
+            {% with menu_name_lower=menu.menu.menu_name|lower menu_url_lower=menu.menu.menu_url|default:''|lower %}
+                <div class="sidebar-item-wrap"
+                     data-menu-label="{{ menu_name_lower }}{% if menu.sub_menu %} {% for s in menu.sub_menu %}{{ s.menu.menu_name|lower }} {% endfor %}{% endif %}">
+                    <a href="{% if menu.menu.menu_url %}{% if '/' in menu.menu.menu_url %}{{ menu.menu.menu_url }}{% else %}{% url 'backend:menu_wise_dashboard' menu.menu.menu_url %}{% endif %}{% else %}#{% endif %}"
+                       data-tooltip="{{ menu.menu.menu_name }}"
+                       class="sidebar-nav-item flex items-center {% if menu.is_current %}is-active{% endif %}">
+                        <span class="flex items-center gap-2.5 min-w-0">
+                            {% if '<svg' in menu.menu.menu_icon %}
+                                {{ menu.menu.menu_icon|safe }}
+                            {% elif 'building' in menu_name_lower or 'building' in menu_url_lower %}
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
+                                    <path d="M5.41795 4.07347L7.91795 3.06059C9.99309 2.21985 11.0307 1.79948 11.7653 2.29639C12.5 2.79329 12.5 3.91543 12.5 6.15969V17.9167H3.33334V7.17257C3.33334 6.08044 3.33334 5.53436 3.61828 5.11077C3.90321 4.68717 4.40812 4.4826 5.41795 4.07347Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="#716F6C"/>
+                                    <path d="M12.5 7.08334H13.3333C14.9047 7.08334 15.6903 7.08334 16.1785 7.5715C16.6667 8.05965 16.6667 8.84534 16.6667 10.4167V17.9167H12.5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="#716F6C"/>
+                                    <path d="M1.66666 17.9167H18.3333" stroke-width="1.5" stroke-linecap="round" stroke="#716F6C"/>
+                                    <path d="M6.66666 7.08334H9.16666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="#716F6C"/>
+                                    <path d="M6.66666 10.4167H9.16666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="#716F6C"/>
+                                    <path d="M6.66666 13.75H9.16666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="#716F6C"/>
+                                </svg>
+                            {% elif 'equipment' in menu_name_lower or 'equipment' in menu_url_lower %}
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
+                                    <path d="M12.4012 4.32161C11.2158 3.59532 8.17342 2.20119 5.43291 2.55703C7.09064 3.69869 7.96273 4.31274 10.3154 6.40738M15.6783 7.59867C16.4046 8.78401 17.7988 11.8264 17.4429 14.5669C16.3012 12.9092 15.6872 12.0371 13.5925 9.68443M8.72725 9.51518L2.85275 15.3896C2.37624 15.8661 2.3834 16.6458 2.86873 17.1312C3.35408 17.6165 4.1338 17.6237 4.61031 17.1472L10.4848 11.2727M9.98875 7.68794L12.3118 10.011C12.5698 10.269 12.9871 10.2699 13.2439 10.0132L16.122 7.13508C16.3788 6.87829 16.3778 6.461 16.1199 6.20304L13.7968 3.87994C13.5388 3.62199 13.1215 3.62104 12.8648 3.87783L9.98658 6.75591C9.72983 7.0127 9.73075 7.42999 9.98875 7.68794Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="#716F6C"/>
+                                </svg>
+                            {% elif 'maintenance' in menu_name_lower or 'maintenance' in menu_url_lower %}
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
+                                    <path d="M12.0801 1.66687H7.91342C7.22307 1.66687 6.66342 2.22652 6.66342 2.91687C6.66342 3.60723 7.22307 4.16687 7.91342 4.16687H12.0801C12.7704 4.16687 13.3301 3.60723 13.3301 2.91687C13.3301 2.22652 12.7704 1.66687 12.0801 1.66687Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="#716F6C"/>
+                                    <path d="M6.66342 12.5003H9.5206M6.66342 9.16693H13.3301" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="#716F6C"/>
+                                    <path d="M13.3301 2.91687C14.6247 2.95589 15.3968 3.10027 15.9312 3.63468C16.6634 4.36691 16.6634 5.5454 16.6634 7.9024V13.3331C16.6634 15.6901 16.6634 16.8686 15.9312 17.6009C15.1989 18.3331 14.0204 18.3331 11.6634 18.3331H8.33008C5.97306 18.3331 4.79455 18.3331 4.06232 17.6009C3.33009 16.8686 3.33009 15.6901 3.33008 13.3331L3.33009 7.90245C3.33009 5.54542 3.33009 4.3669 4.06232 3.63467C4.59672 3.10026 5.36884 2.95588 6.66333 2.91687" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="#716F6C"/>
+                                </svg>
+                            {% elif 'organization' in menu_name_lower or 'setup' in menu_name_lower %}
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
+                                    <circle cx="10" cy="4.5" r="2" stroke="#716F6C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <circle cx="5" cy="15.5" r="2" stroke="#716F6C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <circle cx="15" cy="15.5" r="2" stroke="#716F6C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M10 6.5V10.5M10 10.5H6.5C5.67157 10.5 5 11.1716 5 12V13.5M10 10.5H13.5C14.3284 10.5 15 11.1716 15 12V13.5" stroke="#716F6C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            {% elif 'technician' in menu_name_lower %}
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
+                                    <path d="M13.3333 17.5V15.8333C13.3333 14.9493 12.9821 14.1014 12.357 13.4763C11.7319 12.8512 10.884 12.5 10 12.5H5C4.11595 12.5 3.2681 12.8512 2.64298 13.4763C2.01786 14.1014 1.66667 14.9493 1.66667 15.8333V17.5" stroke="#716F6C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M7.5 9.16667C9.34095 9.16667 10.8333 7.67428 10.8333 5.83333C10.8333 3.99238 9.34095 2.5 7.5 2.5C5.65905 2.5 4.16667 3.99238 4.16667 5.83333C4.16667 7.67428 5.65905 9.16667 7.5 9.16667Z" stroke="#716F6C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M18.3333 17.5V15.8333C18.3328 15.0948 18.087 14.3773 17.6345 13.7936C17.182 13.2099 16.5484 12.793 15.8333 12.6083" stroke="#716F6C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M13.3333 2.60834C14.0503 2.79192 14.6859 3.20892 15.1397 3.7936C15.5935 4.37827 15.8399 5.09736 15.8399 5.8375C15.8399 6.57765 15.5935 7.29674 15.1397 7.88141C14.6859 8.46609 14.0503 8.88309 13.3333 9.06667" stroke="#716F6C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            {% elif 'ticket' in menu_name_lower %}
+                                <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v1a2 2 0 0 0 0 4v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1a2 2 0 0 0 0-4V9Z" />
+                                    <path d="M13 7v10" stroke-dasharray="2 2" />
+                                </svg>
+                            {% else %}
+                                <i class="{{ menu.menu.menu_icon }} text-[15px] w-[18px] text-center shrink-0"></i>
+                            {% endif %}
+                            <span class="sidebar-label truncate">{{ menu.menu.menu_name }}</span>
+                        </span>
+                    </a>
+
+                    {% if menu.sub_menu %}
+                        <!-- Submenu List (expanded when parent or child is active) -->
+                        <ul class="sidebar-submenu {% if not menu.is_current %}hidden{% endif %}"
+                            data-default-open="{% if menu.is_current %}1{% else %}0{% endif %}">
+                            {% for sub_menu in menu.sub_menu %}
+                                <li data-submenu-label="{{ sub_menu.menu.menu_name|lower }}">
+                                    <a href="{% if sub_menu.menu.menu_url %}{% if '/' in sub_menu.menu.menu_url %}{{ sub_menu.menu.menu_url }}{% else %}{% url 'backend:menu_wise_dashboard' sub_menu.menu.menu_url %}{% endif %}{% else %}#{% endif %}"
+                                       class="sidebar-sub-item {% if sub_menu.is_current %}is-active{% endif %}">
+                                        <span class="truncate">{{ sub_menu.menu.menu_name }}</span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </nav>
+
+    <!-- Bottom Utility Links (Help & Support -> User Management right below it) -->
+    <div class="sidebar-bottom-nav px-4 pt-2 pb-3 space-y-1 shrink-0">
+        <!-- Help & Support -->
+        <div class="sidebar-item-wrap" data-menu-label="help support">
+            <button type="button"
+                    id="btnOpenHelpModal"
+                    data-tooltip="Help & Support"
+                    class="sidebar-nav-item flex items-center text-left">
+                <span class="flex items-center gap-2.5 min-w-0">
+                    <svg class="w-[18px] h-[18px] shrink-0"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.65"
+                         stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="9" />
+                        <path d="M9.75 9.25a2.25 2.25 0 0 1 4.35.75c0 1.45-2.1 1.95-2.1 3.1" />
+                        <path d="M12 16.75h.01" />
+                    </svg>
+                    <span class="sidebar-label truncate">Help &amp; Support</span>
+                </span>
+            </button>
+        </div>
+
+        <!-- User Management (Below Help & Support) -->
+        {% if user_management_menu %}
+            <div class="sidebar-item-wrap" data-menu-label="{{ user_management_menu.menu.menu_name|lower }} users">
+                <a href="{{ user_management_menu.menu.menu_url }}"
+                   data-tooltip="{{ user_management_menu.menu.menu_name }}"
+                   class="sidebar-nav-item flex items-center {% if user_management_menu.is_current %}is-active{% endif %}">
+                    <span class="flex items-center gap-2.5 min-w-0">
+                        <svg class="w-[18px] h-[18px] shrink-0"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="1.65"
+                             stroke-linecap="round"
+                             stroke-linejoin="round">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="3.2" />
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a3.2 3.2 0 0 1 0 6.24" />
+                        </svg>
+                        <span class="sidebar-label truncate">{{ user_management_menu.menu.menu_name }}</span>
+                    </span>
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Divider -->
+    <div class="sidebar-divider mx-4 border-t border-[#D4D3D2] shrink-0"></div>
+
+    <!-- User Profile Footer -->
+    <div class="sidebar-footer-row relative px-4 py-3.5 flex items-center justify-between gap-2.5 shrink-0">
+        <div id="sidebarUserProfileTrigger"
+             data-tooltip="{{ request.user.get_full_name|default:request.user.username }}"
+             class="flex items-center gap-2.5 min-w-0 cursor-pointer lg:cursor-default">
+            <!-- Avatar + Minimized Online Status Dot -->
+            <div class="relative shrink-0">
+                <div class="sidebar-avatar-box w-[38px] h-[38px] rounded-[10px] bg-gradient-to-br from-[#3D3C3A] to-[#262524] text-white flex items-center justify-center text-[13px] font-semibold tracking-wide shadow-[0_1px_3px_rgba(0,0,0,0.12)]">
+                    {{ request.user.get_full_name|default:request.user.username|slice:":2"|upper }}
+                </div>
+                <span class="sidebar-online-dot absolute -bottom-[2px] -right-[2px] w-[11px] h-[11px] rounded-full bg-[#29AC1B] border-2 border-[#EBEBEB]"
+                      aria-hidden="true"></span>
+            </div>
+            <!-- Name & Role -->
+            <div class="sidebar-user-meta min-w-0">
+                <p class="text-[13.5px] font-semibold text-[#333333] leading-tight truncate">
+                    {{ request.user.get_full_name|default:request.user.username }}
+                </p>
+                <p class="text-[11.5px] font-normal text-[#969491] leading-tight truncate mt-0.5">
+                    {% if request.user.is_superuser %}
+                        System Administrator
+                    {% elif request.user.is_staff %}
+                        Administrator
+                    {% else %}
+                        Team Member
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <!-- Three-dots Menu Trigger -->
+        <button id="sidebarUserMenuBtn"
+                type="button"
+                aria-haspopup="true"
+                aria-expanded="false"
+                aria-label="User options"
+                class="sidebar-user-dots w-8 h-8 rounded-lg flex items-center justify-center text-[#5A5957] hover:bg-[#DFDFDE] hover:text-[#222222] transition-colors shrink-0">
+            <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="5" cy="12" r="1.75" />
+                <circle cx="12" cy="12" r="1.75" />
+                <circle cx="19" cy="12" r="1.75" />
+            </svg>
+        </button>
+
+        <!-- Upward User Popover Menu -->
+        <div id="sidebarUserMenu"
+             class="hidden absolute bottom-[64px] left-4 right-4 z-50 rounded-[10px] bg-white border border-[#E0DFDD] shadow-xl py-1.5">
+            <div class="px-3.5 py-2 border-b border-[#EFEFED]">
+                <p class="text-[13px] font-semibold text-[#2B2A29] truncate">
+                    {{ request.user.get_full_name|default:request.user.username }}
+                </p>
+                {% if request.user.email %}
+                    <p class="text-[11.5px] text-[#8E8C89] truncate mt-0.5">{{ request.user.email }}</p>
+                {% else %}
+                    <p class="text-[11.5px] text-[#8E8C89] truncate mt-0.5">@{{ request.user.username }}</p>
+                {% endif %}
+            </div>
+            <div class="py-1">
+                <a href="{% url 'backend:dash_board' %}"
+                   class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-[#4A4947] hover:bg-[#F5F5F4] transition-colors">
+                    <i class="fa-solid fa-house text-[12px] w-4 text-center text-[#716F6C]"></i>
+                    <span>Overview</span>
+                </a>
+                {% if user_management_menu %}
+                    <a href="{{ user_management_menu.menu.menu_url }}"
+                       class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-[#4A4947] hover:bg-[#F5F5F4] transition-colors">
+                        <i class="fa-solid fa-users text-[12px] w-4 text-center text-[#716F6C]"></i>
+                        <span>{{ user_management_menu.menu.menu_name }}</span>
+                    </a>
+                {% endif %}
+                <a href="{% url 'backend:backend_logout' %}"
+                   class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-red-600 hover:bg-red-50 transition-colors">
+                    <i class="fa-solid fa-right-from-bracket text-[12px] w-4 text-center"></i>
+                    <span>Sign Out</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</aside>
+
+<!-- Floating Tooltip for Minimized Sidebar -->
+<div id="sidebarCollapsedTooltip"
+     class="hidden fixed z-[90] pointer-events-none px-2.5 py-1.5 rounded-[7px] bg-[#2B2A29] text-white sidebar-mono text-[12px] font-medium shadow-lg whitespace-nowrap">
+</div>
+
+<!-- Help & Support Modal -->
+<div id="helpSupportModal"
+     class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/40 backdrop-blur-[2px]">
+    <div class="w-full max-w-md rounded-2xl bg-white border border-[#E5E4E2] shadow-2xl overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-[#EFEFED]">
+            <div class="flex items-center gap-2.5">
+                <span class="w-8 h-8 rounded-lg bg-[#333333] text-white flex items-center justify-center">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <circle cx="12" cy="12" r="9" />
+                        <path d="M12 16v-4M12 8h.01" stroke-linecap="round" />
+                    </svg>
+                </span>
+                <h3 class="sidebar-mono text-[15px] font-semibold text-[#2B2A29]">Help &amp; Support</h3>
+            </div>
+            <button type="button"
+                    id="btnCloseHelpModal"
+                    class="p-1.5 rounded-lg text-[#716F6C] hover:bg-[#F2F2F2] hover:text-[#333333] transition-colors"
+                    aria-label="Close">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <div class="p-5 space-y-4 text-sm text-[#5A5957]">
+            <p class="leading-relaxed">
+                Need assistance with building assets, equipment tracking, or maintenance schedules? Reach out to your system administrator or submit a support ticket.
+            </p>
+            {% if site_setting.contact_email or site_setting.contact_phone or site_setting.address %}
+                <div class="rounded-xl bg-[#F7F7F6] border border-[#ECECEB] p-3.5 space-y-2 text-[13px]">
+                    {% if site_setting.contact_email %}
+                        <div class="flex items-center gap-2.5">
+                            <i class="fa-regular fa-envelope text-[#716F6C] w-4 text-center"></i>
+                            <span>{{ site_setting.contact_email }}</span>
+                        </div>
+                    {% endif %}
+                    {% if site_setting.contact_phone %}
+                        <div class="flex items-center gap-2.5">
+                            <i class="fa-solid fa-phone text-[#716F6C] w-4 text-center"></i>
+                            <span>{{ site_setting.contact_phone }}</span>
+                        </div>
+                    {% endif %}
+                    {% if site_setting.address %}
+                        <div class="flex items-start gap-2.5">
+                            <i class="fa-solid fa-location-dot text-[#716F6C] w-4 text-center mt-0.5"></i>
+                            <span>{{ site_setting.address }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+            <div class="rounded-xl bg-[#F7F7F6] border border-[#ECECEB] px-3.5 py-2.5 flex items-center justify-between text-[12.5px]">
+                <span class="text-[#716F6C]">Quick menu search shortcut</span>
+                <kbd class="px-2 py-0.5 rounded-md bg-[#E8E8E8] text-[#4A4947] font-medium text-[11px]">Ctrl / ⌘ + K</kbd>
+            </div>
+        </div>
+        <div class="px-5 py-3.5 bg-[#FAFAFA] border-t border-[#EFEFED] flex items-center justify-end gap-2">
+            <a href="{% url 'backend:ticket_list' %}"
+               class="px-3.5 py-2 rounded-lg text-[13px] font-medium text-[#333333] bg-[#EBEBEB] hover:bg-[#E0E0DF] transition-colors">
+                View Tickets
+            </a>
+            <button type="button"
+                    id="btnDismissHelpModal"
+                    class="px-4 py-2 rounded-lg text-[13px] font-medium text-white bg-[#333333] hover:bg-[#1F1F1F] transition-colors">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Sidebar Interaction Script -->
+<script>
+(function () {
+    const STORAGE_KEY = 'bm_sidebar_collapsed';
+    const isDesktop = () => window.matchMedia('(min-width: 1024px)').matches;
+
+    // Restore desktop collapsed preference immediately to prevent layout shift
+    if (localStorage.getItem(STORAGE_KEY) === '1' && isDesktop()) {
+        document.body.classList.add('sidebar-collapsed');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const sidebar = document.getElementById('sidebar');
+        const sidebarNav = document.getElementById('sidebarNav');
+        const backdrop = document.getElementById('backdrop');
+        const openBtn = document.getElementById('btnOpen');
+        const toggleBtn = document.getElementById('btnToggleSidebar');
+        const searchInput = document.getElementById('sidebarMenuSearch');
+        const searchResults = document.getElementById('sidebarSearchResults');
+        const userMenuBtn = document.getElementById('sidebarUserMenuBtn');
+        const userProfileTrigger = document.getElementById('sidebarUserProfileTrigger');
+        const userMenu = document.getElementById('sidebarUserMenu');
+        const collapsedTooltip = document.getElementById('sidebarCollapsedTooltip');
+        const helpBtn = document.getElementById('btnOpenHelpModal');
+        const helpModal = document.getElementById('helpSupportModal');
+        const closeHelpBtn = document.getElementById('btnCloseHelpModal');
+        const dismissHelpBtn = document.getElementById('btnDismissHelpModal');
+
+        const hideTooltip = () => collapsedTooltip?.classList.add('hidden');
+
+        const openMobileSidebar = () => {
+            if (!sidebar) return;
+            sidebar.classList.remove('translate-x-[-100%]');
+            sidebar.classList.add('translate-x-0');
+            backdrop?.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        };
+
+        const closeMobileSidebar = () => {
+            if (!sidebar) return;
+            sidebar.classList.add('translate-x-[-100%]');
+            sidebar.classList.remove('translate-x-0');
+            backdrop?.classList.add('hidden');
+            document.body.style.overflow = '';
+        };
+
+        const setDesktopCollapsed = (collapsed) => {
+            document.body.classList.toggle('sidebar-collapsed', collapsed);
+            localStorage.setItem(STORAGE_KEY, collapsed ? '1' : '0');
+            hideTooltip();
+            userMenu?.classList.add('hidden');
+            if (toggleBtn) {
+                toggleBtn.setAttribute('title', collapsed ? 'Expand sidebar' : 'Collapse sidebar');
+            }
+        };
+
+        if (toggleBtn && document.body.classList.contains('sidebar-collapsed')) {
+            toggleBtn.setAttribute('title', 'Expand sidebar');
+        }
+
+        openBtn?.addEventListener('click', openMobileSidebar);
+        backdrop?.addEventListener('click', closeMobileSidebar);
+
+        toggleBtn?.addEventListener('click', () => {
+            if (isDesktop()) {
+                setDesktopCollapsed(!document.body.classList.contains('sidebar-collapsed'));
+            } else {
+                closeMobileSidebar();
+            }
+        });
+
+        // Clicking the bottom avatar while minimized toggles the floating user popover directly
+        userProfileTrigger?.addEventListener('click', (e) => {
+            if (isDesktop() && document.body.classList.contains('sidebar-collapsed')) {
+                e.stopPropagation();
+                hideTooltip();
+                const isHidden = userMenu?.classList.toggle('hidden');
+                userMenuBtn?.setAttribute('aria-expanded', String(!isHidden));
+            }
+        });
+
+        // Floating tooltip on icon hover while minimized
+        document.querySelectorAll('#sidebar [data-tooltip]').forEach((el) => {
+            el.addEventListener('mouseenter', () => {
+                if (!isDesktop() || !document.body.classList.contains('sidebar-collapsed') || !collapsedTooltip) return;
+                const label = el.getAttribute('data-tooltip');
+                if (!label) return;
+                collapsedTooltip.textContent = label;
+                collapsedTooltip.classList.remove('hidden');
+                const rect = el.getBoundingClientRect();
+                const tipH = collapsedTooltip.offsetHeight || 28;
+                collapsedTooltip.style.left = `${rect.right + 14}px`;
+                collapsedTooltip.style.top = `${Math.round(rect.top + (rect.height - tipH) / 2)}px`;
+            });
+            el.addEventListener('mouseleave', hideTooltip);
+            el.addEventListener('click', hideTooltip);
+        });
+        sidebarNav?.addEventListener('scroll', hideTooltip);
+
+        // Keyboard shortcut: Ctrl+K / Cmd+K to focus sidebar search, Escape to close
+        window.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                if (!isDesktop()) {
+                    openMobileSidebar();
+                } else if (document.body.classList.contains('sidebar-collapsed')) {
+                    setDesktopCollapsed(false);
+                }
+                setTimeout(() => {
+                    searchInput?.focus();
+                    searchInput?.select();
+                }, 60);
+            } else if (e.key === 'Escape') {
+                closeMobileSidebar();
+                userMenu?.classList.add('hidden');
+                searchResults?.classList.add('hidden');
+                helpModal?.classList.add('hidden');
+            }
+        });
+
+        // Live sidebar filtering + API menu search
+        let searchTimer = null;
+        const filterLocalMenus = (query) => {
+            const q = query.trim().toLowerCase();
+            document.querySelectorAll('#sidebar .sidebar-item-wrap').forEach((wrap) => {
+                const label = (wrap.getAttribute('data-menu-label') || '').toLowerCase();
+                const submenu = wrap.querySelector('.sidebar-submenu');
+                if (!q || label.includes(q)) {
+                    wrap.style.display = '';
+                    if (submenu) {
+                        if (q) {
+                            submenu.classList.remove('hidden');
+                        } else {
+                            const defaultOpen = submenu.getAttribute('data-default-open') === '1';
+                            submenu.classList.toggle('hidden', !defaultOpen);
+                        }
+                    }
+                } else {
+                    wrap.style.display = 'none';
+                }
+            });
+        };
+
+        const escapeHtml = (str) =>
+            String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+
+        const renderApiResults = (items, query) => {
+            if (!searchResults) return;
+            if (!query.trim()) {
+                searchResults.classList.add('hidden');
+                searchResults.innerHTML = '';
+                return;
+            }
+            if (!items.length) {
+                searchResults.innerHTML =
+                    '<div class="px-3.5 py-3 text-xs text-[#8E8C89] text-center">No matching pages found</div>';
+                searchResults.classList.remove('hidden');
+                return;
+            }
+            searchResults.innerHTML = items
+                .map(
+                    (item) => {
+                        const rawIcon = String(item.icon || '');
+                        const iconMarkup = rawIcon.trim().startsWith('<svg')
+                            ? `<span class="mt-0.5 w-4 h-4 flex items-center justify-center shrink-0">${rawIcon}</span>`
+                            : `<i class="${escapeHtml(rawIcon || 'fa-solid fa-circle')} text-[12px] text-[#716F6C] mt-1 w-4 text-center shrink-0"></i>`;
+                        return `
+                    <a href="${escapeHtml(item.url || '#')}"
+                       class="flex items-start gap-2.5 px-3.5 py-2.5 hover:bg-[#F5F5F4] transition-colors border-b border-[#F2F2F0] last:border-b-0">
+                        ${iconMarkup}
+                        <div class="min-w-0 flex-1">
+                            <div class="sidebar-mono text-[13px] font-medium text-[#2B2A29] truncate">${escapeHtml(item.name)}</div>
+                            ${item.description ? `<div class="text-[11px] text-[#8E8C89] truncate mt-0.5">${escapeHtml(item.description)}</div>` : ''}
+                        </div>
+                    </a>`;
+                    }
+                )
+                .join('');
+            searchResults.classList.remove('hidden');
+        };
+
+        searchInput?.addEventListener('input', (e) => {
+            const q = e.target.value;
+            filterLocalMenus(q);
+
+            clearTimeout(searchTimer);
+            if (!q.trim()) {
+                searchResults?.classList.add('hidden');
+                return;
+            }
+            searchTimer = setTimeout(async () => {
+                try {
+                    const res = await fetch(`{% url 'backend:search_backend_menus' %}?q=${encodeURIComponent(q.trim())}&limit=8`);
+                    if (!res.ok) return;
+                    const payload = await res.json();
+                    if (payload && payload.status) {
+                        renderApiResults(payload.data || [], q);
+                    }
+                } catch (_) {
+                    // Local filter already applied
+                }
+            }, 180);
+        });
+
+        // User footer 3-dot dropdown
+        userMenuBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isHidden = userMenu?.classList.toggle('hidden');
+            userMenuBtn.setAttribute('aria-expanded', String(!isHidden));
+        });
+
+        // Click outside handlers
+        document.addEventListener('click', (e) => {
+            if (userMenu && userMenuBtn && !userMenu.contains(e.target) && !userMenuBtn.contains(e.target) && !userProfileTrigger?.contains(e.target)) {
+                userMenu.classList.add('hidden');
+                userMenuBtn.setAttribute('aria-expanded', 'false');
+            }
+            if (searchResults && searchInput && !searchResults.contains(e.target) && !searchInput.contains(e.target)) {
+                searchResults.classList.add('hidden');
+            }
+        });
+
+        // Help & Support modal
+        const closeHelp = () => helpModal?.classList.add('hidden');
+        helpBtn?.addEventListener('click', () => {
+            if (!isDesktop()) closeMobileSidebar();
+            helpModal?.classList.remove('hidden');
+        });
+        closeHelpBtn?.addEventListener('click', closeHelp);
+        dismissHelpBtn?.addEventListener('click', closeHelp);
+        helpModal?.addEventListener('click', (e) => {
+            if (e.target === helpModal) closeHelp();
+        });
+    });
+})();
+</script>

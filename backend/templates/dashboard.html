@@ -1,389 +1,1228 @@
 {% extends 'base.html' %}
-{% block title %}Dashboard{% endblock %}
-{% block content %}
-    <section class="space-y-5">
-        <!-- ════════════════════════ ROW 1: Stat Cards ════════════════════════ -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-            <!-- Total Buildings -->
-            <div class="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-sm  transition-all duration-200 relative overflow-hidden group">
-                <div class="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg mb-3">
-                    <i class="fas fa-building"></i>
-                </div>
-                <p class="text-xs text-gray-400 font-medium mb-1">Total Buildings</p>
-                <p class="text-3xl font-extrabold text-gray-900 leading-none dash-stat-value">{{ total_buildings }}</p>
-                <p class="text-[11px] text-gray-400 mt-1.5">{{ active_buildings }} Active / {{ inactive_buildings }} Inactive / {{ renovation_buildings }} Renovation</p>
-            </div>
-            <!-- Total Equipment -->
-            <div class="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-sm  duration-200 relative overflow-hidden group">
-                <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg mb-3">
-                    <i class="fas fa-wrench"></i>
-                </div>
-                <p class="text-xs text-gray-400 font-medium mb-1">Total Equipment</p>
-                <p class="text-3xl font-extrabold text-gray-900 leading-none dash-stat-value">{{ total_equipment }}</p>
-                <!-- Mini stacked bar -->
-                <div class="h-1.5 rounded-full bg-gray-100 flex overflow-hidden mt-2.5">
-                    {% if total_equipment > 0 %}
-                        <div class="h-full bg-emerald-500 transition-all duration-700"
-                             style="width:{% widthratio eq_active total_equipment 100 %}%"></div>
-                        <div class="h-full bg-amber-400 transition-all duration-700"
-                             style="width:{% widthratio eq_maintenance total_equipment 100 %}%"></div>
-                        <div class="h-full bg-blue-500 transition-all duration-700"
-                             style="width:{% widthratio eq_repair total_equipment 100 %}%"></div>
-                        <div class="h-full bg-gray-400 transition-all duration-700"
-                             style="width:{% widthratio eq_outdated total_equipment 100 %}%"></div>
-                    {% endif %}
-                </div>
-                <div class="flex flex-wrap gap-x-2 gap-y-0.5 mt-2 text-[11px] text-gray-400">
-                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-emerald-500 inline-block shrink-0"></span> {{ eq_active }} Active</span>
-                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-amber-400 inline-block shrink-0"></span> {{ eq_maintenance }} Maintenance</span>
-                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-blue-500 inline-block shrink-0"></span> {{ eq_repair }} Repair</span>
-                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-gray-400 inline-block shrink-0"></span> {{ eq_outdated }} Outdated</span>
-                </div>
-            </div>
-            <!-- Open Tickets -->
-            <div class="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-sm  duration-200 relative overflow-hidden group">
-                <div class="w-11 h-11 rounded-xl bg-red-50 text-red-500 flex items-center justify-center text-lg mb-3">
-                    <i class="fas fa-ticket-alt"></i>
-                </div>
-                <p class="text-xs text-gray-400 font-medium mb-1">Open Tickets</p>
-                <div class="flex items-baseline gap-2">
-                    <p class="text-3xl font-extrabold text-gray-900 leading-none dash-stat-value">{{ open_ticket_count }}</p>
-                    {% if critical_ticket_count > 0 %}
-                        <span class="text-xs font-bold text-red-600">{{ critical_ticket_count }} Critical</span>
-                    {% endif %}
-                </div>
-                <p class="text-[11px] text-gray-400 mt-1.5">{{ assigned_ticket_count }} Assigned / {{ unassigned_ticket_count }} Unassigned</p>
-            </div>
-            <!-- Upcoming Maintenance -->
-            <div class="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-sm  duration-200 relative overflow-hidden group">
-                {% if overdue_count > 0 %}
-                    <div class="absolute top-3 right-3">
-                        <span class="inline-flex items-center gap-1 bg-red-100 text-red-600 text-[11px] font-bold px-2.5 py-0.5 rounded-full">
-                            <i class="fas fa-exclamation-triangle text-[9px]"></i>
-                            {{ overdue_count }} OVERDUE TASK{{ overdue_count|pluralize:"S" }}
-                        </span>
-                    </div>
+{% block title %}Overview{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    /* Overview Page Surface & Design Tokens — Exact Figma Specs */
+    body,
+    #mainContentWrapper {
+        background-color: #F2F2F2 !important;
+        font-family: 'Urbanist', Inter, system-ui, ui-sans-serif, sans-serif;
+    }
+
+    .ov-mono {
+        font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        letter-spacing: -0.02em;
+    }
+
+    /* Outer Tray Card (BG/bg-200 #F9F9F9, radius 12px, padding 16px 6px 6px 6px, gap 16px) */
+    .ov-card {
+        background-color: #F9F9F9;
+        border-radius: 12px;
+        padding: 16px 6px 6px 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        box-sizing: border-box;
+    }
+
+    /* Critical Requests Outer Tray (Blush Pink #FFE0E0, radius 12px, padding 16px 6px 6px 6px, gap 16px) */
+    .ov-card-critical {
+        background-color: #FFE0E0;
+        border-radius: 12px;
+        padding: 16px 6px 6px 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        box-sizing: border-box;
+    }
+
+    .ov-card-header {
+        padding: 0 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .ov-card-title {
+        font-family: 'Urbanist', Inter, system-ui, sans-serif;
+        font-size: 16.5px;
+        font-weight: 500;
+        line-height: 1.2;
+        letter-spacing: -0.01em;
+        color: #2B2823;
+    }
+
+    /* Inner Container (BG/bg-50 #FFFFFF, radius 6px) */
+    .ov-inner-card {
+        background-color: #FFFFFF;
+        border-radius: 6px;
+        box-sizing: border-box;
+    }
+
+    .ov-count-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 22px;
+        height: 20px;
+        padding: 0 7px;
+        border-radius: 9999px;
+        background-color: #EAEAE8;
+        color: #4A4947;
+        font-size: 11.5px;
+        font-weight: 600;
+        line-height: 1;
+    }
+
+    .ov-count-badge-critical {
+        background-color: #FFCDCD;
+        color: #FF0505;
+    }
+
+    .ov-link-orange {
+        font-family: 'Urbanist', Inter, system-ui, sans-serif;
+        color: #FF6B16;
+        font-size: 13.5px;
+        font-weight: 500;
+        line-height: 1;
+        letter-spacing: -0.01em;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        transition: color 150ms ease;
+    }
+    .ov-link-orange:hover {
+        color: #E05508;
+    }
+
+    /* Building Operations Overview "Details >" — exact Figma specs (Urbanist 500, 16px, 100%, -1%, #FF6B16) */
+    .ov-details-link {
+        font-family: 'Urbanist', Inter, system-ui, sans-serif;
+        color: #FF6B16;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 1;
+        letter-spacing: -0.01em;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: color 150ms ease;
+    }
+    .ov-details-link:hover {
+        color: #E05508;
+    }
+
+    /* Building Operations KPI Number — exact Figma specs (Geist Mono 500, 24px, 100%, -2%, #55534F) */
+    .ov-kpi-num {
+        font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-weight: 500;
+        font-size: 24px;
+        line-height: 1;
+        letter-spacing: -0.02em;
+        text-align: right;
+        color: #55534F;
+    }
+    .ov-kpi-num-danger {
+        color: #FF0505;
+    }
+
+    /* Standard White Pill Button */
+    .ov-btn-white {
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        border-radius: 6px;
+        color: #2B2823;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        padding: 5px 12px;
+        line-height: 1.25;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+        transition: background-color 150ms ease, border-color 150ms ease;
+        white-space: nowrap;
+    }
+    .ov-btn-white:hover {
+        background-color: #F7F7F6;
+        border-color: #D8D7D5;
+    }
+
+    /* Quick Action Button (Frame 2147207610: Hug 120px x Hug 29px, radius 6px, border 1px #EAEAE9, padding 5px 11px, bg #FFFFFF) */
+    .ov-btn-action {
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        border-radius: 6px;
+        color: #2B2823;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        width: 120px;
+        height: 29px;
+        padding: 5px 11px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        box-sizing: border-box;
+        transition: background-color 150ms ease, border-color 150ms ease;
+        white-space: nowrap;
+    }
+    .ov-btn-action:hover {
+        background-color: #F7F7F6;
+        border-color: #D8D7D5;
+    }
+
+    /* Overdue item card (Frame 2147207662: Fill 663px x 89px, radius 6px, padding 0 14px, BG/bg-100 #FBFBFB) */
+    .ov-overdue-item {
+        background-color: #FBFBFB;
+        border-radius: 6px;
+        height: 89px;
+        min-height: 89px;
+        padding: 0 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        box-sizing: border-box;
+        transition: background-color 150ms ease;
+    }
+    .ov-overdue-item:hover {
+        background-color: #F6F6F5;
+    }
+
+    /* Quick Action Card (Frame 2147207714: 182.5px x 178px, radius 5px, BG/bg-100 #FBFBFB, padding 16px 14px) */
+    .ov-action-card {
+        background-color: #FBFBFB;
+        border-radius: 5px;
+        width: 100%;
+        max-width: 182.5px;
+        height: 178px;
+        padding: 16px 14px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-sizing: border-box;
+    }
+
+    /* Filter Bar Selects — override base.html white select rule cleanly */
+    .ov-filter-select {
+        background-color: #EAEAE8 !important;
+        border: 1px solid #E2E2E0 !important;
+        border-radius: 8px !important;
+        height: 34px;
+        padding: 0 28px 0 11px !important;
+        font-size: 12.5px;
+        font-weight: 500;
+        color: #555452;
+        outline: none !important;
+        box-shadow: none !important;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23716F6C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 9px center;
+        transition: background-color 150ms ease, border-color 150ms ease;
+    }
+    .ov-filter-select:hover,
+    .ov-filter-select:focus {
+        background-color: #E3E3E1 !important;
+        border-color: #CFCED0 !important;
+        color: #2B2A29;
+    }
+
+    /* Segmented range toggle (30 Days | 7 Days | 90 Days) */
+    .ov-seg-btn {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 11.5px;
+        font-weight: 500;
+        color: #7A7976;
+        transition: background-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
+    }
+    .ov-seg-btn:hover:not(.is-active) {
+        color: #333333;
+    }
+    .ov-seg-btn.is-active {
+        background-color: #FFFFFF;
+        color: #2B2823;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Segmented Completion Rate Meter */
+    .ov-meter-bar {
+        flex: 1;
+        height: 15px;
+        border-radius: 2.5px;
+        background-color: #E5E7EB;
+        transition: background-color 250ms ease;
+    }
+    .ov-meter-bar.is-filled {
+        background-color: #347D64;
+    }
+
+    /* Activity Timeline vertical rail */
+    .ov-timeline-item {
+        position: relative;
+    }
+    .ov-timeline-item:not(:last-child)::before {
+        content: '';
+        position: absolute;
+        left: 17.5px;
+        top: 36px;
+        bottom: -20px;
+        width: 1px;
+        background-color: #E5E5E3;
+    }
+</style>
+{% endblock %}
+
+{% block top_header %}
+<header class="sticky top-0 z-30 bg-[#F2F2F2]/90 backdrop-blur-sm">
+    <div class="max-w-[1112px] mx-auto px-4 sm:px-6 lg:px-0 pt-4 pb-2 flex items-center justify-between gap-3">
+        <!-- Left: Mobile hamburger + Home > Dashboard Breadcrumb -->
+        <div class="flex items-center gap-2.5">
+            <button id="btnOpen"
+                    type="button"
+                    aria-label="Open navigation"
+                    class="lg:hidden -ml-1 p-2 rounded-lg bg-white border border-[#E5E5E3] text-[#4A4947] hover:bg-[#F5F5F4]">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+            <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-[12.5px]">
+                <a href="{% url 'backend:dash_board' %}"
+                   class="text-[#6E6D6B] hover:text-[#2B2A29] transition-colors flex items-center"
+                   aria-label="Home">
+                    <svg class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 10.5L12 3l9 7.5" />
+                        <path d="M5.5 9.5V20a1 1 0 0 0 1 1h4v-5.5a1.5 1.5 0 0 1 3 0V21h4a1 1 0 0 0 1-1V9.5" />
+                    </svg>
+                </a>
+                <svg class="w-3.5 h-3.5 text-[#A8A7A5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+                <span class="px-2.5 py-0.5 rounded-[6px] bg-[#E8E8E6] text-[#4A4947] font-medium">Dashboard</span>
+            </nav>
+        </div>
+
+        <!-- Right: Notification Bell Popover -->
+        <div class="relative">
+            <button id="ovNotifBtn"
+                    type="button"
+                    aria-label="Notifications"
+                    aria-expanded="false"
+                    class="w-9 h-9 rounded-[9px] bg-white border border-[#E5E5E3] hover:bg-[#FAFAFA] flex items-center justify-center text-[#4A4947] shadow-[0_1px_2px_rgba(0,0,0,0.03)] relative transition-colors">
+                <svg class="w-[17px] h-[17px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg>
+                {% if critical_requests_count > 0 or overdue_count > 0 %}
+                    <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#FF6B16] ring-2 ring-white"></span>
                 {% endif %}
-                <div class="w-11 h-11 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center text-lg mb-3">
-                    <i class="fas fa-calendar-alt"></i>
+            </button>
+
+            <div id="ovNotifMenu"
+                 class="hidden absolute right-0 mt-2 w-80 rounded-[12px] bg-white border border-[#E5E5E3] shadow-xl z-50 overflow-hidden">
+                <div class="px-4 py-3 border-b border-[#EFEFED] flex items-center justify-between">
+                    <span class="text-[13px] font-semibold text-[#2B2A29]">Notifications</span>
+                    <span class="ov-count-badge">{{ critical_requests_count|add:overdue_count }}</span>
                 </div>
-                <p class="text-xs text-gray-400 font-medium mb-1">Upcoming Maintenance</p>
-                <p class="text-3xl font-extrabold text-gray-900 leading-none dash-stat-value">{{ upcoming_maintenance_count }}</p>
-                <p class="text-[11px] text-gray-400 mt-1.5">Next 7 Days</p>
-            </div>
-        </div>
-        <!-- ════════════════════════ ROW 2: Quick Actions Bar ════════════════════════ -->
-        <div class="flex items-center flex-wrap gap-3 rounded-2xl px-5 py-3"
-             style="background:linear-gradient(135deg,#2D1B69 0%,#4A2D8C 50%,#6B3FA0 100%)">
-            <span class="text-white/60 text-[11px] font-bold tracking-widest uppercase whitespace-nowrap">Quick Actions</span>
-            <a href="{% url 'backend:building_add' %}"
-               class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white text-[#2D1B69] text-xs font-semibold hover:bg-purple-50 transition-colors">
-                <i class="fas fa-plus text-[10px]"></i> Add Building
-            </a>
-            <a href="{% url 'backend:equipment_add' %}"
-               class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/15 text-white text-xs font-semibold hover:bg-white/25 transition-colors">
-                <i class="fas fa-cog text-[10px]"></i> Add Equipment
-            </a>
-            <a href="{% url 'backend:ticket_add' %}"
-               class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/15 text-white text-xs font-semibold hover:bg-white/25 transition-colors">
-                <i class="fas fa-plus-circle text-[10px]"></i> Create Ticket
-            </a>
-            <a href="{% url 'backend:ticket_list' %}"
-               class="ml-auto inline-flex items-center gap-1.5 px-5 py-2 rounded-lg border border-white/30 text-white text-sm font-semibold hover:bg-white/10 hover:border-white transition-colors">
-                View Maintenance <i class="fas fa-chevron-right text-[10px] ml-0.5"></i>
-            </a>
-        </div>
-        <!-- ════════════════════════ ROW 3: Donut Chart + Recent Tickets ════════════════════════ -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <!-- Equipment Health Distribution -->
-            <div class="bg-white rounded-2xl border border-gray-100 p-6">
-                <div class="flex items-center justify-between mb-5">
-                    <h3 class="text-base font-bold text-gray-900">Equipment Health Distribution</h3>
-                    <button class="text-gray-400 hover:text-gray-600 transition-colors">
-                        <i class="fas fa-filter text-sm"></i>
-                    </button>
-                </div>
-                <!-- Donut -->
-                <div class="relative w-[200px] h-[200px] mx-auto">
-                    <canvas id="donutChart" class="w-full h-full"></canvas>
-                </div>
-                <!-- Legend -->
-                <div class="flex flex-wrap justify-center gap-x-4 gap-y-1.5 mt-5 text-xs text-gray-600">
-                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-emerald-500 inline-block shrink-0"></span> Active</span>
-                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-amber-400 inline-block shrink-0"></span> Maintenance</span>
-                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-blue-500 inline-block shrink-0"></span> In Repair</span>
-                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-gray-400 inline-block shrink-0"></span> Outdated</span>
-                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-gray-800 inline-block shrink-0"></span> Decommissioned</span>
-                </div>
-                <!-- KPI metrics -->
-                <div class="flex justify-center gap-10 mt-5">
-                    <div class="text-center">
-                        <p class="text-[11px] text-gray-400">Uptime</p>
-                        <p class="text-xl font-extrabold text-emerald-600 leading-tight">{{ uptime_pct }}%</p>
-                    </div>
-                    <div class="text-center">
-                        <p class="text-[11px] text-gray-400">Repair Rate</p>
-                        <p class="text-xl font-extrabold text-orange-600 leading-tight">{{ repair_pct }}%</p>
-                    </div>
-                    <div class="text-center">
-                        <p class="text-[11px] text-gray-400">Outdated</p>
-                        <p class="text-xl font-extrabold text-gray-400 leading-tight">{{ outdated_pct }}%</p>
-                    </div>
+                <div class="max-h-72 overflow-y-auto divide-y divide-[#F2F2F0]">
+                    {% for req in critical_requests %}
+                        <a href="{{ req.detail_url }}" class="block px-4 py-3 hover:bg-[#FAFAFA] transition-colors">
+                            <p class="text-[12px] font-semibold text-[#FF0505]">{{ req.code }} · Critical</p>
+                            <p class="text-[12px] text-[#4A4947] truncate mt-0.5">{{ req.heading }}</p>
+                        </a>
+                    {% endfor %}
+                    {% for item in overdue_preview %}
+                        <a href="{{ item.detail_url }}" class="block px-4 py-3 hover:bg-[#FAFAFA] transition-colors">
+                            <p class="text-[12px] font-semibold text-[#2B2A29]">{{ item.title }} <span class="text-[#FF0505]">({{ item.days_overdue }}d overdue)</span></p>
+                            <p class="text-[11.5px] text-[#8E8C89] truncate mt-0.5">{{ item.building_name }}</p>
+                        </a>
+                    {% endfor %}
+                    {% if not critical_requests and not overdue_preview %}
+                        <div class="px-4 py-6 text-center text-[12.5px] text-[#8E8C89]">
+                            All caught up — no urgent notifications.
+                        </div>
+                    {% endif %}
                 </div>
             </div>
-            <!-- Recent Active Tickets -->
-            <div class="bg-white rounded-2xl border border-gray-100 p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-base font-bold text-gray-900">Recent Active Tickets</h3>
-                    <a href="{% url 'backend:ticket_list' %}"
-                       class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">
-                        View All Tickets
+        </div>
+    </div>
+</header>
+{% endblock %}
+
+{% block page_header %}
+<!-- Overview Title & Filter Controls Bar (1112px Container) -->
+<div class="max-w-[1112px] mx-auto px-4 sm:px-6 lg:px-0 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3 mb-5">
+    <h1 id="page_title" class="ov-mono text-[22px] font-medium text-[#2B2A29] leading-tight">Overview</h1>
+
+    <form id="overviewFilterForm" method="get" action="{% url 'backend:dash_board' %}" class="flex flex-wrap items-center gap-2">
+        <input type="hidden" id="ovStartDate" name="start_date" value="{{ start_date_str }}">
+        <input type="hidden" id="ovEndDate" name="end_date" value="{{ end_date_str }}">
+
+        <!-- Date Range Compound Pill -->
+        <div class="inline-flex items-center rounded-[8px] bg-[#EAEAE8] border border-[#E2E2E0] p-0.5 h-[34px]">
+            <button type="button"
+                    id="ovDateRangeBtn"
+                    class="inline-flex items-center gap-1.5 h-[28px] px-2.5 rounded-[6px] bg-white text-[#2B2A29] text-[12px] font-medium shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:bg-[#FAFAFA] transition-colors">
+                <svg class="w-3.5 h-3.5 text-[#5C5B59]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <path d="M16 2v4M8 2v4M3 10h18" />
+                </svg>
+                <span id="ovDateRangeText">{{ date_range_label }}</span>
+                <svg class="w-3 h-3 text-[#8E8C89]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+                </svg>
+            </button>
+            <input type="text" id="ovFlatpickrHost" class="sr-only" tabindex="-1" aria-hidden="true">
+            <span class="px-2.5 text-[11.5px] text-[#8E8C89] font-normal hidden sm:inline">{{ prev_range_label }}</span>
+        </div>
+
+        <!-- Division Select -->
+        <select name="division" id="ovDivisionSelect" class="ov-filter-select" aria-label="Filter by division">
+            <option value="">All Divisions</option>
+            {% for div in divisions %}
+                <option value="{{ div.id }}" {% if selected_division == div.id|stringformat:"s" %}selected{% endif %}>{{ div.name }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Subdivision Select -->
+        <select name="subdivision" id="ovSubdivisionSelect" class="ov-filter-select" aria-label="Filter by subdivision">
+            <option value="">All Subdivisions</option>
+            {% for sub in subdivisions %}
+                <option value="{{ sub.id }}" {% if selected_subdivision == sub.id|stringformat:"s" %}selected{% endif %}>{{ sub.name }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Section Select -->
+        <select name="section" id="ovSectionSelect" class="ov-filter-select" aria-label="Filter by section">
+            <option value="">All Sections</option>
+            {% for sec in sections %}
+                <option value="{{ sec.id }}" {% if selected_section == sec.id|stringformat:"s" %}selected{% endif %}>{{ sec.name }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Reset Button -->
+        <a href="{% url 'backend:dash_board' %}"
+           class="ov-btn-white h-[34px] px-3 text-[12.5px]">
+            <span>Reset</span>
+            <svg class="w-3.5 h-3.5 text-[#5C5B59]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
+                <path d="M3 3v5h5" />
+            </svg>
+        </a>
+    </form>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-[1112px] mx-auto space-y-5 pb-8">
+
+    <!-- ════════════════════════ ROW 1: Building Operations Overview (351px) + Unassigned Tickets (741px) ════════════════════════ -->
+    <div class="flex flex-col lg:flex-row gap-5 items-start">
+
+        <!-- Building Operations Overview (Fixed 351px x Hug 366px) -->
+        <div class="w-full lg:w-[351px] shrink-0 ov-card">
+            <div class="ov-card-header">
+                <h2 class="ov-card-title">Building Operations Overview</h2>
+            </div>
+            <div class="ov-inner-card py-[24px] flex flex-col justify-between gap-[10px] min-h-[306px]">
+                <!-- Total Buildings -->
+                <div class="px-[18px] pb-3 border-b border-[#EFEFED] flex items-center justify-between gap-3">
+                    <div>
+                        <p class="text-[15px] font-normal text-[#969491] tracking-[-0.01em] leading-snug">Total Buildings</p>
+                        <a href="{% url 'backend:building_list' %}" class="ov-details-link mt-2">
+                            Details
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                        </a>
+                    </div>
+                    <span class="ov-kpi-num">{{ total_buildings_padded }}</span>
+                </div>
+
+                <!-- Total Equipments -->
+                <div class="px-[18px] py-1.5 pb-3 border-b border-[#EFEFED] flex items-center justify-between gap-3">
+                    <div>
+                        <p class="text-[15px] font-normal text-[#969491] tracking-[-0.01em] leading-snug">Total Equipments</p>
+                        <a href="{% url 'backend:equipment_list' %}" class="ov-details-link mt-2">
+                            Details
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                        </a>
+                    </div>
+                    <span class="ov-kpi-num">{{ total_equipment_padded }}</span>
+                </div>
+
+                <!-- Active Maintenance -->
+                <div class="px-[18px] py-1.5 pb-3 border-b border-[#EFEFED] flex items-center justify-between gap-3">
+                    <div>
+                        <p class="text-[15px] font-normal text-[#969491] tracking-[-0.01em] leading-snug">Active Maintenance</p>
+                        <a href="{% url 'backend:maintenance' %}" class="ov-details-link mt-2">
+                            Details
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                        </a>
+                    </div>
+                    <span class="ov-kpi-num">{{ active_maintenance_padded }}</span>
+                </div>
+
+                <!-- Overdue Maintenance -->
+                <div class="px-[18px] pt-1.5 flex items-center justify-between gap-3">
+                    <div>
+                        <p class="text-[15px] font-normal text-[#969491] tracking-[-0.01em] leading-snug">Overdue Maintenance</p>
+                        <a href="{% url 'backend:maintenance' %}" class="ov-details-link mt-2">
+                            Details
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                        </a>
+                    </div>
+                    <span class="ov-kpi-num ov-kpi-num-danger">{{ overdue_count_padded }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Unassigned Tickets (Fixed 741px x Hug 365px) -->
+        <div class="w-full lg:w-[741px] flex-1 min-w-0 ov-card">
+            <div class="ov-card-header">
+                <div class="flex items-center gap-2">
+                    <h2 class="ov-card-title">Unassigned Tickets</h2>
+                    <span class="ov-count-badge">{{ unassigned_ticket_count }}</span>
+                </div>
+                <a href="{% url 'backend:ticket_list' %}" class="ov-link-orange">
+                    View All
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                </a>
+            </div>
+
+            <div class="ov-inner-card py-[8px] px-[6px] flex flex-col gap-[10px] min-h-[305px]">
+                {% for ticket in unassigned_tickets %}
+                    <div class="rounded-[6px] bg-white border border-[#F2F2F2] py-[11px] px-[14px] flex items-center justify-between gap-4 hover:border-[#E5E5E3] transition-colors h-[89px]">
+                        <div class="flex items-center gap-3.5 min-w-0">
+                            <div class="w-10 h-10 rounded-[8px] bg-[#FFF8F4] border border-[#FFD6BE] flex items-center justify-center text-[#55534F] shrink-0">
+                                <svg class="w-[18px] h-[18px]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12.08 1.67H7.91c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25h4.17c.69 0 1.25-.56 1.25-1.25s-.56-1.25-1.25-1.25Z" />
+                                    <path d="M6.66 12.5h2.86M6.66 9.17h6.67" />
+                                    <path d="M13.33 2.92c1.29.04 2.07.18 2.6.72.73.73.73 1.91.73 4.26v5.43c0 2.36 0 3.54-.73 4.27-.73.73-1.91.73-4.27.73H8.33c-2.36 0-3.54 0-4.27-.73-.73-.73-.73-1.91-.73-4.27V7.9c0-2.35 0-3.53.73-4.26.54-.54 1.31-.68 2.6-.72" />
+                                </svg>
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-[14px] font-semibold leading-none tracking-normal text-[#2B2823] truncate">
+                                    WO-{{ ticket.opened_at|date:"Y" }}-{{ ticket.id|stringformat:"03d" }} {{ ticket.get_priority_display }}
+                                </p>
+                                <p class="text-[13px] text-[#7A7976] truncate mt-1.5 leading-tight">
+                                    {{ ticket.title }} · {{ ticket.building.name|default:"—" }}
+                                </p>
+                                <p class="text-[12px] text-[#A3A29F] mt-1 leading-tight">
+                                    Created {{ ticket.opened_at|date:"d M, H:i" }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col items-end gap-2 shrink-0">
+                            {% if ticket.priority == 'critical' %}
+                                <span class="px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#FEE2E2] text-[#D9383A]">Critical</span>
+                            {% elif ticket.priority == 'high' %}
+                                <span class="px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#FEECEC] text-[#D9383A]">High</span>
+                            {% elif ticket.priority == 'medium' %}
+                                <span class="px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#FDEEEF] text-[#C94A57]">Medium</span>
+                            {% else %}
+                                <span class="px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#FDEFF0] text-[#B86A70]">Low</span>
+                            {% endif %}
+                            <a href="{% url 'backend:ticket_detail' ticket.id %}" class="ov-btn-white">Assign</a>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="flex-1 flex flex-col items-center justify-center py-12 px-4 text-center">
+                        <div class="w-10 h-10 rounded-full bg-[#F2F2F0] flex items-center justify-center text-[#716F6C] mb-2.5">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        <p class="text-[14px] font-medium text-[#2B2823]">No unassigned tickets</p>
+                        <p class="text-[12.5px] text-[#8E8C89] mt-0.5">All open work orders have been assigned.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════ ROW 2: Left (691px) + Right (401px) Columns ════════════════════════ -->
+    <div class="flex flex-col lg:flex-row gap-5 items-start">
+
+        <!-- LEFT COLUMN (691px): Trend + Critical Requests + Overdue Maintenance -->
+        <div class="w-full lg:w-[691px] shrink-0 space-y-5">
+
+            <!-- Card 1: Maintenance Activity Trend (691px x 304px, Inner 679px x 244px) -->
+            <div class="ov-card">
+                <div class="ov-card-header flex-wrap">
+                    <h2 class="ov-card-title">Maintenance Activity Trend</h2>
+                    <div class="inline-flex items-center bg-[#ECECEB] p-0.5 rounded-[8px]" role="group" aria-label="Trend window">
+                        <button type="button" class="ov-seg-btn" data-trend-range="30">30 Days</button>
+                        <button type="button" class="ov-seg-btn is-active" data-trend-range="7">7 Days</button>
+                        <button type="button" class="ov-seg-btn" data-trend-range="90">90 Days</button>
+                    </div>
+                </div>
+
+                <!-- Frame 2147207632: 679px x 244px, Radius 6px, BG #FFFFFF, Padding 8px -->
+                <div class="ov-inner-card p-[8px] flex flex-col md:flex-row items-stretch justify-between h-auto md:h-[244px] box-border">
+                    <!-- Left Metrics & Segmented Completion Rate Meter (Width 246px) -->
+                    <div class="w-full md:w-[246px] shrink-0 flex flex-col justify-between py-1.5 px-3 box-border">
+                        <div class="space-y-3.5">
+                            <div class="flex items-center justify-between gap-2">
+                                <div class="flex items-baseline gap-2">
+                                    <span id="trendRequestedTotal" class="ov-kpi-num text-[24px] text-right inline-block min-w-[29px] leading-none">{{ trend_7.total_requested }}</span>
+                                    <span class="text-[14px] font-medium text-[#7A7976] leading-none">Requested</span>
+                                </div>
+                                <span id="trendRequestedDelta" class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#E7F6EE] text-[#1E8E5A]">
+                                    {% if trend_7.requested_delta >= 0 %}+{% endif %}{{ trend_7.requested_delta }}%
+                                </span>
+                            </div>
+
+                            <div class="flex items-center justify-between gap-2">
+                                <div class="flex items-baseline gap-2">
+                                    <span id="trendCompletedTotal" class="ov-kpi-num text-[24px] text-right inline-block min-w-[29px] leading-none">{{ trend_7.total_completed }}</span>
+                                    <span class="text-[14px] font-medium text-[#7A7976] leading-none">Completed</span>
+                                </div>
+                                <span id="trendCompletedDelta" class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#E7F6EE] text-[#1E8E5A]">
+                                    {% if trend_7.completed_delta >= 0 %}+{% endif %}{{ trend_7.completed_delta }}%
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 border-t border-[#EFEFED]">
+                            <p class="text-[13px] font-medium text-[#7A7976]">Competition Rate</p>
+                            <p id="trendCompletionRate" class="ov-mono text-[17px] font-semibold text-[#2B2823] mt-1 mb-2">{{ trend_7.completion_rate }}%</p>
+                            <div id="completionMeter" class="flex items-center gap-[3px]" aria-label="Completion rate bar">
+                                <!-- 26 segmented bars generated by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Grouped Bar Chart (Frame 2147207687: Top 8px, Left 254px, 417px x 228px, bg #F6F6F6, radius 4px) -->
+                    <div class="w-full md:w-[417px] md:h-[228px] shrink-0 bg-[#F6F6F6] rounded-[4px] p-2.5 flex flex-col justify-between box-border">
+                        <div class="relative h-[178px] w-full">
+                            <canvas id="activityTrendChart"></canvas>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-5 pt-1 text-[12px] text-[#6E6D6B]">
+                            <span class="inline-flex items-center gap-1.5">
+                                <span class="w-2.5 h-2.5 rounded-[2px] bg-[#3BA36E] inline-block"></span>
+                                Request Received
+                            </span>
+                            <span class="inline-flex items-center gap-1.5">
+                                <span class="w-2.5 h-2.5 rounded-[2px] bg-[#648BD8] inline-block"></span>
+                                Work Orders Completed
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Critical Maintenance Requests (Blush Pink Tray #FFE0E0, 691px x 359px) -->
+            <div class="ov-card-critical">
+                <div class="ov-card-header">
+                    <div class="flex items-center gap-2">
+                        <h2 class="ov-card-title">Critical Maintenance Requests</h2>
+                        <span class="ov-count-badge ov-count-badge-critical">{{ critical_requests_count }}</span>
+                    </div>
+                    <a href="{% url 'backend:ticket_list' %}" class="ov-link-orange">
+                        View All
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
                     </a>
                 </div>
-                <div class="divide-y divide-gray-50">
-                    {% for ticket in recent_tickets %}
-                        <div class="flex items-start gap-3 py-3 hover:bg-gray-50/50 rounded-lg transition-colors px-1 -mx-1">
-                            <!-- Icon -->
-                            <div class="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center shrink-0 mt-0.5">
-                                <i class="fas fa-tools text-xs text-red-500"></i>
-                            </div>
-                            <!-- Info -->
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center gap-1.5 flex-wrap">
-                                    <span class="text-[10px] font-bold bg-gray-100 text-gray-400 px-1.5 py-px rounded whitespace-nowrap">TKT-{{ ticket.id }}</span>
-                                    <span class="text-sm font-bold text-gray-900 truncate">{{ ticket.title|truncatechars:30 }}</span>
-                                </div>
-                                <p class="text-[11px] text-gray-400 mt-0.5">
-                                    <i class="fas fa-building text-[9px]"></i>
-                                    {{ ticket.building.surname|default:ticket.building.name|truncatechars:25 }}
-                                </p>
-                            </div>
-                            <!-- Status + time -->
-                            <div class="shrink-0 text-right">
-                                {% if ticket.priority == 'critical' %}
-                                    <span class="inline-block text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-red-100 text-red-600">Critical</span>
-                                {% elif ticket.status == 'in_progress' %}
-                                    <span class="inline-block text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-600">In Progress</span>
-                                {% elif ticket.status == 'assigned' %}
-                                    <span class="inline-block text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-600">Pending</span>
-                                {% elif ticket.status == 'resolved' %}
-                                    <span class="inline-block text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-600">Resolved</span>
-                                {% else %}
-                                    <span class="inline-block text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-600">{{ ticket.get_status_display }}</span>
-                                {% endif %}
-                                <p class="text-[10px] text-gray-400 mt-1">
-                                    <i class="far fa-clock"></i> {{ ticket.opened_at|timesince|truncatewords:2 }} ago
-                                </p>
-                            </div>
-                        </div>
-                    {% empty %}
-                        <div class="text-center py-10 text-gray-400">
-                            <i class="fas fa-check-circle text-3xl mb-2 block text-emerald-500"></i>
-                            <p class="text-sm font-medium">No active tickets</p>
-                            <p class="text-xs">All systems running smoothly</p>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-        <!-- ════════════════════════ ROW 4: Critical Alerts + Infrastructure ════════════════════════ -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <!-- Critical Alerts -->
-            <div class="bg-white rounded-2xl border border-gray-100 p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center gap-2">
-                        <h3 class="text-base font-bold text-gray-900">Critical Alerts</h3>
-                        {% if new_alert_count > 0 %}
-                            <span class="inline-flex items-center gap-1 bg-red-600 text-white text-[10px] font-bold px-2 py-px rounded-full">{{ new_alert_count }} NEW</span>
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="divide-y divide-gray-50">
-                    {% for alert in critical_alerts %}
-                        <div class="py-3.5">
-                            <div class="flex items-start justify-between gap-3">
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-bold text-gray-900 truncate">
-                                        {{ alert.get_alert_type_display }}: {{ alert.title|truncatechars:35 }}
-                                    </p>
-                                    {% if alert.building %}
-                                        <p class="text-[11px] text-gray-400 mt-0.5">{{ alert.building.surname|default:alert.building.name }}</p>
-                                    {% endif %}
-                                    <p class="text-[11px] text-red-500 font-medium mt-1">
-                                        <i class="fas fa-exclamation-circle text-[9px]"></i>
-                                        {{ alert.description|truncatechars:50|default:"Action required" }}
-                                    </p>
-                                </div>
-                                {% if alert.severity == 'critical' %}
-                                    <span class="inline-block text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-red-100 text-red-600 shrink-0">Critical</span>
-                                {% elif alert.severity == 'high' %}
-                                    <span class="inline-block text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-orange-100 text-orange-600 shrink-0">High</span>
-                                {% elif alert.severity == 'medium' %}
-                                    <span class="inline-block text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-600 shrink-0">Medium</span>
-                                {% else %}
-                                    <span class="inline-block text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-600 shrink-0">Low</span>
-                                {% endif %}
-                            </div>
-                        </div>
-                    {% empty %}
-                        <div class="text-center py-10 text-gray-400">
-                            <i class="fas fa-shield-alt text-3xl mb-2 block text-emerald-500"></i>
-                            <p class="text-sm font-medium">No critical alerts</p>
-                            <p class="text-xs">All systems are operating normally</p>
-                        </div>
-                    {% endfor %}
-                </div>
-                {% if critical_alerts %}
-                    <div class="text-center mt-3 pt-3 border-t border-gray-100">
-                        <button class="text-xs font-semibold text-gray-400 hover:text-gray-600 transition-colors">
-                            Acknowledge All Alerts
-                        </button>
-                    </div>
-                {% endif %}
-            </div>
-            <!-- Infrastructure Footprint -->
-            <div class="bg-white rounded-xl border border-gray-100 p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-base font-bold text-gray-900">Infrastructure Footprint</h3>
-                    <div class="flex gap-3 text-[11px] text-gray-500">
-                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span> Healthy</span>
-                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500 inline-block"></span> Issues</span>
-                    </div>
-                </div>
-                <div id="infraGrid"
-                     class="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] gap-3 py-4">
-                    <!-- Populated by JS -->
-                </div>
-                {% if total_buildings == 0 %}
-                    <div class="text-center py-10 text-gray-400">
-                        <i class="fas fa-map-marked-alt text-3xl mb-2 block"></i>
-                        <p class="text-sm font-medium">No buildings registered</p>
-                        <p class="text-xs">Add buildings to see the infrastructure map</p>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    </section>
-{% endblock %}
-{% block extra_js %}
-    <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
-    <script>
-document.addEventListener('DOMContentLoaded', function() {
 
-    // ── Donut Chart ──
-    const ctx = document.getElementById('donutChart');
-    if (ctx) {
-        const data = [
+                <!-- Frame 2147207632: 679px x 299px, Radius 6px, Padding 8px, Gap 10px, BG #FFFFFF -->
+                <div class="ov-inner-card p-[8px] divide-y divide-[#F2F2F2] flex flex-col justify-between min-h-[299px] box-border">
+                    {% for req in critical_requests %}
+                        <div class="px-3.5 py-3 flex items-center justify-between gap-4">
+                            <div class="min-w-0">
+                                <p class="text-[14px] font-semibold leading-none tracking-normal text-[#FF0505] truncate">{{ req.code }}</p>
+                                <p class="text-[14px] font-medium leading-none tracking-normal text-[#9D9C9A] truncate mt-2">{{ req.heading }}</p>
+                                <p class="text-[12px] leading-none text-[#A3A29F] truncate mt-1.5">
+                                    {{ req.subtitle|truncatechars:55 }}{% if req.time_obj %} · {{ req.time_obj|timesince|truncatewords:2 }} ago{% endif %}
+                                </p>
+                            </div>
+                            <div class="flex flex-col items-end gap-2 shrink-0">
+                                <span class="px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#FEE2E2] text-[#D9383A]">Critical</span>
+                                <a href="{{ req.detail_url }}" class="ov-btn-white">Review Request</a>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="py-12 px-4 text-center">
+                            <p class="text-[14px] font-medium text-[#2B2A29]">No critical maintenance requests</p>
+                            <p class="text-[12.5px] text-[#8E8C89] mt-0.5">All critical systems are operating normally.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Card 3: Overdue Maintenance (691px x 351px, with 3 Frame 2147207662 Items) -->
+            <div class="ov-card">
+                <div class="ov-card-header">
+                    <div class="flex items-center gap-2">
+                        <h2 class="ov-card-title">Overdue Maintenance</h2>
+                        <span class="ov-count-badge">{{ overdue_count }}</span>
+                    </div>
+                    <a href="{% url 'backend:maintenance' %}" class="ov-link-orange">
+                        View All
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                    </a>
+                </div>
+
+                <div class="ov-inner-card p-[8px] flex flex-col gap-[10px] min-h-[291px]">
+                    {% for item in overdue_preview %}
+                        <a href="{{ item.detail_url }}" class="ov-overdue-item group">
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="text-[14px] font-semibold text-[#2B2823] truncate">{{ item.title }}</span>
+                                    <span class="px-2 py-0.5 rounded-full bg-[#EFEFED] text-[#5C5B59] text-[11.5px] font-medium whitespace-nowrap">
+                                        {{ item.days_overdue }} days
+                                    </span>
+                                </div>
+                                <p class="text-[13px] text-[#7A7976] truncate mt-1">{{ item.equipment_id }} · {{ item.building_name }}</p>
+                                <p class="text-[12px] text-[#A3A29F] mt-0.5">Scheduled {{ item.scheduled_date|date:"d F Y" }}</p>
+                            </div>
+                            <svg class="w-4 h-4 text-[#FF6B16] shrink-0 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </a>
+                    {% empty %}
+                        <div class="py-12 px-4 text-center">
+                            <p class="text-[14px] font-medium text-[#2B2A29]">No overdue maintenance</p>
+                            <p class="text-[12.5px] text-[#8E8C89] mt-0.5">All scheduled maintenance tasks are on track.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN (401px): Equipment Overview + Quick Actions -->
+        <div class="w-full lg:w-[401px] shrink-0 space-y-5">
+
+            <!-- Card 1: Equipment Overview (401px x 586px) -->
+            <div class="ov-card">
+                <div class="ov-card-header">
+                    <h2 class="ov-card-title">Equipment Overview</h2>
+                    <a href="{% url 'backend:equipment_list' %}" class="ov-link-orange">
+                        View All
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                    </a>
+                </div>
+
+                <div class="ov-inner-card p-5 flex flex-col justify-between h-[526px]">
+                    <!-- Donut Chart Container (225px x 225px) -->
+                    <div class="relative w-[225px] h-[225px] mx-auto shrink-0">
+                        <canvas id="equipmentDonutChart" width="225" height="225"></canvas>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                            <span class="ov-kpi-num text-[28px] text-[#2B2823]">{{ total_equipment }}</span>
+                            <span class="text-[12px] text-[#8E8C89] mt-1">Total Equipment</span>
+                        </div>
+                    </div>
+
+                    <!-- Legend list (Urbanist 500 14px leading-none #716F6C, Geist Mono 500 14px #55534F) -->
+                    <div class="divide-y divide-[#F2F2F2] pt-2">
+                        <div class="flex items-center justify-between py-3 text-[14px]">
+                            <span class="flex items-center gap-2.5 text-[#716F6C] font-medium leading-none">
+                                <span class="w-3 h-3 rounded-[3px] bg-[#FF6B16]/40 inline-block shrink-0"></span>
+                                Active
+                            </span>
+                            <span class="ov-mono font-medium text-[#55534F] leading-none">{{ eq_active_padded }}</span>
+                        </div>
+                        <div class="flex items-center justify-between py-3 text-[14px]">
+                            <span class="flex items-center gap-2.5 text-[#716F6C] font-medium leading-none">
+                                <span class="w-3 h-3 rounded-[3px] bg-[#FDEEC7] inline-block shrink-0"></span>
+                                Under Maintenance
+                            </span>
+                            <span class="ov-mono font-medium text-[#55534F] leading-none">{{ eq_maintenance_padded }}</span>
+                        </div>
+                        <div class="flex items-center justify-between py-3 text-[14px]">
+                            <span class="flex items-center gap-2.5 text-[#716F6C] font-medium leading-none">
+                                <span class="w-3 h-3 rounded-[3px] bg-[#FFE4D3] inline-block shrink-0"></span>
+                                In Repair
+                            </span>
+                            <span class="ov-mono font-medium text-[#55534F] leading-none">{{ eq_repair_padded }}</span>
+                        </div>
+                        <div class="flex items-center justify-between py-3 text-[14px]">
+                            <span class="flex items-center gap-2.5 text-[#716F6C] font-medium leading-none">
+                                <span class="w-3 h-3 rounded-[3px] bg-[#BBBAB8] inline-block shrink-0"></span>
+                                Decommissioned
+                            </span>
+                            <span class="ov-mono font-medium text-[#55534F] leading-none">{{ eq_decommissioned_padded }}</span>
+                        </div>
+                        <div class="flex items-center justify-between py-3 text-[14px]">
+                            <span class="flex items-center gap-2.5 text-[#716F6C] font-medium leading-none">
+                                <span class="w-3 h-3 rounded-[3px] bg-[#DFDFDE] inline-block shrink-0"></span>
+                                Inactive
+                            </span>
+                            <span class="ov-mono font-medium text-[#55534F] leading-none">{{ eq_inactive_padded }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Quick Actions (401px x 440px with 2x2 Grid of 182.5px x 178px Cards) -->
+            <div class="ov-card">
+                <div class="ov-card-header">
+                    <h2 class="ov-card-title">Quick Actions</h2>
+                    <a href="{% url 'backend:building_list' %}" class="ov-link-orange">
+                        View All
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                    </a>
+                </div>
+
+                <div class="ov-inner-card p-[8px] flex flex-col justify-center h-[380px] box-border">
+                    <div class="grid grid-cols-2 gap-[8px]">
+                        <!-- Building -->
+                        <div class="ov-action-card">
+                            <div>
+                                <h3 class="text-[14px] font-semibold text-[#2B2823]">Building</h3>
+                                <p class="text-[12px] text-[#8E8C89] leading-relaxed mt-1">
+                                    Register a new government building and its equipment.
+                                </p>
+                            </div>
+                            <div>
+                                <a href="{% url 'backend:building_add' %}" class="ov-btn-action">Add Building</a>
+                            </div>
+                        </div>
+
+                        <!-- Equipment -->
+                        <div class="ov-action-card">
+                            <div>
+                                <h3 class="text-[14px] font-semibold text-[#2B2823]">Equipment</h3>
+                                <p class="text-[12px] text-[#8E8C89] leading-relaxed mt-1">
+                                    Register equipment and assign it to a building.
+                                </p>
+                            </div>
+                            <div>
+                                <a href="{% url 'backend:equipment_add' %}" class="ov-btn-action">Add Equipment</a>
+                            </div>
+                        </div>
+
+                        <!-- Report -->
+                        <div class="ov-action-card">
+                            <div>
+                                <h3 class="text-[14px] font-semibold text-[#2B2823]">Report</h3>
+                                <p class="text-[12px] text-[#8E8C89] leading-relaxed mt-1">
+                                    Submit a new maintenance or repair request.
+                                </p>
+                            </div>
+                            <div>
+                                <a href="{% url 'backend:ticket_add' %}" class="ov-btn-action">Report a Problem</a>
+                            </div>
+                        </div>
+
+                        <!-- Maintenance -->
+                        <div class="ov-action-card">
+                            <div>
+                                <h3 class="text-[14px] font-semibold text-[#2B2823]">Maintenance</h3>
+                                <p class="text-[12px] text-[#8E8C89] leading-relaxed mt-1">
+                                    Review assigned, unassigned and ongoing maintenance work.
+                                </p>
+                            </div>
+                            <div>
+                                <a href="{% url 'backend:maintenance' %}" class="ov-btn-action">View Tasks</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════ FULL-WIDTH ROW 3: Upcoming Maintenance Table ════════════════════════ -->
+    <div class="ov-card w-full">
+        <div class="ov-card-header">
+            <div class="flex items-center gap-2">
+                <h2 class="ov-card-title">Upcoming Maintenance</h2>
+                <span class="ov-count-badge">{{ upcoming_maintenance_count }}</span>
+            </div>
+            <a href="{% url 'backend:maintenance' %}" class="ov-link-orange">
+                View All
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </a>
+        </div>
+
+        <div class="ov-inner-card p-[6px] overflow-hidden">
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse min-w-[780px]">
+                    <thead>
+                        <tr class="bg-[#F6F6F6] text-[13px] font-medium text-[#5C5B59]">
+                            <th class="py-3 px-4 rounded-l-[4px]">Equipment</th>
+                            <th class="py-3 px-4">Equipment ID</th>
+                            <th class="py-3 px-4">Building</th>
+                            <th class="py-3 px-4">maint. Type</th>
+                            <th class="py-3 px-4">Due Date</th>
+                            <th class="py-3 px-4">Assigned Techn.</th>
+                            <th class="py-3 px-4">Status</th>
+                            <th class="py-3 px-4 text-right rounded-r-[4px]">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#F2F2F0] text-[13.5px]">
+                        {% for row in upcoming_table_rows %}
+                            <tr class="hover:bg-[#FAFAFA] transition-colors">
+                                <td class="py-3.5 px-4 font-semibold text-[#2B2823]">
+                                    {% if row.equipment_pk %}
+                                        <a href="{% url 'backend:equipment_detail' row.equipment_pk %}" class="underline decoration-[#9A9895] underline-offset-2 hover:text-[#FF6B16] hover:decoration-[#FF6B16] transition-colors">
+                                            {{ row.equipment_name }}
+                                        </a>
+                                    {% else %}
+                                        {{ row.equipment_name }}
+                                    {% endif %}
+                                </td>
+                                <td class="py-3.5 px-4 text-[#7A7976]">{{ row.equipment_code }}</td>
+                                <td class="py-3.5 px-4 text-[#2B2823]">
+                                    {% if row.building_pk %}
+                                        <a href="{% url 'backend:building_details' row.building_pk %}" class="underline decoration-[#9A9895] underline-offset-2 hover:text-[#FF6B16] hover:decoration-[#FF6B16] transition-colors">
+                                            {{ row.building_name }}
+                                        </a>
+                                    {% else %}
+                                        {{ row.building_name }}
+                                    {% endif %}
+                                </td>
+                                <td class="py-3.5 px-4 text-[#7A7976]">{{ row.maint_type }}</td>
+                                <td class="py-3.5 px-4 text-[#7A7976] whitespace-nowrap">{{ row.due_date|date:"d F Y" }}</td>
+                                <td class="py-3.5 px-4 text-[#7A7976]">{{ row.technician_name }}</td>
+                                <td class="py-3.5 px-4">
+                                    {% if row.status_key == 'overdue' %}
+                                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#FEECEC] text-[#D9383A]">Overdue</span>
+                                    {% elif row.status_key == 'in_progress' %}
+                                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#EFF6FF] text-[#2563EB]">In Progress</span>
+                                    {% elif row.status_key == 'completed' %}
+                                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#E7F6EE] text-[#1E8E5A]">Completed</span>
+                                    {% else %}
+                                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#FEF3E6] text-[#C86E12]">{{ row.status_label }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="py-3.5 px-4 text-right">
+                                    <a href="{{ row.action_url }}" class="ov-btn-white">View</a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="8" class="py-10 px-4 text-center text-[#8E8C89] text-[13.5px]">
+                                    No upcoming maintenance scheduled yet.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════ FULL-WIDTH ROW 4: Recent Activities Timeline ════════════════════════ -->
+    <div class="ov-card w-full">
+        <div class="ov-card-header">
+            <div class="flex items-center gap-2">
+                <h2 class="ov-card-title">Recent Activities</h2>
+                <span class="ov-count-badge">{{ recent_activities_count }}</span>
+            </div>
+            <a href="{% url 'backend:ticket_list' %}" class="ov-link-orange">
+                View All
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </a>
+        </div>
+
+        <div class="ov-inner-card p-6">
+            {% if recent_activities %}
+                <div class="space-y-6">
+                    {% for act in recent_activities %}
+                        <div class="ov-timeline-item flex items-start gap-4">
+                            <!-- Timeline Circle Node (36px x 36px, bg #EFEFED, wrench icon stroke #5C5B59) -->
+                            <div class="w-9 h-9 rounded-full bg-[#EFEFED] flex items-center justify-center text-[#5C5B59] shrink-0 relative z-10">
+                                <svg class="w-[16px] h-[16px]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12.4012 4.32161C11.2158 3.59532 8.17342 2.20119 5.43291 2.55703C7.09064 3.69869 7.96273 4.31274 10.3154 6.40738M15.6783 7.59867C16.4046 8.78401 17.7988 11.8264 17.4429 14.5669C16.3012 12.9092 15.6872 12.0371 13.5925 9.68443M8.72725 9.51518L2.85275 15.3896C2.37624 15.8661 2.3834 16.6458 2.86873 17.1312C3.35408 17.6165 4.1338 17.6237 4.61031 17.1472L10.4848 11.2727M9.98875 7.68794L12.3118 10.011C12.5698 10.269 12.9871 10.2699 13.2439 10.0132L16.122 7.13508C16.3788 6.87829 16.3778 6.461 16.1199 6.20304L13.7968 3.87994C13.5388 3.62199 13.1215 3.62104 12.8648 3.87783L9.98658 6.75591C9.72983 7.0127 9.73075 7.42999 9.98875 7.68794Z" />
+                                </svg>
+                            </div>
+
+                            <!-- Content -->
+                            <div class="flex-1 min-w-0">
+                                <!-- Actor Header with Photo or Monogram Avatar -->
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-[7px] bg-[#E2E1DF] text-[#3D3C3A] text-[11px] font-semibold flex items-center justify-center shrink-0 border border-[#D5D4D2]">
+                                        {{ act.actor_initials }}
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="text-[14px] font-semibold text-[#2B2823] leading-tight truncate">{{ act.title }}</p>
+                                        <p class="text-[12px] text-[#8E8C89] leading-tight mt-0.5 truncate">By {{ act.actor_name }}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Inner Callout Card with Orange Left Accent Bar (bg #F8F8F7, border #F0F0EE) -->
+                                <div class="mt-2.5 rounded-[10px] bg-[#F8F8F7] border border-[#F0F0EE] px-4 py-3.5">
+                                    <div class="border-l-2 border-[#FF6B16] pl-3">
+                                        <p class="text-[10.5px] font-semibold uppercase tracking-wide text-[#5C5B59]">{{ act.badge_label }}</p>
+                                        <p class="text-[13px] text-[#555452] mt-1 leading-relaxed">{{ act.description }}</p>
+                                    </div>
+                                    <div class="mt-3 pt-2.5 border-t border-[#EFEFED] flex flex-wrap items-center gap-2 text-[11.5px]">
+                                        <span class="text-[#9A9895]">{{ act.time_str }} By {{ act.actor_name }}</span>
+                                        {% if act.ref_code %}
+                                            <a href="{{ act.ref_url }}" class="text-[#FF6B16] font-medium hover:underline">{{ act.ref_code }}</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="py-10 text-center">
+                    <p class="text-[13.5px] font-medium text-[#2B2A29]">No recent activities</p>
+                    <p class="text-[12px] text-[#8E8C89] mt-0.5">Maintenance logs and work order updates will appear here.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // ── Notification Popover ──
+    const notifBtn = document.getElementById('ovNotifBtn');
+    const notifMenu = document.getElementById('ovNotifMenu');
+    notifBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isHidden = notifMenu?.classList.toggle('hidden');
+        notifBtn.setAttribute('aria-expanded', String(!isHidden));
+    });
+    document.addEventListener('click', (e) => {
+        if (notifMenu && notifBtn && !notifMenu.contains(e.target) && !notifBtn.contains(e.target)) {
+            notifMenu.classList.add('hidden');
+            notifBtn.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    // ── Filter Bar Auto-submit & Date Range Picker ──
+    const filterForm = document.getElementById('overviewFilterForm');
+    const divSel = document.getElementById('ovDivisionSelect');
+    const subSel = document.getElementById('ovSubdivisionSelect');
+    const secSel = document.getElementById('ovSectionSelect');
+
+    divSel?.addEventListener('change', () => {
+        if (subSel) subSel.value = '';
+        if (secSel) secSel.value = '';
+        filterForm?.submit();
+    });
+    subSel?.addEventListener('change', () => {
+        if (secSel) secSel.value = '';
+        filterForm?.submit();
+    });
+    secSel?.addEventListener('change', () => {
+        filterForm?.submit();
+    });
+
+    const dateBtn = document.getElementById('ovDateRangeBtn');
+    const fpHost = document.getElementById('ovFlatpickrHost');
+    const startInput = document.getElementById('ovStartDate');
+    const endInput = document.getElementById('ovEndDate');
+    if (fpHost && dateBtn && typeof flatpickr !== 'undefined') {
+        const fp = flatpickr(fpHost, {
+            mode: 'range',
+            dateFormat: 'Y-m-d',
+            defaultDate: [startInput?.value, endInput?.value].filter(Boolean),
+            positionElement: dateBtn,
+            onClose(selectedDates) {
+                if (selectedDates.length === 2) {
+                    const fmt = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                    if (startInput) startInput.value = fmt(selectedDates[0]);
+                    if (endInput) endInput.value = fmt(selectedDates[1]);
+                    filterForm?.submit();
+                }
+            }
+        });
+        dateBtn.addEventListener('click', () => fp.open());
+    }
+
+    // ── Segmented Completion Rate Meter (26 segments) ──
+    const meterEl = document.getElementById('completionMeter');
+    const TOTAL_SEGMENTS = 26;
+    const renderCompletionMeter = (pct) => {
+        if (!meterEl) return;
+        const filledCount = Math.round((Math.max(0, Math.min(100, pct)) / 100) * TOTAL_SEGMENTS);
+        meterEl.innerHTML = '';
+        for (let i = 0; i < TOTAL_SEGMENTS; i++) {
+            const seg = document.createElement('span');
+            seg.className = 'ov-meter-bar' + (i < filledCount ? ' is-filled' : '');
+            meterEl.appendChild(seg);
+        }
+    };
+
+    // ── Maintenance Activity Trend Chart (7 / 30 / 90 days) ──
+    const trendDataMap = {{ trend_data_json|safe }};
+    const trendCanvas = document.getElementById('activityTrendChart');
+    let trendChart = null;
+
+    const updateTrendPanel = (rangeKey) => {
+        const d = trendDataMap[rangeKey] || trendDataMap['7'];
+        if (!d) return;
+
+        const reqEl = document.getElementById('trendRequestedTotal');
+        const compEl = document.getElementById('trendCompletedTotal');
+        const reqDeltaEl = document.getElementById('trendRequestedDelta');
+        const compDeltaEl = document.getElementById('trendCompletedDelta');
+        const rateEl = document.getElementById('trendCompletionRate');
+
+        if (reqEl) reqEl.textContent = d.total_requested;
+        if (compEl) compEl.textContent = d.total_completed;
+        if (reqDeltaEl) {
+            reqDeltaEl.textContent = `${d.requested_delta >= 0 ? '+' : ''}${d.requested_delta}%`;
+            reqDeltaEl.className = d.requested_delta >= 0
+                ? 'px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#E7F6EE] text-[#1E8E5A]'
+                : 'px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#FEECEC] text-[#D9383A]';
+        }
+        if (compDeltaEl) {
+            compDeltaEl.textContent = `${d.completed_delta >= 0 ? '+' : ''}${d.completed_delta}%`;
+            compDeltaEl.className = d.completed_delta >= 0
+                ? 'px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#E7F6EE] text-[#1E8E5A]'
+                : 'px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#FEECEC] text-[#D9383A]';
+        }
+        if (rateEl) rateEl.textContent = `${d.completion_rate}%`;
+        renderCompletionMeter(d.completion_rate);
+
+        if (trendChart) {
+            trendChart.data.labels = d.labels;
+            trendChart.data.datasets[0].data = d.requested;
+            trendChart.data.datasets[1].data = d.completed;
+            trendChart.update();
+        }
+    };
+
+    if (trendCanvas) {
+        const initData = trendDataMap['7'];
+        renderCompletionMeter(initData.completion_rate);
+
+        trendChart = new Chart(trendCanvas, {
+            type: 'bar',
+            data: {
+                labels: initData.labels,
+                datasets: [
+                    {
+                        label: 'Request Received',
+                        data: initData.requested,
+                        backgroundColor: '#3BA36E',
+                        borderRadius: { topLeft: 4, topRight: 4 },
+                        borderSkipped: 'bottom',
+                        barPercentage: 0.78,
+                        categoryPercentage: 0.62,
+                    },
+                    {
+                        label: 'Work Orders Completed',
+                        data: initData.completed,
+                        backgroundColor: '#648BD8',
+                        borderRadius: { topLeft: 4, topRight: 4 },
+                        borderSkipped: 'bottom',
+                        barPercentage: 0.78,
+                        categoryPercentage: 0.62,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#2B2A29',
+                        titleFont: { family: 'Geist Mono, monospace', size: 12 },
+                        bodyFont: { family: 'Urbanist, sans-serif', size: 12 },
+                        padding: 10,
+                        cornerRadius: 8,
+                    },
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        border: { display: false },
+                        ticks: {
+                            color: '#8E8C89',
+                            font: { family: 'Urbanist, sans-serif', size: 11 },
+                        },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        suggestedMax: 12,
+                        grid: {
+                            color: '#E9E9E7',
+                            drawTicks: false,
+                        },
+                        border: { display: false },
+                        ticks: {
+                            stepSize: 2,
+                            precision: 0,
+                            padding: 8,
+                            color: '#8E8C89',
+                            font: { family: 'Urbanist, sans-serif', size: 11 },
+                        },
+                    },
+                },
+            },
+        });
+    }
+
+    document.querySelectorAll('[data-trend-range]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('[data-trend-range]').forEach((b) => b.classList.remove('is-active'));
+            btn.classList.add('is-active');
+            updateTrendPanel(btn.getAttribute('data-trend-range'));
+        });
+    });
+
+    // ── Equipment Overview Donut Chart (225px x 225px, active slice 40% opacity #FFB68C) ──
+    const donutCanvas = document.getElementById('equipmentDonutChart');
+    if (donutCanvas) {
+        const eqData = [
             {{ eq_active }},
             {{ eq_maintenance }},
             {{ eq_repair }},
+            {{ eq_decommissioned }},
             {{ eq_outdated }},
-            {{ eq_decommissioned }}
         ];
-        const total = data.reduce((a, b) => a + b, 0);
+        const eqTotal = eqData.reduce((a, b) => a + b, 0);
 
-        new Chart(ctx, {
+        new Chart(donutCanvas, {
             type: 'doughnut',
             data: {
-                labels: ['Active', 'Maintenance', 'In Repair', 'Outdated', 'Decommissioned'],
+                labels: ['Active', 'Under Maintenance', 'In Repair', 'Decommissioned', 'Inactive'],
                 datasets: [{
-                    data: total > 0 ? data : [1],
-                    backgroundColor: total > 0
-                        ? ['#10B981', '#F59E0B', '#3B82F6', '#9CA3AF', '#1F2937']
-                        : ['#E5E7EB'],
-                    borderWidth: 3,
-                    borderColor: '#fff',
-                    hoverBorderWidth: 4,
-                    hoverOffset: 8,
-                }]
+                    data: eqTotal > 0 ? eqData : [1],
+                    backgroundColor: eqTotal > 0
+                        ? ['rgba(255, 107, 22, 0.4)', '#FDEEC7', '#FFE4D3', '#BBBAB8', '#DFDFDE']
+                        : ['#EAEAE8'],
+                    borderWidth: eqTotal > 0 ? 4 : 0,
+                    borderColor: '#FFFFFF',
+                    borderRadius: eqTotal > 0 ? 3 : 0,
+                    hoverOffset: 3,
+                }],
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: true,
-                cutout: '68%',
+                cutout: '62%',
                 plugins: {
                     legend: { display: false },
                     tooltip: {
-                        backgroundColor: '#1F2937',
-                        titleFont: { family: 'Inter', weight: '600' },
-                        bodyFont: { family: 'Inter' },
+                        backgroundColor: '#2B2A29',
+                        titleFont: { family: 'Urbanist, sans-serif', weight: '600', size: 12 },
+                        bodyFont: { family: 'Geist Mono, monospace', size: 12 },
                         padding: 10,
                         cornerRadius: 8,
                         callbacks: {
-                            label: function(context) {
-                                if (total === 0) return 'No equipment';
-                                const pct = ((context.raw / total) * 100).toFixed(1);
-                                return `${context.label}: ${context.raw} (${pct}%)`;
-                            }
-                        }
-                    }
+                            label(ctx) {
+                                if (eqTotal === 0) return 'No equipment registered';
+                                const pct = ((ctx.raw / eqTotal) * 100).toFixed(1);
+                                return ` ${ctx.label}: ${ctx.raw} (${pct}%)`;
+                            },
+                        },
+                    },
                 },
-                animation: {
-                    animateRotate: true,
-                    duration: 1200,
-                    easing: 'easeOutQuart',
-                }
             },
-            plugins: [{
-                id: 'centerText',
-                beforeDraw(chart) {
-                    const { ctx: c, width, height } = chart;
-                    c.save();
-                    c.font = '800 1.5rem Inter, sans-serif';
-                    c.fillStyle = '#1F2937';
-                    c.textAlign = 'center';
-                    c.textBaseline = 'middle';
-                    c.fillText(total.toString(), width / 2, height / 2 - 8);
-                    c.font = '500 .7rem Inter, sans-serif';
-                    c.fillStyle = '#9CA3AF';
-                    c.fillText('Total', width / 2, height / 2 + 14);
-                    c.restore();
-                }
-            }]
         });
     }
-
-    //Infrastructure Grid
-    const grid = document.getElementById('infraGrid');
-    if (grid) {
-        const totalBuildings = {{ total_buildings }};
-        const activeBuildings = {{ active_buildings }};
-
-        if (totalBuildings > 0) {
-            for (let i = 0; i < totalBuildings; i++) {
-                const isHealthy = i < activeBuildings;
-                const card = document.createElement('div');
-                card.className = `rounded-xl p-3 text-center relative cursor-default flex flex-col items-center justify-center min-h-[70px] border transition-all duration-200 ${
-                    isHealthy
-                        ? 'bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200'
-                        : 'bg-gradient-to-br from-red-50 to-red-100 border-red-200'
-                }`;
-                card.innerHTML = `
-                    <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full ${isHealthy ? 'bg-emerald-500' : 'bg-red-500'}"></span>
-                    <i class="fas fa-building text-lg ${isHealthy ? 'text-emerald-600' : 'text-red-500'} mb-1"></i>
-                    <span class="text-[10px] font-semibold ${isHealthy ? 'text-emerald-800' : 'text-red-800'}">B${String(i + 1).padStart(2, '0')}</span>
-                `;
-                grid.appendChild(card);
-            }
-        }
-    }
-
-    //Number count-up animation
-    document.querySelectorAll('.dash-stat-value').forEach(el => {
-        const target = parseInt(el.textContent);
-        if (isNaN(target) || target === 0) return;
-        let current = 0;
-        const step = Math.max(1, Math.ceil(target / 40));
-        const timer = setInterval(() => {
-            current += step;
-            if (current >= target) {
-                current = target;
-                clearInterval(timer);
-            }
-            el.textContent = current;
-        }, 30);
-    });
 });
-    </script>
+</script>
 {% endblock %}

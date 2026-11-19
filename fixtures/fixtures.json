@@ -22,7 +22,7 @@
       "module_name": "Building Management",
       "menu_name": "Building Management",
       "menu_url": "/building/",
-      "menu_icon": "fa-solid fa-building icon",
+      "menu_icon": "<svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M5.41795 4.07347L7.91795 3.06059C9.99309 2.21985 11.0307 1.79948 11.7653 2.29639C12.5 2.79329 12.5 3.91543 12.5 6.15969V17.9167H3.33334V7.17257C3.33334 6.08044 3.33334 5.53436 3.61828 5.11077C3.90321 4.68717 4.40812 4.4826 5.41795 4.07347Z\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#716F6C\"/><path d=\"M12.5 7.08334H13.3333C14.9047 7.08334 15.6903 7.08334 16.1785 7.5715C16.6667 8.05965 16.6667 8.84534 16.6667 10.4167V17.9167H12.5\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#716F6C\"/><path d=\"M1.66666 17.9167H18.3333\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke=\"#716F6C\"/><path d=\"M6.66666 7.08334H9.16666\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#716F6C\"/><path d=\"M6.66666 10.4167H9.16666\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#716F6C\"/><path d=\"M6.66666 13.75H9.16666\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#716F6C\"/></svg>",
       "menu_description": "Manage building information.",
       "parent_id": null,
       "is_main_menu": true,
@@ -33,92 +33,12 @@
   },
   {
     "model": "backend.backendmenu",
-    "pk": 400,
-    "fields": {
-      "module_name": "Setup",
-      "menu_name": "Setup",
-      "menu_url": "division-setup",
-      "menu_icon": "fa-solid fa-boxes-stacked icon",
-      "menu_description": "Manage division information.",
-      "parent_id": 3,
-      "is_main_menu": false,
-      "is_sub_menu": true,
-      "is_sub_child_menu": false,
-      "is_active": true
-    }
-  },
-  {
-    "model": "backend.backendmenu",
-    "pk": 401,
-    "fields": {
-      "module_name": "Building",
-      "menu_name": "Division Setup",
-      "menu_url": "/division/",
-      "menu_icon": "fa-solid fa-boxes-stacked icon",
-      "menu_description": "Manage division information.",
-      "parent_id": 400,
-      "is_main_menu": false,
-      "is_sub_menu": false,
-      "is_sub_child_menu": true,
-      "is_active": true
-    }
-  },
-  {
-    "model": "backend.backendmenu",
-    "pk": 402,
-    "fields": {
-      "module_name": "Building",
-      "menu_name": "subdivision",
-      "menu_url": "/subdivision/",
-      "menu_icon": "fa-solid fa-boxes-stacked icon",
-      "menu_description": "Manage section information.",
-      "parent_id": 400,
-      "is_main_menu": false,
-      "is_sub_menu": false,
-      "is_sub_child_menu": true,
-      "is_active": true
-    }
-  },
-  {
-    "model": "backend.backendmenu",
-    "pk": 403,
-    "fields": {
-      "module_name": "Building",
-      "menu_name": "Section",
-      "menu_url": "/section/",
-      "menu_icon": "fa-solid fa-boxes-stacked icon",
-      "menu_description": "Manage sub-division information.",
-      "parent_id": 400,
-      "is_main_menu": false,
-      "is_sub_menu": false,
-      "is_sub_child_menu": true,
-      "is_active": true
-    }
-  },
-  {
-    "model": "backend.backendmenu",
-    "pk": 404,
-    "fields": {
-      "module_name": "Building",
-      "menu_name": "Technician",
-      "menu_url": "/technician/",
-      "menu_icon": "fa-solid fa-user-gear icon",
-      "menu_description": "Manage technician information.",
-      "parent_id": 400,
-      "is_main_menu": false,
-      "is_sub_menu": false,
-      "is_sub_child_menu": true,
-      "is_active": true
-    }
-  },
-  {
-    "model": "backend.backendmenu",
     "pk": 450,
     "fields": {
       "module_name": "Building",
       "menu_name": "Building List",
       "menu_url": "building-setup",
-      "menu_icon": "fa-solid fa-building icon",
+      "menu_icon": "<svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M5.41795 4.07347L7.91795 3.06059C9.99309 2.21985 11.0307 1.79948 11.7653 2.29639C12.5 2.79329 12.5 3.91543 12.5 6.15969V17.9167H3.33334V7.17257C3.33334 6.08044 3.33334 5.53436 3.61828 5.11077C3.90321 4.68717 4.40812 4.4826 5.41795 4.07347Z\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#716F6C\"/><path d=\"M12.5 7.08334H13.3333C14.9047 7.08334 15.6903 7.08334 16.1785 7.5715C16.6667 8.05965 16.6667 8.84534 16.6667 10.4167V17.9167H12.5\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#716F6C\"/><path d=\"M1.66666 17.9167H18.3333\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke=\"#716F6C\"/><path d=\"M6.66666 7.08334H9.16666\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#716F6C\"/><path d=\"M6.66666 10.4167H9.16666\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#716F6C\"/><path d=\"M6.66666 13.75H9.16666\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#716F6C\"/></svg>",
       "menu_description": "Manage building list information.",
       "parent_id": 3,
       "is_main_menu": false,
@@ -134,7 +54,7 @@
       "module_name": "Building",
       "menu_name": "Building List",
       "menu_url": "/building/",
-      "menu_icon": "fa-solid fa-building icon",
+      "menu_icon": "<svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M5.41795 4.07347L7.91795 3.06059C9.99309 2.21985 11.0307 1.79948 11.7653 2.29639C12.5 2.79329 12.5 3.91543 12.5 6.15969V17.9167H3.33334V7.17257C3.33334 6.08044 3.33334 5.53436 3.61828 5.11077C3.90321 4.68717 4.40812 4.4826 5.41795 4.07347Z\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#716F6C\"/><path d=\"M12.5 7.08334H13.3333C14.9047 7.08334 15.6903 7.08334 16.1785 7.5715C16.6667 8.05965 16.6667 8.84534 16.6667 10.4167V17.9167H12.5\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#716F6C\"/><path d=\"M1.66666 17.9167H18.3333\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke=\"#716F6C\"/><path d=\"M6.66666 7.08334H9.16666\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#716F6C\"/><path d=\"M6.66666 10.4167H9.16666\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#716F6C\"/><path d=\"M6.66666 13.75H9.16666\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#716F6C\"/></svg>",
       "menu_description": "Manage building list information.",
       "parent_id": 450,
       "is_main_menu": false,
@@ -150,7 +70,7 @@
       "module_name": "Equipment Management",
       "menu_name": "Equipment Management",
       "menu_url": "/equipment/",
-      "menu_icon": "fa-solid fa-screwdriver-wrench icon",
+      "menu_icon": "<svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12.4012 4.32161C11.2158 3.59532 8.17342 2.20119 5.43291 2.55703C7.09064 3.69869 7.96273 4.31274 10.3154 6.40738M15.6783 7.59867C16.4046 8.78401 17.7988 11.8264 17.4429 14.5669C16.3012 12.9092 15.6872 12.0371 13.5925 9.68443M8.72725 9.51518L2.85275 15.3896C2.37624 15.8661 2.3834 16.6458 2.86873 17.1312C3.35408 17.6165 4.1338 17.6237 4.61031 17.1472L10.4848 11.2727M9.98875 7.68794L12.3118 10.011C12.5698 10.269 12.9871 10.2699 13.2439 10.0132L16.122 7.13508C16.3788 6.87829 16.3778 6.461 16.1199 6.20304L13.7968 3.87994C13.5388 3.62199 13.1215 3.62104 12.8648 3.87783L9.98658 6.75591C9.72983 7.0127 9.73075 7.42999 9.98875 7.68794Z\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#716F6C\"/></svg>",
       "menu_description": "Manage equipment, types, and dynamic data fields.",
       "parent_id": null,
       "is_main_menu": true,
@@ -310,7 +230,7 @@
       "module_name": "Maintenance",
       "menu_name": "Maintenance",
       "menu_url": "maintenance",
-      "menu_icon": "fa-solid fa-calendar-check icon",
+      "menu_icon": "<svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12.0801 1.66687H7.91342C7.22307 1.66687 6.66342 2.22652 6.66342 2.91687C6.66342 3.60723 7.22307 4.16687 7.91342 4.16687H12.0801C12.7704 4.16687 13.3301 3.60723 13.3301 2.91687C13.3301 2.22652 12.7704 1.66687 12.0801 1.66687Z\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#716F6C\"/><path d=\"M6.66342 12.5003H9.5206M6.66342 9.16693H13.3301\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#716F6C\"/><path d=\"M13.3301 2.91687C14.6247 2.95589 15.3968 3.10027 15.9312 3.63468C16.6634 4.36691 16.6634 5.5454 16.6634 7.9024V13.3331C16.6634 15.6901 16.6634 16.8686 15.9312 17.6009C15.1989 18.3331 14.0204 18.3331 11.6634 18.3331H8.33008C5.97306 18.3331 4.79455 18.3331 4.06232 17.6009C3.33009 16.8686 3.33009 15.6901 3.33008 13.3331L3.33009 7.90245C3.33009 5.54542 3.33009 4.3669 4.06232 3.63467C4.59672 3.10026 5.36884 2.95588 6.66333 2.91687\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#716F6C\"/></svg>",
       "menu_description": "Manage scheduled maintenance.",
       "parent_id": null,
       "is_main_menu": true,
@@ -334,6 +254,85 @@
       "is_sub_child_menu": false,
       "is_active": true
     }
-   
+  },
+  {
+    "model": "backend.backendmenu",
+    "pk": 750,
+    "fields": {
+      "module_name": "Technicians",
+      "menu_name": "Technicians",
+      "menu_url": "/technician/",
+      "menu_icon": "<svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M13.3333 17.5V15.8333C13.3333 14.9493 12.9821 14.1014 12.357 13.4763C11.7319 12.8512 10.884 12.5 10 12.5H5C4.11595 12.5 3.2681 12.8512 2.64298 13.4763C2.01786 14.1014 1.66667 14.9493 1.66667 15.8333V17.5\" stroke=\"#716F6C\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M7.5 9.16667C9.34095 9.16667 10.8333 7.67428 10.8333 5.83333C10.8333 3.99238 9.34095 2.5 7.5 2.5C5.65905 2.5 4.16667 3.99238 4.16667 5.83333C4.16667 7.67428 5.65905 9.16667 7.5 9.16667Z\" stroke=\"#716F6C\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M18.3333 17.5V15.8333C18.3328 15.0948 18.087 14.3773 17.6345 13.7936C17.182 13.2099 16.5484 12.793 15.8333 12.6083\" stroke=\"#716F6C\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M13.3333 2.60834C14.0503 2.79192 14.6859 3.20892 15.1397 3.7936C15.5935 4.37827 15.8399 5.09736 15.8399 5.8375C15.8399 6.57765 15.5935 7.29674 15.1397 7.88141C14.6859 8.46609 14.0503 8.88309 13.3333 9.06667\" stroke=\"#716F6C\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
+      "menu_description": "Manage technician information.",
+      "parent_id": null,
+      "is_main_menu": true,
+      "is_sub_menu": false,
+      "is_sub_child_menu": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "backend.backendmenu",
+    "pk": 800,
+    "fields": {
+      "module_name": "Organization Setup",
+      "menu_name": "Organization Setup",
+      "menu_url": "organization-setup",
+      "menu_icon": "<svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"10\" cy=\"4.5\" r=\"2\" stroke=\"#716F6C\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><circle cx=\"5\" cy=\"15.5\" r=\"2\" stroke=\"#716F6C\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><circle cx=\"15\" cy=\"15.5\" r=\"2\" stroke=\"#716F6C\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M10 6.5V10.5M10 10.5H6.5C5.67157 10.5 5 11.1716 5 12V13.5M10 10.5H13.5C14.3284 10.5 15 11.1716 15 12V13.5\" stroke=\"#716F6C\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
+      "menu_description": "Manage divisions, subdivisions, and sections.",
+      "parent_id": null,
+      "is_main_menu": true,
+      "is_sub_menu": false,
+      "is_sub_child_menu": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "backend.backendmenu",
+    "pk": 401,
+    "fields": {
+      "module_name": "Organization Setup",
+      "menu_name": "Division",
+      "menu_url": "/division/",
+      "menu_icon": "fa-solid fa-boxes-stacked icon",
+      "menu_description": "Manage division information.",
+      "parent_id": 800,
+      "is_main_menu": false,
+      "is_sub_menu": true,
+      "is_sub_child_menu": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "backend.backendmenu",
+    "pk": 402,
+    "fields": {
+      "module_name": "Organization Setup",
+      "menu_name": "Subdivision",
+      "menu_url": "/subdivision/",
+      "menu_icon": "fa-solid fa-boxes-stacked icon",
+      "menu_description": "Manage subdivision information.",
+      "parent_id": 800,
+      "is_main_menu": false,
+      "is_sub_menu": true,
+      "is_sub_child_menu": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "backend.backendmenu",
+    "pk": 403,
+    "fields": {
+      "module_name": "Organization Setup",
+      "menu_name": "Section",
+      "menu_url": "/section/",
+      "menu_icon": "fa-solid fa-boxes-stacked icon",
+      "menu_description": "Manage section information.",
+      "parent_id": 800,
+      "is_main_menu": false,
+      "is_sub_menu": true,
+      "is_sub_child_menu": false,
+      "is_active": true
+    }
   }
 ]

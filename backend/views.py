@@ -81,6 +81,8 @@ def format_local_datetime(dt_obj):
     return local_dt.strftime('%d-%b-%Y %H:%M:%S')
 
 def paginate_data(request, page_num, data_list):
+    if hasattr(data_list, 'ordered') and not data_list.ordered:
+        data_list = data_list.order_by('id')
     items_per_page, max_pages = 10, 10
     paginator = Paginator(data_list, items_per_page)
     last_page_number = paginator.num_pages
@@ -1095,17 +1097,68 @@ def building_details(request, data_id):
 @login_required
 def dash_board(request):
     today = date.today()
-    seven_days = today + timedelta(days=7)
+
+    # --- Parse Filters ---
+    division_id = (request.GET.get('division') or '').strip()
+    subdivision_id = (request.GET.get('subdivision') or '').strip()
+    section_id = (request.GET.get('section') or '').strip()
+    start_date_param = (request.GET.get('start_date') or '').strip()
+    end_date_param = (request.GET.get('end_date') or '').strip()
+
+    try:
+        end_date = datetime.strptime(end_date_param, '%Y-%m-%d').date() if end_date_param else today
+    except ValueError:
+        end_date = today
+
+    try:
+        start_date = datetime.strptime(start_date_param, '%Y-%m-%d').date() if start_date_param else (end_date - timedelta(days=16))
+    except ValueError:
+        start_date = end_date - timedelta(days=16)
+
+    if start_date > end_date:
+        start_date, end_date = end_date, start_date
+
+    span_days = max(1, (end_date - start_date).days + 1)
+    prev_end_date = start_date - timedelta(days=1)
+    prev_start_date = prev_end_date - timedelta(days=span_days - 1)
+
+    if start_date.month == end_date.month and start_date.year == end_date.year:
+        date_range_label = f"{start_date.strftime('%b %d')} to {end_date.strftime('%d')}"
+    else:
+        date_range_label = f"{start_date.strftime('%b %d')} to {end_date.strftime('%b %d')}"
+
+    if prev_start_date.month == prev_end_date.month and prev_start_date.year == prev_end_date.year:
+        prev_range_label = f"vs {prev_start_date.strftime('%b %d')} to {prev_end_date.strftime('%d')}"
+    else:
+        prev_range_label = f"vs {prev_start_date.strftime('%b %d')} to {prev_end_date.strftime('%b %d')}"
+
+    # --- Dropdown Options ---
+    divisions = Division.objects.filter(deleted=False, is_active=True).order_by('name')
+    subdivisions = SubDivision.objects.filter(deleted=False, is_active=True).order_by('name')
+    if division_id.isdigit():
+        subdivisions = subdivisions.filter(division_id=int(division_id))
+    sections = Section.objects.filter(deleted=False, is_active=True).order_by('name')
+    if subdivision_id.isdigit():
+        sections = sections.filter(subdivision_id=int(subdivision_id))
+    elif division_id.isdigit():
+        sections = sections.filter(subdivision__division_id=int(division_id))
 
     # --- Building stats ---
     buildings_qs = Building.objects.filter(deleted=False)
+    if division_id.isdigit():
+        buildings_qs = buildings_qs.filter(division_id=int(division_id))
+    if subdivision_id.isdigit():
+        buildings_qs = buildings_qs.filter(subdivision_id=int(subdivision_id))
+    if section_id.isdigit():
+        buildings_qs = buildings_qs.filter(section_id=int(section_id))
+
     total_buildings = buildings_qs.count()
     active_buildings = buildings_qs.filter(status='Active').count()
     inactive_buildings = buildings_qs.filter(status='Inactive').count()
     renovation_buildings = buildings_qs.filter(status='Under Maintenance').count()
 
     # --- Equipment stats ---
-    equipment_qs = Equipment.objects.filter(deleted=False)
+    equipment_qs = Equipment.objects.filter(deleted=False, building__in=buildings_qs)
     total_equipment = equipment_qs.count()
     eq_active = equipment_qs.filter(status='active').count()
     eq_maintenance = equipment_qs.filter(status='under_maintenance').count()
@@ -1113,7 +1166,6 @@ def dash_board(request):
     eq_outdated = equipment_qs.filter(status='inactive').count()
     eq_decommissioned = equipment_qs.filter(status='decommissioned').count()
 
-    # Percentages for donut chart
     if total_equipment > 0:
         uptime_pct = round(eq_active / total_equipment * 100, 1)
         repair_pct = round(eq_repair / total_equipment * 100, 1)
@@ -1122,50 +1174,312 @@ def dash_board(request):
         uptime_pct = repair_pct = outdated_pct = 0
 
     # --- Tickets ---
-    tickets_qs = Ticket.objects.filter(deleted=False)
+    tickets_qs = Ticket.objects.filter(deleted=False, building__in=buildings_qs)
     open_tickets = tickets_qs.filter(status__in=['open', 'assigned', 'in_progress'])
     open_ticket_count = open_tickets.count()
     critical_ticket_count = open_tickets.filter(priority='critical').count()
     assigned_ticket_count = open_tickets.filter(status__in=['assigned', 'in_progress']).count()
-    unassigned_ticket_count = open_tickets.filter(status='open').count()
+
+    unassigned_tickets_qs = (
+        tickets_qs.filter(status='open')
+        .select_related('equipment', 'building', 'equipment__equipment_type')
+        .order_by('-opened_at')
+    )
+    unassigned_ticket_count = unassigned_tickets_qs.count()
+    unassigned_tickets = list(unassigned_tickets_qs[:3])
     recent_tickets = (
         open_tickets
         .select_related('equipment', 'building', 'equipment__equipment_type')
         .order_by('-opened_at')[:5]
     )
 
-    # --- Upcoming maintenance (next 7 days) ---
-    upcoming_maintenance = (
-        ScheduledMaintenance.objects
-        .filter(deleted=False, status='pending', scheduled_date__gte=today, scheduled_date__lte=seven_days)
-        .select_related('equipment', 'equipment__building')
-        .order_by('scheduled_date')
-    )
-    upcoming_maintenance_count = upcoming_maintenance.count()
-    overdue_maintenance = (
-        ScheduledMaintenance.objects
-        .filter(deleted=False, status='pending', scheduled_date__lt=today)
-    )
-    overdue_count = overdue_maintenance.count()
+    # --- Maintenance Records & Scheduled Maintenance ---
+    maint_records_qs = MaintenanceRecord.objects.filter(
+        deleted=False,
+        equipment__in=equipment_qs,
+    ).select_related('equipment', 'equipment__equipment_type', 'equipment__building', 'assigned_to', 'assigned_to__user', 'technician', 'maintenance')
 
-    # --- Critical alerts ---
+    sched_maint_qs = ScheduledMaintenance.objects.filter(
+        deleted=False,
+        equipment__in=equipment_qs,
+    ).select_related('equipment', 'equipment__equipment_type', 'equipment__building', 'assigned_to')
+
+    active_maintenance_count = (
+        maint_records_qs.filter(maintainance_status__in=['pending', 'in_progress']).count()
+        + sched_maint_qs.filter(status='pending', scheduled_date__gte=today).count()
+    )
+
+    # --- Overdue Maintenance (Scheduled + Pending Records past due) ---
+    overdue_sched = list(sched_maint_qs.filter(status='pending', scheduled_date__lt=today).order_by('scheduled_date'))
+    overdue_records = list(
+        maint_records_qs.filter(maintainance_status__in=['pending', 'in_progress'], maintenance_date__lt=today)
+        .order_by('maintenance_date')
+    )
+
+    overdue_items = []
+    for sm in overdue_sched:
+        days_late = max(1, (today - sm.scheduled_date).days)
+        overdue_items.append({
+            'title': sm.title or (sm.equipment.equipment_type.name if sm.equipment and sm.equipment.equipment_type else 'Scheduled Maintenance'),
+            'days_overdue': days_late,
+            'equipment_id': sm.equipment.equipment_id if sm.equipment else '—',
+            'building_name': sm.equipment.building.name if sm.equipment and sm.equipment.building else '—',
+            'scheduled_date': sm.scheduled_date,
+            'detail_url': reverse('backend:equipment_detail', args=[sm.equipment.id]) if sm.equipment else reverse('backend:maintenance'),
+        })
+    for mr in overdue_records:
+        days_late = max(1, (today - mr.maintenance_date).days)
+        eq_label = mr.equipment.equipment_type.name if mr.equipment and mr.equipment.equipment_type else 'Maintenance'
+        overdue_items.append({
+            'title': f"{eq_label} ({mr.get_record_type_display()})",
+            'days_overdue': days_late,
+            'equipment_id': mr.equipment.equipment_id if mr.equipment else '—',
+            'building_name': mr.equipment.building.name if mr.equipment and mr.equipment.building else '—',
+            'scheduled_date': mr.maintenance_date,
+            'detail_url': reverse('backend:maintenance_record_detail', args=[mr.id]),
+        })
+    overdue_items.sort(key=lambda x: x['scheduled_date'])
+    overdue_count = len(overdue_items)
+    overdue_preview = overdue_items[:3]
+
+    # --- Upcoming Maintenance Table (includes overdue + upcoming pending/in_progress) ---
+    upcoming_rows = []
+    for sm in sched_maint_qs.filter(status='pending').order_by('scheduled_date')[:10]:
+        is_overdue = sm.scheduled_date < today
+        tech_name = (sm.assigned_to.get_full_name() or sm.assigned_to.username) if sm.assigned_to else 'Unassigned'
+        upcoming_rows.append({
+            'equipment_name': sm.title or (sm.equipment.equipment_type.name if sm.equipment and sm.equipment.equipment_type else 'Equipment'),
+            'equipment_pk': sm.equipment.id if sm.equipment else None,
+            'equipment_code': sm.equipment.equipment_id if sm.equipment else '—',
+            'building_name': sm.equipment.building.name if sm.equipment and sm.equipment.building else '—',
+            'building_pk': sm.equipment.building.id if sm.equipment and sm.equipment.building else None,
+            'maint_type': sm.get_recurrence_display() if sm.recurrence != 'once' else 'Routine',
+            'due_date': sm.scheduled_date,
+            'technician_name': tech_name,
+            'status_label': 'Overdue' if is_overdue else 'Pending',
+            'status_key': 'overdue' if is_overdue else 'pending',
+            'action_url': reverse('backend:equipment_detail', args=[sm.equipment.id]) if sm.equipment else reverse('backend:maintenance'),
+        })
+
+    for mr in maint_records_qs.filter(maintainance_status__in=['pending', 'in_progress']).order_by('maintenance_date')[:10]:
+        is_overdue = mr.maintenance_date < today
+        if mr.assigned_to:
+            tech_name = mr.assigned_to.display_name
+        elif mr.technician:
+            tech_name = mr.technician.get_full_name() or mr.technician.username
+        else:
+            tech_name = 'Unassigned'
+        status_key = 'overdue' if is_overdue else mr.maintainance_status
+        status_label = 'Overdue' if is_overdue else mr.get_maintainance_status_display()
+        upcoming_rows.append({
+            'equipment_name': mr.equipment.equipment_type.name if mr.equipment and mr.equipment.equipment_type else 'Equipment',
+            'equipment_pk': mr.equipment.id if mr.equipment else None,
+            'equipment_code': mr.equipment.equipment_id if mr.equipment else '—',
+            'building_name': mr.equipment.building.name if mr.equipment and mr.equipment.building else '—',
+            'building_pk': mr.equipment.building.id if mr.equipment and mr.equipment.building else None,
+            'maint_type': mr.get_record_type_display(),
+            'due_date': mr.maintenance_date,
+            'technician_name': tech_name,
+            'status_label': status_label,
+            'status_key': status_key,
+            'action_url': reverse('backend:maintenance_record_detail', args=[mr.id]),
+        })
+
+    upcoming_rows.sort(key=lambda x: x['due_date'])
+    upcoming_maintenance_count = len(upcoming_rows)
+    upcoming_table_rows = upcoming_rows[:10]
+
+    # --- Critical Maintenance Requests ---
+    critical_requests = []
+    crit_tickets = (
+        open_tickets.filter(priority='critical')
+        .select_related('equipment', 'equipment__equipment_type', 'building')
+        .order_by('-opened_at')
+    )
+    for t in crit_tickets[:3]:
+        eq_name = t.equipment.equipment_type.name if t.equipment and t.equipment.equipment_type else t.title
+        bldg_name = t.building.name if t.building else '—'
+        desc = t.issue_description or t.title
+        critical_requests.append({
+            'code': f"MR-{t.opened_at.strftime('%Y')}-{t.id:03d}",
+            'heading': f"{eq_name} · {bldg_name}",
+            'subtitle': desc,
+            'time_obj': t.opened_at,
+            'detail_url': reverse('backend:ticket_detail', args=[t.id]),
+        })
+
     alerts_qs = CriticalAlert.objects.filter(is_acknowledged=False).order_by('-id')
+    if division_id.isdigit() or subdivision_id.isdigit() or section_id.isdigit():
+        alerts_qs = alerts_qs.filter(Q(building__in=buildings_qs) | Q(equipment__in=equipment_qs))
     new_alert_count = alerts_qs.count()
     critical_alerts = alerts_qs[:5]
 
+    if len(critical_requests) < 3:
+        for alert in alerts_qs[: (3 - len(critical_requests))]:
+            bldg_name = alert.building.name if alert.building else 'General'
+            critical_requests.append({
+                'code': f"AL-{today.year}-{alert.id:03d}",
+                'heading': f"{alert.title} · {bldg_name}",
+                'subtitle': alert.description or alert.get_alert_type_display(),
+                'time_obj': None,
+                'detail_url': reverse('backend:equipment_detail', args=[alert.equipment.id]) if alert.equipment else reverse('backend:ticket_list'),
+            })
+    critical_requests_count = crit_tickets.count() + new_alert_count
+
+    # --- Maintenance Activity Trend (7, 30, 90 days) ---
+    def _build_trend(days_window):
+        bucket_count = 5
+        window_end = end_date
+        window_start = window_end - timedelta(days=days_window - 1)
+        prev_win_end = window_start - timedelta(days=1)
+        prev_win_start = prev_win_end - timedelta(days=days_window - 1)
+
+        req_tickets = tickets_qs.filter(opened_at__date__gte=window_start, opened_at__date__lte=window_end)
+        req_records = maint_records_qs.filter(created_at__date__gte=window_start, created_at__date__lte=window_end)
+        comp_tickets = tickets_qs.filter(status__in=['resolved', 'closed'], updated_at__date__gte=window_start, updated_at__date__lte=window_end)
+        comp_records = maint_records_qs.filter(maintainance_status='completed', updated_at__date__gte=window_start, updated_at__date__lte=window_end)
+
+        prev_req = (
+            tickets_qs.filter(opened_at__date__gte=prev_win_start, opened_at__date__lte=prev_win_end).count()
+            + maint_records_qs.filter(created_at__date__gte=prev_win_start, created_at__date__lte=prev_win_end).count()
+        )
+        prev_comp = (
+            tickets_qs.filter(status__in=['resolved', 'closed'], updated_at__date__gte=prev_win_start, updated_at__date__lte=prev_win_end).count()
+            + maint_records_qs.filter(maintainance_status='completed', updated_at__date__gte=prev_win_start, updated_at__date__lte=prev_win_end).count()
+        )
+
+        labels = []
+        requested_series = []
+        completed_series = []
+        step = max(1, days_window // bucket_count)
+
+        for i in range(bucket_count):
+            b_start = window_start + timedelta(days=i * step)
+            b_end = window_end if i == bucket_count - 1 else min(window_end, b_start + timedelta(days=step - 1))
+            labels.append(b_start.strftime('%b %d'))
+            r_cnt = (
+                req_tickets.filter(opened_at__date__gte=b_start, opened_at__date__lte=b_end).count()
+                + req_records.filter(created_at__date__gte=b_start, created_at__date__lte=b_end).count()
+            )
+            c_cnt = (
+                comp_tickets.filter(updated_at__date__gte=b_start, updated_at__date__lte=b_end).count()
+                + comp_records.filter(updated_at__date__gte=b_start, updated_at__date__lte=b_end).count()
+            )
+            requested_series.append(r_cnt)
+            completed_series.append(c_cnt)
+
+        tot_req = sum(requested_series)
+        tot_comp = sum(completed_series)
+        comp_rate = round((tot_comp / tot_req) * 100) if tot_req > 0 else 0
+        comp_rate = min(100, comp_rate)
+
+        req_delta = round(((tot_req - prev_req) / prev_req) * 100) if prev_req > 0 else (100 if tot_req > 0 else 0)
+        comp_delta = round(((tot_comp - prev_comp) / prev_comp) * 100) if prev_comp > 0 else (100 if tot_comp > 0 else 0)
+
+        return {
+            'labels': labels,
+            'requested': requested_series,
+            'completed': completed_series,
+            'total_requested': tot_req,
+            'total_completed': tot_comp,
+            'requested_delta': req_delta,
+            'completed_delta': comp_delta,
+            'completion_rate': comp_rate,
+        }
+
+    trend_7 = _build_trend(7)
+    trend_30 = _build_trend(30)
+    trend_90 = _build_trend(90)
+    trend_data_json = json.dumps({
+        '7': trend_7,
+        '30': trend_30,
+        '90': trend_90,
+    })
+
+    # --- Recent Activities Timeline ---
+    recent_activities = []
+    ticket_logs = (
+        TicketActivityLog.objects.filter(ticket__in=tickets_qs)
+        .select_related('ticket', 'actor', 'ticket__building')
+        .order_by('-created_at')[:10]
+    )
+    for log in ticket_logs:
+        actor_name = (log.actor.get_full_name() or log.actor.username) if log.actor else 'System'
+        initials = ''.join([p[0] for p in actor_name.split()[:2]]).upper() or 'SY'
+        ref_code = f"WO-{log.ticket.opened_at.strftime('%Y')}-{log.ticket.id:03d}" if log.ticket else ''
+        recent_activities.append({
+            'title': log.get_action_type_display(),
+            'badge_label': log.get_action_type_display().upper(),
+            'actor_name': actor_name,
+            'actor_initials': initials,
+            'description': log.description or f"Activity recorded on {ref_code}",
+            'timestamp': log.created_at,
+            'time_str': format_local_time(log.created_at, '%I:%M %p'),
+            'ref_code': ref_code,
+            'ref_url': reverse('backend:ticket_detail', args=[log.ticket.id]) if log.ticket else reverse('backend:ticket_list'),
+        })
+
+    if len(recent_activities) < 10:
+        for mr in maint_records_qs.order_by('-updated_at')[: (10 - len(recent_activities))]:
+            actor_obj = mr.updated_by or mr.created_by or mr.technician
+            if mr.assigned_to and not actor_obj:
+                actor_name = mr.assigned_to.display_name
+            elif actor_obj:
+                actor_name = actor_obj.get_full_name() or actor_obj.username
+            else:
+                actor_name = 'System'
+            initials = ''.join([p[0] for p in actor_name.split()[:2]]).upper() or 'SY'
+            bldg_name = mr.equipment.building.name if mr.equipment and mr.equipment.building else 'Facility'
+            eq_name = mr.equipment.equipment_type.name if mr.equipment and mr.equipment.equipment_type else 'Equipment'
+            status_title = f"Maintenance {mr.get_maintainance_status_display()}"
+            ref_code = mr.maintenance.maintenance_serial if mr.maintenance else f"MR-{mr.maintenance_date.year}-{mr.id:03d}"
+            recent_activities.append({
+                'title': status_title,
+                'badge_label': status_title.upper(),
+                'actor_name': actor_name,
+                'actor_initials': initials,
+                'description': mr.work_description or f"{mr.get_record_type_display()} maintenance on {eq_name} at {bldg_name}.",
+                'timestamp': mr.updated_at,
+                'time_str': format_local_time(mr.updated_at, '%I:%M %p'),
+                'ref_code': ref_code,
+                'ref_url': reverse('backend:maintenance_record_detail', args=[mr.id]),
+            })
+
+    recent_activities.sort(key=lambda x: x['timestamp'], reverse=True)
+    recent_activities = recent_activities[:10]
+    recent_activities_count = len(recent_activities)
+
     context = {
+        # Filter state
+        'divisions': divisions,
+        'subdivisions': subdivisions,
+        'sections': sections,
+        'selected_division': division_id,
+        'selected_subdivision': subdivision_id,
+        'selected_section': section_id,
+        'start_date_str': start_date.strftime('%Y-%m-%d'),
+        'end_date_str': end_date.strftime('%Y-%m-%d'),
+        'date_range_label': date_range_label,
+        'prev_range_label': prev_range_label,
         # Buildings
         'total_buildings': total_buildings,
+        'total_buildings_padded': f"{total_buildings:02d}",
         'active_buildings': active_buildings,
         'inactive_buildings': inactive_buildings,
         'renovation_buildings': renovation_buildings,
         # Equipment
         'total_equipment': total_equipment,
+        'total_equipment_padded': f"{total_equipment:02d}",
         'eq_active': eq_active,
+        'eq_active_padded': f"{eq_active:02d}",
         'eq_maintenance': eq_maintenance,
+        'eq_maintenance_padded': f"{eq_maintenance:02d}",
         'eq_repair': eq_repair,
+        'eq_repair_padded': f"{eq_repair:02d}",
         'eq_outdated': eq_outdated,
+        'eq_inactive_padded': f"{eq_outdated:02d}",
         'eq_decommissioned': eq_decommissioned,
+        'eq_decommissioned_padded': f"{eq_decommissioned:02d}",
         'uptime_pct': uptime_pct,
         'repair_pct': repair_pct,
         'outdated_pct': outdated_pct,
@@ -1174,13 +1488,27 @@ def dash_board(request):
         'critical_ticket_count': critical_ticket_count,
         'assigned_ticket_count': assigned_ticket_count,
         'unassigned_ticket_count': unassigned_ticket_count,
+        'unassigned_tickets': unassigned_tickets,
         'recent_tickets': recent_tickets,
-        # Maintenance
+        # Maintenance & Overdue
+        'active_maintenance_count': active_maintenance_count,
+        'active_maintenance_padded': f"{active_maintenance_count:02d}",
         'upcoming_maintenance_count': upcoming_maintenance_count,
+        'upcoming_table_rows': upcoming_table_rows,
         'overdue_count': overdue_count,
-        # Alerts
+        'overdue_count_padded': f"{overdue_count:02d}",
+        'overdue_preview': overdue_preview,
+        # Critical Requests & Alerts
         'new_alert_count': new_alert_count,
         'critical_alerts': critical_alerts,
+        'critical_requests': critical_requests,
+        'critical_requests_count': critical_requests_count,
+        # Trend Chart
+        'trend_7': trend_7,
+        'trend_data_json': trend_data_json,
+        # Recent Activities
+        'recent_activities': recent_activities,
+        'recent_activities_count': recent_activities_count,
     }
     return render(request, 'dashboard.html', context)
 
