@@ -305,6 +305,41 @@ class Technician(models.Model):
         name = self.display_name
         return name[0].upper() if name else "T"
 
+    @property
+    def primary_skill(self):
+        text = (self.about or '').lower()
+        if 'electric' in text:
+            return 'Electrical'
+        elif 'hvac' in text or 'refrigerat' in text:
+            return 'HVAC'
+        elif 'elevator' in text or 'lift' in text:
+            return 'Elevator'
+        elif 'plumb' in text or 'water' in text:
+            return 'Plumbing'
+        elif 'fire' in text or 'sprinkler' in text or 'alarm' in text:
+            return 'Fire Safety'
+        elif 'solar' in text or 'renewable' in text:
+            return 'Solar'
+        elif 'security' in text or 'cctv' in text:
+            return 'Security'
+        elif 'substation' in text or 'transformer' in text:
+            return 'Substation'
+        elif 'it' in text or 'network' in text or 'server' in text:
+            return 'IT'
+        elif 'drywall' in text or 'paint' in text or 'repair' in text or 'general' in text:
+            return 'General'
+        return 'General'
+
+    @property
+    def extra_skills_count(self):
+        text = (self.about or '')
+        words = len(text.split())
+        if words > 10:
+            return '3+'
+        elif words > 5:
+            return '2+'
+        return '1+'
+
 
 class EquipmentType(models.Model):
     name = models.CharField(max_length=50, unique=True)

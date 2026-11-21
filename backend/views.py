@@ -19,7 +19,7 @@ from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
 from django.core.cache import cache
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import JsonResponse, HttpResponse
@@ -83,7 +83,13 @@ def format_local_datetime(dt_obj):
 def paginate_data(request, page_num, data_list):
     if hasattr(data_list, 'ordered') and not data_list.ordered:
         data_list = data_list.order_by('id')
-    items_per_page, max_pages = 10, 10
+    try:
+        items_per_page = int(request.GET.get('per_page', 10))
+        if items_per_page <= 0:
+            items_per_page = 10
+    except (ValueError, TypeError):
+        items_per_page = 10
+    max_pages = 5
     paginator = Paginator(data_list, items_per_page)
     last_page_number = paginator.num_pages
 
@@ -567,18 +573,34 @@ def division_list(request):
         return render(request, "403.html", status=403)
 
     search = request.GET.get('search', '').strip()
-    qs = Division.objects.filter(deleted=False)
+    status = request.GET.get('status', '').strip()
+
+    qs = Division.objects.filter(deleted=False).annotate(
+        subdivision_count=Count('subdivisions', filter=Q(subdivisions__deleted=False), distinct=True),
+        building_count=Count('buildings', filter=Q(buildings__deleted=False), distinct=True),
+    ).order_by('id')
+
     if search:
         qs = qs.filter(Q(name__icontains=search) | Q(code__icontains=search))
+    if status == 'Active':
+        qs = qs.filter(is_active=True)
+    elif status == 'Inactive':
+        qs = qs.filter(is_active=False)
 
     page_num = request.GET.get('page', 1)
     data_list, paginator_list, last_page = paginate_data(request, page_num, qs)
+    per_page = request.GET.get('per_page', 10)
+    filtered_total_count = data_list.paginator.count
 
     context = {
         'data_list': data_list,
         'paginator_list': paginator_list,
         'last_page': last_page,
+        'per_page': per_page,
+        'filtered_total_count': filtered_total_count,
         'search': search,
+        'selected_status': status,
+        'status_choices': ['Active', 'Inactive'],
     }
     return render(request, 'division/list.html', context)
 
@@ -665,23 +687,38 @@ def subdivision_list(request):
 
     search = request.GET.get('search', '').strip()
     division_id = request.GET.get('division', '').strip()
-    qs = SubDivision.objects.filter(deleted=False).select_related('division')
+    status = request.GET.get('status', '').strip()
+
+    qs = SubDivision.objects.filter(deleted=False).select_related('division').annotate(
+        section_count=Count('sections', filter=Q(sections__deleted=False), distinct=True),
+        building_count=Count('buildings', filter=Q(buildings__deleted=False), distinct=True),
+    ).order_by('id')
 
     if search:
-        qs = qs.filter(Q(name__icontains=search))
+        qs = qs.filter(Q(name__icontains=search) | Q(code__icontains=search) | Q(division__name__icontains=search))
     if division_id:
         qs = qs.filter(division_id=division_id)
+    if status == 'Active':
+        qs = qs.filter(is_active=True)
+    elif status == 'Inactive':
+        qs = qs.filter(is_active=False)
 
     page_num = request.GET.get('page', 1)
     data_list, paginator_list, last_page = paginate_data(request, page_num, qs)
+    per_page = request.GET.get('per_page', 10)
+    filtered_total_count = data_list.paginator.count
 
     context = {
         'data_list': data_list,
         'paginator_list': paginator_list,
         'last_page': last_page,
+        'per_page': per_page,
+        'filtered_total_count': filtered_total_count,
         'search': search,
-        'division_id': division_id,
-        'divisions': Division.objects.filter(deleted=False, is_active=True),
+        'selected_division': division_id,
+        'selected_status': status,
+        'status_choices': ['Active', 'Inactive'],
+        'divisions': Division.objects.filter(deleted=False, is_active=True).order_by('name'),
     }
     return render(request, 'subdivision/list.html', context)
 
@@ -773,24 +810,44 @@ def section_list(request):
 
     search = request.GET.get('search', '').strip()
     subdivision_id = request.GET.get('subdivision', '').strip()
-    qs = Section.objects.filter(deleted=False).select_related('subdivision')
+    status = request.GET.get('status', '').strip()
+
+    qs = Section.objects.filter(deleted=False).select_related('subdivision', 'subdivision__division').annotate(
+        building_count=Count('buildings', filter=Q(buildings__deleted=False), distinct=True),
+    ).order_by('id')
+
     if search:
-        qs = qs.filter(Q(name__icontains=search))
+        qs = qs.filter(
+            Q(name__icontains=search) |
+            Q(code__icontains=search) |
+            Q(subdivision__name__icontains=search) |
+            Q(subdivision__division__name__icontains=search)
+        )
     if subdivision_id:
         qs = qs.filter(subdivision_id=subdivision_id)
+    if status == 'Active':
+        qs = qs.filter(is_active=True)
+    elif status == 'Inactive':
+        qs = qs.filter(is_active=False)
 
     page_num = request.GET.get('page', 1)
     data_list, paginator_list, last_page = paginate_data(request, page_num, qs)
+    per_page = request.GET.get('per_page', 10)
+    filtered_total_count = data_list.paginator.count
 
     context = {
         'data_list': data_list,
         'paginator_list': paginator_list,
         'last_page': last_page,
+        'per_page': per_page,
+        'filtered_total_count': filtered_total_count,
         'search': search,
-        'subdivision_id': subdivision_id,
-        'subdivisions': SubDivision.objects.filter(deleted=False, is_active=True),
+        'selected_subdivision': subdivision_id,
+        'selected_status': status,
+        'status_choices': ['Active', 'Inactive'],
+        'subdivisions': SubDivision.objects.filter(deleted=False, is_active=True).select_related('division').order_by('name'),
     }
-    return render(request, 'section/list.html', context) 
+    return render(request, 'section/list.html', context)
 
 
 @login_required
@@ -967,9 +1024,10 @@ def building_add(request):
     if not checkUserPermission(request, 'can_add', '/backend/location/building/'):
         return render(request, '403.html', status=403)
 
-    divisions = Division.objects.filter(deleted=False, is_active=True)
-    subdivisions = SubDivision.objects.filter(deleted=False, is_active=True)
-    sections = Section.objects.filter(deleted=False, is_active=True)
+    divisions = Division.objects.filter(deleted=False, is_active=True).order_by('name')
+    subdivisions = SubDivision.objects.filter(deleted=False, is_active=True).order_by('name')
+    sections = Section.objects.filter(deleted=False, is_active=True).order_by('name')
+    equipment_types = EquipmentType.objects.filter(deleted=False, is_active=True).order_by('name')
 
     if request.method == 'POST':
         building_id = request.POST.get('building_id', '').strip()
@@ -994,11 +1052,13 @@ def building_add(request):
         except ValueError:
             longitude = None
 
+        has_sections = Section.objects.filter(subdivision__division_id=division_id, deleted=False).exists() if division_id else False
+
         if not building_id:
             messages.error(request, 'Building ID is required.')
         elif not name:
             messages.error(request, 'Building Name is required.')
-        elif not section_id:
+        elif has_sections and not section_id:
             messages.error(request, 'Section is required.')
         elif not address:
             messages.error(request, 'Physical Address is required.')
@@ -1007,7 +1067,7 @@ def building_add(request):
         elif Building.objects.filter(name=name, deleted=False).exists():
             messages.error(request, 'A building with this name already exists.')
         else:
-            Building.objects.create(
+            building = Building.objects.create(
                 building_id=building_id,
                 name=name,
                 surname=surname,
@@ -1021,10 +1081,44 @@ def building_add(request):
                 status=status,
                 created_by=request.user,
             )
+
+            # Process any equipments added in Step 2
+            equipments_json = request.POST.get('equipments_data', '').strip()
+            if equipments_json:
+                try:
+                    eq_list = json.loads(equipments_json)
+                    for item in eq_list:
+                        eq_id = item.get('equipment_id', '').strip()
+                        eq_type_id = item.get('equipment_type_id')
+                        if eq_id and eq_type_id:
+                            if not Equipment.objects.filter(equipment_id=eq_id, deleted=False).exists():
+                                Equipment.objects.create(
+                                    equipment_id=eq_id,
+                                    qr_code=eq_id,
+                                    equipment_type_id=eq_type_id,
+                                    building=building,
+                                    brand=item.get('brand', '').strip(),
+                                    model_number=item.get('model_number', '').strip(),
+                                    serial_number=item.get('serial_number', '').strip(),
+                                    floor_location=item.get('floor_location', '').strip(),
+                                    status='active',
+                                    maintenance_period_days=int(item.get('maintenance_period_days') or 90),
+                                    created_by=request.user,
+                                    is_active=True
+                                )
+                except Exception as e:
+                    pass
+
             messages.success(request, 'Building added successfully.')
             return redirect('backend:building_list')
 
-    context = {'action': 'Add', 'divisions': divisions, 'subdivisions': subdivisions, 'sections': sections}
+    context = {
+        'action': 'Add',
+        'divisions': divisions,
+        'subdivisions': subdivisions,
+        'sections': sections,
+        'equipment_types': equipment_types
+    }
     return render(request, 'building/add.html', context)
 
 @login_required
@@ -1560,8 +1654,86 @@ def technician_list(request):
         messages.error(request, 'You do not have permission to view this page.')
         return render(request, '403.html', status=403)
     
-    technicians = Technician.objects.filter(deleted=False)
-    return render(request, 'technician/list.html', {'technicians': technicians}) 
+    search = request.GET.get('search', '').strip()
+    status = request.GET.get('status', '').strip()
+    skill = request.GET.get('skill', '').strip()
+
+    qs = Technician.objects.filter(deleted=False).select_related('user').order_by('-created_at')
+
+    if search:
+        qs = qs.filter(
+            Q(first_name__icontains=search) |
+            Q(last_name__icontains=search) |
+            Q(email__icontains=search) |
+            Q(phone_number__icontains=search) |
+            Q(about__icontains=search) |
+            Q(user__username__icontains=search) |
+            Q(user__first_name__icontains=search) |
+            Q(user__last_name__icontains=search)
+        )
+
+    if status == 'Active':
+        qs = qs.filter(is_active=True)
+    elif status == 'Inactive':
+        qs = qs.filter(is_active=False)
+
+    if skill:
+        qs = qs.filter(about__icontains=skill)
+
+    total_technicians_count = Technician.objects.filter(deleted=False).count()
+    filtered_total_count = qs.count()
+
+    try:
+        per_page = int(request.GET.get('per_page', 10))
+        if per_page <= 0:
+            per_page = 10
+    except (ValueError, TypeError):
+        per_page = 10
+
+    page_num = request.GET.get('page', 1)
+    paginator = Paginator(qs, per_page)
+    try:
+        data_list = paginator.page(page_num)
+    except PageNotAnInteger:
+        data_list = paginator.page(1)
+    except EmptyPage:
+        data_list = paginator.page(paginator.num_pages)
+
+    last_page = paginator.num_pages
+    current_page = data_list.number
+    start_p = max(1, current_page - 2)
+    end_p = min(last_page, current_page + 2)
+    paginator_list = list(range(start_p, end_p + 1))
+    all_pages = list(range(1, last_page + 1))
+
+    common_skills = [
+        'Electrical',
+        'HVAC',
+        'Elevator',
+        'Plumbing',
+        'Fire Safety',
+        'Solar',
+        'Security',
+        'Substation',
+        'IT',
+        'General',
+    ]
+
+    context = {
+        'data_list': data_list,
+        'paginator_list': paginator_list,
+        'all_pages': all_pages,
+        'last_page': last_page,
+        'per_page': per_page,
+        'total_technicians_count': total_technicians_count,
+        'filtered_total_count': filtered_total_count,
+        'search': search,
+        'selected_status': status,
+        'selected_skill': skill,
+        'common_skills': common_skills,
+        'status_choices': ['Active', 'Inactive'],
+    }
+    return render(request, 'technician/list.html', context) 
 
 
 @login_required
@@ -1679,8 +1851,37 @@ def equipment_type_list(request):
         messages.error(request, 'You do not have permission to view this page.')
         return render(request, '403.html', status=403)
     
-    equipment_types = EquipmentType.objects.filter(deleted=False)
-    return render(request, 'equipment_type/list.html', {'equipment_types': equipment_types})
+    search = request.GET.get('search', '').strip()
+    status = request.GET.get('status', '').strip()
+    
+    qs = EquipmentType.objects.filter(deleted=False).annotate(
+        equipment_count=Count('equipment', filter=Q(equipment__deleted=False))
+    ).order_by('id')
+    
+    if search:
+        qs = qs.filter(Q(name__icontains=search) | Q(description__icontains=search))
+    if status == 'Active':
+        qs = qs.filter(is_active=True)
+    elif status == 'Inactive':
+        qs = qs.filter(is_active=False)
+        
+    page_num = request.GET.get('page', 1)
+    data_list, paginator_list, last_page = paginate_data(request, page_num, qs)
+    per_page = request.GET.get('per_page', 10)
+    filtered_total_count = data_list.paginator.count
+    
+    context = {
+        'data_list': data_list,
+        'equipment_types': data_list,
+        'paginator_list': paginator_list,
+        'last_page': last_page,
+        'per_page': per_page,
+        'filtered_total_count': filtered_total_count,
+        'search': search,
+        'selected_status': status,
+        'status_choices': ['Active', 'Inactive'],
+    }
+    return render(request, 'equipment_type/list.html', context)
 
 
 @login_required
@@ -1758,8 +1959,42 @@ def equipment_type_data_list(request):
         messages.error(request, 'You do not have permission to view this page.')
         return render(request, '403.html', status=403)
     
-    equipment_type_datas = EquipmentTypeData.objects.filter(deleted=False)
-    return render(request, 'equipment_type_data/list.html', {'equipment_type_datas': equipment_type_datas})
+    search = request.GET.get('search', '').strip()
+    type_id = request.GET.get('type_id', '').strip()
+    status = request.GET.get('status', '').strip()
+    
+    qs = EquipmentTypeData.objects.filter(deleted=False).select_related('equipment_type').order_by('equipment_type__name', 'id')
+    
+    if search:
+        qs = qs.filter(Q(field_name__icontains=search) | Q(equipment_type__name__icontains=search))
+    if type_id:
+        qs = qs.filter(equipment_type_id=type_id)
+    if status == 'Active':
+        qs = qs.filter(is_active=True)
+    elif status == 'Inactive':
+        qs = qs.filter(is_active=False)
+        
+    page_num = request.GET.get('page', 1)
+    data_list, paginator_list, last_page = paginate_data(request, page_num, qs)
+    per_page = request.GET.get('per_page', 10)
+    filtered_total_count = data_list.paginator.count
+    
+    equipment_types = EquipmentType.objects.filter(deleted=False, is_active=True).order_by('name')
+    
+    context = {
+        'data_list': data_list,
+        'equipment_type_datas': data_list,
+        'paginator_list': paginator_list,
+        'last_page': last_page,
+        'per_page': per_page,
+        'filtered_total_count': filtered_total_count,
+        'search': search,
+        'type_id': type_id,
+        'selected_status': status,
+        'equipment_types': equipment_types,
+        'status_choices': ['Active', 'Inactive'],
+    }
+    return render(request, 'equipment_type_data/list.html', context)
 
 
 @login_required
@@ -1851,25 +2086,36 @@ def equipment_component_preset_list(request):
     
     search = request.GET.get('search', '').strip()
     equipment_type_id = request.GET.get('equipment_type', '').strip()
+    status = request.GET.get('status', '').strip()
     
-    qs = EquipmentComponentPreset.objects.filter(deleted=False).select_related('equipment_type')
+    qs = EquipmentComponentPreset.objects.filter(deleted=False).select_related('equipment_type').order_by('id')
     if search:
-        qs = qs.filter(name__icontains=search)
+        qs = qs.filter(Q(name__icontains=search) | Q(description__icontains=search) | Q(equipment_type__name__icontains=search))
     if equipment_type_id:
         qs = qs.filter(equipment_type_id=equipment_type_id)
+    if status == 'Active':
+        qs = qs.filter(is_active=True)
+    elif status == 'Inactive':
+        qs = qs.filter(is_active=False)
         
     page_num = request.GET.get('page', 1)
     data_list, paginator_list, last_page = paginate_data(request, page_num, qs)
+    per_page = request.GET.get('per_page', 10)
+    filtered_total_count = data_list.paginator.count
     
-    equipment_types = EquipmentType.objects.filter(deleted=False, is_active=True)
+    equipment_types = EquipmentType.objects.filter(deleted=False, is_active=True).order_by('name')
     
     context = {
         'data_list': data_list,
         'paginator_list': paginator_list,
         'last_page': last_page,
+        'per_page': per_page,
+        'filtered_total_count': filtered_total_count,
         'search': search,
         'equipment_type_id': equipment_type_id,
+        'selected_status': status,
         'equipment_types': equipment_types,
+        'status_choices': ['Active', 'Inactive'],
     }
     return render(request, 'equipment-preset/list.html', context)
 
@@ -1994,16 +2240,20 @@ def equipment_list(request):
     
     equipment_types = EquipmentType.objects.filter(deleted=False, is_active=True).order_by('-created_at')
     
+    per_page = request.GET.get('per_page', 10)
+    filtered_total_count = data_list.paginator.count
+
     context = {
         'data_list': data_list,
         'paginator_list': paginator_list,
         'last_page': last_page,
+        'per_page': per_page,
+        'filtered_total_count': filtered_total_count,
         'search': search,
         'type_id': type_id,
         'status': status,
         'equipment_types': equipment_types,
         'status_choices': Equipment.STATUS_CHOICES,
-        
     }   
     return render(request, 'equipment/list.html', context)
 
@@ -2388,6 +2638,8 @@ def equipment_history(request):
     # ── Pagination ────────────────────────────────────────────────────────
     page_num = request.GET.get('page', 1)
     data_list, paginator_list, last_page = paginate_data(request, page_num, qs)
+    per_page = request.GET.get('per_page', 10)
+    filtered_total_count = data_list.paginator.count
 
     # ── Filter options ────────────────────────────────────────────────────
     equipment_list = Equipment.objects.filter(deleted=False, is_active=True).order_by('equipment_id')
@@ -2396,6 +2648,8 @@ def equipment_history(request):
         'data_list'     : data_list,
         'paginator_list': paginator_list,
         'last_page'     : last_page,
+        'per_page'      : per_page,
+        'filtered_total_count': filtered_total_count,
         # active filters
         'search'        : search,
         'f_equipment_id': equipment_id,
@@ -2426,21 +2680,41 @@ def ticket_list(request):
         messages.error(request, 'You do not have permission to view this ticket.')
         return render(request, '403.html', status=403)
     
-    # Optional filtering
-    status_filter = request.GET.get('status', '')
-    priority_filter = request.GET.get('priority', '')
+    search = request.GET.get('search', '').strip()
+    status_filter = request.GET.get('status', '').strip()
+    priority_filter = request.GET.get('priority', '').strip()
     
-    tickets = Ticket.objects.filter(deleted=False).order_by('-created_at')
+    qs = Ticket.objects.filter(deleted=False).select_related('equipment', 'building', 'user').order_by('-created_at')
     
+    if search:
+        qs = qs.filter(
+            Q(title__icontains=search)
+            | Q(equipment__equipment_id__icontains=search)
+            | Q(issue_description__icontains=search)
+            | Q(building__name__icontains=search)
+        )
     if status_filter:
-        tickets = tickets.filter(status=status_filter)
+        qs = qs.filter(status=status_filter)
     if priority_filter:
-        tickets = tickets.filter(priority=priority_filter)
+        qs = qs.filter(priority=priority_filter)
         
+    page_num = request.GET.get('page', 1)
+    data_list, paginator_list, last_page = paginate_data(request, page_num, qs)
+    per_page = request.GET.get('per_page', 10)
+    filtered_total_count = data_list.paginator.count
+    
     context = {
-        'tickets': tickets,
+        'data_list': data_list,
+        'tickets': data_list,
+        'paginator_list': paginator_list,
+        'last_page': last_page,
+        'per_page': per_page,
+        'filtered_total_count': filtered_total_count,
+        'search': search,
         'status_filter': status_filter,
         'priority_filter': priority_filter,
+        'status_choices': Ticket.STATUS_CHOICES,
+        'priority_choices': Ticket.PRIORITY_CHOICES,
     }
     return render(request, 'ticket/list.html', context)
 
@@ -2672,6 +2946,7 @@ def maintenance_list(request):
         return render(request, '403.html', status=403)
 
     search = request.GET.get('search', '').strip()
+    status = request.GET.get('status', '').strip()
     qs = Maintenance.objects.filter(deleted=False).prefetch_related(
         'equipment',
         'equipment__equipment_type',
@@ -2689,6 +2964,11 @@ def maintenance_list(request):
             Q(maintenance_records__equipment__equipment_id__icontains=search)
         ).distinct()
 
+    if status == 'Active':
+        qs = qs.filter(is_active=True)
+    elif status == 'Inactive':
+        qs = qs.filter(is_active=False)
+
     qs = qs.annotate(
         num_records=Count(
             'maintenance_records',
@@ -2699,12 +2979,18 @@ def maintenance_list(request):
 
     page_num = request.GET.get('page', 1)
     data_list, paginator_list, last_page = paginate_data(request, page_num, qs)
+    per_page = request.GET.get('per_page', 10)
+    filtered_total_count = data_list.paginator.count
 
     context = {
         'data_list': data_list,
         'paginator_list': paginator_list,
         'last_page': last_page,
+        'per_page': per_page,
+        'filtered_total_count': filtered_total_count,
         'search': search,
+        'selected_status': status,
+        'status_choices': ['Active', 'Inactive'],
     }
     return render(request, 'maintenance/list.html', context)
 
@@ -3501,5 +3787,185 @@ def get_subdivision_sections(request):
         return JsonResponse({'sections': sections})
     except Exception as e:
         return JsonResponse({'error': str(e), 'sections': []}, status=400)
+
+
+@login_required
+@require_POST
+def quick_create_division(request):
+    """AJAX endpoint to quick-create a division from the searchable dropdown"""
+    name = request.POST.get('name', '').strip()
+    if not name:
+        return JsonResponse({'success': False, 'error': 'Division name is required.'}, status=400)
+
+    # Check if division with this name already exists (case-insensitive)
+    existing = Division.objects.filter(name__iexact=name).first()
+    if existing:
+        if existing.deleted:
+            existing.deleted = False
+            existing.is_active = True
+            existing.updated_by = request.user
+            existing.save()
+        return JsonResponse({
+            'success': True,
+            'id': existing.id,
+            'name': existing.name,
+            'code': existing.code,
+            'already_existed': True
+        })
+
+    words = [w for w in name.split() if w]
+    if len(words) >= 2:
+        abbr = ''.join([w[0].upper() for w in words])[:6]
+    else:
+        abbr = name[:4].upper()
+
+    base_code = f"DIV-{abbr}"
+    code = base_code
+    counter = 1
+    while Division.objects.filter(code=code).exists():
+        code = f"{base_code}-{counter}"
+        counter += 1
+
+    division = Division.objects.create(
+        name=name,
+        code=code,
+        is_active=True,
+        deleted=False,
+        created_by=request.user
+    )
+
+    return JsonResponse({
+        'success': True,
+        'id': division.id,
+        'name': division.name,
+        'code': division.code
+    })
+
+
+@login_required
+@require_POST
+def quick_create_subdivision(request):
+    """AJAX endpoint to quick-create a subdivision under a division"""
+    division_id = request.POST.get('division_id', '').strip()
+    name = request.POST.get('name', '').strip()
+
+    if not division_id:
+        return JsonResponse({'success': False, 'error': 'Parent division is required.'}, status=400)
+    if not name:
+        return JsonResponse({'success': False, 'error': 'Subdivision name is required.'}, status=400)
+
+    division = Division.objects.filter(id=division_id, deleted=False).first()
+    if not division:
+        return JsonResponse({'success': False, 'error': 'Selected division not found.'}, status=404)
+
+    # Check if a subdivision with this name already exists under this division (case-insensitive)
+    existing = SubDivision.objects.filter(division=division, name__iexact=name).first()
+    if existing:
+        if existing.deleted:
+            existing.deleted = False
+            existing.is_active = True
+            existing.updated_by = request.user
+            existing.save()
+        return JsonResponse({
+            'success': True,
+            'id': existing.id,
+            'name': existing.name,
+            'code': existing.code,
+            'already_existed': True
+        })
+
+    words = [w for w in name.split() if w]
+    if len(words) >= 2:
+        abbr = ''.join([w[0].upper() for w in words])[:6]
+    else:
+        abbr = name[:4].upper()
+
+    base_code = f"SUB-{abbr}"
+    code = base_code
+    counter = 1
+    while SubDivision.objects.filter(code=code).exists():
+        code = f"{base_code}-{counter}"
+        counter += 1
+
+    subdivision = SubDivision.objects.create(
+        division=division,
+        name=name,
+        code=code,
+        is_active=True,
+        deleted=False,
+        created_by=request.user
+    )
+
+    return JsonResponse({
+        'success': True,
+        'id': subdivision.id,
+        'name': subdivision.name,
+        'code': subdivision.code
+    })
+
+
+@login_required
+@require_POST
+def quick_create_section(request):
+    """AJAX endpoint to quick-create a section under a subdivision"""
+    subdivision_id = request.POST.get('subdivision_id', '').strip()
+    name = request.POST.get('name', '').strip()
+
+    if not subdivision_id:
+        return JsonResponse({'success': False, 'error': 'Parent subdivision is required.'}, status=400)
+    if not name:
+        return JsonResponse({'success': False, 'error': 'Section name is required.'}, status=400)
+
+    subdivision = SubDivision.objects.filter(id=subdivision_id, deleted=False).first()
+    if not subdivision:
+        return JsonResponse({'success': False, 'error': 'Selected subdivision not found.'}, status=404)
+
+    # Check if a section with this name already exists under this subdivision (case-insensitive)
+    existing = Section.objects.filter(subdivision=subdivision, name__iexact=name).first()
+    if existing:
+        if existing.deleted:
+            existing.deleted = False
+            existing.is_active = True
+            existing.updated_by = request.user
+            existing.save()
+        return JsonResponse({
+            'success': True,
+            'id': existing.id,
+            'name': existing.name,
+            'code': existing.code,
+            'already_existed': True
+        })
+
+    words = [w for w in name.split() if w]
+    if len(words) >= 2:
+        abbr = ''.join([w[0].upper() for w in words])[:6]
+    else:
+        abbr = name[:4].upper()
+
+    base_code = f"SEC-{abbr}"
+    code = base_code
+    counter = 1
+    while Section.objects.filter(code=code).exists():
+        code = f"{base_code}-{counter}"
+        counter += 1
+
+    section = Section.objects.create(
+        subdivision=subdivision,
+        name=name,
+        code=code,
+        is_active=True,
+        deleted=False,
+        created_by=request.user
+    )
+
+    return JsonResponse({
+        'success': True,
+        'id': section.id,
+        'name': section.name,
+        'code': section.code
+    })
+
+
+
 
 

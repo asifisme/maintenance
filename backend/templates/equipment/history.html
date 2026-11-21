@@ -1,476 +1,662 @@
 {% extends 'base.html' %}
-{% block title %}<span class="hidden">{{ action }} Maintenance History</span>{% endblock %}
+{% load static %}
+
+{% block title %}Maintenance History{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    /* Design Tokens — Consistent with Building & Technicians Pattern */
+    body,
+    #mainContentWrapper {
+        background-color: #F2F2F2 !important;
+        font-family: 'Urbanist', Inter, system-ui, ui-sans-serif, sans-serif;
+    }
+
+    .eqh-mono {
+        font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        letter-spacing: -0.02em;
+    }
+
+    /* Top KPI Stat Card (Matching Building Management Pattern) */
+    .eqh-kpi-card {
+        background-color: #EBEBEB;
+        border-radius: 10px;
+        min-height: 120px;
+        height: 120px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-sizing: border-box;
+    }
+    .eqh-kpi-icon-box {
+        width: 36px;
+        height: 36px;
+        border-radius: 5px;
+        background-color: #F9F9F9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #55534F;
+        flex-shrink: 0;
+    }
+    .eqh-kpi-num {
+        font-family: 'Geist Mono', ui-monospace, monospace;
+        font-size: 24px;
+        font-weight: 500;
+        line-height: 1;
+        letter-spacing: -0.02em;
+        color: #55534F;
+        text-align: right;
+    }
+    .eqh-kpi-label {
+        font-family: 'Urbanist', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1;
+        letter-spacing: 0;
+        color: #9D9C9A;
+    }
+
+    /* Search input box */
+    .eqh-search-box {
+        width: 100%;
+        max-width: 320px;
+        height: 38px;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        border-radius: 8px;
+        padding: 0 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+    .eqh-search-box:focus-within {
+        border-color: #CFCED0;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+    .eqh-search-input {
+        border: 0 !important;
+        outline: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13px;
+        color: #2B2823;
+        width: 100%;
+    }
+    .eqh-search-input::placeholder {
+        color: #9D9C9A;
+    }
+
+    /* Table Outer Tray: Fill w-full, radius 12px, padding 16px 6px 6px 6px, gap 16px, bg #F9F9F9 */
+    .eqh-table-tray {
+        background-color: #F9F9F9;
+        border-radius: 12px;
+        padding: 16px 6px 6px 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    /* Table Inner Container: Fill w-full, radius 6px, padding 14px, gap 10px, bg #FFFFFF */
+    .eqh-table-inner {
+        background-color: #FFFFFF;
+        border-radius: 6px;
+        padding: 14px;
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    /* Filter Select Pill */
+    .eqh-filter-select {
+        background-color: #EAEAE8 !important;
+        border: 1px solid #E2E2E0 !important;
+        border-radius: 8px !important;
+        height: 34px;
+        padding: 0 28px 0 11px !important;
+        font-size: 12.5px;
+        font-weight: 500;
+        color: #555452;
+        outline: none !important;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23716F6C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 9px center;
+        transition: background-color 150ms ease, border-color 150ms ease;
+    }
+    .eqh-filter-select:hover,
+    .eqh-filter-select:focus {
+        background-color: #E3E3E1 !important;
+        border-color: #CFCED0 !important;
+        color: #2B2A29;
+    }
+
+    /* Reset button */
+    .eqh-btn-reset {
+        height: 34px;
+        padding: 0 12px;
+        border-radius: 8px;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        font-size: 12.5px;
+        font-weight: 500;
+        color: #2B2823;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: background-color 150ms ease, border-color 150ms ease;
+    }
+    .eqh-btn-reset:hover {
+        background-color: #F7F7F6;
+        border-color: #D8D7D5;
+    }
+
+    /* Secondary Action Button */
+    .eqh-btn-secondary {
+        background-color: #FFFFFF;
+        color: #2B2823;
+        border: 1px solid #EAEAE9;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13.5px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: background-color 150ms ease, border-color 150ms ease;
+        white-space: nowrap;
+    }
+    .eqh-btn-secondary:hover {
+        background-color: #F7F7F6;
+        border-color: #D8D7D5;
+    }
+
+    /* Table Styles */
+    .eqh-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+    .eqh-table thead tr {
+        background-color: #F6F6F6;
+    }
+    .eqh-table th {
+        padding: 12px 14px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        color: #2B2823;
+        white-space: nowrap;
+    }
+    .eqh-table td {
+        padding: 13px 14px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13px;
+        color: #2B2823;
+        vertical-align: middle;
+    }
+
+    /* Action 3-dots circular button */
+    .eqh-action-circle-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 9999px;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #5C5B59;
+        cursor: pointer;
+        transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+    }
+    .eqh-action-circle-btn:hover {
+        background-color: #F7F7F6;
+        border-color: #D8D7D5;
+        color: #2B2823;
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <a href="{% url 'backend:equipment_list' %}" class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#5C5B59] font-medium hover:bg-[#E0E0DF] transition-colors shrink-0">
+        Equipment
+    </a>
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <span class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#2B2823] font-medium shrink-0">
+        Maintenance History
+    </span>
+{% endblock %}
+
+{% block main_class %}w-full px-[15px] py-4 flex-1{% endblock %}
+
+{% block page_header %}
+<div class="w-full pt-1 pb-4">
+    <!-- Page Title & Primary Action -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="eqh-mono text-[24px] font-medium text-[#2B2823] leading-tight">Maintenance History</h1>
+            <p class="text-[13.5px] text-[#716F6C] mt-1">Complete log of all maintenance activities across all government equipment.</p>
+        </div>
+        <div>
+            <a href="{% url 'backend:equipment_list' %}" class="eqh-btn-secondary">
+                <svg class="w-4 h-4 text-[#716F6C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 18l-6-6 6-6" />
+                </svg>
+                <span>Back to Equipment</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
 {% block content %}
-    <section class="bg-slate-50 min-h-screen p-4 md:p-8 font-sans">
-        <div class="max-w-7xl mx-auto">
-            <!-- ── Page Header ───────────────────────────────────────────── -->
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-8">
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-900">Maintenance History</h2>
-                    <p class="text-sm text-gray-500 mt-0.5">Complete log of all maintenance records across all equipment</p>
-                </div>
-                <a href="{% url 'backend:equipment_list' %}"
-                   class="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-900 bg-white border border-gray-200 rounded-lg px-4 py-2.5 shadow-sm transition">
-                    <svg width="16"
-                         height="16"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="2"
-                         stroke-linecap="round"
-                         stroke-linejoin="round">
-                        <path d="M15 18l-6-6 6-6" />
+<div class="w-full space-y-4 pb-10">
+
+    <!-- ════════════════════════ ROW 1: 4 Top KPI Stat Cards ════════════════════════ -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <!-- Card 1: Total Records -->
+        <div class="eqh-kpi-card">
+            <div class="flex items-center justify-between">
+                <div class="eqh-kpi-icon-box">
+                    <svg class="w-5 h-5 text-[#55534F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
                     </svg>
-                    Back to Equipment
+                </div>
+                <span class="eqh-kpi-num">{{ total_count }}</span>
+            </div>
+            <p class="eqh-kpi-label">Total Records</p>
+        </div>
+
+        <!-- Card 2: Pending -->
+        <div class="eqh-kpi-card">
+            <div class="flex items-center justify-between">
+                <div class="eqh-kpi-icon-box">
+                    <svg class="w-5 h-5 text-[#55534F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                </div>
+                <span class="eqh-kpi-num">{{ pending_count }}</span>
+            </div>
+            <p class="eqh-kpi-label">Pending Reviews</p>
+        </div>
+
+        <!-- Card 3: Approved -->
+        <div class="eqh-kpi-card">
+            <div class="flex items-center justify-between">
+                <div class="eqh-kpi-icon-box">
+                    <svg class="w-5 h-5 text-[#55534F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                        <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                </div>
+                <span class="eqh-kpi-num">{{ approved_count }}</span>
+            </div>
+            <p class="eqh-kpi-label">Approved Records</p>
+        </div>
+
+        <!-- Card 4: Rejected -->
+        <div class="eqh-kpi-card">
+            <div class="flex items-center justify-between">
+                <div class="eqh-kpi-icon-box">
+                    <svg class="w-5 h-5 text-[#55534F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="15" y1="9" x2="9" y2="15" />
+                        <line x1="9" y1="9" x2="15" y2="15" />
+                    </svg>
+                </div>
+                <span class="eqh-kpi-num">{{ rejected_count }}</span>
+            </div>
+            <p class="eqh-kpi-label">Rejected Records</p>
+        </div>
+    </div>
+
+    <!-- ════════════════════════ ROW 2: Search Input ════════════════════════ -->
+    <div class="pt-1">
+        <form method="get" action="{% url 'backend:equipment_history' %}" id="equipmentHistorySearchForm" class="eqh-search-box">
+            <svg class="w-4 h-4 text-[#9D9C9A] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <path d="M21 21l-4.35-4.35" />
+            </svg>
+            <input type="text"
+                   name="search"
+                   value="{{ search }}"
+                   placeholder="Search equipment, description, technician"
+                   class="eqh-search-input">
+            {% if f_equipment_id %}<input type="hidden" name="equipment_id" value="{{ f_equipment_id }}">{% endif %}
+            {% if f_record_type %}<input type="hidden" name="record_type" value="{{ f_record_type }}">{% endif %}
+            {% if f_review_status %}<input type="hidden" name="review_status" value="{{ f_review_status }}">{% endif %}
+            {% if f_date_from %}<input type="hidden" name="date_from" value="{{ f_date_from }}">{% endif %}
+            {% if f_date_to %}<input type="hidden" name="date_to" value="{{ f_date_to }}">{% endif %}
+            {% if per_page != 10 %}<input type="hidden" name="per_page" value="{{ per_page }}">{% endif %}
+        </form>
+    </div>
+
+    <!-- ════════════════════════ ROW 3: Table Outer Tray ════════════════════════ -->
+    <div class="eqh-table-tray">
+        <!-- Tray Header: Title + Counter Badge + Filter Selects + Reset -->
+        <div class="px-2.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div class="flex items-center gap-2">
+                <h2 class="text-[16.5px] font-semibold text-[#2B2823] tracking-[-0.01em]">Total Records</h2>
+                <span class="inline-flex items-center justify-center min-w-[24px] h-[22px] px-2 rounded-full bg-[#EAEAE8] text-[#4A4947] text-[12px] font-semibold leading-none">
+                    {{ filtered_total_count }}
+                </span>
+            </div>
+
+            <!-- Filters Form -->
+            <form method="get" action="{% url 'backend:equipment_history' %}" id="equipmentHistoryFilterForm" class="flex flex-wrap items-center gap-2">
+                {% if search %}
+                    <input type="hidden" name="search" value="{{ search }}">
+                {% endif %}
+                {% if per_page != 10 %}
+                    <input type="hidden" name="per_page" value="{{ per_page }}">
+                {% endif %}
+
+                <!-- All Equipment -->
+                <select name="equipment_id" onchange="this.form.submit()" class="eqh-filter-select" aria-label="Filter by equipment">
+                    <option value="">All Equipment</option>
+                    {% for eq in equipment_list %}
+                        <option value="{{ eq.id }}" {% if f_equipment_id == eq.id|stringformat:"s" %}selected{% endif %}>
+                            {{ eq.equipment_id }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <!-- All Types -->
+                <select name="record_type" onchange="this.form.submit()" class="eqh-filter-select" aria-label="Filter by type">
+                    <option value="">All Types</option>
+                    {% for key, val in record_type_choices %}
+                        <option value="{{ key }}" {% if f_record_type == key %}selected{% endif %}>{{ val }}</option>
+                    {% endfor %}
+                </select>
+
+                <!-- All Review Statuses -->
+                <select name="review_status" onchange="this.form.submit()" class="eqh-filter-select" aria-label="Filter by review status">
+                    <option value="">All Status</option>
+                    {% for key, val in review_status_choices %}
+                        <option value="{{ key }}" {% if f_review_status == key %}selected{% endif %}>{{ val }}</option>
+                    {% endfor %}
+                </select>
+
+                <!-- Reset Button -->
+                <a href="{% url 'backend:equipment_history' %}" class="eqh-btn-reset" title="Reset Filters">
+                    <span>Reset</span>
+                    <svg class="w-3.5 h-3.5 text-[#5C5B59]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                        <path d="M3 3v5h5" />
+                    </svg>
                 </a>
-            </div>
-            <!-- ── Summary Stats ─────────────────────────────────────────── -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <!-- Total -->
-                <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex items-center gap-4">
-                    <div class="w-11 h-11 rounded-xl bg-indigo-50 flex items-center justify-center shrink-0">
-                        <svg width="20"
-                             height="20"
-                             viewBox="0 0 24 24"
-                             fill="none"
-                             stroke="#4f46e5"
-                             stroke-width="2"
-                             stroke-linecap="round"
-                             stroke-linejoin="round">
-                            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-                            <polyline points="14 2 14 8 20 8" />
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Records</p>
-                        <p class="text-2xl font-black text-gray-900 leading-none mt-0.5">{{ total_count }}</p>
-                    </div>
-                </div>
-                <!-- Pending -->
-                <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex items-center gap-4">
-                    <div class="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center shrink-0">
-                        <svg width="20"
-                             height="20"
-                             viewBox="0 0 24 24"
-                             fill="none"
-                             stroke="#d97706"
-                             stroke-width="2"
-                             stroke-linecap="round"
-                             stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Pending</p>
-                        <p class="text-2xl font-black text-amber-600 leading-none mt-0.5">{{ pending_count }}</p>
-                    </div>
-                </div>
-                <!-- Approved -->
-                <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex items-center gap-4">
-                    <div class="w-11 h-11 rounded-xl bg-green-50 flex items-center justify-center shrink-0">
-                        <svg width="20"
-                             height="20"
-                             viewBox="0 0 24 24"
-                             fill="none"
-                             stroke="#16a34a"
-                             stroke-width="2"
-                             stroke-linecap="round"
-                             stroke-linejoin="round">
-                            <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
-                            <polyline points="22 4 12 14.01 9 11.01" />
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Approved</p>
-                        <p class="text-2xl font-black text-green-600 leading-none mt-0.5">{{ approved_count }}</p>
-                    </div>
-                </div>
-                <!-- Rejected -->
-                <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex items-center gap-4">
-                    <div class="w-11 h-11 rounded-xl bg-red-50 flex items-center justify-center shrink-0">
-                        <svg width="20"
-                             height="20"
-                             viewBox="0 0 24 24"
-                             fill="none"
-                             stroke="#dc2626"
-                             stroke-width="2"
-                             stroke-linecap="round"
-                             stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10" /><line x1="15" y1="9" x2="9" y2="15" /><line x1="9" y1="9" x2="15" y2="15" />
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Rejected</p>
-                        <p class="text-2xl font-black text-red-600 leading-none mt-0.5">{{ rejected_count }}</p>
-                    </div>
-                </div>
-            </div>
-            <!-- ── Filters + Table Card ───────────────────────────────────── -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <!-- Filters -->
-                <div class="p-5 border-b border-gray-100">
-                    <form method="get"
-                          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 items-end">
-                        <!-- Search -->
-                        <div class="xl:col-span-2">
-                            <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Search</label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg class="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-                                    </svg>
-                                </div>
-                                <input type="text"
-                                       name="search"
-                                       value="{{ search }}"
-                                       placeholder="Equipment ID, description, technician…"
-                                       class="w-full pl-10 bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-2.5 outline-none transition-colors">
-                            </div>
-                        </div>
-                        <!-- Equipment -->
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Equipment</label>
-                            <select name="equipment_id"
-                                    class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-2.5 outline-none transition-colors select2-items"
-                                    onchange="this.form.submit()">
-                                <option value="">All Equipment</option>
-                                {% for eq in equipment_list %}
-                                    <option value="{{ eq.id }}"
-                                            {% if f_equipment_id == eq.id|stringformat:"s" %}selected{% endif %}>
-                                        {{ eq.equipment_id }} — {{ eq.equipment_type.name }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <!-- Record Type -->
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Type</label>
-                            <select name="record_type"
-                                    class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-2.5 outline-none transition-colors"
-                                    onchange="this.form.submit()">
-                                <option value="">All Types</option>
-                                {% for key, val in record_type_choices %}
-                                    <option value="{{ key }}" {% if f_record_type == key %}selected{% endif %}>{{ val }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <!-- Review Status -->
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Review</label>
-                            <select name="review_status"
-                                    class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-2.5 outline-none transition-colors"
-                                    onchange="this.form.submit()">
-                                <option value="">All Status</option>
-                                {% for key, val in review_status_choices %}
-                                    <option value="{{ key }}" {% if f_review_status == key %}selected{% endif %}>{{ val }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <!-- Actions -->
-                        <div class="flex gap-2 items-end">
-                            <button type="submit"
-                                    class="flex-1 h-10 px-4 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg flex items-center justify-center gap-1.5 transition">
-                                <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-                                </svg>
-                                Search
-                            </button>
-                            {% if search or f_equipment_id or f_record_type or f_review_status or f_date_from or f_date_to %}
-                                <a href="{% url 'backend:equipment_history' %}"
-                                   class="h-10 px-3 flex items-center justify-center text-sm font-semibold text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition">
-                                    ✕
-                                </a>
-                            {% endif %}
-                        </div>
-                        <!-- Date range row -->
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Date From</label>
-                            <input type="date"
-                                   name="date_from"
-                                   value="{{ f_date_from }}"
-                                   class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-2.5 outline-none transition-colors">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Date To</label>
-                            <input type="date"
-                                   name="date_to"
-                                   value="{{ f_date_to }}"
-                                   class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-2.5 outline-none transition-colors">
-                        </div>
-                    </form>
-                </div>
-                <!-- ── Table ─────────────────────────────────────────────────── -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left whitespace-nowrap">
-                        <thead class="text-xs text-gray-500 uppercase bg-gray-50/80 border-b border-gray-100">
-                            <tr>
-                                <th class="px-5 py-4 font-bold tracking-wider">Date</th>
-                                <th class="px-5 py-4 font-bold tracking-wider">Equipment</th>
-                                <th class="px-5 py-4 font-bold tracking-wider">Building</th>
-                                <th class="px-5 py-4 font-bold tracking-wider">Type</th>
-                                <th class="px-5 py-4 font-bold tracking-wider">Technician</th>
-                                <th class="px-5 py-4 font-bold tracking-wider">Description</th>
-                                <th class="px-5 py-4 font-bold tracking-wider">Cost</th>
-                                <th class="px-5 py-4 font-bold tracking-wider">Review</th>
-                                <th class="px-5 py-4 font-bold tracking-wider text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-50">
-                            {% for record in data_list %}
-                                <tr class="hover:bg-indigo-50/30 transition-colors group">
-                                    <!-- Date -->
-                                    <td class="px-5 py-4">
-                                        <span class="font-semibold text-gray-800">{{ record.maintenance_date|date:"d M Y" }}</span>
-                                    </td>
-                                    <!-- Equipment -->
-                                    <td class="px-5 py-4">
-                                        <a href="{% url 'backend:equipment_detail' record.equipment.id %}"
-                                           class="font-bold text-indigo-700 hover:text-indigo-900 hover:underline">
-                                            {{ record.equipment.equipment_id|default:record.equipment.id }}
-                                        </a>
-                                        <p class="text-xs text-gray-400 mt-0.5">{{ record.equipment.equipment_type.name }}</p>
-                                    </td>
-                                    <!-- Building -->
-                                    <td class="px-5 py-4 text-gray-600">
-                                        {% if record.equipment.building %}
-                                            <span class="font-medium">{{ record.equipment.building.nickname|default:record.equipment.building.name }}</span>
-                                            <p class="text-xs text-gray-400 mt-0.5">{{ record.equipment.floor_location|default:"" }}</p>
-                                        {% else %}
-                                            —
-                                        {% endif %}
-                                    </td>
-                                    <!-- Type badge -->
-                                    <td class="px-5 py-4">
-                                        {% if record.record_type == 'routine' %}
-                                            <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700">Routine</span>
-                                        {% elif record.record_type == 'emergency' %}
-                                            <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">Emergency</span>
-                                        {% elif record.record_type == 'repair' %}
-                                            <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-700">Repair</span>
-                                        {% elif record.record_type == 'inspection' %}
-                                            <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-700">Inspection</span>
-                                        {% elif record.record_type == 'upgrade' %}
-                                            <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-bold bg-teal-100 text-teal-700">Upgrade</span>
-                                        {% else %}
-                                            <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-700">{{ record.record_type|title }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <!-- Technician -->
-                                    <td class="px-5 py-4 text-gray-600">
-                                        {% if record.technician %}
-                                            {{ record.technician.get_full_name|default:record.technician.username }}
-                                        {% else %}
-                                            <span class="text-gray-400">—</span>
-                                        {% endif %}
-                                    </td>
-                                    <!-- Description -->
-                                    <td class="px-5 py-4 max-w-xs">
-                                        <p class="text-gray-800 truncate" title="{{ record.work_description }}">{{ record.work_description|truncatewords:10 }}</p>
-                                        {% if record.parts_replaced %}
-                                            <p class="text-xs text-gray-400 mt-0.5 truncate">Parts: {{ record.parts_replaced|truncatewords:5 }}</p>
-                                        {% endif %}
-                                    </td>
-                                    <!-- Cost -->
-                                    <td class="px-5 py-4 text-gray-600 font-medium">
-                                        {% if record.cost %}
-                                            {{ record.cost }}
-                                        {% else %}
-                                            <span class="text-gray-400">—</span>
-                                        {% endif %}
-                                    </td>
-                                    <!-- Review Status -->
-                                    <td class="px-5 py-4">
-                                        {% if record.review_status == 'approved' %}
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">
-                                                <svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                                </svg>
-                                                Approved
-                                            </span>
-                                            {% if record.reviewed_by %}
-                                                <p class="text-xs text-gray-400 mt-1">by {{ record.reviewed_by.get_full_name|default:record.reviewed_by.username }}</p>
-                                            {% endif %}
-                                        {% elif record.review_status == 'rejected' %}
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">
-                                                <svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-                                                </svg>
-                                                Rejected
-                                            </span>
-                                            {% if record.review_notes %}
-                                                <p class="text-xs text-red-400 mt-1 truncate max-w-24"
-                                                   title="{{ record.review_notes }}">{{ record.review_notes|truncatewords:5 }}</p>
-                                            {% endif %}
-                                        {% else %}
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700">
-                                                <svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
-                                                </svg>
-                                                Pending
-                                            </span>
-                                        {% endif %}
-                                    </td>
-                                    <!-- Actions -->
-                                    <td class="px-5 py-4 text-right">
-                                        <div class="flex items-center justify-end gap-1">
-                                            <!-- View equipment -->
+            </form>
+        </div>
+
+        <!-- Table Inner Container -->
+        <div class="eqh-table-inner overflow-hidden">
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="eqh-table min-w-[980px]">
+                    <thead>
+                        <tr>
+                            <th class="rounded-l-[4px]">Date</th>
+                            <th>Equipment</th>
+                            <th>Building</th>
+                            <th>Type</th>
+                            <th>Technician</th>
+                            <th>Description</th>
+                            <th>Cost</th>
+                            <th>Review Status</th>
+                            <th class="text-center rounded-r-[4px]">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#F2F2F0]">
+                        {% for record in data_list %}
+                            <tr class="hover:bg-[#FAFAFA] transition-colors">
+                                <!-- Date -->
+                                <td class="font-medium text-[#2B2823] text-[13px] whitespace-nowrap">
+                                    {{ record.maintenance_date|date:"d F Y" }}
+                                </td>
+
+                                <!-- Equipment -->
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-7 h-7 rounded-full bg-[#F5F5F4] border border-[#E7E7E5] flex items-center justify-center text-[#716F6C] shrink-0">
+                                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="flex flex-col">
                                             <a href="{% url 'backend:equipment_detail' record.equipment.id %}"
-                                               title="View Equipment"
-                                               class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition">
-                                                <svg width="15"
-                                                     height="15"
-                                                     viewBox="0 0 24 24"
-                                                     fill="none"
-                                                     stroke="currentColor"
-                                                     stroke-width="2"
-                                                     stroke-linecap="round"
-                                                     stroke-linejoin="round">
-                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                                    <circle cx="12" cy="12" r="3" />
-                                                </svg>
+                                               class="font-semibold text-[#2B2823] hover:text-[#0B7A44] transition-colors">
+                                                {{ record.equipment.equipment_id|default:record.equipment.id }}
                                             </a>
+                                            <span class="text-[11.5px] text-[#9D9C9A]">{{ record.equipment.equipment_type.name }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Building -->
+                                <td class="text-[#716F6C] text-[13px]">
+                                    {% if record.equipment.building %}
+                                        <span class="font-medium text-[#2B2823]">{{ record.equipment.building.name }}</span>
+                                        {% if record.equipment.floor_location %}
+                                            <p class="text-[11.5px] text-[#9D9C9A]">{{ record.equipment.floor_location }}</p>
+                                        {% endif %}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+
+                                <!-- Type -->
+                                <td>
+                                    {% if record.record_type == 'routine' %}
+                                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#E8F0FE] text-[#1A73E8] border border-[#D2E3FC]">
+                                            Routine
+                                        </span>
+                                    {% elif record.record_type == 'emergency' %}
+                                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#FCE8E6] text-[#C5221F] border border-[#FAD2CF]">
+                                            Emergency
+                                        </span>
+                                    {% elif record.record_type == 'repair' %}
+                                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#FEF3E6] text-[#C86E12] border border-[#FDD8B5]">
+                                            Repair
+                                        </span>
+                                    {% elif record.record_type == 'inspection' %}
+                                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#F3E8FD] text-[#7C3AED] border border-[#E9D5FF]">
+                                            Inspection
+                                        </span>
+                                    {% elif record.record_type == 'upgrade' %}
+                                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#E6F4EA] text-[#137333] border border-[#CEEAD6]">
+                                            Upgrade
+                                        </span>
+                                    {% else %}
+                                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#F1F3F4] text-[#5F6368] border border-[#DADCE0]">
+                                            {{ record.record_type|title }}
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Technician -->
+                                <td class="text-[#716F6C] text-[13px]">
+                                    {% if record.technician %}
+                                        <span class="font-medium text-[#2B2823]">{{ record.technician.get_full_name|default:record.technician.username }}</span>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+
+                                <!-- Description -->
+                                <td class="text-[#716F6C] text-[13px] max-w-xs truncate" title="{{ record.work_description }}">
+                                    {{ record.work_description|truncatewords:8|default:"-" }}
+                                    {% if record.parts_replaced %}
+                                        <p class="text-[11.5px] text-[#9D9C9A] truncate">Parts: {{ record.parts_replaced|truncatewords:4 }}</p>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Cost -->
+                                <td class="text-[#2B2823] font-medium text-[13px] whitespace-nowrap">
+                                    {% if record.cost %}
+                                        ৳{{ record.cost }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+
+                                <!-- Review Status -->
+                                <td>
+                                    {% if record.review_status == 'approved' %}
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#E6F4EA] text-[#137333] border border-[#CEEAD6]">
+                                            Approved
+                                        </span>
+                                    {% elif record.review_status == 'rejected' %}
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#FCE8E6] text-[#C5221F] border border-[#FAD2CF]">
+                                            Rejected
+                                        </span>
+                                    {% else %}
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#FEF3E6] text-[#C86E12] border border-[#FDD8B5]">
+                                            Pending
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Action (3-Dots Circle Button with Popup Dropdown) -->
+                                <td class="text-center">
+                                    <div class="relative inline-block text-left" data-menu-wrap>
+                                        <button type="button"
+                                                data-menu-btn
+                                                class="eqh-action-circle-btn"
+                                                aria-label="Actions"
+                                                aria-expanded="false">
+                                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                                                <circle cx="12" cy="5" r="1.75" />
+                                                <circle cx="12" cy="12" r="1.75" />
+                                                <circle cx="12" cy="19" r="1.75" />
+                                            </svg>
+                                        </button>
+                                        <div data-menu class="hidden py-1.5 w-44 text-left rounded-lg bg-white shadow-xl border border-[#EAEAE9] z-50" role="menu">
+                                            <!-- View Equipment -->
+                                            <a href="{% url 'backend:equipment_detail' record.equipment.id %}"
+                                               class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-[#2B2823] hover:bg-[#F7F7F6] transition-colors"
+                                               role="menuitem">
+                                                <svg class="w-4 h-4 text-[#716F6C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                                    <circle cx="12" cy="12" r="3"></circle>
+                                                </svg>
+                                                <span>View Equipment</span>
+                                            </a>
+
                                             {% if record.review_status == 'pending' %}
-                                                <!-- Quick approve -->
-                                                <form method="POST"
-                                                      action="{% url 'backend:maintenance_record_review' record.id %}">
+                                                <div class="my-1 border-t border-[#F2F2F0]"></div>
+
+                                                <!-- Quick Approve -->
+                                                <form method="POST" action="{% url 'backend:maintenance_record_review' record.id %}" class="block m-0">
                                                     {% csrf_token %}
                                                     <input type="hidden" name="action" value="approve">
                                                     <button type="submit"
-                                                            title="Approve"
-                                                            class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:text-green-600 hover:bg-green-50 transition">
-                                                        <svg width="15"
-                                                             height="15"
-                                                             viewBox="0 0 24 24"
-                                                             fill="none"
-                                                             stroke="currentColor"
-                                                             stroke-width="2.5"
-                                                             stroke-linecap="round"
-                                                             stroke-linejoin="round">
+                                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-left text-[#1E8E3E] hover:bg-[#EAF7EE] transition-colors"
+                                                            role="menuitem">
+                                                        <svg class="w-4 h-4 text-[#1E8E3E]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                             <polyline points="20 6 9 17 4 12" />
                                                         </svg>
+                                                        <span>Approve</span>
                                                     </button>
                                                 </form>
-                                                <!-- Quick reject toggle -->
+
+                                                <!-- Reject Trigger -->
                                                 <button type="button"
-                                                        title="Reject"
                                                         onclick="toggleRejectPanel('rp-{{ record.id }}')"
-                                                        class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition">
-                                                    <svg width="15"
-                                                         height="15"
-                                                         viewBox="0 0 24 24"
-                                                         fill="none"
-                                                         stroke="currentColor"
-                                                         stroke-width="2.5"
-                                                         stroke-linecap="round"
-                                                         stroke-linejoin="round">
-                                                        <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                                                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-left text-[#D93025] hover:bg-[#FDF2F2] transition-colors"
+                                                        role="menuitem">
+                                                    <svg class="w-4 h-4 text-[#D93025]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <line x1="18" y1="6" x2="6" y2="18" />
+                                                        <line x1="6" y1="6" x2="18" y2="18" />
                                                     </svg>
+                                                    <span>Reject</span>
                                                 </button>
                                             {% endif %}
                                         </div>
-                                        <!-- Reject reason Modal -->
-                                        {% if record.review_status == 'pending' %}
-                                            <div id="rp-{{ record.id }}"
-                                                 class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-                                                <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm"
-                                                     onclick="toggleRejectPanel('rp-{{ record.id }}')"></div>
-                                                <div class="relative w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden text-left">
-                                                    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-                                                        <h3 class="text-lg font-bold text-gray-900">Rejection Reason</h3>
-                                                        <button type="button"
-                                                                onclick="toggleRejectPanel('rp-{{ record.id }}')"
-                                                                class="text-gray-400 hover:text-gray-600 transition">
-                                                            <svg width="20"
-                                                                 height="20"
-                                                                 viewBox="0 0 24 24"
-                                                                 fill="none"
-                                                                 stroke="currentColor"
-                                                                 stroke-width="2"
-                                                                 stroke-linecap="round"
-                                                                 stroke-linejoin="round">
-                                                                <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-                                                            </svg>
-                                                        </button>
-                                                    </div>
-                                                    <form method="POST"
-                                                          action="{% url 'backend:maintenance_record_review' record.id %}">
-                                                        {% csrf_token %}
-                                                        <input type="hidden" name="action" value="reject">
-                                                        <div class="p-6">
-                                                            <p class="text-sm text-gray-600 mb-4">Provide a clear explanation for rejecting this record. The technician will see this note on their dashboard.</p>
-                                                            <textarea name="review_notes"
-                                                                      rows="4"
-                                                                      required
-                                                                      placeholder="e.g. Work quality does not meet standards, incorrect parts listed..."
-                                                                      class="w-full text-sm border border-gray-200 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-red-400/50 focus:border-red-400 bg-white resize-none"></textarea>
-                                                        </div>
-                                                        <div class="px-6 pb-6 flex items-center justify-between gap-3">
-                                                            <button type="button"
-                                                                    onclick="toggleRejectPanel('rp-{{ record.id }}')"
-                                                                    class="flex-1 py-2.5 text-sm font-bold text-gray-700 bg-transparent hover:text-gray-900 transition text-center">Cancel</button>
-                                                            <button type="submit"
-                                                                    class="flex-1 py-2.5 text-sm font-bold text-white bg-red-400 hover:bg-red-500 rounded-xl shadow-sm transition">Submit Rejection</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% empty %}
-                                <tr>
-                                    <td colspan="9" class="px-6 py-16 text-center text-gray-400">
-                                        <div class="flex flex-col items-center gap-3">
-                                            <svg class="w-14 h-14 text-gray-200"
-                                                 fill="none"
-                                                 stroke="currentColor"
-                                                 viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                                            </svg>
-                                            <p class="text-sm font-semibold text-gray-400">No maintenance records found</p>
-                                            {% if search or f_equipment_id or f_record_type or f_review_status %}
-                                                <a href="{% url 'backend:equipment_history' %}"
-                                                   class="text-xs text-indigo-600 hover:underline">Clear filters</a>
-                                            {% endif %}
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <!-- ── Pagination ─────────────────────────────────────────────── -->
-                {% if data_list.has_other_pages %}
-                    <div class="p-4 border-t border-gray-100 flex items-center justify-between bg-white">
-                        <span class="text-sm text-gray-500">
-                            Page <span class="font-semibold text-gray-900">{{ data_list.number }}</span>
-                            of <span class="font-semibold text-gray-900">{{ last_page }}</span>
-                            &nbsp;·&nbsp; <span class="font-semibold text-gray-900">{{ data_list.paginator.count }}</span> records
-                        </span>
-                        <div class="flex gap-1">
-                            {% for i in paginator_list %}
-                                <a href="?page={{ i }}{% if search %}&search={{ search }}{% endif %}{% if f_equipment_id %}&equipment_id={{ f_equipment_id }}{% endif %}{% if f_record_type %}&record_type={{ f_record_type }}{% endif %}{% if f_review_status %}&review_status={{ f_review_status }}{% endif %}{% if f_date_from %}&date_from={{ f_date_from }}{% endif %}{% if f_date_to %}&date_to={{ f_date_to }}{% endif %}"
-                                   class="w-8 h-8 flex items-center justify-center rounded-md text-sm transition-colors {% if data_list.number == i %}bg-indigo-600 text-white font-semibold{% else %}text-gray-600 hover:bg-gray-100{% endif %}">
-                                    {{ i }}
-                                </a>
-                            {% endfor %}
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
-            <!-- /card -->
-        </div>
-    </section>
-{% endblock %}
-{% block extra_js %}
-    <script>
-  $(document).ready(function () {
-    $('.select2-items').select2();
-  });
+                                    </div>
 
-  function toggleRejectPanel(id) {
-    const el = document.getElementById(id);
-    if (el) el.classList.toggle('hidden');
-  }
-    </script>
+                                    <!-- Reject reason Modal -->
+                                    {% if record.review_status == 'pending' %}
+                                        <div id="rp-{{ record.id }}" class="hidden fixed inset-0 z-[10000] flex items-center justify-center p-4">
+                                            <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" onclick="toggleRejectPanel('rp-{{ record.id }}')"></div>
+                                            <div class="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden text-left border border-[#EAEAE9]">
+                                                <div class="flex items-center justify-between px-6 py-4 border-b border-[#F2F2F0]">
+                                                    <h3 class="text-[16px] font-semibold text-[#2B2823]">Rejection Reason</h3>
+                                                    <button type="button" onclick="toggleRejectPanel('rp-{{ record.id }}')" class="text-[#9D9C9A] hover:text-[#2B2823] transition-colors">
+                                                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                                <form method="POST" action="{% url 'backend:maintenance_record_review' record.id %}">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="action" value="reject">
+                                                    <div class="p-6">
+                                                        <p class="text-[13px] text-[#716F6C] mb-3">Provide a clear explanation for rejecting this record.</p>
+                                                        <textarea name="review_notes"
+                                                                  rows="4"
+                                                                  required
+                                                                  placeholder="e.g. Work quality does not meet standards, incorrect parts listed..."
+                                                                  class="w-full text-[13px] border border-[#EAEAE9] rounded-xl p-3 focus:outline-none focus:border-[#CFCED0] bg-[#FAFAFA] resize-none"></textarea>
+                                                    </div>
+                                                    <div class="px-6 pb-6 flex items-center justify-end gap-3">
+                                                        <button type="button" onclick="toggleRejectPanel('rp-{{ record.id }}')" class="py-2 px-4 text-[13px] font-semibold text-[#5C5B59] hover:text-[#2B2823] transition-colors">Cancel</button>
+                                                        <button type="submit" class="py-2 px-4 text-[13px] font-semibold text-white bg-[#D93025] hover:bg-red-700 rounded-lg shadow-sm transition-colors">Submit Rejection</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="9" class="py-12 text-center text-[#9E9D9B]">
+                                    <div class="flex flex-col items-center justify-center gap-2">
+                                        <svg class="w-8 h-8 text-[#C7C6C4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                                            <polyline points="14 2 14 8 20 8" />
+                                        </svg>
+                                        <p class="text-[13.5px] font-medium text-[#4A4947]">No maintenance records found</p>
+                                        <p class="text-[12.5px] text-[#8E8C89]">Try clearing filters or search criteria.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ════════════════════════ ROW 4: Pagination Bar ════════════════════════ -->
+        {% include 'includes/pagination.html' with data_list=data_list %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function toggleRejectPanel(id) {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('hidden');
+    }
+</script>
 {% endblock %}

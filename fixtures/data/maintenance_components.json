@@ -1,0 +1,154 @@
+[
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 1,
+        "fields": {
+            "maintenance_record": 1,
+            "name": "Compressor Operating Pressure",
+            "description": "Verify high-side and low-side refrigerant pressure gauge readings.",
+            "is_checked": true,
+            "remark": "High-side at 320 PSI, low-side at 118 PSI (within OEM spec).",
+            "suggestion": "No immediate action required.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-03-01T09:00:00Z",
+            "updated_at": "2026-03-01T11:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 2,
+        "fields": {
+            "maintenance_record": 1,
+            "name": "Air Intake Filtration Check",
+            "description": "Inspect pre-filters and primary HEPA filtration media for particulate accumulation.",
+            "is_checked": true,
+            "remark": "Filters reached 85% restriction threshold. Replaced with fresh units.",
+            "suggestion": "Scheduled next filter inspection in 90 days.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-03-01T09:00:00Z",
+            "updated_at": "2026-03-01T11:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 3,
+        "fields": {
+            "maintenance_record": 2,
+            "name": "Emergency Overspeed Governor",
+            "description": "Trip governor switch and measure physical actuation time.",
+            "is_checked": true,
+            "remark": "Governor tripped at 1.15 m/s. Safe threshold verified.",
+            "suggestion": "Keep contact points lubricated with non-acidic synthetic grease.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-05-15T10:00:00Z",
+            "updated_at": "2026-05-15T12:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 4,
+        "fields": {
+            "maintenance_record": 2,
+            "name": "Optical Door Safety Curtains",
+            "description": "Test multi-beam infrared safety light curtains across car doorway.",
+            "is_checked": true,
+            "remark": "All 32 optical channels responsive. Instant reopen on beam obstruction.",
+            "suggestion": "Regularly wipe optical lenses to avoid dust build-up.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-05-15T10:00:00Z",
+            "updated_at": "2026-05-15T12:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 5,
+        "fields": {
+            "maintenance_record": 3,
+            "name": "Common Rail Fuel Delivery Line",
+            "description": "Pressure test the high-pressure diesel fuel delivery circuit.",
+            "is_checked": false,
+            "remark": "Internal seals failed in pump delivery manifold. Pressure dropping below 300 bar.",
+            "suggestion": "Full pump replacement required immediately before load test.",
+            "proceed": false,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-06-08T13:00:00Z",
+            "updated_at": "2026-06-08T18:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 6,
+        "fields": {
+            "maintenance_record": 3,
+            "name": "Starter Motor 24V Cranking Batteries",
+            "description": "Test cold cranking amperage and terminal impedance on lead-acid bank.",
+            "is_checked": true,
+            "remark": "Battery bank healthy, 25.1V float charge, 24.2V under crank load.",
+            "suggestion": "Maintain float charger at 27.4V.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-06-08T13:00:00Z",
+            "updated_at": "2026-06-08T18:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 7,
+        "fields": {
+            "maintenance_record": 4,
+            "name": "Central Fire Alarm Loop Communicator",
+            "description": "Simulate alarm signal transmission to local monitoring dispatch station.",
+            "is_checked": true,
+            "remark": "Dual-path cellular and IP transmitters communicated within 4.2 seconds.",
+            "suggestion": "Continue monthly automated silent comm check.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-06-12T11:00:00Z",
+            "updated_at": "2026-06-12T13:30:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 8,
+        "fields": {
+            "maintenance_record": 5,
+            "name": "Blower Motor Serpentine Belt",
+            "description": "Inspect belt tension and visual wear on blower drive assembly.",
+            "is_checked": true,
+            "remark": "Belt showed micro-cracking. Replaced with new EPDM heavy-duty belt.",
+            "suggestion": "Check deflection tension again in 30 days.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-06-15T08:30:00Z",
+            "updated_at": "2026-06-15T10:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    }
+]

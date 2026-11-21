@@ -1,0 +1,182 @@
+[
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 1,
+        "fields": {
+            "equipment_type": 1,
+            "name": "Daikin VRV IV Compressor Unit",
+            "description": "Variable Refrigerant Volume primary outdoor inverter scroll compressor.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 2,
+        "fields": {
+            "equipment_type": 1,
+            "name": "Carrier Multi-Stage Blower Motor",
+            "description": "High efficiency variable-speed ECM blower assembly with digital controller.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 3,
+        "fields": {
+            "equipment_type": 1,
+            "name": "Trane Dual-Circuit Condenser Coil",
+            "description": "Corrosion-resistant aluminum fin copper tube condenser coil.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 4,
+        "fields": {
+            "equipment_type": 2,
+            "name": "Otis SkyRise Permanent-Magnet Hoist Motor",
+            "description": "Permanent-magnet gearless traction machine with regenerative drive unit.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 5,
+        "fields": {
+            "equipment_type": 2,
+            "name": "Schindler High-Cycle Door Operator",
+            "description": "Direct-drive harmonic door motor system with infrared light curtains.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 6,
+        "fields": {
+            "equipment_type": 2,
+            "name": "KONE EcoDisc Hoisting Traction Unit",
+            "description": "Axial synchronous motor hoisting unit with integral disc brakes.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 7,
+        "fields": {
+            "equipment_type": 3,
+            "name": "Cummins Common Rail Fuel Injector Pump",
+            "description": "High-pressure common rail fuel pump assembly for diesel generator sets.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 8,
+        "fields": {
+            "equipment_type": 3,
+            "name": "Stamford Digital Automatic Voltage Regulator",
+            "description": "Solid-state digital AVR with over-excitation protection circuitry.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 9,
+        "fields": {
+            "equipment_type": 3,
+            "name": "Perkins Heavy-Duty Turbocharger",
+            "description": "Exhaust gas turbine turbocharger with water-cooled center bearing.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 10,
+        "fields": {
+            "equipment_type": 4,
+            "name": "Honeywell Notifier Addressable Optical Sensor",
+            "description": "Intelligent photoelectric smoke detector with drift compensation.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 11,
+        "fields": {
+            "equipment_type": 4,
+            "name": "Ansul R-102 Liquid Suppression Nozzle",
+            "description": "High-velocity liquid chemical fire suppressant discharge nozzle.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 12,
+        "fields": {
+            "equipment_type": 4,
+            "name": "Siemens Cerberus Pro Manual Pull Station",
+            "description": "Dual-action addressable manual emergency fire alarm pull station.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
+            "is_active": true,
+            "deleted": false
+        }
+    }
+]

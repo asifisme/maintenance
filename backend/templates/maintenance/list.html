@@ -1,152 +1,462 @@
 {% extends 'base.html' %}
-{% block title %}<span class="hidden">{{ action }} Maintenance</span>{% endblock %}
-{% block header_actions %}
-    <a href="{% url 'backend:maintenance_add' %}"
-       class="inline-flex items-center gap-2 h-11 px-3 rounded-md bg-[var(--primary-color)] text-[var(--button-text-color)]">
-        <span class="grid h-5 w-5 place-items-center rounded-full bg-[var(--bg-color)]/20">
-            <svg width="20" height="20" viewBox="0 0 24 24">
-                <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            </svg>
-        </span>
-        <span class="hidden md:block">Add Maintenance Session</span>
-    </a>
+{% load static %}
+
+{% block title %}Maintenance Sessions{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    /* Design Tokens — Consistent with Building & Technicians Pattern */
+    body,
+    #mainContentWrapper {
+        background-color: #F2F2F2 !important;
+        font-family: 'Urbanist', Inter, system-ui, ui-sans-serif, sans-serif;
+    }
+
+    .mnt-mono {
+        font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        letter-spacing: -0.02em;
+    }
+
+    /* Search input box */
+    .mnt-search-box {
+        width: 100%;
+        max-width: 320px;
+        height: 38px;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        border-radius: 8px;
+        padding: 0 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+    .mnt-search-box:focus-within {
+        border-color: #CFCED0;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+    .mnt-search-input {
+        border: 0 !important;
+        outline: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13px;
+        color: #2B2823;
+        width: 100%;
+    }
+    .mnt-search-input::placeholder {
+        color: #9D9C9A;
+    }
+
+    /* Table Outer Tray: Fill w-full, radius 12px, padding 16px 6px 6px 6px, gap 16px, bg #F9F9F9 */
+    .mnt-table-tray {
+        background-color: #F9F9F9;
+        border-radius: 12px;
+        padding: 16px 6px 6px 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    /* Table Inner Container: Fill w-full, radius 6px, padding 14px, gap 10px, bg #FFFFFF */
+    .mnt-table-inner {
+        background-color: #FFFFFF;
+        border-radius: 6px;
+        padding: 14px;
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    /* Filter Select Pill */
+    .mnt-filter-select {
+        background-color: #EAEAE8 !important;
+        border: 1px solid #E2E2E0 !important;
+        border-radius: 8px !important;
+        height: 34px;
+        padding: 0 28px 0 11px !important;
+        font-size: 12.5px;
+        font-weight: 500;
+        color: #555452;
+        outline: none !important;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23716F6C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 9px center;
+        transition: background-color 150ms ease, border-color 150ms ease;
+    }
+    .mnt-filter-select:hover,
+    .mnt-filter-select:focus {
+        background-color: #E3E3E1 !important;
+        border-color: #CFCED0 !important;
+        color: #2B2A29;
+    }
+
+    /* Reset button */
+    .mnt-btn-reset {
+        height: 34px;
+        padding: 0 12px;
+        border-radius: 8px;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        font-size: 12.5px;
+        font-weight: 500;
+        color: #2B2823;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: background-color 150ms ease, border-color 150ms ease;
+    }
+    .mnt-btn-reset:hover {
+        background-color: #F7F7F6;
+        border-color: #D8D7D5;
+    }
+
+    /* Primary Forest Green Button (+ Add Maintenance Session) */
+    .mnt-btn-primary {
+        background-color: #0B7A44;
+        color: #FFFFFF;
+        border-radius: 8px;
+        padding: 9px 18px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 1px 3px rgba(11, 122, 68, 0.25);
+        transition: background-color 150ms ease;
+        white-space: nowrap;
+    }
+    .mnt-btn-primary:hover {
+        background-color: #08683A;
+    }
+
+    /* Table Styles */
+    .mnt-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+    .mnt-table thead tr {
+        background-color: #F6F6F6;
+    }
+    .mnt-table th {
+        padding: 12px 14px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        color: #2B2823;
+        white-space: nowrap;
+    }
+    .mnt-table td {
+        padding: 13px 14px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13px;
+        color: #2B2823;
+        vertical-align: middle;
+    }
+
+    /* Action 3-dots circular button */
+    .mnt-action-circle-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 9999px;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #5C5B59;
+        cursor: pointer;
+        transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+    }
+    .mnt-action-circle-btn:hover {
+        background-color: #F7F7F6;
+        border-color: #D8D7D5;
+        color: #2B2823;
+    }
+</style>
 {% endblock %}
+
+{% block breadcrumb %}
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <span class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#2B2823] font-medium shrink-0">
+        Maintenance
+    </span>
+{% endblock %}
+
+{% block main_class %}w-full px-[15px] py-4 flex-1{% endblock %}
+
+{% block page_header %}
+<div class="w-full pt-1 pb-4">
+    <!-- Page Title & Primary Action -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="mnt-mono text-[24px] font-medium text-[#2B2823] leading-tight">Maintenance Sessions</h1>
+            <p class="text-[13.5px] text-[#716F6C] mt-1">Track scheduled and completed equipment maintenance sessions across buildings.</p>
+        </div>
+        <div>
+            <a href="{% url 'backend:maintenance_add' %}" class="mnt-btn-primary">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 5v14M5 12h14" />
+                </svg>
+                <span>Add Maintenance Session</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
 {% block content %}
-    <section class="text-[var(--text-color)] min-h-screen overflow-x-hidden px-1">
-        <form method="get" class="mt-4 flex gap-2">
+<div class="w-full space-y-4 pb-10">
+
+    <!-- ════════════════════════ ROW 1: Search Input ════════════════════════ -->
+    <div class="pt-1">
+        <form method="get" action="{% url 'backend:maintenance' %}" id="maintenanceSearchForm" class="mnt-search-box">
+            <svg class="w-4 h-4 text-[#9D9C9A] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <path d="M21 21l-4.35-4.35" />
+            </svg>
             <input type="text"
                    name="search"
                    value="{{ search }}"
-                   placeholder="Search Serial / QR..."
-                   class="h-11 rounded-md px-3 border border-[var(--border-color)]">
-            <button type="submit"
-                    class="h-11 px-4 bg-[var(--primary-color)] text-white rounded-md">Search</button>
+                   placeholder="Search Serial, QR Code, or Equipment"
+                   class="mnt-search-input">
+            {% if selected_status %}<input type="hidden" name="status" value="{{ selected_status }}">{% endif %}
+            {% if per_page != 10 %}<input type="hidden" name="per_page" value="{{ per_page }}">{% endif %}
         </form>
-        <div class="relative mt-4 ring-1 ring-[var(--border-color)] bg-[var(--white-color)]">
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left">
-                    <thead class="bg-[var(--table-header)] border-b border-[var(--border-color)]">
+    </div>
+
+    <!-- ════════════════════════ ROW 2: Table Outer Tray ════════════════════════ -->
+    <div class="mnt-table-tray">
+        <!-- Tray Header: Title + Counter Badge + Filter Selects + Reset -->
+        <div class="px-2.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div class="flex items-center gap-2">
+                <h2 class="text-[16.5px] font-semibold text-[#2B2823] tracking-[-0.01em]">Total Maintenance Sessions</h2>
+                <span class="inline-flex items-center justify-center min-w-[24px] h-[22px] px-2 rounded-full bg-[#EAEAE8] text-[#4A4947] text-[12px] font-semibold leading-none">
+                    {{ filtered_total_count }}
+                </span>
+            </div>
+
+            <!-- Filters Form -->
+            <form method="get" action="{% url 'backend:maintenance' %}" id="maintenanceFilterForm" class="flex flex-wrap items-center gap-2">
+                {% if search %}
+                    <input type="hidden" name="search" value="{{ search }}">
+                {% endif %}
+                {% if per_page != 10 %}
+                    <input type="hidden" name="per_page" value="{{ per_page }}">
+                {% endif %}
+
+                <!-- All Statuses -->
+                <select name="status" onchange="this.form.submit()" class="mnt-filter-select" aria-label="Filter by status">
+                    <option value="">All Statuses</option>
+                    {% for st in status_choices %}
+                        <option value="{{ st }}" {% if selected_status == st %}selected{% endif %}>{{ st }}</option>
+                    {% endfor %}
+                </select>
+
+                <!-- Reset Button -->
+                <a href="{% url 'backend:maintenance' %}" class="mnt-btn-reset" title="Reset Filters">
+                    <span>Reset</span>
+                    <svg class="w-3.5 h-3.5 text-[#5C5B59]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                        <path d="M3 3v5h5" />
+                    </svg>
+                </a>
+            </form>
+        </div>
+
+        <!-- Table Inner Container -->
+        <div class="mnt-table-inner overflow-hidden">
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="mnt-table min-w-[900px]">
+                    <thead>
                         <tr>
-                            <th class="px-4 py-3 font-bold whitespace-nowrap">Serial</th>
-                            <th class="px-4 py-3 font-bold whitespace-nowrap">Equipment Name</th>
-                            <th class="px-4 py-3 font-bold whitespace-nowrap">QR Code</th>
-                            <th class="px-4 py-3 font-bold whitespace-nowrap">Records Logged</th>
-                            <th class="px-4 py-3 font-bold whitespace-nowrap">Created By</th>
-                            <th class="px-4 py-3 font-bold whitespace-nowrap">Created At</th>
-                            <th class="px-4 py-3 font-bold whitespace-nowrap">Status</th>
-                            <th class="px-4 py-3 font-bold text-right">Action</th>
+                            <th class="rounded-l-[4px]">Serial</th>
+                            <th>Equipment</th>
+                            <th>QR Code</th>
+                            <th>Records Logged</th>
+                            <th>Created By</th>
+                            <th>Created At</th>
+                            <th>Status</th>
+                            <th class="text-center rounded-r-[4px]">Action</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-[var(--border-color)]">
+                    <tbody class="divide-y divide-[#F2F2F0]">
                         {% for data in data_list %}
-                            <tr class="hover:bg-[var(--bg-color)]/50">
-                                <td class="px-4 py-3 whitespace-nowrap font-medium text-[var(--primary-color)]">
-                                    <a href="{% url 'backend:maintenance_detail' data.id %}">{{ data.maintenance_serial }}</a>
+                            <tr class="hover:bg-[#FAFAFA] transition-colors">
+                                <!-- Serial -->
+                                <td>
+                                    <a href="{% url 'backend:maintenance_detail' data.id %}" class="font-mono font-semibold text-[#2B2823] hover:text-[#0B7A44] transition-colors">
+                                        {{ data.maintenance_serial }}
+                                    </a>
                                 </td>
-                                <td class="px-4 py-3 whitespace-nowrap">
-                                    {% if data.equipment.all %}
-                                        {% for eq in data.equipment.all %}
-                                            <div>
-                                                {% if eq.equipment_type %}
-                                                    {{ eq.equipment_type.name }} ({{ eq.equipment_id }})
-                                                {% else %}
-                                                    {{ eq.equipment_id }}
-                                                {% endif %}
-                                            </div>
-                                        {% endfor %}
-                                    {% elif data.maintenance_records.all %}
-                                        {% for rec in data.maintenance_records.all %}
-                                            {% if rec.equipment %}
-                                                <div>
-                                                    {% if rec.equipment.equipment_type %}
-                                                        {{ rec.equipment.equipment_type.name }} ({{ rec.equipment.equipment_id }})
-                                                    {% else %}
-                                                        {{ rec.equipment.equipment_id }}
+
+                                <!-- Equipment -->
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-7 h-7 rounded-full bg-[#F5F5F4] border border-[#E7E7E5] flex items-center justify-center text-[#716F6C] shrink-0">
+                                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="flex flex-col">
+                                            {% if data.equipment.all %}
+                                                {% for eq in data.equipment.all %}
+                                                    <span class="font-medium text-[#2B2823] text-[13px]">
+                                                        {% if eq.equipment_type %}{{ eq.equipment_type.name }}{% endif %}
+                                                        <span class="text-[#716F6C] font-normal">({{ eq.equipment_id }})</span>
+                                                    </span>
+                                                {% endfor %}
+                                            {% elif data.maintenance_records.all %}
+                                                {% for rec in data.maintenance_records.all %}
+                                                    {% if rec.equipment %}
+                                                        <span class="font-medium text-[#2B2823] text-[13px]">
+                                                            {% if rec.equipment.equipment_type %}{{ rec.equipment.equipment_type.name }}{% endif %}
+                                                            <span class="text-[#716F6C] font-normal">({{ rec.equipment.equipment_id }})</span>
+                                                        </span>
                                                     {% endif %}
-                                                </div>
+                                                {% endfor %}
+                                            {% else %}
+                                                <span class="text-[#9D9C9A]">-</span>
                                             {% endif %}
-                                        {% endfor %}
-                                    {% else %}
-                                        <span class="text-gray-400">-</span>
-                                    {% endif %}
+                                        </div>
+                                    </div>
                                 </td>
-                                <td class="px-4 py-3 whitespace-nowrap">{{ data.qr_code|default:"" }}</td>
-                                <td class="px-4 py-3 whitespace-nowrap font-semibold">{{ data.num_records }}</td>
-                                <td class="px-4 py-3 whitespace-nowrap">
+
+                                <!-- QR Code -->
+                                <td class="font-mono text-[#716F6C] text-[12.5px]">
+                                    {{ data.qr_code|default:"-" }}
+                                </td>
+
+                                <!-- Records Logged -->
+                                <td>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#F5F5F4] text-[#716F6C] border border-[#E5E5E3]">
+                                        {{ data.num_records|default:"0" }}
+                                    </span>
+                                </td>
+
+                                <!-- Created By -->
+                                <td class="text-[#716F6C] text-[13px]">
                                     {% if data.created_by %}
-                                        {{ data.created_by.get_full_name|default:data.created_by.username }}
+                                        <span class="font-medium text-[#2B2823]">{{ data.created_by.get_full_name|default:data.created_by.username }}</span>
                                     {% else %}
                                         System
                                     {% endif %}
                                 </td>
-                                <td class="px-4 py-3 whitespace-nowrap">{{ data.created_at|date:"d-b-Y H:i" }}</td>
-                                <td class="px-4 py-3 whitespace-nowrap">
+
+                                <!-- Created At -->
+                                <td class="text-[#716F6C] text-[13px] whitespace-nowrap">
+                                    {{ data.created_at|date:"d F Y H:i" }}
+                                </td>
+
+                                <!-- Status Badge -->
+                                <td>
                                     {% if data.is_active %}
-                                        <span class="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Active</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#E6F4EA] text-[#137333] border border-[#CEEAD6]">
+                                            Active
+                                        </span>
                                     {% else %}
-                                        <span class="inline-flex items-center rounded-full bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">Inactive</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#F1F3F4] text-[#5F6368] border border-[#DADCE0]">
+                                            Inactive
+                                        </span>
                                     {% endif %}
                                 </td>
-                                <td class="px-4 py-3 text-right">
-                                    <div data-menu-wrap class="inline-block relative">
-                                        <button data-menu-btn
-                                                class="p-1 text-[var(--text-light-color)] hover:text-[var(--primary-color)] transition-colors rounded-full hover:bg-[var(--bg-color)]">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z">
-                                                </path>
+
+                                <!-- Action (3-Dots Circle Button with Popup Dropdown) -->
+                                <td class="text-center">
+                                    <div class="relative inline-block text-left" data-menu-wrap>
+                                        <button type="button"
+                                                data-menu-btn
+                                                class="mnt-action-circle-btn"
+                                                aria-label="Actions"
+                                                aria-expanded="false">
+                                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                                                <circle cx="12" cy="5" r="1.75" />
+                                                <circle cx="12" cy="12" r="1.75" />
+                                                <circle cx="12" cy="19" r="1.75" />
                                             </svg>
                                         </button>
-                                        <div data-menu
-                                             class="hidden absolute right-0 mt-2 w-36 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
-                                            <div class="py-1">
-                                                <a href="{% url 'backend:maintenance_detail' data.id %}"
-                                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">Details</a>
-                                                <a href="{% url 'backend:maintenance_update' data.id %}"
-                                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">Edit</a>
-                                                <form action="{% url 'backend:maintenance_status' data.id %}" method="post">
-                                                    {% csrf_token %}
-                                                    <button type="submit"
-                                                            class="block px-4 py-2 text-sm {% if data.is_active %}text-red-600 hover:bg-red-50{% else %}text-green-600 hover:bg-green-50{% endif %} w-full text-left"
-                                                            onclick="return confirm('Are you sure you want to change status?')">
+                                        <div data-menu class="hidden py-1.5 w-44 text-left rounded-lg bg-white shadow-xl border border-[#EAEAE9] z-50" role="menu">
+                                            <!-- Details -->
+                                            <a href="{% url 'backend:maintenance_detail' data.id %}"
+                                               class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-[#2B2823] hover:bg-[#F7F7F6] transition-colors"
+                                               role="menuitem">
+                                                <svg class="w-4 h-4 text-[#716F6C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                                    <circle cx="12" cy="12" r="3"></circle>
+                                                </svg>
+                                                <span>Details</span>
+                                            </a>
+
+                                            <!-- Edit -->
+                                            <a href="{% url 'backend:maintenance_update' data.id %}"
+                                               class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-[#2B2823] hover:bg-[#F7F7F6] transition-colors"
+                                               role="menuitem">
+                                                <svg class="w-4 h-4 text-[#716F6C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                                </svg>
+                                                <span>Edit</span>
+                                            </a>
+
+                                            <div class="my-1 border-t border-[#F2F2F0]"></div>
+
+                                            <!-- Status Toggle (Deactivate / Activate) -->
+                                            <form action="{% url 'backend:maintenance_status' data.id %}" method="post" class="block m-0">
+                                                {% csrf_token %}
+                                                <button type="submit"
+                                                        onclick="return confirm('Are you sure you want to {% if data.is_active %}deactivate{% else %}activate{% endif %} this maintenance session?');"
+                                                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-left transition-colors {% if data.is_active %}text-[#D93025] hover:bg-[#FDF2F2]{% else %}text-[#1E8E3E] hover:bg-[#EAF7EE]{% endif %}"
+                                                        role="menuitem">
+                                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                                         {% if data.is_active %}
-                                                            Inactive
+                                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                                                         {% else %}
-                                                            Active
+                                                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                                         {% endif %}
-                                                    </button>
-                                                </form>
-                                            </div>
+                                                    </svg>
+                                                    <span>{% if data.is_active %}Deactivate{% else %}Activate{% endif %}</span>
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
                                 </td>
                             </tr>
                         {% empty %}
                             <tr>
-                                <td colspan="7" class="px-4 py-6 text-center text-gray-500">No maintenance sessions found.</td>
+                                <td colspan="8" class="py-12 text-center text-[#9E9D9B]">
+                                    <div class="flex flex-col items-center justify-center gap-2">
+                                        <svg class="w-8 h-8 text-[#C7C6C4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                                        </svg>
+                                        <p class="text-[13.5px] font-medium text-[#4A4947]">No maintenance sessions found</p>
+                                        <p class="text-[12.5px] text-[#8E8C89]">Try clearing filters or search criteria.</p>
+                                    </div>
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
-            <!-- Pagination -->
-            {% if last_page > 1 %}
-                <div class="p-4 border-t border-[var(--border-color)] flex justify-between items-center">
-                    <span>Page {{ data_list.number }} of {{ last_page }}</span>
-                    <div class="flex gap-1">
-                        {% for i in paginator_list %}
-                            <a href="?page={{ i }}&search={{ search }}"
-                               class="px-3 py-1 border rounded {% if data_list.number == i %}bg-[var(--primary-color)] text-white{% endif %}">{{ i }}</a>
-                        {% endfor %}
-                    </div>
-                </div>
-            {% endif %}
         </div>
-    </section>
-{% endblock %}
-{% block extra_js %}
-    <script>
-  $(document).ready(function () {
-    $('.select2-items').select2();
-  });
-    </script>
+
+        <!-- ════════════════════════ ROW 3: Pagination Bar ════════════════════════ -->
+        {% include 'includes/pagination.html' with data_list=data_list %}
+    </div>
+</div>
 {% endblock %}

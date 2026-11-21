@@ -167,7 +167,7 @@
         <style>
         :root {
             --primary-color: {{ design.primary_color|default:'#4354A3' }};
-            --bg-color: {{ design.bg_color|default:'#EEF3F8' }};
+            --bg-color: {{ design.bg_color|default:'#F2F2F2' }};
             --hover-color: {{ design.hover_color|default:'#4354A3' }};
             --border-color: {{design.border_color|default:'#E5E7EB' }};
             --shadow-color: {{ design.shadow_color|default:'#DDE0FF' }};
@@ -184,130 +184,77 @@
             --table-header: #F9FAFB;
             --white-color: #FFFFFF;
         }
+        body,
+        #mainContentWrapper {
+            background-color: #F2F2F2 !important;
+        }
         </style>
         {% block extra_head %}{% endblock %}
     </head>
     <body class="antialiased bg-[var(--bg-color)] text-[var(--text-color)]">
         {% block modals %}{% endblock %}
         {% include 'includes/sidebar.html' %}
-        <div id="mainContentWrapper" class="lg:pl-72 bg-[var(--bg-color)] min-h-screen transition-[padding] duration-300 ease-in-out">
+        <div id="mainContentWrapper" class="lg:pl-72 bg-[var(--bg-color)] min-h-screen transition-[padding] duration-300 ease-in-out flex flex-col justify-between">
             {% block top_header %}
-            <!-- header -->
-            <header class="sticky top-0 z-30 bg-[var(--bg-color)]/80 backdrop-blur ">
-                <div class="mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="h-16 flex items-center justify-between">
-                        <!-- left side -->
-                        <div class="flex items-center gap-2">
-                            <!-- mobile hamburger -->
-                            <button id="btnOpen"
-                                    class="lg:hidden -ml-1 p-2.5 rounded-md hover:bg-[var(--bg-color)]">
-                                <svg class="h-6 w-6 text-[var(--text-color)]"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="2">
-                                    <path d="M4 6h16M4 12h16M4 18h16" />
+            <!-- header: Exact match with Figma Mockup (Breadcrumbs on Left, Notification Bell on Right, No Search, No Profile Icon) -->
+            <header class="sticky top-0 z-30 bg-[#F2F2F2]/95 backdrop-blur-sm">
+                <div class="w-full px-[15px] h-14 flex items-center justify-between gap-3">
+                    <!-- Left: Mobile Hamburger + Breadcrumb Navigation -->
+                    <div class="flex items-center gap-2.5">
+                        <button id="btnOpen"
+                                type="button"
+                                aria-label="Open navigation"
+                                class="lg:hidden -ml-1 p-2 rounded-lg bg-white border border-[#EAEAE9] text-[#4A4947] hover:bg-[#F5F5F4] transition-colors">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                        <nav class="flex items-center gap-2 text-[12.5px] flex-wrap" aria-label="Breadcrumb">
+                            <a href="{% url 'backend:dash_board' %}" class="w-8 h-8 rounded-[8px] bg-white border border-[#EAEAE9] flex items-center justify-center text-[#5C5B59] hover:bg-[#F7F7F6] transition-colors shrink-0" title="Home">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 10.5L12 3l9 7.5" />
+                                    <path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5" />
                                 </svg>
-                            </button>
-                            <!-- mobile logo -->
-                            <div class="flex items-center gap-2 lg:hidden">
-                                <img src="{% url 'backend:serve_optimized_image' 'no_image' %}?width=300&quality=100&image_path=logo"
-                                     class="h-9 w-7"
-                                     alt="">
-                                <span class="text-sm font-semibold">{{ site_setting.site_title|default:'' }}</span>
-                            </div>
-                            <!-- desktop welcome -->
-                            <div class="hidden lg:block ">
-                                <span class="text-2xl font-medium text-[var(--text-color)]">Welcome, {{ user.username }}</span>
-                            </div>
-                        </div>
-                        <!-- Left side -->
-                        <div class="flex items-center gap-3">
-                            <!-- desktop search -->
-                            <div class="hidden lg:block">
-                                <label class="relative block w-[420px]">
-                                    <span class="pointer-events-none absolute inset-y-0 left-3 grid place-items-center">
-                                        <svg class="h-5 w-5 text-[var(--text-light-color)]"
-                                             viewBox="0 0 24 24"
-                                             fill="none"
-                                             stroke="currentColor"
-                                             stroke-width="2">
-                                            <circle cx="11" cy="11" r="7" />
-                                            <path d="M21 21l-4.35-4.35" />
+                            </a>
+                            <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                            </svg>
+                            <a href="{% url 'backend:dash_board' %}" class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#5C5B59] font-medium hover:bg-[#E0E0DF] transition-colors shrink-0">
+                                Dashboard
+                            </a>
+                            {% block breadcrumb %}
+                                {% if current_menu %}
+                                    {% if current_menu.parent %}
+                                        <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                                         </svg>
-                                    </span>
-                                    <input type="text"
-                                           placeholder="Search"
-                                           data-search="backend-menu"
-                                           class="w-full rounded-lg bg-[var(--bg-color)] h-11 pl-10 pr-3 text-sm outline-none ring-1 ring-[var(--border-color)] focus:ring-[var(--primary-color)]/30">
-                                </label>
-                            </div>
-                            <!-- right icons -->
-                            <button class="p-2.5 rounded-md hover:bg-[var(--bg-color)] relative"
-                                    aria-label="Notifications">
-                                <svg class="h-6 w-6 text-[var(--primary-color)]"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="2">
-                                    <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11a6 6 0 1 0-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 1 1-6 0v-1m6 0H9" />
-                                </svg>
-                            </button>
-                            <!-- Profile Dropdown -->
-                            <div class="relative">
-                                <button id="profileMenuBtn"
-                                        onclick="toggleProfileMenu()"
-                                        class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-[var(--bg-color)] transition-colors"
-                                        aria-haspopup="true"
-                                        aria-expanded="false">
-                                    <div class="w-8 h-8 bg-[var(--primary-color)] rounded-full flex items-center justify-center text-white text-sm font-semibold">
-                                        {{ user.username|slice:":1"|upper }}
-                                    </div>
-                                    <svg class="w-4 h-4 text-[var(--text-light-color)] hidden lg:block"
-                                         fill="none"
-                                         stroke="currentColor"
-                                         viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                        <span class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#5C5B59] font-medium shrink-0">
+                                            {{ current_menu.parent.menu_name }}
+                                        </span>
+                                    {% endif %}
+                                    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                                     </svg>
-                                </button>
-                                <div id="profileMenu"
-                                     class="hidden absolute right-0 mt-2 w-56 rounded-lg bg-white ring-1 ring-[var(--border-color)] shadow-lg z-50">
-                                    <div class="px-4 py-3 border-b border-[var(--border-color)]">
-                                        <p class="text-sm font-medium text-[var(--text-color)]">{{ user.get_full_name|default:user.username }}</p>
-                                        <p class="text-xs text-[var(--text-light-color)] mt-0.5">{{ user.email|default:'' }}</p>
-                                    </div>
-                                    <div class="py-1">
-                                        <a href="{% url 'backend:dash_board' %}"
-                                           class="block px-4 py-2 text-sm text-[var(--text-color)] hover:bg-gray-50">
-                                            <i class="fas fa-home mr-2 w-4"></i>Dashboard
-                                        </a>
-                                        <a href="{% url 'backend:backend_logout' %}"
-                                           class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                                            <i class="fas fa-sign-out-alt mr-2 w-4"></i>Logout
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                    <span class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#2B2823] font-medium shrink-0">
+                                        {{ current_menu.menu_name }}
+                                    </span>
+                                {% endif %}
+                            {% endblock %}
+                        </nav>
                     </div>
-                    <!-- mobile search -->
-                    <div class="pb-3 lg:hidden">
-                        <label class="relative block">
-                            <span class="pointer-events-none absolute inset-y-0 left-3 grid place-items-center">
-                                <svg class="h-5 w-5 text-[var(--text-light-color)]"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="2">
-                                    <circle cx="11" cy="11" r="7" />
-                                    <path d="M21 21l-4.35-4.35" />
-                                </svg>
-                            </span>
-                            <input type="search"
-                                   placeholder="Search"
-                                   data-search="backend-menu"
-                                   class="w-full rounded-lg bg-[var(--bg-color)] h-11 pl-10 pr-3 text-sm outline-none ring-1 ring-[var(--border-color)] focus:ring-[var(--primary-color)]/30">
-                        </label>
+
+                    <!-- Right: Notification Bell Popover (No search, no profile) -->
+                    <div class="relative">
+                        <button id="baseNotifBtn"
+                                type="button"
+                                aria-label="Notifications"
+                                class="w-9 h-9 rounded-[8px] bg-white border border-[#EAEAE9] flex items-center justify-center text-[#5C5B59] hover:bg-[#F7F7F6] transition-colors relative shadow-[0_1px_2px_rgba(0,0,0,0.03)] shrink-0">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                            </svg>
+                            <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#FF0505]"></span>
+                        </button>
                     </div>
                 </div>
             </header>
@@ -356,36 +303,10 @@
                     </div>
                 </div>
             {% endif %}
-            <main class="md:mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
+            <main class="{% block main_class %}md:mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-1{% endblock %}">
                 {% block page_header %}
                 <!-- Page Header -->
                 <div class="mb-6">
-                    <!-- Breadcrumb Navigation -->
-                    <nav class="flex items-center gap-2 text-sm text-[var(--text-light-color)] mb-3"
-                         aria-label="Breadcrumb">
-                        <a href="{% url 'backend:dash_board' %}"
-                           class="hover:text-[var(--primary-color)] transition-colors flex items-center gap-1">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
-                                </path>
-                            </svg>
-                            <span>Home</span>
-                        </a>
-                        {% for breadcrumb in breadcrumb_menu %}
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                            <a {% if breadcrumb.menu_url %}href="{% if '/' in breadcrumb.menu_url %}{{ breadcrumb.menu_url }}{% else %}{% url 'backend:menu_wise_dashboard' breadcrumb.menu_url %}{% endif %}
-                               "
-                               {% else %}
-                               href="#"
-                               {% endif %}
-                               class="hover:text-[var(--primary-color)] transition-colors{% if forloop.last %} font-medium text-[var(--primary-color)] breadcrumb-last{% endif %}">
-                                {{ breadcrumb.menu_name }}
-                            </a>
-                        {% endfor %}
-                        {% block breadcrumb %}{% endblock %}
-                    </nav>
                     <!-- Page Title and Actions -->
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div class="flex items-center gap-3">

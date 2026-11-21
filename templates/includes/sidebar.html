@@ -6,7 +6,8 @@
     /* Sidebar Typography & Design Tokens (Geist Mono + Neutrals) */
     #sidebar {
         background-color: #EBEBEB;
-        border-right: 1px solid #DFDFDF;
+        border: none !important;
+        border-right: none !important;
     }
 
     .sidebar-mono {
@@ -25,18 +26,34 @@
 
     /* Collapse toggle button */
     .sidebar-collapse-btn {
-        width: 38px;
-        height: 38px;
+        width: 34px;
+        height: 34px;
         border-radius: 9999px;
-        border: 1px solid #D8D7D5;
+        border: 1px solid #E2E1DF;
         color: #5C5B59;
-        background-color: transparent;
+        background-color: #FFFFFF;
+        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.08), 0px 1px 2px rgba(0, 0, 0, 0.04);
         transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
     }
     .sidebar-collapse-btn:hover {
-        background-color: #E0E0DF;
-        border-color: #C7C6C4;
-        color: #333333;
+        background-color: #F7F7F6;
+        border-color: #CFCED0;
+        color: #1F1E1D;
+    }
+
+    @media (min-width: 1024px) {
+        #sidebar {
+            overflow: visible !important;
+        }
+        #sidebar .sidebar-header-row {
+            position: relative;
+        }
+        #sidebar #btnToggleSidebar {
+            position: absolute;
+            right: -17px;
+            top: 24px;
+            z-index: 60;
+        }
     }
 
     /* Search box — exact Figma specs (Fill 256px x 40px, radius 8px, padding 8px 8px 8px 12px) */
@@ -262,16 +279,16 @@
         body.sidebar-collapsed #sidebar .sidebar-header-row {
             position: relative;
             justify-content: center;
-            padding: 24px 0 12px 0;
+            padding: 20px 0 12px 0;
         }
         /* Floating white circular expand button straddling right edge */
         body.sidebar-collapsed #sidebar #btnToggleSidebar {
             position: absolute;
-            right: -18px;
-            top: 28px;
+            right: -17px;
+            top: 24px;
             z-index: 60;
-            width: 36px;
-            height: 36px;
+            width: 34px;
+            height: 34px;
             background-color: #FFFFFF;
             border: 1px solid #E2E1DF;
             color: #4A4947;
@@ -287,11 +304,11 @@
         }
         /* Centered vertical icon rail with generous spacing */
         body.sidebar-collapsed #sidebar .sidebar-nav-section {
-            padding: 28px 0 16px 0;
+            padding: 24px 0 16px 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
         }
         body.sidebar-collapsed #sidebar .sidebar-bottom-nav {
             padding: 8px 0 16px 0;
@@ -305,26 +322,31 @@
             display: flex;
             justify-content: center;
         }
+        /* When minimized, keep icon box and icon the exact same size as expanded */
         body.sidebar-collapsed #sidebar .sidebar-nav-item {
-            width: 48px;
-            height: 48px;
-            min-height: 48px;
+            width: 40px;
+            height: 40px;
+            min-height: 40px;
             padding: 0;
-            border-radius: 12px;
+            border-radius: 8px !important;
             justify-content: center;
             align-items: center;
         }
         body.sidebar-collapsed #sidebar .sidebar-nav-item > span:first-child {
+            display: flex;
             justify-content: center;
+            align-items: center;
             gap: 0;
         }
         body.sidebar-collapsed #sidebar .sidebar-nav-item > span:first-child > svg {
-            width: 21px;
-            height: 21px;
+            width: 20px !important;
+            height: 20px !important;
+            flex-shrink: 0;
         }
         body.sidebar-collapsed #sidebar .sidebar-nav-item > span:first-child > i {
-            font-size: 18px;
-            width: 21px;
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
         }
         body.sidebar-collapsed #sidebar .sidebar-divider {
             margin-left: 16px;
