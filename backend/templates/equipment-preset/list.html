@@ -183,6 +183,110 @@
         border-color: #D8D7D5;
         color: #2B2823;
     }
+
+    /* Figma Add Brand / Preset Popup Modal Styles */
+    .eqp-modal-card {
+        width: 100%;
+        max-width: 512px;
+        border-radius: 13px;
+        background-color: #F3F3F3;
+        background-clip: padding-box;
+        border: 2px solid rgba(255, 255, 255, 0.35);
+        padding: 10px 10px 16px 16px;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.20), 3px 9px 21px rgba(48, 48, 48, 0.10), 14px 36px 38px rgba(48, 48, 48, 0.09);
+        box-sizing: border-box;
+    }
+
+    .eqp-modal-close-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAEA;
+        box-shadow: 0 0 1px rgba(135, 135, 135, 0.10), 0 1px 1px rgba(135, 135, 135, 0.09);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #2B2823;
+        cursor: pointer;
+        transition: background-color 150ms ease;
+    }
+    .eqp-modal-close-btn:hover {
+        background-color: #FAFAFA;
+    }
+
+    .eqp-modal-label {
+        display: block;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13.5px;
+        font-weight: 500;
+        color: #2B2823;
+        margin-bottom: 6px;
+    }
+
+    .eqp-modal-input {
+        width: 100%;
+        height: 41px;
+        border-radius: 13px;
+        background-color: #FFFFFF;
+        border: 0.5px solid rgba(240, 240, 240, 0.6);
+        padding: 0 12px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13.5px;
+        color: #2B2823;
+        outline: none;
+        box-shadow: 0 0 6px rgba(135, 135, 135, 0.02), 0 1px 2px rgba(135, 135, 135, 0.09);
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .eqp-modal-textarea {
+        width: 100%;
+        height: 91px;
+        border-radius: 13px;
+        background-color: #FFFFFF;
+        border: 0.5px solid rgba(240, 240, 240, 0.6);
+        padding: 12px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13.5px;
+        color: #2B2823;
+        outline: none;
+        resize: none;
+        box-shadow: 0 0 6px rgba(135, 135, 135, 0.02), 0 1px 2px rgba(135, 135, 135, 0.09);
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .eqp-modal-select {
+        width: 100%;
+        height: 41px;
+        border-radius: 13px;
+        background-color: #FFFFFF;
+        border: 0.5px solid rgba(240, 240, 240, 0.6);
+        padding: 0 34px 0 12px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13.5px;
+        color: #2B2823;
+        outline: none;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%232B2823' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        box-shadow: 0 0 6px rgba(135, 135, 135, 0.02), 0 1px 2px rgba(135, 135, 135, 0.09);
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .eqp-modal-input::placeholder,
+    .eqp-modal-textarea::placeholder {
+        color: #BDBCBB;
+    }
+
+    .eqp-modal-input:focus,
+    .eqp-modal-textarea:focus,
+    .eqp-modal-select:focus {
+        border-color: #0B7A44;
+        box-shadow: 0 0 0 3px rgba(11, 122, 68, 0.08);
+    }
 </style>
 {% endblock %}
 
@@ -218,12 +322,12 @@
             <p class="text-[13.5px] text-[#716F6C] mt-1">Manage equipment manufacturers, brands, and component presets.</p>
         </div>
         <div>
-            <a href="{% url 'backend:equipment_component_preset_add' %}" class="eqp-btn-primary">
+            <button type="button" onclick="openAddComponentPresetModal()" class="eqp-btn-primary cursor-pointer">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 5v14M5 12h14" />
                 </svg>
                 <span>Add Brand / Preset</span>
-            </a>
+            </button>
         </div>
     </div>
 </div>
@@ -372,16 +476,22 @@
                                             </svg>
                                         </button>
                                         <div data-menu class="hidden py-1.5 w-44 text-left rounded-lg bg-white shadow-xl border border-[#EAEAE9] z-50" role="menu">
-                                            <!-- Edit Preset -->
-                                            <a href="{% url 'backend:equipment_component_preset_update' data.id %}"
-                                               class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-[#2B2823] hover:bg-[#F7F7F6] transition-colors"
-                                               role="menuitem">
+                                            <!-- Edit Preset (Opens Popup Modal) -->
+                                            <button type="button"
+                                                    onclick="openEditComponentPresetModal(this)"
+                                                    data-url="{% url 'backend:equipment_component_preset_update' data.id %}"
+                                                    data-equipment-type="{{ data.equipment_type_id|default:'' }}"
+                                                    data-name="{{ data.name|default:'' }}"
+                                                    data-description="{{ data.description|default:'' }}"
+                                                    data-status="{% if data.is_active %}1{% else %}0{% endif %}"
+                                                    class="w-full flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-left text-[#2B2823] hover:bg-[#F7F7F6] transition-colors cursor-pointer"
+                                                    role="menuitem">
                                                 <svg class="w-4 h-4 text-[#716F6C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                                                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                                 </svg>
                                                 <span>Edit</span>
-                                            </a>
+                                            </button>
 
                                             <!-- Status Toggle (Deactivate / Activate) -->
                                             <form action="{% url 'backend:equipment_component_preset_status' data.id %}" method="post" class="block m-0">
@@ -442,4 +552,164 @@
         {% include 'includes/pagination.html' with data_list=data_list %}
     </div>
 </div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- ADD BRAND / PRESET POPUP MODAL (Matches Figma 512px #F3F3F3 Design)         -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div id="addComponentPresetModal"
+     class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/45 backdrop-blur-[1px]"
+     onclick="if (event.target === this) closeAddComponentPresetModal();">
+    <div class="eqp-modal-card">
+        <!-- Header Row -->
+        <div class="flex items-center justify-between mb-3.5">
+            <h3 id="componentPresetModalTitle" class="text-[18px] font-semibold text-[#2B2823] tracking-tight">Add Brand / Preset</h3>
+            <button type="button"
+                    onclick="closeAddComponentPresetModal()"
+                    title="Close"
+                    class="eqp-modal-close-btn">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Form -->
+        <form method="post" action="{% url 'backend:equipment_component_preset_add' %}" id="addComponentPresetModalForm" class="space-y-3.5">
+            {% csrf_token %}
+
+            <div>
+                <label for="modalPresetEquipmentType" class="eqp-modal-label">
+                    Equipment Type <span class="text-[#D93025]">*</span>
+                </label>
+                <select id="modalPresetEquipmentType" name="equipment_type" class="eqp-modal-select" required>
+                    <option value="">Select equipment type</option>
+                    {% for et in equipment_types %}
+                        <option value="{{ et.id }}">{{ et.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label for="modalPresetName" class="eqp-modal-label">
+                    Brand / Preset Name <span class="text-[#D93025]">*</span>
+                </label>
+                <input type="text"
+                       id="modalPresetName"
+                       name="name"
+                       placeholder="Enter brand or preset name"
+                       class="eqp-modal-input"
+                       required>
+            </div>
+
+            <div>
+                <label for="modalPresetDescription" class="eqp-modal-label">
+                    Description
+                </label>
+                <textarea id="modalPresetDescription"
+                          name="description"
+                          placeholder="Enter description"
+                          class="eqp-modal-textarea"></textarea>
+            </div>
+
+            <div>
+                <label for="modalPresetStatus" class="eqp-modal-label">
+                    Status
+                </label>
+                <select id="modalPresetStatus" name="is_active" class="eqp-modal-select">
+                    <option value="1" selected>Active</option>
+                    <option value="0">Inactive</option>
+                </select>
+            </div>
+
+            <!-- Footer Buttons -->
+            <div class="pt-2 flex items-center justify-between">
+                <button type="button"
+                        onclick="closeAddComponentPresetModal()"
+                        class="px-4 py-2 rounded-[8px] bg-white border border-[#EAEAE9] text-[13.5px] font-medium text-[#2B2823] shadow-[0_1px_2px_rgba(0,0,0,0.05)] hover:bg-[#FAFAFA] transition-colors cursor-pointer">
+                    Cancel
+                </button>
+                <button type="submit"
+                        id="componentPresetModalSubmitBtn"
+                        class="px-5 py-2 rounded-[8px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[13.5px] font-semibold shadow-sm transition-colors cursor-pointer">
+                    Save
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const COMPONENT_PRESET_ADD_URL = "{% url 'backend:equipment_component_preset_add' %}";
+
+    function openAddComponentPresetModal() {
+        const form = document.getElementById('addComponentPresetModalForm');
+        if (form) {
+            form.reset();
+            form.action = COMPONENT_PRESET_ADD_URL;
+        }
+        const title = document.getElementById('componentPresetModalTitle');
+        if (title) title.textContent = 'Add Brand / Preset';
+        const submitBtn = document.getElementById('componentPresetModalSubmitBtn');
+        if (submitBtn) submitBtn.textContent = 'Save';
+
+        const modal = document.getElementById('addComponentPresetModal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+            setTimeout(function() {
+                const select = document.getElementById('modalPresetEquipmentType');
+                if (select) select.focus();
+            }, 50);
+        }
+    }
+
+    function openEditComponentPresetModal(btn) {
+        const form = document.getElementById('addComponentPresetModalForm');
+        if (form) {
+            form.action = btn.getAttribute('data-url') || COMPONENT_PRESET_ADD_URL;
+        }
+        const title = document.getElementById('componentPresetModalTitle');
+        if (title) title.textContent = 'Edit Brand / Preset';
+        const submitBtn = document.getElementById('componentPresetModalSubmitBtn');
+        if (submitBtn) submitBtn.textContent = 'Save Changes';
+
+        const etSelect = document.getElementById('modalPresetEquipmentType');
+        const nameInput = document.getElementById('modalPresetName');
+        const descInput = document.getElementById('modalPresetDescription');
+        const statusSelect = document.getElementById('modalPresetStatus');
+        if (etSelect) etSelect.value = btn.getAttribute('data-equipment-type') || '';
+        if (nameInput) nameInput.value = btn.getAttribute('data-name') || '';
+        if (descInput) descInput.value = btn.getAttribute('data-description') || '';
+        if (statusSelect) statusSelect.value = btn.getAttribute('data-status') || '1';
+
+        const modal = document.getElementById('addComponentPresetModal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+            setTimeout(function() {
+                if (nameInput) nameInput.focus();
+            }, 50);
+        }
+    }
+
+    function closeAddComponentPresetModal() {
+        const modal = document.getElementById('addComponentPresetModal');
+        if (modal) {
+            modal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        }
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('addComponentPresetModal');
+            if (modal && !modal.classList.contains('hidden')) {
+                closeAddComponentPresetModal();
+            }
+        }
+    });
+</script>
 {% endblock %}

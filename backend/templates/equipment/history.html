@@ -1,12 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Maintenance History{% endblock %}
+{% block title %}Service History{% endblock %}
 
 {% block extra_head %}
 <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-    /* Design Tokens — Consistent with Building & Technicians Pattern */
     body,
     #mainContentWrapper {
         background-color: #F2F2F2 !important;
@@ -18,51 +17,10 @@
         letter-spacing: -0.02em;
     }
 
-    /* Top KPI Stat Card (Matching Building Management Pattern) */
-    .eqh-kpi-card {
-        background-color: #EBEBEB;
-        border-radius: 10px;
-        min-height: 120px;
-        height: 120px;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        box-sizing: border-box;
-    }
-    .eqh-kpi-icon-box {
-        width: 36px;
-        height: 36px;
-        border-radius: 5px;
-        background-color: #F9F9F9;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #55534F;
-        flex-shrink: 0;
-    }
-    .eqh-kpi-num {
-        font-family: 'Geist Mono', ui-monospace, monospace;
-        font-size: 24px;
-        font-weight: 500;
-        line-height: 1;
-        letter-spacing: -0.02em;
-        color: #55534F;
-        text-align: right;
-    }
-    .eqh-kpi-label {
-        font-family: 'Urbanist', sans-serif;
-        font-size: 14px;
-        font-weight: 500;
-        line-height: 1;
-        letter-spacing: 0;
-        color: #9D9C9A;
-    }
-
     /* Search input box */
     .eqh-search-box {
         width: 100%;
-        max-width: 320px;
+        max-width: 260px;
         height: 38px;
         background-color: #FFFFFF;
         border: 1px solid #EAEAE9;
@@ -93,7 +51,7 @@
         color: #9D9C9A;
     }
 
-    /* Table Outer Tray: Fill w-full, radius 12px, padding 16px 6px 6px 6px, gap 16px, bg #F9F9F9 */
+    /* Table Outer Tray */
     .eqh-table-tray {
         background-color: #F9F9F9;
         border-radius: 12px;
@@ -105,10 +63,10 @@
         width: 100%;
     }
 
-    /* Table Inner Container: Fill w-full, radius 6px, padding 14px, gap 10px, bg #FFFFFF */
+    /* Table Inner Container */
     .eqh-table-inner {
         background-color: #FFFFFF;
-        border-radius: 6px;
+        border-radius: 8px;
         padding: 14px;
         box-sizing: border-box;
         width: 100%;
@@ -121,6 +79,7 @@
         border-radius: 8px !important;
         height: 34px;
         padding: 0 28px 0 11px !important;
+        font-family: 'Urbanist', sans-serif;
         font-size: 12.5px;
         font-weight: 500;
         color: #555452;
@@ -138,6 +97,23 @@
         background-color: #E3E3E1 !important;
         border-color: #CFCED0 !important;
         color: #2B2A29;
+    }
+
+    /* Date filter input */
+    .eqh-filter-date {
+        height: 34px;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        border-radius: 8px;
+        padding: 0 10px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 12.5px;
+        color: #4A4947;
+        outline: none;
+        transition: border-color 150ms ease;
+    }
+    .eqh-filter-date:focus {
+        border-color: #CFCED0;
     }
 
     /* Reset button */
@@ -160,28 +136,7 @@
         border-color: #D8D7D5;
     }
 
-    /* Secondary Action Button */
-    .eqh-btn-secondary {
-        background-color: #FFFFFF;
-        color: #2B2823;
-        border: 1px solid #EAEAE9;
-        border-radius: 8px;
-        padding: 8px 16px;
-        font-family: 'Urbanist', sans-serif;
-        font-size: 13.5px;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        transition: background-color 150ms ease, border-color 150ms ease;
-        white-space: nowrap;
-    }
-    .eqh-btn-secondary:hover {
-        background-color: #F7F7F6;
-        border-color: #D8D7D5;
-    }
-
-    /* Table Styles */
+    /* Table Styles matching Figma */
     .eqh-table {
         width: 100%;
         border-collapse: collapse;
@@ -199,11 +154,14 @@
         white-space: nowrap;
     }
     .eqh-table td {
-        padding: 13px 14px;
+        padding: 14px 14px;
         font-family: 'Urbanist', sans-serif;
         font-size: 13px;
-        color: #2B2823;
+        color: #4A4947;
         vertical-align: middle;
+    }
+    .eqh-table tbody tr:hover {
+        background-color: #FAFAFA;
     }
 
     /* Action 3-dots circular button */
@@ -218,6 +176,7 @@
         justify-content: center;
         color: #5C5B59;
         cursor: pointer;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
         transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
     }
     .eqh-action-circle-btn:hover {
@@ -239,97 +198,23 @@
         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
     </svg>
     <span class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#2B2823] font-medium shrink-0">
-        Maintenance History
+        Service History
     </span>
 {% endblock %}
 
 {% block main_class %}w-full px-[15px] py-4 flex-1{% endblock %}
 
 {% block page_header %}
-<div class="w-full pt-1 pb-4">
-    <!-- Page Title & Primary Action -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-            <h1 class="eqh-mono text-[24px] font-medium text-[#2B2823] leading-tight">Maintenance History</h1>
-            <p class="text-[13.5px] text-[#716F6C] mt-1">Complete log of all maintenance activities across all government equipment.</p>
-        </div>
-        <div>
-            <a href="{% url 'backend:equipment_list' %}" class="eqh-btn-secondary">
-                <svg class="w-4 h-4 text-[#716F6C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M15 18l-6-6 6-6" />
-                </svg>
-                <span>Back to Equipment</span>
-            </a>
-        </div>
-    </div>
+<div class="w-full pt-1 pb-3">
+    <h1 class="eqh-mono text-[24px] font-medium text-[#2B2823] leading-tight">Service History</h1>
 </div>
 {% endblock %}
 
 {% block content %}
 <div class="w-full space-y-4 pb-10">
 
-    <!-- ════════════════════════ ROW 1: 4 Top KPI Stat Cards ════════════════════════ -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-        <!-- Card 1: Total Records -->
-        <div class="eqh-kpi-card">
-            <div class="flex items-center justify-between">
-                <div class="eqh-kpi-icon-box">
-                    <svg class="w-5 h-5 text-[#55534F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-                        <polyline points="14 2 14 8 20 8" />
-                    </svg>
-                </div>
-                <span class="eqh-kpi-num">{{ total_count }}</span>
-            </div>
-            <p class="eqh-kpi-label">Total Records</p>
-        </div>
-
-        <!-- Card 2: Pending -->
-        <div class="eqh-kpi-card">
-            <div class="flex items-center justify-between">
-                <div class="eqh-kpi-icon-box">
-                    <svg class="w-5 h-5 text-[#55534F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10" />
-                        <polyline points="12 6 12 12 16 14" />
-                    </svg>
-                </div>
-                <span class="eqh-kpi-num">{{ pending_count }}</span>
-            </div>
-            <p class="eqh-kpi-label">Pending Reviews</p>
-        </div>
-
-        <!-- Card 3: Approved -->
-        <div class="eqh-kpi-card">
-            <div class="flex items-center justify-between">
-                <div class="eqh-kpi-icon-box">
-                    <svg class="w-5 h-5 text-[#55534F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                        <polyline points="22 4 12 14.01 9 11.01" />
-                    </svg>
-                </div>
-                <span class="eqh-kpi-num">{{ approved_count }}</span>
-            </div>
-            <p class="eqh-kpi-label">Approved Records</p>
-        </div>
-
-        <!-- Card 4: Rejected -->
-        <div class="eqh-kpi-card">
-            <div class="flex items-center justify-between">
-                <div class="eqh-kpi-icon-box">
-                    <svg class="w-5 h-5 text-[#55534F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10" />
-                        <line x1="15" y1="9" x2="9" y2="15" />
-                        <line x1="9" y1="9" x2="15" y2="15" />
-                    </svg>
-                </div>
-                <span class="eqh-kpi-num">{{ rejected_count }}</span>
-            </div>
-            <p class="eqh-kpi-label">Rejected Records</p>
-        </div>
-    </div>
-
-    <!-- ════════════════════════ ROW 2: Search Input ════════════════════════ -->
-    <div class="pt-1">
+    <!-- ════════════════════════ ROW 1: Search Input ════════════════════════ -->
+    <div>
         <form method="get" action="{% url 'backend:equipment_history' %}" id="equipmentHistorySearchForm" class="eqh-search-box">
             <svg class="w-4 h-4 text-[#9D9C9A] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="11" cy="11" r="8" />
@@ -338,29 +223,29 @@
             <input type="text"
                    name="search"
                    value="{{ search }}"
-                   placeholder="Search equipment, description, technician"
+                   placeholder="Search equipment or service ID"
                    class="eqh-search-input">
-            {% if f_equipment_id %}<input type="hidden" name="equipment_id" value="{{ f_equipment_id }}">{% endif %}
+            {% if f_building_id %}<input type="hidden" name="building_id" value="{{ f_building_id }}">{% endif %}
             {% if f_record_type %}<input type="hidden" name="record_type" value="{{ f_record_type }}">{% endif %}
-            {% if f_review_status %}<input type="hidden" name="review_status" value="{{ f_review_status }}">{% endif %}
-            {% if f_date_from %}<input type="hidden" name="date_from" value="{{ f_date_from }}">{% endif %}
-            {% if f_date_to %}<input type="hidden" name="date_to" value="{{ f_date_to }}">{% endif %}
+            {% if f_technician_id %}<input type="hidden" name="technician_id" value="{{ f_technician_id }}">{% endif %}
+            {% if f_source %}<input type="hidden" name="source" value="{{ f_source }}">{% endif %}
+            {% if f_date %}<input type="hidden" name="date" value="{{ f_date }}">{% endif %}
             {% if per_page != 10 %}<input type="hidden" name="per_page" value="{{ per_page }}">{% endif %}
         </form>
     </div>
 
-    <!-- ════════════════════════ ROW 3: Table Outer Tray ════════════════════════ -->
+    <!-- ════════════════════════ ROW 2: Table Outer Tray ════════════════════════ -->
     <div class="eqh-table-tray">
-        <!-- Tray Header: Title + Counter Badge + Filter Selects + Reset -->
-        <div class="px-2.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <!-- Tray Header: Total History + Count + Filters + Date + Reset -->
+        <div class="px-2.5 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3">
             <div class="flex items-center gap-2">
-                <h2 class="text-[16.5px] font-semibold text-[#2B2823] tracking-[-0.01em]">Total Records</h2>
-                <span class="inline-flex items-center justify-center min-w-[24px] h-[22px] px-2 rounded-full bg-[#EAEAE8] text-[#4A4947] text-[12px] font-semibold leading-none">
+                <h2 class="text-[16.5px] font-semibold text-[#2B2823] tracking-[-0.01em]">Total History</h2>
+                <span class="inline-flex items-center justify-center min-w-[26px] h-[22px] px-2 rounded-full bg-[#EAEAE8] text-[#4A4947] text-[12px] font-semibold leading-none">
                     {{ filtered_total_count }}
                 </span>
             </div>
 
-            <!-- Filters Form -->
+            <!-- Filters Form (Matches Figma: All buildings, All types, All technicians, All Sources, Date, Reset) -->
             <form method="get" action="{% url 'backend:equipment_history' %}" id="equipmentHistoryFilterForm" class="flex flex-wrap items-center gap-2">
                 {% if search %}
                     <input type="hidden" name="search" value="{{ search }}">
@@ -369,31 +254,49 @@
                     <input type="hidden" name="per_page" value="{{ per_page }}">
                 {% endif %}
 
-                <!-- All Equipment -->
-                <select name="equipment_id" onchange="this.form.submit()" class="eqh-filter-select" aria-label="Filter by equipment">
-                    <option value="">All Equipment</option>
-                    {% for eq in equipment_list %}
-                        <option value="{{ eq.id }}" {% if f_equipment_id == eq.id|stringformat:"s" %}selected{% endif %}>
-                            {{ eq.equipment_id }}
+                <!-- All buildings -->
+                <select name="building_id" onchange="this.form.submit()" class="eqh-filter-select" aria-label="Filter by building">
+                    <option value="">All buildings</option>
+                    {% for b in buildings %}
+                        <option value="{{ b.id }}" {% if f_building_id == b.id|stringformat:"s" %}selected{% endif %}>
+                            {{ b.name }}
                         </option>
                     {% endfor %}
                 </select>
 
-                <!-- All Types -->
+                <!-- All types -->
                 <select name="record_type" onchange="this.form.submit()" class="eqh-filter-select" aria-label="Filter by type">
-                    <option value="">All Types</option>
+                    <option value="">All types</option>
                     {% for key, val in record_type_choices %}
                         <option value="{{ key }}" {% if f_record_type == key %}selected{% endif %}>{{ val }}</option>
                     {% endfor %}
                 </select>
 
-                <!-- All Review Statuses -->
-                <select name="review_status" onchange="this.form.submit()" class="eqh-filter-select" aria-label="Filter by review status">
-                    <option value="">All Status</option>
-                    {% for key, val in review_status_choices %}
-                        <option value="{{ key }}" {% if f_review_status == key %}selected{% endif %}>{{ val }}</option>
+                <!-- All technicians -->
+                <select name="technician_id" onchange="this.form.submit()" class="eqh-filter-select" aria-label="Filter by technician">
+                    <option value="">All technicians</option>
+                    {% for tech in technicians %}
+                        <option value="{{ tech.id }}" {% if f_technician_id == tech.id|stringformat:"s" %}selected{% endif %}>
+                            {{ tech.display_name }}
+                        </option>
                     {% endfor %}
                 </select>
+
+                <!-- All Sources -->
+                <select name="source" onchange="this.form.submit()" class="eqh-filter-select" aria-label="Filter by source">
+                    <option value="">All Sources</option>
+                    {% for src in source_choices %}
+                        <option value="{{ src }}" {% if f_source == src %}selected{% endif %}>{{ src }}</option>
+                    {% endfor %}
+                </select>
+
+                <!-- Date Picker -->
+                <input type="date"
+                       name="date"
+                       value="{{ f_date }}"
+                       onchange="this.form.submit()"
+                       class="eqh-filter-date"
+                       aria-label="Filter by date">
 
                 <!-- Reset Button -->
                 <a href="{% url 'backend:equipment_history' %}" class="eqh-btn-reset" title="Reset Filters">
@@ -409,129 +312,94 @@
         <!-- Table Inner Container -->
         <div class="eqh-table-inner overflow-hidden">
             <div class="overflow-x-auto custom-scrollbar">
-                <table class="eqh-table min-w-[980px]">
+                <table class="eqh-table min-w-[960px]">
                     <thead>
                         <tr>
-                            <th class="rounded-l-[4px]">Date</th>
+                            <th class="rounded-l-[4px]">Service ID</th>
                             <th>Equipment</th>
+                            <th>Equipment ID</th>
                             <th>Building</th>
                             <th>Type</th>
+                            <th>Source</th>
                             <th>Technician</th>
-                            <th>Description</th>
-                            <th>Cost</th>
-                            <th>Review Status</th>
+                            <th>Completed</th>
                             <th class="text-center rounded-r-[4px]">Action</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-[#F2F2F0]">
                         {% for record in data_list %}
-                            <tr class="hover:bg-[#FAFAFA] transition-colors">
-                                <!-- Date -->
-                                <td class="font-medium text-[#2B2823] text-[13px] whitespace-nowrap">
-                                    {{ record.maintenance_date|date:"d F Y" }}
+                            <tr>
+                                <!-- Service ID (underlined monospace link matching Figma) -->
+                                <td>
+                                    <a href="{% url 'backend:maintenance_record_detail' record.id %}"
+                                       class="eqh-mono font-medium text-[#2B2823] underline underline-offset-2 hover:text-[#0B7A44] transition-colors">
+                                        {% if record.maintenance %}
+                                            {{ record.maintenance.maintenance_serial }}
+                                        {% else %}
+                                            SR-{{ record.id|stringformat:"03d" }}
+                                        {% endif %}
+                                    </a>
                                 </td>
 
                                 <!-- Equipment -->
-                                <td>
-                                    <div class="flex items-center gap-2">
-                                        <div class="w-7 h-7 rounded-full bg-[#F5F5F4] border border-[#E7E7E5] flex items-center justify-center text-[#716F6C] shrink-0">
-                                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                                            </svg>
-                                        </div>
-                                        <div class="flex flex-col">
-                                            <a href="{% url 'backend:equipment_detail' record.equipment.id %}"
-                                               class="font-semibold text-[#2B2823] hover:text-[#0B7A44] transition-colors">
-                                                {{ record.equipment.equipment_id|default:record.equipment.id }}
-                                            </a>
-                                            <span class="text-[11.5px] text-[#9D9C9A]">{{ record.equipment.equipment_type.name }}</span>
-                                        </div>
-                                    </div>
-                                </td>
-
-                                <!-- Building -->
-                                <td class="text-[#716F6C] text-[13px]">
-                                    {% if record.equipment.building %}
-                                        <span class="font-medium text-[#2B2823]">{{ record.equipment.building.name }}</span>
-                                        {% if record.equipment.floor_location %}
-                                            <p class="text-[11.5px] text-[#9D9C9A]">{{ record.equipment.floor_location }}</p>
-                                        {% endif %}
+                                <td class="text-[#4A4947] font-medium">
+                                    {% if record.equipment %}
+                                        {{ record.equipment.equipment_name|default:record.equipment.equipment_id }}
                                     {% else %}
-                                        -
+                                        —
                                     {% endif %}
                                 </td>
 
-                                <!-- Type -->
-                                <td>
-                                    {% if record.record_type == 'routine' %}
-                                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#E8F0FE] text-[#1A73E8] border border-[#D2E3FC]">
-                                            Routine
-                                        </span>
-                                    {% elif record.record_type == 'emergency' %}
-                                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#FCE8E6] text-[#C5221F] border border-[#FAD2CF]">
-                                            Emergency
-                                        </span>
-                                    {% elif record.record_type == 'repair' %}
-                                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#FEF3E6] text-[#C86E12] border border-[#FDD8B5]">
-                                            Repair
-                                        </span>
-                                    {% elif record.record_type == 'inspection' %}
-                                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#F3E8FD] text-[#7C3AED] border border-[#E9D5FF]">
-                                            Inspection
-                                        </span>
-                                    {% elif record.record_type == 'upgrade' %}
-                                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#E6F4EA] text-[#137333] border border-[#CEEAD6]">
-                                            Upgrade
-                                        </span>
+                                <!-- Equipment ID -->
+                                <td class="eqh-mono text-[#5C5B59] text-[12.5px]">
+                                    {% if record.equipment %}
+                                        {{ record.equipment.equipment_id|default:"—" }}
                                     {% else %}
-                                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#F1F3F4] text-[#5F6368] border border-[#DADCE0]">
-                                            {{ record.record_type|title }}
-                                        </span>
+                                        —
+                                    {% endif %}
+                                </td>
+
+                                <!-- Building -->
+                                <td class="text-[#5C5B59] max-w-[200px] truncate" title="{% if record.equipment and record.equipment.building %}{{ record.equipment.building.name }}{% endif %}">
+                                    {% if record.equipment and record.equipment.building %}
+                                        {{ record.equipment.building.name }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+
+                                <!-- Type (Pill Badge matching Figma) -->
+                                <td>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#EBEBEB] text-[#4A4947]">
+                                        {{ record.get_record_type_display|default:record.record_type|title }}
+                                    </span>
+                                </td>
+
+                                <!-- Source -->
+                                <td class="text-[#5C5B59] whitespace-nowrap">
+                                    {% if record.maintenance %}
+                                        Scheduled
+                                    {% elif record.ticket %}
+                                        Request
+                                    {% else %}
+                                        Manual
                                     {% endif %}
                                 </td>
 
                                 <!-- Technician -->
-                                <td class="text-[#716F6C] text-[13px]">
-                                    {% if record.technician %}
-                                        <span class="font-medium text-[#2B2823]">{{ record.technician.get_full_name|default:record.technician.username }}</span>
+                                <td class="text-[#5C5B59] whitespace-nowrap">
+                                    {% if record.assigned_to %}
+                                        {{ record.assigned_to.display_name }}
+                                    {% elif record.technician %}
+                                        {{ record.technician.get_full_name|default:record.technician.username }}
                                     {% else %}
-                                        -
+                                        —
                                     {% endif %}
                                 </td>
 
-                                <!-- Description -->
-                                <td class="text-[#716F6C] text-[13px] max-w-xs truncate" title="{{ record.work_description }}">
-                                    {{ record.work_description|truncatewords:8|default:"-" }}
-                                    {% if record.parts_replaced %}
-                                        <p class="text-[11.5px] text-[#9D9C9A] truncate">Parts: {{ record.parts_replaced|truncatewords:4 }}</p>
-                                    {% endif %}
-                                </td>
-
-                                <!-- Cost -->
-                                <td class="text-[#2B2823] font-medium text-[13px] whitespace-nowrap">
-                                    {% if record.cost %}
-                                        ৳{{ record.cost }}
-                                    {% else %}
-                                        -
-                                    {% endif %}
-                                </td>
-
-                                <!-- Review Status -->
-                                <td>
-                                    {% if record.review_status == 'approved' %}
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#E6F4EA] text-[#137333] border border-[#CEEAD6]">
-                                            Approved
-                                        </span>
-                                    {% elif record.review_status == 'rejected' %}
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#FCE8E6] text-[#C5221F] border border-[#FAD2CF]">
-                                            Rejected
-                                        </span>
-                                    {% else %}
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#FEF3E6] text-[#C86E12] border border-[#FDD8B5]">
-                                            Pending
-                                        </span>
-                                    {% endif %}
+                                <!-- Completed Date -->
+                                <td class="text-[#5C5B59] whitespace-nowrap">
+                                    {{ record.maintenance_date|date:"d M Y" }}
                                 </td>
 
                                 <!-- Action (3-Dots Circle Button with Popup Dropdown) -->
@@ -549,16 +417,29 @@
                                             </svg>
                                         </button>
                                         <div data-menu class="hidden py-1.5 w-44 text-left rounded-lg bg-white shadow-xl border border-[#EAEAE9] z-50" role="menu">
-                                            <!-- View Equipment -->
-                                            <a href="{% url 'backend:equipment_detail' record.equipment.id %}"
+                                            <!-- View Service Record -->
+                                            <a href="{% url 'backend:maintenance_record_detail' record.id %}"
                                                class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-[#2B2823] hover:bg-[#F7F7F6] transition-colors"
                                                role="menuitem">
                                                 <svg class="w-4 h-4 text-[#716F6C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                                     <circle cx="12" cy="12" r="3"></circle>
                                                 </svg>
+                                                <span>View Details</span>
+                                            </a>
+
+                                            {% if record.equipment %}
+                                            <!-- View Equipment -->
+                                            <a href="{% url 'backend:equipment_detail' record.equipment.id %}"
+                                               class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-[#2B2823] hover:bg-[#F7F7F6] transition-colors"
+                                               role="menuitem">
+                                                <svg class="w-4 h-4 text-[#716F6C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                                                </svg>
                                                 <span>View Equipment</span>
                                             </a>
+                                            {% endif %}
 
                                             {% if record.review_status == 'pending' %}
                                                 <div class="my-1 border-t border-[#F2F2F0]"></div>
@@ -592,7 +473,7 @@
                                         </div>
                                     </div>
 
-                                    <!-- Reject reason Modal -->
+                                    <!-- Reject Reason Modal -->
                                     {% if record.review_status == 'pending' %}
                                         <div id="rp-{{ record.id }}" class="hidden fixed inset-0 z-[10000] flex items-center justify-center p-4">
                                             <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" onclick="toggleRejectPanel('rp-{{ record.id }}')"></div>
@@ -635,7 +516,7 @@
                                             <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
                                             <polyline points="14 2 14 8 20 8" />
                                         </svg>
-                                        <p class="text-[13.5px] font-medium text-[#4A4947]">No maintenance records found</p>
+                                        <p class="text-[13.5px] font-medium text-[#4A4947]">No service history found</p>
                                         <p class="text-[12.5px] text-[#8E8C89]">Try clearing filters or search criteria.</p>
                                     </div>
                                 </td>
@@ -645,10 +526,10 @@
                 </table>
             </div>
         </div>
-
-        <!-- ════════════════════════ ROW 4: Pagination Bar ════════════════════════ -->
-        {% include 'includes/pagination.html' with data_list=data_list %}
     </div>
+
+    <!-- ════════════════════════ Pagination Bar (Outside tray, matches Figma) ════════════════════════ -->
+    {% include 'includes/pagination.html' with data_list=data_list %}
 </div>
 {% endblock %}
 

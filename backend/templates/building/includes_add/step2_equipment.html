@@ -1,0 +1,71 @@
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- STEP 2: Add Equipment                                  -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="stepSection2" class="hidden space-y-5">
+    
+    <!-- Empty State (Shown initially if no equipments added) -->
+    <div id="equipmentEmptyState" class="py-12 px-4 text-center">
+        <h3 class="text-[16px] font-bold text-[#2B2823] mb-1.5">
+            No equipment added yet.
+        </h3>
+        <p class="text-[13px] text-[#716F6C] max-w-sm mx-auto mb-6">
+            Start by adding the equipment installed in this building.
+        </p>
+        <div class="flex items-center justify-center gap-3">
+            <button type="button"
+                    id="btnOpenEquipmentModal"
+                    onclick="openEquipmentModal()"
+                    class="btn-forest">
+                Add Equipment
+            </button>
+            <button type="button"
+                    onclick="goToStep(3)"
+                    class="btn-secondary">
+                Skip for Now
+            </button>
+        </div>
+    </div>
+
+    <!-- Populated State (List of currently added equipments in this building) -->
+    <div id="equipmentPopulatedState" class="hidden space-y-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <h3 class="text-[15px] font-bold text-[#2B2823]">
+                    Added Equipment (<span id="addedEquipmentCount">0</span>)
+                </h3>
+                <span class="text-[12px] text-[#716F6C]">Installed in this building</span>
+            </div>
+            <button type="button"
+                    onclick="openEquipmentModal()"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] bg-[#E7F6EC] text-[#0B7A44] hover:bg-[#D4EEDB] text-[12.5px] font-semibold transition-colors cursor-pointer">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12h14" />
+                </svg>
+                <span>Add Equipment</span>
+            </button>
+        </div>
+
+        <div id="equipmentListContainer" class="space-y-2.5">
+            <!-- Dynamically populated equipment cards -->
+        </div>
+    </div>
+
+    <!-- Step 2 Footer Navigation -->
+    <div class="pt-4 border-t border-[#EAEAE9] flex items-center justify-between">
+        <button type="button"
+                onclick="goToStep(1)"
+                class="btn-secondary">
+            Back
+        </button>
+        <div class="flex items-center gap-2">
+            <button type="button"
+                    onclick="goToStep(3)"
+                    class="btn-forest">
+                <span>Next: Review & Save</span>
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>

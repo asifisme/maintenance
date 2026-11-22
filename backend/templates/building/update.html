@@ -1,269 +1,1939 @@
 {% extends 'base.html' %}
-{% block title %}<span class="hidden">{{ action }} Building</span>{% endblock %}
+{% load static %}
+
+{% block title %}Update Building - {{ obj.name }}{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    body,
+    #mainContentWrapper {
+        background-color: #F2F2F2 !important;
+        font-family: 'Urbanist', Inter, system-ui, ui-sans-serif, sans-serif;
+    }
+
+    .bld-mono {
+        font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        letter-spacing: -0.02em;
+    }
+
+    .wizard-outer-frame {
+        width: 100%;
+        max-width: 597px;
+        margin: 0 auto;
+        border-radius: 12px;
+        padding: 14px 6px 6px 6px;
+        background-color: #FFFFFF;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        box-sizing: border-box;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .wizard-inner-frame {
+        width: 100%;
+        max-width: 585px;
+        margin: 0 auto;
+        border-radius: 6px;
+        padding: 14px 10px 14px 10px;
+        background-color: #F3F3F3;
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        box-sizing: border-box;
+    }
+
+    .step-tabs-container {
+        width: 100%;
+        max-width: 565px;
+        height: 43px;
+        margin: 0 auto;
+        border-radius: 60px;
+        padding: 4px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background-color: #FAFAFA;
+        box-sizing: border-box;
+    }
+
+    .tab-pill-active {
+        flex: 1 1 0%;
+        height: 35px;
+        border-radius: 38px;
+        border: 1px solid #EAEAEA;
+        background-color: #FFFFFF;
+        padding: 8px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        color: #2B2823;
+        box-shadow: 0px 0px 1px 0px rgba(135, 135, 135, 0.10), 0px 1px 1px 0px rgba(135, 135, 135, 0.09);
+        cursor: pointer;
+        transition: all 150ms ease;
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    .tab-pill-inactive {
+        flex: 1 1 0%;
+        height: 35px;
+        border-radius: 38px;
+        border: 1px solid #EAEAEA;
+        background-color: transparent;
+        padding: 8px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        color: #716F6C;
+        cursor: pointer;
+        transition: all 150ms ease;
+        white-space: nowrap;
+        text-align: center;
+    }
+    .tab-pill-inactive:hover {
+        color: #2B2823;
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Labels matching Figma Frame: Urbanist 600, 14px, #716F6C */
+    .form-label {
+        display: block;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.2;
+        color: #716F6C;
+        margin-bottom: 6px;
+    }
+
+    /* Form Input Fields matching Figma: Height 41px, Radius 13px, Border 0.5px #F0F0F0, Shadows */
+    .form-input-field {
+        width: 100%;
+        height: 41px;
+        background-color: #FFFFFF;
+        border: 0.5px solid rgba(240, 240, 240, 0.9);
+        border-radius: 13px;
+        padding: 0 12px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: #2B2823;
+        box-shadow: 0px 0px 6px 0px rgba(135, 135, 135, 0.02), 0px 1px 2px 0px rgba(135, 135, 135, 0.09);
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+        outline: none;
+        box-sizing: border-box;
+    }
+    .form-input-field:focus {
+        border-color: #0B7A44;
+        box-shadow: 0 0 0 3px rgba(11, 122, 68, 0.1);
+    }
+    .form-input-field::placeholder {
+        color: #BDBCBB;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: -0.01em;
+    }
+
+    .form-select-field {
+        width: 100%;
+        height: 41px;
+        background-color: #FFFFFF;
+        border: 0.5px solid rgba(240, 240, 240, 0.9);
+        border-radius: 13px;
+        padding: 0 32px 0 12px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: #2B2823;
+        box-shadow: 0px 0px 6px 0px rgba(135, 135, 135, 0.02), 0px 1px 2px 0px rgba(135, 135, 135, 0.09);
+        outline: none;
+        cursor: pointer;
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23716F6C' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 14px;
+        box-sizing: border-box;
+    }
+    .form-select-field:focus {
+        border-color: #0B7A44;
+        box-shadow: 0 0 0 3px rgba(11, 122, 68, 0.1);
+    }
+    .form-select-field:disabled {
+        background-color: #FAFAFA;
+        color: #BDBCBB;
+        cursor: not-allowed;
+    }
+
+    .form-textarea-field {
+        width: 100%;
+        background-color: #FFFFFF;
+        border: 0.5px solid rgba(240, 240, 240, 0.9);
+        border-radius: 13px;
+        padding: 10px 12px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: #2B2823;
+        box-shadow: 0px 0px 6px 0px rgba(135, 135, 135, 0.02), 0px 1px 2px 0px rgba(135, 135, 135, 0.09);
+        outline: none;
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+        resize: none;
+        box-sizing: border-box;
+    }
+    .form-textarea-field:focus {
+        border-color: #0B7A44;
+        box-shadow: 0 0 0 3px rgba(11, 122, 68, 0.1);
+    }
+    .form-textarea-field::placeholder {
+        color: #BDBCBB;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: -0.01em;
+    }
+
+    /* Buttons */
+    .btn-forest {
+        background-color: #0B7A44;
+        color: #FFFFFF;
+        border-radius: 8px;
+        padding: 9px 22px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13.5px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition: background-color 150ms ease;
+        border: none;
+        cursor: pointer;
+    }
+    .btn-forest:hover {
+        background-color: #08683A;
+    }
+
+    .btn-secondary {
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAEA;
+        color: #2B2823;
+        border-radius: 8px;
+        padding: 9px 20px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13.5px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition: background-color 150ms ease, border-color 150ms ease;
+        cursor: pointer;
+    }
+    .btn-secondary:hover {
+        background-color: #F7F7F6;
+        border-color: #D8D7D5;
+    }
+
+    .input-error {
+        border-color: #D93025 !important;
+        box-shadow: 0 0 0 3px rgba(217, 48, 37, 0.12) !important;
+    }
+
+    /* Pixel-perfect vertically centered input clear button */
+    .input-clear-btn {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        color: #9D9C9A;
+        background: transparent;
+        border: none;
+        padding: 0 !important;
+        margin: 0 !important;
+        line-height: 1;
+        cursor: pointer;
+        transition: color 150ms ease;
+        z-index: 10;
+    }
+    .input-clear-btn.hidden {
+        display: none !important;
+    }
+    .input-clear-btn:hover {
+        color: #2B2823;
+    }
+    .input-clear-btn svg {
+        display: block;
+        width: 13px;
+        height: 13px;
+    }
+
+    /* Modal Backdrop */
+    .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.45);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: 16px;
+    }
+
+    /* Hide scrollbars cleanly while keeping scroll functional */
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <a href="{% url 'backend:building_list' %}" class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#5C5B59] font-medium hover:bg-[#E0E0DF] transition-colors shrink-0">
+        Buildings
+    </a>
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <span class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#2B2823] font-medium shrink-0">
+        Update {{ obj.name }}
+    </span>
+{% endblock %}
+
+{% block main_class %}w-full px-[15px] py-4 flex-1{% endblock %}
+
+{% block page_header %}
+<div class="w-full pt-1 pb-4">
+    <h1 class="bld-mono text-[24px] font-medium text-[#2B2823] leading-tight">Building Management</h1>
+    <p class="text-[13.5px] text-[#716F6C] mt-1">Manage government buildings and their equipment from one place.</p>
+</div>
+{% endblock %}
+
 {% block content %}
-    <section class="bg-[var(--bg-color)] min-h-screen p-4 md:p-2 font-sans">
-        <div class="max-w-7xl mx-auto">
-            <!-- Header -->
-            <div class="flex items-center gap-4 mb-6">
-                <a href="{% url 'backend:building_list' %}"
-                   class="text-slate-600 hover:text-slate-950 transition-colors">
-                    <svg width="24"
-                         height="24"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="2.5"
-                         stroke-linecap="round"
-                         stroke-linejoin="round">
-                        <path d="M15 18l-6-6 6-6" />
-                    </svg>
-                </a>
-                <h2 class="text-2xl font-bold text-slate-800">{{ action }} Building</h2>
+<div class="w-full pb-16">
+    <!-- Outer Frame (Width 597px, Radius 12px, Padding 14px 6px 6px 6px, BG #FFFFFF) -->
+    <div class="wizard-outer-frame">
+        <!-- Header: Title inside outer frame -->
+        <div class="px-2 pt-0.5 flex items-center justify-between">
+            <h2 id="wizardStepTitle" class="text-[18px] font-bold text-[#2B2823] tracking-tight">
+                Update Building
+            </h2>
+        </div>
+
+        <!-- Inner Frame (Width 585px, Radius 6px, Padding 14px 10px 14px 10px, BG #F3F3F3) -->
+        <div class="wizard-inner-frame">
+            
+            <!-- Step Tabs Container (Width 565px, Height 43px, Radius 60px, Padding 4px, BG #FAFAFA) -->
+            <div class="step-tabs-container">
+                <button type="button"
+                        id="tabBtn1"
+                        onclick="validateAndGoToStep(1)"
+                        class="tab-pill-active">
+                    Building Information
+                </button>
+                <button type="button"
+                        id="tabBtn2"
+                        onclick="validateAndGoToStep(2)"
+                        class="tab-pill-inactive">
+                    Add Equipment
+                </button>
+                <button type="button"
+                        id="tabBtn3"
+                        onclick="validateAndGoToStep(3)"
+                        class="tab-pill-inactive">
+                    Review & Save
+                </button>
             </div>
-            <form method="post" class="space-y-6">
+
+            <!-- Form -->
+            <form method="post" id="buildingWizardForm" class="space-y-6">
                 {% csrf_token %}
-                <!-- Basic Information Card -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Basic Information</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+                <!-- Hidden Input for Step 2 Equipment JSON payload -->
+                <input type="hidden" name="equipments_data" id="equipmentsDataJson" value="">
+
+                <!-- ═══════════════════════════════════════════════════════ -->
+                <!-- STEP 1: Building Information                            -->
+                <!-- ═══════════════════════════════════════════════════════ -->
+                <div id="stepSection1" class="space-y-4">
+                    
+                    <!-- Row 1: Building ID & Building Name -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
-                                Building
-                                ID <span class="text-red-500">*</span>
+                            <label class="form-label">
+                                Building ID <span class="text-[#D93025]">*</span>
                             </label>
                             <input type="text"
-                                   value="{{ obj.building_id|default:'' }}"
-                                   class="w-full bg-slate-100 border border-slate-200 text-slate-400 text-sm rounded-lg block p-3 outline-none cursor-not-allowed"
-                                   disabled>
-                            <p class="text-xs text-slate-400 mt-1.5 italic">Locked after creation.</p>
+                                   id="inputBuildingId"
+                                   value="{{ obj.building_id }}"
+                                   disabled
+                                   class="form-input-field bld-mono bg-[#FAFAFA] text-[#716F6C] cursor-not-allowed">
+                            <span class="text-[12px] text-[#9D9C9A] mt-1 block">Cannot be changed after creation.</span>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
-                                Building
-                                Name <span class="text-red-500">*</span>
+                            <label class="form-label">
+                                Building Name <span class="text-[#D93025]">*</span>
                             </label>
                             <input type="text"
                                    name="name"
-                                   value="{{ obj.name|default:'' }}"
-                                   class="w-full bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition"
-                                   required
-                                   placeholder="e.g. Headquarters">
+                                   id="inputBuildingName"
+                                   value="{{ obj.name }}"
+                                   placeholder="Enter building name"
+                                   class="form-input-field"
+                                   required>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <!-- Row 2: Site Name & Establishment Date -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Surname</label>
+                            <label class="form-label">
+                                Site Name
+                            </label>
                             <input type="text"
                                    name="surname"
+                                   id="inputSiteName"
                                    value="{{ obj.surname|default:'' }}"
-                                   class="w-full bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition"
-                                   placeholder="e.g. Main HQ">
+                                   placeholder="Enter site"
+                                   class="form-input-field">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
-                                Year of Establishment
+                            <label class="form-label">
+                                Establishment Date <span class="text-[#D93025]">*</span>
                             </label>
                             <input type="date"
                                    name="year_of_establishment"
+                                   id="inputEstDate"
                                    value="{{ obj.year_of_establishment|date:'Y-m-d' }}"
-                                   class="w-full bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition"
-                                   placeholder="{{ obj.year_of_establishment|date:'Y-m-d' }}"
-                                   >
+                                   class="form-input-field cursor-pointer"
+                                   required>
                         </div>
                     </div>
-                </div>
-                <!-- Location & Hierarchy Card -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Location & Hierarchy</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Division</label>
-                            <select name="division"
-                                    class="w-full select2-items  bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition">
-                                <option value="">Select Division</option>
-                                {% for d in divisions %}
-                                    <option value="{{ d.id }}"
-                                            {% if obj.division_id == d.id %}selected{% endif %}>{{ d.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Subdivision</label>
-                            <select name="subdivision"
-                                    class="w-full select2-items bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition">
-                                <option value="">Select Subdivision</option>
-                                {% for s in subdivisions %}
-                                    <option value="{{ s.id }}"
-                                            {% if obj.subdivision_id == s.id %}selected{% endif %}>
-                                        {{ s.name }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
-                                Section
-                                <span class="text-red-500">*</span>
+
+                    <!-- Row 3: Division & Subdivision -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Searchable Division with Quick Add -->
+                        <div class="relative" id="divisionControlWrapper">
+                            <label class="form-label">
+                                Division <span class="text-[#D93025]">*</span>
                             </label>
-                            <select name="section"
-                                    class="w-full select2-items bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition"
-                                    required>
-                                <option value="">Select Section</option>
-                                {% for s in sections %}
-                                    <option value="{{ s.id }}" {% if obj.section_id == s.id %}selected{% endif %}>{{ s.name }}</option>
-                                {% endfor %}
-                            </select>
+                            <div class="relative">
+                                <input type="text"
+                                       id="divisionSearchInput"
+                                       value="{{ obj.division.name|default:'' }}"
+                                       placeholder="Search division..."
+                                       autocomplete="off"
+                                       class="form-input-field pr-9">
+                                <button type="button"
+                                        id="btnClearDivision"
+                                        class="{% if not obj.division_id %}hidden{% endif %} input-clear-btn"
+                                        title="Clear division">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M18 6L6 18M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <input type="hidden" name="division" id="selectedDivisionId" value="{{ obj.division_id|default:'' }}" required>
+
+                            <!-- Division Dropdown Menu with 2 Floating Cards per Figma -->
+                            <div id="divisionDropdown"
+                                 class="hidden absolute left-0 right-0 top-full mt-2 z-50 flex flex-col gap-2">
+                                
+                                <!-- Card 1: Division Options List -->
+                                <div id="divisionOptionsCard"
+                                     class="bg-white border border-[#EAEAE9] rounded-[14px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-2 max-h-52 overflow-y-auto custom-scrollbar">
+                                    <div id="divisionOptionsList" class="space-y-1.5">
+                                        {% for d in divisions %}
+                                            <div class="division-option px-3.5 py-2.5 text-[13.5px] text-[#4A4947] bg-[#F8F8F8] hover:bg-[#EFEFEF] hover:text-[#2B2823] rounded-[9px] cursor-pointer font-medium transition-colors"
+                                                 data-id="{{ d.id }}"
+                                                 data-name="{{ d.name }}">
+                                                {{ d.name }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                                <!-- Card 2: Quick Create Division Box -->
+                                <div id="divisionCreateBox"
+                                     class="hidden bg-white border border-[#EAEAE9] rounded-[14px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-3.5 text-center">
+                                    <p class="text-[13px] text-[#716F6C] mb-2.5 font-normal">No matching division found.</p>
+                                    <button type="button"
+                                            id="btnQuickCreateDivision"
+                                            class="w-full py-2.5 px-3 rounded-[8px] bg-[#E7F6EC] text-[#0B7A44] hover:bg-[#D4EEDB] text-[13.5px] font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                                        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                            <path d="M12 5v14M5 12h14" />
+                                        </svg>
+                                        <span>Create "<span id="createDivisionNameLabel"></span>"</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Searchable Subdivision with Quick Add -->
+                        <div class="relative" id="subdivisionControlWrapper">
+                            <label class="form-label">
+                                Subdivision <span class="text-[#D93025]">*</span>
+                            </label>
+                            <div class="relative">
+                                <input type="text"
+                                       id="subdivisionSearchInput"
+                                       value="{{ obj.subdivision.name|default:'' }}"
+                                       placeholder="{% if obj.division_id %}Search subdivision...{% else %}Select a division first{% endif %}"
+                                       autocomplete="off"
+                                       {% if not obj.division_id %}disabled{% endif %}
+                                       class="form-input-field pr-9 disabled:bg-[#FAFAFA] disabled:text-[#BDBCBB] disabled:cursor-not-allowed">
+                                <button type="button"
+                                        id="btnClearSubdivision"
+                                        class="{% if not obj.subdivision_id %}hidden{% endif %} input-clear-btn"
+                                        title="Clear subdivision">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M18 6L6 18M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <input type="hidden" name="subdivision" id="selectedSubdivisionId" value="{{ obj.subdivision_id|default:'' }}">
+
+                            <!-- Subdivision Dropdown Menu with 2 Floating Cards per Figma -->
+                            <div id="subdivisionDropdown"
+                                 class="hidden absolute left-0 right-0 top-full mt-2 z-50 flex flex-col gap-2">
+                                
+                                <!-- Card 1: Subdivision Options List -->
+                                <div id="subdivisionOptionsCard"
+                                     class="bg-white border border-[#EAEAE9] rounded-[14px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-2 max-h-52 overflow-y-auto custom-scrollbar">
+                                    <div id="subdivisionOptionsList" class="space-y-1.5">
+                                        {% if obj.division_id %}
+                                            {% for s in subdivisions %}
+                                                {% if s.division_id == obj.division_id %}
+                                                    <div class="subdivision-option px-3.5 py-2.5 text-[13.5px] text-[#4A4947] bg-[#F8F8F8] hover:bg-[#EFEFEF] hover:text-[#2B2823] rounded-[9px] cursor-pointer font-medium transition-colors"
+                                                         data-id="{{ s.id }}"
+                                                         data-name="{{ s.name }}">
+                                                        {{ s.name }}
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            <p class="text-[12.5px] text-[#9D9C9A] p-2 text-center">Select a division first</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Card 2: Quick Create Subdivision Box -->
+                                <div id="subdivisionCreateBox"
+                                     class="hidden bg-white border border-[#EAEAE9] rounded-[14px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-3.5 text-center">
+                                    <p class="text-[13px] text-[#716F6C] mb-2.5 font-normal">No matching subdivision found.</p>
+                                    <button type="button"
+                                            id="btnQuickCreateSubdivision"
+                                            class="w-full py-2.5 px-3 rounded-[8px] bg-[#E7F6EC] text-[#0B7A44] hover:bg-[#D4EEDB] text-[13.5px] font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                                        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                            <path d="M12 5v14M5 12h14" />
+                                        </svg>
+                                        <span>Create "<span id="createSubdivisionNameLabel"></span>"</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Row 4: Searchable Section with Quick Add -->
+                    <div class="relative" id="sectionControlWrapper">
+                        <label class="form-label">
+                            Section <span class="text-[#D93025]">*</span>
+                        </label>
+                        <div class="relative">
+                            <input type="text"
+                                   id="sectionSearchInput"
+                                   value="{{ obj.section.name|default:'' }}"
+                                   placeholder="{% if obj.subdivision_id %}Search section...{% else %}Select a subdivision first{% endif %}"
+                                   autocomplete="off"
+                                   {% if not obj.subdivision_id %}disabled{% endif %}
+                                   class="form-input-field pr-9 disabled:bg-[#FAFAFA] disabled:text-[#BDBCBB] disabled:cursor-not-allowed">
+                            <button type="button"
+                                    id="btnClearSection"
+                                    class="{% if not obj.section_id %}hidden{% endif %} input-clear-btn"
+                                    title="Clear section">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M18 6L6 18M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <input type="hidden" name="section" id="selectedSectionId" value="{{ obj.section_id|default:'' }}">
+
+                        <!-- Section Dropdown Menu with 2 Floating Cards per Figma -->
+                        <div id="sectionDropdown"
+                             class="hidden absolute left-0 right-0 top-full mt-2 z-50 flex flex-col gap-2">
+                            
+                            <!-- Card 1: Section Options List -->
+                            <div id="sectionOptionsCard"
+                                 class="bg-white border border-[#EAEAE9] rounded-[14px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-2 max-h-52 overflow-y-auto custom-scrollbar">
+                                <div id="sectionOptionsList" class="space-y-1.5">
+                                    {% if obj.subdivision_id %}
+                                        {% for sec in sections %}
+                                            {% if sec.subdivision_id == obj.subdivision_id %}
+                                                <div class="section-option px-3.5 py-2.5 text-[13.5px] text-[#4A4947] bg-[#F8F8F8] hover:bg-[#EFEFEF] hover:text-[#2B2823] rounded-[9px] cursor-pointer font-medium transition-colors"
+                                                     data-id="{{ sec.id }}"
+                                                     data-name="{{ sec.name }}">
+                                                    {{ sec.name }}
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        <p class="text-[12.5px] text-[#9D9C9A] p-2 text-center">Select a subdivision first</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Card 2: Quick Create Section Box -->
+                            <div id="sectionCreateBox"
+                                 class="hidden bg-white border border-[#EAEAE9] rounded-[14px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-3.5 text-center">
+                                <p class="text-[13px] text-[#716F6C] mb-2.5 font-normal">No matching section found.</p>
+                                <button type="button"
+                                        id="btnQuickCreateSection"
+                                        class="w-full py-2.5 px-3 rounded-[8px] bg-[#E7F6EC] text-[#0B7A44] hover:bg-[#D4EEDB] text-[13.5px] font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                                    <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                        <path d="M12 5v14M5 12h14" />
+                                    </svg>
+                                    <span>Create "<span id="createSectionNameLabel"></span>"</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 5: Physical Address -->
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
-                            Physical
-                            Address <span class="text-red-500">*</span>
+                        <label class="form-label">
+                            Physical Address <span class="text-[#D93025]">*</span>
                         </label>
                         <textarea name="address"
+                                  id="inputAddress"
                                   rows="3"
-                                  class="w-full bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition resize-none"
-                                  required
-                                  placeholder="e.g. 123 Main Street, Sector 4">{{ obj.address|default:'' }}</textarea>
+                                  placeholder="Enter the complete physical address."
+                                  class="form-textarea-field"
+                                  required>{{ obj.address|default:'' }}</textarea>
                     </div>
-                </div>
-                <!-- Coordinate & Status Card -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                    <!-- Row 6: Latitude & Longitude -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Latitude</label>
+                            <label class="form-label">
+                                Latitude
+                            </label>
                             <input type="number"
                                    step="any"
                                    name="latitude"
+                                   id="inputLatitude"
                                    value="{{ obj.latitude|default:'' }}"
-                                   class="w-full bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition"
-                                   placeholder="e.g. 23.8103">
+                                   placeholder="e.g. 23.8103"
+                                   class="form-input-field">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Longitude</label>
+                            <label class="form-label">
+                                Longitude
+                            </label>
                             <input type="number"
                                    step="any"
                                    name="longitude"
+                                   id="inputLongitude"
                                    value="{{ obj.longitude|default:'' }}"
-                                   class="w-full bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition"
-                                   placeholder="e.g. 90.4125">
+                                   placeholder="e.g. 90.4125"
+                                   class="form-input-field">
                         </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Status</label>
-                            <select name="status"
-                                    class="w-full bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition">
-                                <option value="Active" {% if obj.status == 'Active' %}selected{% endif %}>Active</option>
-                                <option value="Inactive" {% if obj.status == 'Inactive' %}selected{% endif %}>Inactive</option>
-                                <option value="Under Maintenance"
-                                        {% if obj.status == 'Under Maintenance' %}selected{% endif %}>Under Maintenance</option>
-                                <option value="Decommissioned"
-                                        {% if obj.status == 'Decommissioned' %}selected{% endif %}>Decommissioned</option>
-                            </select>
+                    </div>
+
+                    <!-- Hidden Status Field -->
+                    <input type="hidden" name="status" value="{{ obj.status|default:'Active' }}">
+
+                    <!-- Step 1 Footer -->
+                    <div class="pt-4 flex items-center justify-end">
+                        <button type="button"
+                                onclick="validateAndGoToStep(2)"
+                                class="btn-forest">
+                            <span>Next: Add Equipment</span>
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ═══════════════════════════════════════════════════════ -->
+                <!-- STEP 2: Add Equipment                                  -->
+                <!-- ═══════════════════════════════════════════════════════ -->
+                <div id="stepSection2" class="hidden space-y-5">
+                    
+                    <!-- Empty State -->
+                    <div id="equipmentEmptyState" class="py-12 px-4 text-center">
+                        <h3 class="text-[16px] font-bold text-[#2B2823] mb-1.5">
+                            No equipment added yet.
+                        </h3>
+                        <p class="text-[13px] text-[#716F6C] max-w-sm mx-auto mb-6">
+                            Start by adding the equipment installed in this building.
+                        </p>
+                        <div class="flex items-center justify-center gap-3">
+                            <button type="button"
+                                    id="btnOpenEquipmentModal"
+                                    onclick="openEquipmentModal()"
+                                    class="btn-forest">
+                                Add Equipment
+                            </button>
+                            <button type="button"
+                                    onclick="goToStep(3)"
+                                    class="btn-secondary">
+                                Skip for Now
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Populated State -->
+                    <div id="equipmentPopulatedState" class="hidden space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-[15px] font-bold text-[#2B2823]">
+                                Added Equipment (<span id="addedEquipmentCount">0</span>)
+                            </h3>
+                            <button type="button"
+                                    onclick="openEquipmentModal()"
+                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] bg-[#E7F6EC] text-[#0B7A44] hover:bg-[#D4EEDB] text-[12.5px] font-semibold transition-colors cursor-pointer">
+                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 5v14M5 12h14" />
+                                </svg>
+                                <span>Add Equipment</span>
+                            </button>
+                        </div>
+
+                        <div id="equipmentListContainer" class="space-y-2.5">
+                            <!-- Dynamically populated equipment cards -->
+                        </div>
+                    </div>
+
+                    <!-- Step 2 Footer Navigation -->
+                    <div class="pt-4 border-t border-[#EAEAE9] flex items-center justify-between">
+                        <button type="button"
+                                onclick="goToStep(1)"
+                                class="btn-secondary">
+                            Back
+                        </button>
+                        <div class="flex items-center gap-2">
+                            <button type="button"
+                                    onclick="goToStep(3)"
+                                    class="btn-forest">
+                                <span>Next: Review & Save</span>
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 </div>
-                <!-- Form Actions -->
-                <div class="flex items-center justify-end gap-4 pt-4">
-                    <a href="{% url 'backend:building_list' %}"
-                       class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 font-semibold py-2.5 px-6 rounded-lg transition duration-200 text-sm">
-                        Cancel
-                    </a>
-                    <button type="submit"
-                            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg transition duration-200 text-sm">
-                        Save Building
-                    </button>
+
+                <!-- ═══════════════════════════════════════════════════════ -->
+                <!-- STEP 3: Review & Save                                  -->
+                <!-- ═══════════════════════════════════════════════════════ -->
+                <div id="stepSection3" class="hidden space-y-4">
+                    
+                    <!-- Card 1: Building Summary (Matches Figma Frame 2147207631 & Frame 2147207632) -->
+                    <div class="bg-[#F9F9F9] rounded-[12px] p-[6px] pt-[10px] flex flex-col gap-[10px]">
+                        <!-- Frame 2147207631 Header Row -->
+                        <div class="flex items-center justify-between px-1.5">
+                            <div class="flex items-center gap-2">
+                                <h3 class="text-[14.5px] font-bold text-[#2B2823]">Building Summary</h3>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#E7F6EC] text-[#0B7A44]">
+                                    {{ obj.status|default:'Active' }}
+                                </span>
+                            </div>
+                            <button type="button"
+                                    onclick="goToStep(1)"
+                                    title="Edit building information"
+                                    class="p-1 text-[#2B2823] hover:text-[#0B7A44] transition-colors rounded">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Frame 2147207632: Inner White Card (Radius 6px, Padding 12px, Gap 10px) -->
+                        <div class="bg-white rounded-[6px] p-3 flex flex-col gap-2.5">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-3.5 gap-x-5 text-[13px]">
+                                <!-- Column 1 -->
+                                <div>
+                                    <span class="block text-[11px] font-semibold text-[#716F6C] uppercase tracking-wider mb-0.5">BUILDING ID</span>
+                                    <span id="reviewBuildingId" class="bld-mono font-semibold text-[#2B2823]">{{ obj.building_id }}</span>
+                                </div>
+                                <div>
+                                    <span class="block text-[11px] font-semibold text-[#716F6C] uppercase tracking-wider mb-0.5">BUILDING NAME</span>
+                                    <span id="reviewBuildingName" class="font-semibold text-[#2B2823]">{{ obj.name }}</span>
+                                </div>
+
+                                <!-- Column 2 -->
+                                <div>
+                                    <span class="block text-[11px] font-semibold text-[#716F6C] uppercase tracking-wider mb-0.5">SITE NAME</span>
+                                    <span id="reviewSiteName" class="font-medium text-[#2B2823]">{{ obj.surname|default:'----' }}</span>
+                                </div>
+                                <div>
+                                    <span class="block text-[11px] font-semibold text-[#716F6C] uppercase tracking-wider mb-0.5">SUBDIVISION</span>
+                                    <span id="reviewSubdivision" class="font-medium text-[#2B2823]">{{ obj.subdivision.name|default:'----' }}</span>
+                                </div>
+
+                                <!-- Column 3 -->
+                                <div>
+                                    <span class="block text-[11px] font-semibold text-[#716F6C] uppercase tracking-wider mb-0.5">SECTION</span>
+                                    <span id="reviewSection" class="font-medium text-[#2B2823]">{{ obj.section.name|default:'----' }}</span>
+                                </div>
+                                <div>
+                                    <span class="block text-[11px] font-semibold text-[#716F6C] uppercase tracking-wider mb-0.5">PHYSICAL ADDRESS</span>
+                                    <span id="reviewAddress" class="text-[#2B2823] break-words leading-relaxed font-normal">{{ obj.address|default:'----' }}</span>
+                                </div>
+
+                                <!-- Column 4 -->
+                                <div>
+                                    <span class="block text-[11px] font-semibold text-[#716F6C] uppercase tracking-wider mb-0.5">LATITUDE</span>
+                                    <span id="reviewLatitude" class="bld-mono text-[#5C5B59]">{{ obj.latitude|default:'----' }}</span>
+                                </div>
+                                <div>
+                                    <span class="block text-[11px] font-semibold text-[#716F6C] uppercase tracking-wider mb-0.5">LONGITUDE</span>
+                                    <span id="reviewLongitude" class="bld-mono text-[#5C5B59]">{{ obj.longitude|default:'---' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Equipment Summary (Matches Figma Frame 2147207631 styling, shown only if equipments exist) -->
+                    <div id="equipmentSummaryCard" class="hidden bg-[#F9F9F9] rounded-[12px] p-[6px] pt-[10px] flex flex-col gap-[10px]">
+                        <div class="flex items-center justify-between px-1.5">
+                            <div class="flex items-center gap-2">
+                                <h3 class="text-[14.5px] font-bold text-[#2B2823]">Equipment Summary</h3>
+                                <span id="reviewEquipmentBadge" class="inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full bg-[#EAEAEA] text-[#716F6C] text-[11px] font-semibold">
+                                    0
+                                </span>
+                            </div>
+                            <button type="button"
+                                    onclick="goToStep(2); expandInlineEquipmentSection();"
+                                    title="Add equipment"
+                                    class="p-1 text-[#2B2823] hover:text-[#0B7A44] transition-colors rounded">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 5v14M5 12h14" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Inner White Card for Equipment List -->
+                        <div class="bg-white rounded-[6px] p-3 flex flex-col gap-2.5">
+                            <div id="reviewEquipmentListBox" class="space-y-2">
+                                <!-- Populated with equipment overview -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 Footer Navigation -->
+                    <div class="pt-4 border-t border-[#EAEAE9] flex items-center justify-between">
+                        <button type="button"
+                                onclick="goToStep(2)"
+                                class="btn-secondary">
+                            Back
+                        </button>
+                        <button type="submit"
+                                id="btnSaveFinal"
+                                class="btn-forest px-7">
+                            Save Changes
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
-    </section>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- ADD EQUIPMENT POPUP MODAL (Unassigned Only, Matches Add Building Step 1 UI) -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div id="addEquipmentModal"
+     class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/45 backdrop-blur-[2px]"
+     onclick="if (event.target === this) closeEquipmentModal();">
+    <div class="bg-white rounded-[12px] p-[14px_6px_6px_6px] shadow-[0_24px_60px_rgba(0,0,0,0.18)] w-full max-w-[597px] max-h-[88vh] flex flex-col gap-[10px] overflow-hidden">
+        <!-- Header inside outer frame -->
+        <div class="px-2 pt-0.5 flex items-center justify-between">
+            <h3 class="text-[18px] font-bold text-[#2B2823] tracking-tight">Add Equipment</h3>
+            <button type="button"
+                    onclick="closeEquipmentModal()"
+                    title="Close"
+                    class="w-7 h-7 rounded-full flex items-center justify-center text-[#9D9C9A] hover:text-[#2B2823] hover:bg-[#F3F3F3] transition-colors cursor-pointer">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Inner Frame (#F3F3F3, matches wizard-inner-frame) -->
+        <div class="bg-[#F3F3F3] rounded-[6px] p-[14px_10px] flex flex-col gap-4 overflow-y-auto no-scrollbar">
+            <!-- Locked Building Context Card -->
+            <div class="bg-white border border-[#EAEAE9] rounded-[10px] px-3.5 py-2.5">
+                <span class="block text-[11px] font-semibold text-[#716F6C] uppercase tracking-wider mb-1">BUILDING</span>
+                <div class="flex items-center gap-2 flex-wrap">
+                    <span id="modalBuildingNameDisplay" class="text-[14px] font-bold text-[#2B2823]">{{ obj.name|default:'Building' }}</span>
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#FAFAFA] border border-[#EAEAE9] text-[11.5px] font-medium text-[#716F6C]">
+                        <svg class="w-3 h-3 text-[#D97706]" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17 10h-1V7a4 4 0 0 0-8 0v3H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2zm-7-3a2 2 0 1 1 4 0v3h-4V7z"/>
+                        </svg>
+                        Locked
+                    </span>
+                </div>
+            </div>
+
+            <!-- Search & Equipment Type Row (same 2-col grid as Step 1) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="form-label">Search Equipment</label>
+                    <div class="relative">
+                        <input type="text"
+                               id="modalDirectorySearchInput"
+                               placeholder="Search ID, name, brand..."
+                               autocomplete="off"
+                               class="form-input-field pr-9">
+                        <button type="button"
+                                id="btnModalSearchClear"
+                                onclick="clearModalSearch()"
+                                class="hidden input-clear-btn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 6L6 18M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label">Equipment Type</label>
+                    <select id="modalDirectoryTypeFilter" class="form-select-field">
+                        <option value="">All Types</option>
+                        {% for t in equipment_types %}
+                            <option value="{{ t.id }}">{{ t.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Scrollable Unassigned Equipment List (No visible scrollbar) -->
+            <div id="modalDirectoryListContainer"
+                 class="space-y-2 overflow-y-auto max-h-[300px] no-scrollbar">
+                <!-- Dynamically rendered unassigned equipment cards -->
+            </div>
+
+            <!-- Footer Navigation (matches Step 1 footer) -->
+            <div class="pt-3 border-t border-[#EAEAE9] flex items-center justify-between">
+                <button type="button"
+                        onclick="closeEquipmentModal()"
+                        class="btn-secondary">
+                    Cancel
+                </button>
+                <button type="button"
+                        onclick="applyModalSelection()"
+                        class="btn-forest">
+                    <span>Add Equipment</span>
+                    <span id="btnModalApplyCountBadge" class="ml-1 px-1.5 py-0.5 rounded-full bg-white/20 text-[11px] font-bold">0</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
+
 {% block extra_js %}
-    <script>
-    $(document).ready(function () {
-        $('.select2-items').select2({
-            width: '100%'
-        });
+<script>
+    // ─────────────────────────────────────────────────────────────────────────
+    // STEP WIZARD MANAGEMENT
+    // ─────────────────────────────────────────────────────────────────────────
+    var currentStep = 1;
+    var addedEquipments = {{ existing_equipments_json|safe }};
 
-        const divisionSelect = $('select[name="division"]');
-        const subdivisionSelect = $('select[name="subdivision"]');
-        const sectionSelect = $('select[name="section"]');
+    function goToStep(step) {
+        currentStep = step;
 
-        // Store initial selected values (for edit page / validation fail re-population)
-        const initialSubdivisionId = subdivisionSelect.val();
-        const initialSectionId = sectionSelect.val();
+        // Hide all step sections
+        $('#stepSection1, #stepSection2, #stepSection3').addClass('hidden');
 
-        function updateSubdivisions(divisionId, callback) {
-            if (!divisionId) {
-                subdivisionSelect.html('<option value="">Select Subdivision</option>').val('').trigger('change');
-                sectionSelect.html('<option value="">Select Section</option>').val('').trigger('change');
-                if (callback) callback();
+        // Show target step section
+        $(`#stepSection${step}`).removeClass('hidden');
+
+        // Update Header Title per step
+        const titles = {
+            1: 'Update Building',
+            2: 'Add Equipment',
+            3: 'Review & Save'
+        };
+        $('#wizardStepTitle').text(titles[step]);
+
+        // Update Tab Button Styles to match exact Figma pill inspect
+        for (let i = 1; i <= 3; i++) {
+            const $btn = $(`#tabBtn${i}`);
+            if (i === step) {
+                $btn.attr('class', 'tab-pill-active');
+            } else {
+                $btn.attr('class', 'tab-pill-inactive');
+            }
+        }
+
+        // When switching to Review (Step 3), refresh summary
+        if (step === 3) {
+            updateReviewSummary();
+        }
+
+        // Scroll smoothly to top of card
+        window.scrollTo({ top: 80, behavior: 'smooth' });
+    }
+
+    function validateStep1() {
+        let isValid = true;
+        let firstInvalid = null;
+        let firstMsg = '';
+
+        $('.form-input-field, .form-select-field, .form-textarea-field').removeClass('input-error');
+        $('.field-error-text').remove();
+
+        function setError($field, msg) {
+            $field.addClass('input-error');
+            const $wrapper = $field.closest('div');
+            if (!$wrapper.find('.field-error-text').length) {
+                $wrapper.append(`<span class="field-error-text text-[12px] text-[#D93025] font-medium mt-1 block">${msg}</span>`);
+            }
+            if (!firstInvalid) {
+                firstInvalid = $field;
+                firstMsg = msg;
+            }
+            isValid = false;
+        }
+
+        const name = $('#inputBuildingName').val().trim();
+        if (!name) {
+            setError($('#inputBuildingName'), 'Building Name is required.');
+        }
+
+        const estDate = $('#inputEstDate').val().trim();
+        if (!estDate) {
+            setError($('#inputEstDate'), 'Establishment Date is required.');
+        }
+
+        const divId = $('#selectedDivisionId').val();
+        if (!divId) {
+            setError($('#divisionSearchInput'), 'Division is required.');
+        }
+
+        const subId = $('#selectedSubdivisionId').val();
+        if (!$('#subdivisionSearchInput').prop('disabled') && !subId) {
+            setError($('#subdivisionSearchInput'), 'Subdivision is required.');
+        }
+
+        const secId = $('#selectedSectionId').val();
+        if (!$('#sectionSearchInput').prop('disabled') && !secId) {
+            setError($('#sectionSearchInput'), 'Section is required.');
+        }
+
+        const addr = $('#inputAddress').val().trim();
+        if (!addr) {
+            setError($('#inputAddress'), 'Physical Address is required.');
+        }
+
+        if (!isValid && firstInvalid) {
+            firstInvalid.focus();
+            showNotificationToast(firstMsg, true);
+        }
+
+        return isValid;
+    }
+
+    function validateAndGoToStep(targetStep) {
+        if (targetStep === 1) {
+            goToStep(1);
+            return;
+        }
+
+        if (targetStep === 2 || targetStep === 3) {
+            if (!validateStep1()) {
+                return; // Blocked: Required fields in Step 1 must be filled
+            }
+        }
+
+        goToStep(targetStep);
+    }
+
+    // Clear input-error when user enters data
+    $(document).on('input change', '.form-input-field, .form-select-field, .form-textarea-field', function() {
+        if ($(this).val()) {
+            $(this).removeClass('input-error');
+            $(this).closest('div').find('.field-error-text').remove();
+        }
+    });
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // TOAST NOTIFICATION
+    // ─────────────────────────────────────────────────────────────────────────
+    function showNotificationToast(msg, isError = false) {
+        $('.custom-notification-toast').remove();
+        const bgClass = isError ? 'bg-[#D93025]' : 'bg-[#0B7A44]';
+        const iconSvg = isError
+            ? `<svg class="w-4 h-4 shrink-0 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`
+            : `<svg class="w-4 h-4 shrink-0 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+
+        const $toast = $(`
+            <div class="custom-notification-toast fixed bottom-6 right-6 z-50 ${bgClass} text-white px-4 py-3 rounded-[10px] shadow-xl flex items-center gap-2.5 text-[13.5px] font-semibold animate-in fade-in duration-150">
+                ${iconSvg}
+                <span>${msg}</span>
+            </div>
+        `);
+        $('body').append($toast);
+        setTimeout(function() {
+            $toast.fadeOut(300, function() { $(this).remove(); });
+        }, 3500);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // DIVISION SEARCH & QUICK CREATE
+    // ─────────────────────────────────────────────────────────────────────────
+    $(document).ready(function() {
+        const $searchInput = $('#divisionSearchInput');
+        const $dropdown = $('#divisionDropdown');
+        const $optionsCard = $('#divisionOptionsCard');
+        const $optionsList = $('#divisionOptionsList');
+        const $createBox = $('#divisionCreateBox');
+        const $createLabel = $('#createDivisionNameLabel');
+        const $clearBtn = $('#btnClearDivision');
+        const $selectedId = $('#selectedDivisionId');
+
+        function filterDivisions(query) {
+            const q = query.toLowerCase().trim();
+            let exactMatchFound = false;
+            let matchCount = 0;
+
+            $optionsList.find('.division-option').each(function() {
+                const name = $(this).data('name').toString();
+                const nameLower = name.toLowerCase();
+
+                if (nameLower === q) {
+                    exactMatchFound = true;
+                }
+
+                if (!q || nameLower.includes(q)) {
+                    $(this).removeClass('hidden');
+                    matchCount++;
+                } else {
+                    $(this).addClass('hidden');
+                }
+            });
+
+            if (!q) {
+                $optionsCard.removeClass('hidden');
+                $optionsList.find('.division-option').removeClass('hidden');
+                $createBox.addClass('hidden');
                 return;
             }
+
+            if (matchCount === 0) {
+                $optionsList.find('.division-option').removeClass('hidden');
+                $optionsCard.removeClass('hidden');
+                $createBox.removeClass('hidden');
+                $createLabel.text(query.trim());
+            } else if (!exactMatchFound) {
+                $optionsCard.removeClass('hidden');
+                $createBox.removeClass('hidden');
+                $createLabel.text(query.trim());
+            } else {
+                $optionsCard.removeClass('hidden');
+                $createBox.addClass('hidden');
+            }
+        }
+
+        $searchInput.on('focus input', function() {
+            const val = $(this).val();
+            filterDivisions(val);
+            $dropdown.removeClass('hidden');
+            $clearBtn.toggleClass('hidden', !val);
+        });
+
+        $searchInput.on('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (!$createBox.hasClass('hidden')) {
+                    $('#btnQuickCreateDivision').trigger('click');
+                } else {
+                    const $first = $optionsList.find('.division-option:not(.hidden)').first();
+                    if ($first.length) {
+                        $first.trigger('click');
+                    }
+                }
+            }
+        });
+
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('#divisionControlWrapper').length) {
+                $dropdown.addClass('hidden');
+            }
+        });
+
+        $(document).on('click', '.division-option', function() {
+            const id = $(this).data('id');
+            const name = $(this).data('name');
+            selectDivision(id, name);
+        });
+
+        $clearBtn.on('click', function(e) {
+            e.stopPropagation();
+            $searchInput.val('').focus();
+            $selectedId.val('');
+            $clearBtn.addClass('hidden');
+            filterDivisions('');
+            $subSearchInput.val('').prop('disabled', true).attr('placeholder', 'Select a division first');
+            $selectedSubId.val('');
+            $subClearBtn.addClass('hidden');
+            $subOptionsList.html('<p class="text-[12.5px] text-[#9D9C9A] p-2 text-center">Select a division first</p>');
+            $subCreateBox.addClass('hidden');
+            $secSearchInput.val('').prop('disabled', true).attr('placeholder', 'Select a subdivision first');
+            $selectedSecId.val('');
+            $secClearBtn.addClass('hidden');
+            $secOptionsList.html('<p class="text-[12.5px] text-[#9D9C9A] p-2 text-center">Select a subdivision first</p>');
+            $secCreateBox.addClass('hidden');
+        });
+
+        function selectDivision(id, name) {
+            $searchInput.val(name);
+            $selectedId.val(id);
+            $dropdown.addClass('hidden');
+            $clearBtn.removeClass('hidden');
+            loadSubdivisions(id);
+        }
+
+        $('#btnQuickCreateDivision').on('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const newName = $createLabel.text().trim() || $searchInput.val().trim();
+            if (!newName) return;
+
+            const $btn = $(this);
+            const originalHtml = $btn.html();
+            $btn.prop('disabled', true).html(`
+                <svg class="animate-spin w-4 h-4 text-[#0B7A44]" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                <span>Creating "${newName}"...</span>
+            `);
+
+            $.ajax({
+                url: "{% url 'backend:quick_create_division' %}",
+                method: "POST",
+                data: {
+                    name: newName,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function(resp) {
+                    $btn.prop('disabled', false).html(originalHtml);
+                    if (resp.success) {
+                        const $existing = $optionsList.find(`.division-option[data-id="${resp.id}"]`);
+                        if (!$existing.length) {
+                            const newOption = `<div class="division-option px-3.5 py-2.5 text-[13.5px] text-[#4A4947] bg-[#F8F8F8] hover:bg-[#EFEFEF] hover:text-[#2B2823] rounded-[9px] cursor-pointer font-medium transition-colors" data-id="${resp.id}" data-name="${resp.name}">${resp.name}</div>`;
+                            $optionsList.prepend(newOption);
+                        }
+                        selectDivision(resp.id, resp.name);
+                        showNotificationToast(`Division "${resp.name}" created and selected!`);
+                    } else {
+                        alert(resp.error || 'Error creating division.');
+                    }
+                },
+                error: function(err) {
+                    $btn.prop('disabled', false).html(originalHtml);
+                    const msg = (err.responseJSON && err.responseJSON.error) ? err.responseJSON.error : 'Error creating division.';
+                    alert(msg);
+                }
+            });
+        });
+
+        // ─────────────────────────────────────────────────────────────────────
+        // SUBDIVISION SEARCH & QUICK CREATE
+        // ─────────────────────────────────────────────────────────────────────
+        const $subSearchInput = $('#subdivisionSearchInput');
+        const $subDropdown = $('#subdivisionDropdown');
+        const $subOptionsCard = $('#subdivisionOptionsCard');
+        const $subOptionsList = $('#subdivisionOptionsList');
+        const $subCreateBox = $('#subdivisionCreateBox');
+        const $subCreateLabel = $('#createSubdivisionNameLabel');
+        const $subClearBtn = $('#btnClearSubdivision');
+        const $selectedSubId = $('#selectedSubdivisionId');
+
+        function filterSubdivisions(query) {
+            const q = query.toLowerCase().trim();
+            let exactMatchFound = false;
+            let matchCount = 0;
+
+            $subOptionsList.find('.subdivision-option').each(function() {
+                const name = $(this).data('name').toString();
+                const nameLower = name.toLowerCase();
+
+                if (nameLower === q) {
+                    exactMatchFound = true;
+                }
+
+                if (!q || nameLower.includes(q)) {
+                    $(this).removeClass('hidden');
+                    matchCount++;
+                } else {
+                    $(this).addClass('hidden');
+                }
+            });
+
+            if (!q) {
+                $subOptionsCard.removeClass('hidden');
+                $subOptionsList.find('.subdivision-option').removeClass('hidden');
+                $subCreateBox.addClass('hidden');
+                return;
+            }
+
+            if (matchCount === 0) {
+                $subOptionsList.find('.subdivision-option').removeClass('hidden');
+                $subOptionsCard.removeClass('hidden');
+                $subCreateBox.removeClass('hidden');
+                $subCreateLabel.text(query.trim());
+            } else if (!exactMatchFound) {
+                $subOptionsCard.removeClass('hidden');
+                $subCreateBox.removeClass('hidden');
+                $subCreateLabel.text(query.trim());
+            } else {
+                $subOptionsCard.removeClass('hidden');
+                $subCreateBox.addClass('hidden');
+            }
+        }
+
+        $subSearchInput.on('focus input', function() {
+            if ($(this).prop('disabled')) return;
+            const val = $(this).val();
+            filterSubdivisions(val);
+            $subDropdown.removeClass('hidden');
+            $subClearBtn.toggleClass('hidden', !val);
+        });
+
+        $subSearchInput.on('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (!$subCreateBox.hasClass('hidden')) {
+                    $('#btnQuickCreateSubdivision').trigger('click');
+                } else {
+                    const $first = $subOptionsList.find('.subdivision-option:not(.hidden)').first();
+                    if ($first.length) {
+                        $first.trigger('click');
+                    }
+                }
+            }
+        });
+
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('#subdivisionControlWrapper').length) {
+                $subDropdown.addClass('hidden');
+            }
+        });
+
+        $(document).on('click', '.subdivision-option', function() {
+            const id = $(this).data('id');
+            const name = $(this).data('name');
+            selectSubdivision(id, name);
+        });
+
+        $subClearBtn.on('click', function(e) {
+            e.stopPropagation();
+            $subSearchInput.val('').focus();
+            $selectedSubId.val('');
+            $subClearBtn.addClass('hidden');
+            filterSubdivisions('');
+            $secSearchInput.val('').prop('disabled', true).attr('placeholder', 'Select a subdivision first');
+            $selectedSecId.val('');
+            $secClearBtn.addClass('hidden');
+            $secOptionsList.html('<p class="text-[12.5px] text-[#9D9C9A] p-2 text-center">Select a subdivision first</p>');
+            $secCreateBox.addClass('hidden');
+        });
+
+        function selectSubdivision(id, name) {
+            $subSearchInput.val(name);
+            $selectedSubId.val(id);
+            $subDropdown.addClass('hidden');
+            $subClearBtn.removeClass('hidden');
+            $subSearchInput.removeClass('input-error');
+            $subSearchInput.closest('div').find('.field-error-text').remove();
+            loadSections(id);
+        }
+
+        $('#btnQuickCreateSubdivision').on('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const divId = $('#selectedDivisionId').val();
+            if (!divId) {
+                alert('Please select or create a Division first.');
+                $('#divisionSearchInput').focus();
+                return;
+            }
+
+            const newName = $subCreateLabel.text().trim() || $subSearchInput.val().trim();
+            if (!newName) return;
+
+            const $btn = $(this);
+            const originalHtml = $btn.html();
+            $btn.prop('disabled', true).html(`
+                <svg class="animate-spin w-4 h-4 text-[#0B7A44]" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                <span>Creating "${newName}"...</span>
+            `);
+
+            $.ajax({
+                url: "{% url 'backend:quick_create_subdivision' %}",
+                method: "POST",
+                data: {
+                    division_id: divId,
+                    name: newName,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function(resp) {
+                    $btn.prop('disabled', false).html(originalHtml);
+                    if (resp.success) {
+                        const $existing = $subOptionsList.find(`.subdivision-option[data-id="${resp.id}"]`);
+                        if (!$existing.length) {
+                            const newOption = `<div class="subdivision-option px-3.5 py-2.5 text-[13.5px] text-[#4A4947] bg-[#F8F8F8] hover:bg-[#EFEFEF] hover:text-[#2B2823] rounded-[9px] cursor-pointer font-medium transition-colors" data-id="${resp.id}" data-name="${resp.name}">${resp.name}</div>`;
+                            if ($subOptionsList.find('.subdivision-option').length === 0) {
+                                $subOptionsList.empty();
+                            }
+                            $subOptionsList.prepend(newOption);
+                        }
+                        selectSubdivision(resp.id, resp.name);
+                        showNotificationToast(`Subdivision "${resp.name}" created and selected!`);
+                    } else {
+                        alert(resp.error || 'Error creating subdivision.');
+                    }
+                },
+                error: function(err) {
+                    $btn.prop('disabled', false).html(originalHtml);
+                    const msg = (err.responseJSON && err.responseJSON.error) ? err.responseJSON.error : 'Error creating subdivision.';
+                    alert(msg);
+                }
+            });
+        });
+
+        function loadSubdivisions(divisionId) {
+            $subSearchInput.val('').prop('disabled', true).attr('placeholder', 'Loading subdivisions...');
+            $selectedSubId.val('');
+            $subClearBtn.addClass('hidden');
+            $subOptionsList.html('<p class="text-[12.5px] text-[#9D9C9A] p-2 text-center">Loading subdivisions...</p>');
+            $subCreateBox.addClass('hidden');
+
+            $secSearchInput.val('').prop('disabled', true).attr('placeholder', 'Select a subdivision first');
+            $selectedSecId.val('');
+            $secClearBtn.addClass('hidden');
+            $secOptionsList.html('<p class="text-[12.5px] text-[#9D9C9A] p-2 text-center">Select a subdivision first</p>');
+            $secCreateBox.addClass('hidden');
 
             $.ajax({
                 url: "{% url 'backend:get_division_subdivisions' %}",
-                data: { 'division_id': divisionId },
+                data: { division_id: divisionId },
                 dataType: 'json',
-                success: function (data) {
-                    let options = '<option value="">Select Subdivision</option>';
-                    data.subdivisions.forEach(function (sub) {
-                        options += `<option value="${sub.id}">${sub.name}</option>`;
-                    });
-                    subdivisionSelect.html(options).trigger('change');
-                    if (callback) callback();
+                success: function(data) {
+                    $subSearchInput.prop('disabled', false).attr('placeholder', 'Search subdivision...');
+                    let html = '';
+                    if (data.subdivisions && data.subdivisions.length) {
+                        data.subdivisions.forEach(function(item) {
+                            html += `<div class="subdivision-option px-3.5 py-2.5 text-[13.5px] text-[#4A4947] bg-[#F8F8F8] hover:bg-[#EFEFEF] hover:text-[#2B2823] rounded-[9px] cursor-pointer font-medium transition-colors" data-id="${item.id}" data-name="${item.name}">${item.name}</div>`;
+                        });
+                    } else {
+                        html = '<p class="text-[12.5px] text-[#9D9C9A] p-2 text-center">No subdivisions recorded for this division yet.</p>';
+                    }
+                    $subOptionsList.html(html);
+                },
+                error: function() {
+                    $subSearchInput.prop('disabled', false).attr('placeholder', 'Search subdivision...');
+                    $subOptionsList.html('<p class="text-[12.5px] text-[#9D9C9A] p-2 text-center">No subdivisions recorded yet.</p>');
                 }
             });
         }
 
-        function updateSections(subdivisionId, callback) {
-            if (!subdivisionId) {
-                sectionSelect.html('<option value="">Select Section</option>').val('').trigger('change');
-                if (callback) callback();
+        // ─────────────────────────────────────────────────────────────────────
+        // SECTION SEARCH & QUICK CREATE
+        // ─────────────────────────────────────────────────────────────────────
+        const $secSearchInput = $('#sectionSearchInput');
+        const $secDropdown = $('#sectionDropdown');
+        const $secOptionsCard = $('#sectionOptionsCard');
+        const $secOptionsList = $('#sectionOptionsList');
+        const $secCreateBox = $('#sectionCreateBox');
+        const $secCreateLabel = $('#createSectionNameLabel');
+        const $secClearBtn = $('#btnClearSection');
+        const $selectedSecId = $('#selectedSectionId');
+
+        function filterSections(query) {
+            const q = query.toLowerCase().trim();
+            let exactMatchFound = false;
+            let matchCount = 0;
+
+            $secOptionsList.find('.section-option').each(function() {
+                const name = $(this).data('name').toString();
+                const nameLower = name.toLowerCase();
+
+                if (nameLower === q) {
+                    exactMatchFound = true;
+                }
+
+                if (!q || nameLower.includes(q)) {
+                    $(this).removeClass('hidden');
+                    matchCount++;
+                } else {
+                    $(this).addClass('hidden');
+                }
+            });
+
+            if (!q) {
+                $secOptionsCard.removeClass('hidden');
+                $secOptionsList.find('.section-option').removeClass('hidden');
+                $secCreateBox.addClass('hidden');
                 return;
             }
 
+            if (matchCount === 0) {
+                $secOptionsList.find('.section-option').removeClass('hidden');
+                $secOptionsCard.removeClass('hidden');
+                $secCreateBox.removeClass('hidden');
+                $secCreateLabel.text(query.trim());
+            } else if (!exactMatchFound) {
+                $secOptionsCard.removeClass('hidden');
+                $secCreateBox.removeClass('hidden');
+                $secCreateLabel.text(query.trim());
+            } else {
+                $secOptionsCard.removeClass('hidden');
+                $secCreateBox.addClass('hidden');
+            }
+        }
+
+        $secSearchInput.on('focus input', function() {
+            if ($(this).prop('disabled')) return;
+            const val = $(this).val();
+            filterSections(val);
+            $secDropdown.removeClass('hidden');
+            $secClearBtn.toggleClass('hidden', !val);
+        });
+
+        $secSearchInput.on('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (!$secCreateBox.hasClass('hidden')) {
+                    $('#btnQuickCreateSection').trigger('click');
+                } else {
+                    const $first = $secOptionsList.find('.section-option:not(.hidden)').first();
+                    if ($first.length) {
+                        $first.trigger('click');
+                    }
+                }
+            }
+        });
+
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('#sectionControlWrapper').length) {
+                $secDropdown.addClass('hidden');
+            }
+        });
+
+        $(document).on('click', '.section-option', function() {
+            const id = $(this).data('id');
+            const name = $(this).data('name');
+            selectSection(id, name);
+        });
+
+        $secClearBtn.on('click', function(e) {
+            e.stopPropagation();
+            $secSearchInput.val('').focus();
+            $selectedSecId.val('');
+            $secClearBtn.addClass('hidden');
+            filterSections('');
+        });
+
+        function selectSection(id, name) {
+            $secSearchInput.val(name);
+            $selectedSecId.val(id);
+            $secDropdown.addClass('hidden');
+            $secClearBtn.removeClass('hidden');
+            $secSearchInput.removeClass('input-error');
+            $secSearchInput.closest('div').find('.field-error-text').remove();
+        }
+
+        $('#btnQuickCreateSection').on('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const subId = $('#selectedSubdivisionId').val();
+            if (!subId) {
+                alert('Please select or create a Subdivision first.');
+                $('#subdivisionSearchInput').focus();
+                return;
+            }
+
+            const newName = $secCreateLabel.text().trim() || $secSearchInput.val().trim();
+            if (!newName) return;
+
+            const $btn = $(this);
+            const originalHtml = $btn.html();
+            $btn.prop('disabled', true).html(`
+                <svg class="animate-spin w-4 h-4 text-[#0B7A44]" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                <span>Creating "${newName}"...</span>
+            `);
+
+            $.ajax({
+                url: "{% url 'backend:quick_create_section' %}",
+                method: "POST",
+                data: {
+                    subdivision_id: subId,
+                    name: newName,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function(resp) {
+                    $btn.prop('disabled', false).html(originalHtml);
+                    if (resp.success) {
+                        const $existing = $secOptionsList.find(`.section-option[data-id="${resp.id}"]`);
+                        if (!$existing.length) {
+                            const newOption = `<div class="section-option px-3.5 py-2.5 text-[13.5px] text-[#4A4947] bg-[#F8F8F8] hover:bg-[#EFEFEF] hover:text-[#2B2823] rounded-[9px] cursor-pointer font-medium transition-colors" data-id="${resp.id}" data-name="${resp.name}">${resp.name}</div>`;
+                            if ($secOptionsList.find('.section-option').length === 0) {
+                                $secOptionsList.empty();
+                            }
+                            $secOptionsList.prepend(newOption);
+                        }
+                        selectSection(resp.id, resp.name);
+                        showNotificationToast(`Section "${resp.name}" created and selected!`);
+                    } else {
+                        alert(resp.error || 'Error creating section.');
+                    }
+                },
+                error: function(err) {
+                    $btn.prop('disabled', false).html(originalHtml);
+                    const msg = (err.responseJSON && err.responseJSON.error) ? err.responseJSON.error : 'Error creating section.';
+                    alert(msg);
+                }
+            });
+        });
+
+        function loadSections(subdivisionId) {
+            $secSearchInput.val('').prop('disabled', true).attr('placeholder', 'Loading sections...');
+            $selectedSecId.val('');
+            $secClearBtn.addClass('hidden');
+            $secOptionsList.html('<p class="text-[12.5px] text-[#9D9C9A] p-2 text-center">Loading sections...</p>');
+            $secCreateBox.addClass('hidden');
+
             $.ajax({
                 url: "{% url 'backend:get_subdivision_sections' %}",
-                data: { 'subdivision_id': subdivisionId },
+                data: { subdivision_id: subdivisionId },
                 dataType: 'json',
-                success: function (data) {
-                    let options = '<option value="">Select Section</option>';
-                    data.sections.forEach(function (sec) {
-                        options += `<option value="${sec.id}">${sec.name}</option>`;
-                    });
-                    sectionSelect.html(options).trigger('change');
-                    if (callback) callback();
+                success: function(data) {
+                    $secSearchInput.prop('disabled', false).attr('placeholder', 'Search section...');
+                    let html = '';
+                    if (data.sections && data.sections.length) {
+                        data.sections.forEach(function(item) {
+                            html += `<div class="section-option px-3.5 py-2.5 text-[13.5px] text-[#4A4947] bg-[#F8F8F8] hover:bg-[#EFEFEF] hover:text-[#2B2823] rounded-[9px] cursor-pointer font-medium transition-colors" data-id="${item.id}" data-name="${item.name}">${item.name}</div>`;
+                        });
+                    } else {
+                        html = '<p class="text-[12.5px] text-[#9D9C9A] p-2 text-center">No sections recorded for this subdivision yet.</p>';
+                    }
+                    $secOptionsList.html(html);
+                },
+                error: function() {
+                    $secSearchInput.prop('disabled', false).attr('placeholder', 'Search section...');
+                    $secOptionsList.html('<p class="text-[12.5px] text-[#9D9C9A] p-2 text-center">No sections recorded yet.</p>');
                 }
             });
         }
 
-        divisionSelect.on('change', function () {
-            const divisionId = $(this).val();
-            updateSubdivisions(divisionId);
+        // Initialize equipments display
+        renderEquipmentList();
+    });
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // EQUIPMENT DIRECTORY MULTI-SELECT POPUP MODAL (UNASSIGNED ONLY)
+    // ─────────────────────────────────────────────────────────────────────────
+    const DIRECTORY_EQUIPMENTS = {{ directory_equipments_json|default:'[]'|safe }};
+    let modalSelectedEquipments = new Map(); // key -> item object
+    let currentFilteredEquipments = [];
+
+    // Pre-populate modalSelectedEquipments with existing equipments
+    if (Array.isArray(addedEquipments)) {
+        addedEquipments.forEach(eq => {
+            const key = eq.id ? String(eq.id) : eq.equipment_id;
+            modalSelectedEquipments.set(key, Object.assign({}, eq));
+        });
+    }
+
+    function openEquipmentModal() {
+        modalSelectedEquipments.clear();
+        addedEquipments.forEach(eq => {
+            const key = eq.id ? String(eq.id) : eq.equipment_id;
+            modalSelectedEquipments.set(key, Object.assign({}, eq));
         });
 
-        subdivisionSelect.on('change', function () {
-            const subdivisionId = $(this).val();
-            updateSections(subdivisionId);
-        });
+        const bldName = ($('#inputBuildingName').val() || '').trim() || ($('#inputBuildingId').val() || '').trim() || 'Building';
+        $('#modalBuildingNameDisplay').text(bldName);
 
-        // Initial load check
-        const currentDivisionId = divisionSelect.val();
-        if (currentDivisionId) {
-            updateSubdivisions(currentDivisionId, function() {
-                if (initialSubdivisionId) {
-                    subdivisionSelect.val(initialSubdivisionId).trigger('change');
-                    updateSections(initialSubdivisionId, function() {
-                        if (initialSectionId) {
-                            sectionSelect.val(initialSectionId).trigger('change');
-                        }
-                    });
-                }
-            });
-        } else {
-            subdivisionSelect.html('<option value="">Select Subdivision</option>').trigger('change');
-            sectionSelect.html('<option value="">Select Section</option>').trigger('change');
+        $('#modalDirectorySearchInput').val('');
+        $('#btnModalSearchClear').addClass('hidden');
+        $('#modalDirectoryTypeFilter').val('');
+
+        renderDirectoryList();
+        updateModalFooterCount();
+
+        $('#addEquipmentModal').removeClass('hidden');
+        $('body').addClass('overflow-hidden');
+        setTimeout(() => $('#modalDirectorySearchInput').focus(), 50);
+    }
+
+    function closeEquipmentModal() {
+        $('#addEquipmentModal').addClass('hidden');
+        $('body').removeClass('overflow-hidden');
+    }
+
+    $(document).on('keydown', function(e) {
+        if (e.key === 'Escape' && !$('#addEquipmentModal').hasClass('hidden')) {
+            closeEquipmentModal();
         }
     });
-    </script>
+
+    function clearModalSearch() {
+        $('#modalDirectorySearchInput').val('').focus();
+        $('#btnModalSearchClear').addClass('hidden');
+        renderDirectoryList();
+    }
+
+    $(document).on('input', '#modalDirectorySearchInput', function() {
+        const val = $(this).val();
+        $('#btnModalSearchClear').toggleClass('hidden', !val);
+        renderDirectoryList();
+    });
+
+    $(document).on('change', '#modalDirectoryTypeFilter', function() {
+        renderDirectoryList();
+    });
+
+    function renderDirectoryList() {
+        const q = ($('#modalDirectorySearchInput').val() || '').toLowerCase().trim();
+        const selectedType = $('#modalDirectoryTypeFilter').val();
+
+        currentFilteredEquipments = DIRECTORY_EQUIPMENTS.filter(eq => {
+            // Only show unassigned equipment (or items already selected on this building)
+            const key = eq.id ? String(eq.id) : eq.equipment_id;
+            if (!eq.is_unassigned && !modalSelectedEquipments.has(key)) {
+                return false;
+            }
+            if (selectedType && String(eq.equipment_type_id) !== String(selectedType)) {
+                return false;
+            }
+            if (q) {
+                const idMatch = (eq.equipment_id || '').toLowerCase().includes(q);
+                const nameMatch = (eq.equipment_name || '').toLowerCase().includes(q);
+                const brandMatch = (eq.brand || '').toLowerCase().includes(q);
+                const modelMatch = (eq.model_number || '').toLowerCase().includes(q);
+                const serialMatch = (eq.serial_number || '').toLowerCase().includes(q);
+                const typeMatch = (eq.equipment_type_name || '').toLowerCase().includes(q);
+                if (!idMatch && !nameMatch && !brandMatch && !modelMatch && !serialMatch && !typeMatch) {
+                    return false;
+                }
+            }
+            return true;
+        });
+
+        const $container = $('#modalDirectoryListContainer');
+        if (currentFilteredEquipments.length === 0) {
+            $container.html(`
+                <div class="bg-white rounded-[10px] border border-[#EAEAE9] py-8 px-4 text-center">
+                    <p class="text-[13.5px] font-semibold text-[#2B2823] mb-1">No unassigned equipment found</p>
+                    <p class="text-[12px] text-[#716F6C]">Try adjusting your search or equipment type filter.</p>
+                </div>
+            `);
+            updateModalFooterCount();
+            return;
+        }
+
+        let html = '';
+        currentFilteredEquipments.forEach(eq => {
+            const key = eq.id ? String(eq.id) : eq.equipment_id;
+            const isSelected = modalSelectedEquipments.has(key);
+
+            const cardBorderClass = isSelected ? 'border-[#0B7A44] bg-[#F7FBF8]' : 'border-[#EAEAE9] bg-white';
+            const checkBgClass = isSelected ? 'bg-[#0B7A44] border-[#0B7A44]' : 'bg-white border-[#D0D0CE]';
+            const checkIcon = isSelected ? `<svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>` : '';
+
+            html += `
+                <div class="equipment-directory-card p-3 rounded-[10px] border ${cardBorderClass} shadow-[0_1px_2px_rgba(0,0,0,0.02)] hover:border-[#0B7A44] transition-all cursor-pointer select-none flex items-start gap-3"
+                     onclick="toggleDirectoryEquipment('${key}')">
+                    <div class="w-5 h-5 rounded-[5px] border ${checkBgClass} flex items-center justify-center shrink-0 mt-0.5 transition-colors">
+                        ${checkIcon}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between gap-2 flex-wrap">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="bld-mono font-bold text-[13px] text-[#2B2823]">${eq.equipment_id}</span>
+                                <span class="font-semibold text-[13px] text-[#2B2823] truncate max-w-[180px]">${eq.equipment_name || ''}</span>
+                                <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#F0F0F0] text-[#5C5B59]">${eq.equipment_type_name}</span>
+                            </div>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#E7F6EC] text-[#0B7A44]">${eq.is_unassigned ? 'Unassigned' : 'Assigned'}</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-[12px] text-[#716F6C] mt-1 flex-wrap">
+                            ${eq.brand ? `<span>Brand: <strong class="text-[#4A4947] font-medium">${eq.brand}</strong></span>` : ''}
+                            ${eq.model_number ? `<span>Model: <strong class="text-[#4A4947] font-medium">${eq.model_number}</strong></span>` : ''}
+                            ${eq.floor_location ? `<span class="inline-flex items-center gap-1 text-[#0B7A44]">📍 ${eq.floor_location}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        $container.html(html);
+        updateModalFooterCount();
+    }
+
+    function toggleDirectoryEquipment(key) {
+        if (modalSelectedEquipments.has(key)) {
+            modalSelectedEquipments.delete(key);
+        } else {
+            const item = DIRECTORY_EQUIPMENTS.find(eq => (eq.id ? String(eq.id) : eq.equipment_id) === key);
+            if (item) {
+                modalSelectedEquipments.set(key, Object.assign({}, item));
+            }
+        }
+        renderDirectoryList();
+    }
+
+    function updateModalFooterCount() {
+        $('#btnModalApplyCountBadge').text(modalSelectedEquipments.size);
+    }
+
+    function applyModalSelection() {
+        addedEquipments = Array.from(modalSelectedEquipments.values());
+        renderEquipmentList();
+        closeEquipmentModal();
+        if (addedEquipments.length > 0) {
+            showNotificationToast(`Assigned ${addedEquipments.length} equipment to building.`);
+        }
+    }
+
+    function removeEquipment(index) {
+        const removed = addedEquipments.splice(index, 1)[0];
+        if (removed) {
+            const key = removed.id ? String(removed.id) : removed.equipment_id;
+            modalSelectedEquipments.delete(key);
+        }
+        renderEquipmentList();
+    }
+
+    function renderEquipmentList() {
+        $('#equipmentsDataJson').val(JSON.stringify(addedEquipments));
+        const count = addedEquipments.length;
+        $('#addedEquipmentCount').text(count);
+
+        if (count === 0) {
+            $('#equipmentEmptyState').removeClass('hidden');
+            $('#equipmentPopulatedState').addClass('hidden');
+        } else {
+            $('#equipmentEmptyState').addClass('hidden');
+            $('#equipmentPopulatedState').removeClass('hidden');
+
+            let html = '';
+            addedEquipments.forEach((eq, idx) => {
+                html += `
+                    <div class="flex items-center justify-between p-3.5 rounded-[12px] border border-[#EAEAE9] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:border-[#D0D0CE] transition-all">
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-full bg-[#E7F6EC] flex items-center justify-center text-[#0B7A44] shrink-0 mt-0.5">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="bld-mono font-bold text-[13.5px] text-[#2B2823]">${eq.equipment_id}</span>
+                                    <span class="font-semibold text-[13px] text-[#2B2823]">${eq.equipment_name || ''}</span>
+                                    <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#F0F0F0] text-[#5C5B59]">${eq.equipment_type_name || 'Equipment'}</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-[12px] text-[#716F6C] mt-1 flex-wrap">
+                                    ${eq.brand ? `<span>Brand: <strong class="text-[#4A4947] font-medium">${eq.brand}</strong></span>` : ''}
+                                    ${eq.model_number ? `<span>Model: <strong class="text-[#4A4947] font-medium">${eq.model_number}</strong></span>` : ''}
+                                    ${eq.floor_location ? `<span class="inline-flex items-center gap-1 text-[#0B7A44] bg-[#E7F6EC] px-2 py-0.2 rounded-full font-medium">📍 ${eq.floor_location}</span>` : '<span class="text-[#9D9C9A]">Location not set</span>'}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button type="button"
+                                    onclick="removeEquipment(${idx})"
+                                    title="Remove from this building"
+                                    class="p-1.5 text-[#9D9C9A] hover:text-[#D93025] hover:bg-[#FEE2E2] rounded-lg transition-colors cursor-pointer">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            $('#equipmentListContainer').html(html);
+        }
+        updateReviewSummary();
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // STEP 3: REVIEW SUMMARY POPULATION
+    // ─────────────────────────────────────────────────────────────────────────
+    function updateReviewSummary() {
+        $('#reviewBuildingId').text($('#inputBuildingId').val() || '----');
+        $('#reviewBuildingName').text($('#inputBuildingName').val() || '----');
+        $('#reviewSiteName').text($('#inputSiteName').val() || '----');
+
+        const subText = $('#subdivisionSearchInput').val();
+        $('#reviewSubdivision').text(subText || '----');
+
+        const secText = $('#sectionSearchInput').val();
+        $('#reviewSection').text(secText || '----');
+
+        $('#reviewAddress').text($('#inputAddress').val() || '----');
+        $('#reviewLatitude').text($('#inputLatitude').val() || '----');
+        $('#reviewLongitude').text($('#inputLongitude').val() || '---');
+
+        const eqCount = addedEquipments.length;
+        if (eqCount === 0) {
+            $('#equipmentSummaryCard').addClass('hidden');
+        } else {
+            $('#equipmentSummaryCard').removeClass('hidden');
+            $('#reviewEquipmentBadge').text(eqCount);
+
+            let html = '';
+            addedEquipments.forEach((eq) => {
+                html += `
+                    <div class="flex items-center justify-between p-2.5 rounded-[8px] bg-[#FAFAFA] border border-[#EAEAE9] text-[12.5px]">
+                        <div class="flex items-center gap-2">
+                            <span class="bld-mono font-semibold text-[#2B2823]">${eq.equipment_id}</span>
+                            <span class="text-[#716F6C] font-normal">• ${eq.equipment_type_name || ''}</span>
+                        </div>
+                        <span class="text-[#716F6C]">${eq.brand || eq.floor_location || ''}</span>
+                    </div>
+                `;
+            });
+            $('#reviewEquipmentListBox').html(html);
+        }
+    }
+</script>
 {% endblock %}

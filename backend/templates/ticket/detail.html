@@ -177,10 +177,10 @@
                 <div class="lg:col-span-1 space-y-6">
                     <!-- Lifecycle Action -->
                     <div class="bg-white rounded-xl shadow-sm border border-blue-100 overflow-hidden">
-                        <div class="p-6">
-                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">LIFECYCLE ACTION</h3>
+                        <div class="p-6 space-y-3">
+                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">LIFECYCLE ACTION</h3>
                             <button type="button"
-                                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition shadow-sm"
+                                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition shadow-sm cursor-pointer"
                                     onclick="document.getElementById('assignModal').classList.remove('hidden')">
                                 <svg width="18"
                                      height="18"
@@ -197,8 +197,52 @@
                                 </svg>
                                 Assign Technician
                             </button>
+                            {% if obj.equipment %}
+                            <button type="button"
+                                    class="w-full bg-[#0B7A44] hover:bg-[#08683A] text-white font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition shadow-sm cursor-pointer"
+                                    onclick="document.getElementById('completeServiceModal').classList.remove('hidden')">
+                                <svg width="18"
+                                     height="18"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2"
+                                     stroke-linecap="round"
+                                     stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                                Complete &amp; Log Service
+                            </button>
+                            {% endif %}
                         </div>
                     </div>
+                    {% if service_records %}
+                    <!-- Logged Service History -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">SERVICE HISTORY</h3>
+                            <a href="{% url 'backend:equipment_history' %}?source=Request"
+                               class="text-xs font-semibold text-[#0B7A44] hover:underline">View All</a>
+                        </div>
+                        <div class="space-y-3">
+                            {% for rec in service_records %}
+                                <a href="{% url 'backend:maintenance_record_detail' rec.id %}"
+                                   class="block p-3 rounded-lg border border-gray-100 bg-[#FAFAFA] hover:border-[#0B7A44] transition">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <span class="font-mono text-xs font-semibold text-gray-900">SR-{{ rec.id|stringformat:"03d" }}</span>
+                                        <span class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-[#E6F4EA] text-[#137333]">{{ rec.get_record_type_display }}</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600 mt-1 line-clamp-2">{{ rec.work_description }}</p>
+                                    <div class="flex items-center justify-between text-[11px] text-gray-400 mt-1.5">
+                                        <span>{% if rec.assigned_to %}{{ rec.assigned_to.display_name }}{% elif rec.technician %}{{ rec.technician.get_full_name|default:rec.technician.username }}{% else %}—{% endif %}</span>
+                                        <span>{{ rec.maintenance_date|date:"d M Y" }}</span>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
                     <!-- Assigned Personnel -->
                     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                         <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">ASSIGNED PERSONNEL</h3>
@@ -347,11 +391,116 @@
             </form>
         </div>
     </div>
+    <!-- Complete & Log Service Modal -->
+    <div id="completeServiceModal"
+         class="hidden fixed inset-0 bg-black/45 backdrop-blur-[1px] flex items-center justify-center z-50 p-4">
+        <div class="w-full max-w-[512px] rounded-[13px] bg-[#F3F3F3] border-2 border-white/35 p-4 shadow-[0_0_0_2px_rgba(255,255,255,0.2),3px_9px_21px_rgba(48,48,48,0.1)]"
+             style="background-clip: padding-box;">
+            <div class="flex items-center justify-between mb-3.5">
+                <h3 class="text-[18px] font-semibold text-[#2B2823]">Complete &amp; Log Service</h3>
+                <button type="button"
+                        onclick="document.getElementById('completeServiceModal').classList.add('hidden')"
+                        class="w-9 h-9 rounded-[10px] bg-white border border-[#EAEAEA] flex items-center justify-center text-[#2B2823] hover:bg-[#FAFAFA] cursor-pointer">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <form method="POST" action="{% url 'backend:ticket_detail' obj.id %}" class="space-y-3">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="complete_service">
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[13px] font-medium text-[#2B2823] mb-1">Technician</label>
+                        <select name="service_technician_id"
+                                class="w-full h-[41px] rounded-[13px] bg-white border border-[#F0F0F0] px-3 text-[13.5px] text-[#2B2823] shadow-sm focus:outline-none focus:border-[#0B7A44]">
+                            <option value="">Select technician</option>
+                            {% for tech in technicians %}
+                                <option value="{{ tech.id }}" {% if default_tech_id == tech.id %}selected{% endif %}>{{ tech.display_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[13px] font-medium text-[#2B2823] mb-1">Service Type</label>
+                        <select name="record_type"
+                                class="w-full h-[41px] rounded-[13px] bg-white border border-[#F0F0F0] px-3 text-[13.5px] text-[#2B2823] shadow-sm focus:outline-none focus:border-[#0B7A44]">
+                            {% for key, val in record_type_choices %}
+                                <option value="{{ key }}" {% if key == 'repair' %}selected{% endif %}>{{ val }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-[13px] font-medium text-[#2B2823] mb-1">Completed Date</label>
+                        <input type="date"
+                               name="maintenance_date"
+                               value="{{ today_iso }}"
+                               class="w-full h-[41px] rounded-[13px] bg-white border border-[#F0F0F0] px-3 text-[13px] text-[#2B2823] shadow-sm focus:outline-none focus:border-[#0B7A44]">
+                    </div>
+                    <div>
+                        <label class="block text-[13px] font-medium text-[#2B2823] mb-1">Cost</label>
+                        <input type="number"
+                               step="0.01"
+                               name="cost"
+                               placeholder="0.00"
+                               class="w-full h-[41px] rounded-[13px] bg-white border border-[#F0F0F0] px-3 text-[13.5px] text-[#2B2823] shadow-sm focus:outline-none focus:border-[#0B7A44]">
+                    </div>
+                    <div>
+                        <label class="block text-[13px] font-medium text-[#2B2823] mb-1">Hours</label>
+                        <input type="number"
+                               step="0.25"
+                               name="duration_hours"
+                               placeholder="1.5"
+                               class="w-full h-[41px] rounded-[13px] bg-white border border-[#F0F0F0] px-3 text-[13.5px] text-[#2B2823] shadow-sm focus:outline-none focus:border-[#0B7A44]">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[13px] font-medium text-[#2B2823] mb-1">Work Description <span class="text-[#D93025]">*</span></label>
+                    <textarea name="work_description"
+                              rows="3"
+                              required
+                              placeholder="Describe work completed to resolve this request..."
+                              class="w-full rounded-[13px] bg-white border border-[#F0F0F0] p-3 text-[13.5px] text-[#2B2823] shadow-sm resize-none focus:outline-none focus:border-[#0B7A44]">{{ obj.issue_description|default:'' }}</textarea>
+                </div>
+
+                <div>
+                    <label class="block text-[13px] font-medium text-[#2B2823] mb-1">Parts Replaced</label>
+                    <input type="text"
+                           name="parts_replaced"
+                           placeholder="Optional parts replaced"
+                           class="w-full h-[41px] rounded-[13px] bg-white border border-[#F0F0F0] px-3 text-[13.5px] text-[#2B2823] shadow-sm focus:outline-none focus:border-[#0B7A44]">
+                </div>
+
+                <div class="pt-2 flex items-center justify-between">
+                    <button type="button"
+                            onclick="document.getElementById('completeServiceModal').classList.add('hidden')"
+                            class="px-4 py-2 rounded-[8px] bg-white border border-[#EAEAE9] text-[13.5px] font-medium text-[#2B2823] shadow-sm hover:bg-[#FAFAFA] cursor-pointer">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="px-5 py-2 rounded-[8px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[13.5px] font-semibold shadow-sm cursor-pointer">
+                        Complete &amp; Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-    // Close modal when clicking outside
-    document.getElementById('assignModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            this.classList.add('hidden');
+    // Close modals when clicking outside
+    ['assignModal', 'completeServiceModal'].forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.add('hidden');
+                }
+            });
         }
     });
     </script>

@@ -181,6 +181,92 @@
         border-color: #D8D7D5;
         color: #2B2823;
     }
+
+    /* Figma Add / Edit Section Popup Modal Styles */
+    .sec-modal-card {
+        width: 100%;
+        max-width: 512px;
+        border-radius: 13px;
+        background-color: #F3F3F3;
+        background-clip: padding-box;
+        border: 2px solid rgba(255, 255, 255, 0.35);
+        padding: 10px 10px 16px 16px;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.20), 3px 9px 21px rgba(48, 48, 48, 0.10), 14px 36px 38px rgba(48, 48, 48, 0.09);
+        box-sizing: border-box;
+    }
+
+    .sec-modal-close-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAEA;
+        box-shadow: 0 0 1px rgba(135, 135, 135, 0.10), 0 1px 1px rgba(135, 135, 135, 0.09);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #2B2823;
+        cursor: pointer;
+        transition: background-color 150ms ease;
+    }
+    .sec-modal-close-btn:hover {
+        background-color: #FAFAFA;
+    }
+
+    .sec-modal-label {
+        display: block;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13.5px;
+        font-weight: 500;
+        color: #2B2823;
+        margin-bottom: 6px;
+    }
+
+    .sec-modal-input {
+        width: 100%;
+        height: 41px;
+        border-radius: 13px;
+        background-color: #FFFFFF;
+        border: 0.5px solid rgba(240, 240, 240, 0.6);
+        padding: 0 12px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13.5px;
+        color: #2B2823;
+        outline: none;
+        box-shadow: 0 0 6px rgba(135, 135, 135, 0.02), 0 1px 2px rgba(135, 135, 135, 0.09);
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .sec-modal-select {
+        width: 100%;
+        height: 41px;
+        border-radius: 13px;
+        background-color: #FFFFFF;
+        border: 0.5px solid rgba(240, 240, 240, 0.6);
+        padding: 0 34px 0 12px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13.5px;
+        color: #2B2823;
+        outline: none;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%232B2823' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        box-shadow: 0 0 6px rgba(135, 135, 135, 0.02), 0 1px 2px rgba(135, 135, 135, 0.09);
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .sec-modal-input::placeholder {
+        color: #BDBCBB;
+    }
+
+    .sec-modal-input:focus,
+    .sec-modal-select:focus {
+        border-color: #0B7A44;
+        box-shadow: 0 0 0 3px rgba(11, 122, 68, 0.08);
+    }
 </style>
 {% endblock %}
 
@@ -210,12 +296,12 @@
             <p class="text-[13.5px] text-[#716F6C] mt-1">Manage departmental sections, work units, and sub-zonal operational facilities.</p>
         </div>
         <div>
-            <a href="{% url 'backend:section_add' %}" class="sec-btn-primary">
+            <button type="button" onclick="openAddSectionModal()" class="sec-btn-primary cursor-pointer">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 5v14M5 12h14" />
                 </svg>
                 <span>Add Section</span>
-            </a>
+            </button>
         </div>
     </div>
 </div>
@@ -378,16 +464,22 @@
                                             </svg>
                                         </button>
                                         <div data-menu class="hidden py-1.5 w-44 text-left rounded-lg bg-white shadow-xl border border-[#EAEAE9] z-50" role="menu">
-                                            <!-- Edit Section -->
-                                            <a href="{% url 'backend:section_update' data.id %}"
-                                               class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-[#2B2823] hover:bg-[#F7F7F6] transition-colors"
-                                               role="menuitem">
+                                            <!-- Edit Section (Opens Popup Modal) -->
+                                            <button type="button"
+                                                    onclick="openEditSectionModal(this)"
+                                                    data-url="{% url 'backend:section_update' data.id %}"
+                                                    data-subdivision="{{ data.subdivision_id|default:'' }}"
+                                                    data-name="{{ data.name|default:'' }}"
+                                                    data-code="{{ data.code|default:'' }}"
+                                                    data-status="{% if data.is_active %}1{% else %}0{% endif %}"
+                                                    class="w-full flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-left text-[#2B2823] hover:bg-[#F7F7F6] transition-colors cursor-pointer"
+                                                    role="menuitem">
                                                 <svg class="w-4 h-4 text-[#716F6C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                                                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                                 </svg>
                                                 <span>Edit</span>
-                                            </a>
+                                            </button>
 
                                             <div class="my-1 border-t border-[#F2F2F0]"></div>
 
@@ -453,4 +545,169 @@
         </div>
     </div>
 </div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- ADD / EDIT SECTION POPUP MODAL (Matches Figma 512px #F3F3F3 Design)         -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div id="sectionModal"
+     class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/45 backdrop-blur-[1px]"
+     onclick="if (event.target === this) closeSectionModal();">
+    <div class="sec-modal-card">
+        <!-- Header Row -->
+        <div class="flex items-center justify-between mb-3.5">
+            <h3 id="sectionModalTitle" class="text-[18px] font-semibold text-[#2B2823] tracking-tight">Add Section</h3>
+            <button type="button"
+                    onclick="closeSectionModal()"
+                    title="Close"
+                    class="sec-modal-close-btn">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Form -->
+        <form method="post" action="{% url 'backend:section_add' %}" id="sectionModalForm" class="space-y-3.5">
+            {% csrf_token %}
+            <input type="hidden" name="from_modal" value="1">
+
+            <div>
+                <label for="modalSecParentSubdivision" class="sec-modal-label">
+                    Parent Sub-Division <span class="text-[#D93025]">*</span>
+                </label>
+                <select id="modalSecParentSubdivision" name="subdivision" class="sec-modal-select" required>
+                    <option value="">Select parent sub-division</option>
+                    {% for sub in subdivisions %}
+                        <option value="{{ sub.id }}">{{ sub.name }}{% if sub.division %} ({{ sub.division.name }}){% endif %}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label for="modalSecName" class="sec-modal-label">
+                    Section Name <span class="text-[#D93025]">*</span>
+                </label>
+                <input type="text"
+                       id="modalSecName"
+                       name="name"
+                       placeholder="Enter section name"
+                       class="sec-modal-input"
+                       required>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                    <label for="modalSecCode" class="sec-modal-label">
+                        Section Code <span class="text-[#D93025]">*</span>
+                    </label>
+                    <input type="text"
+                           id="modalSecCode"
+                           name="code"
+                           placeholder="e.g. SEC-01"
+                           class="sec-modal-input sec-mono"
+                           required>
+                </div>
+
+                <div>
+                    <label for="modalSecStatus" class="sec-modal-label">
+                        Status
+                    </label>
+                    <select id="modalSecStatus" name="is_active" class="sec-modal-select">
+                        <option value="1" selected>Active</option>
+                        <option value="0">Inactive</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Footer Buttons -->
+            <div class="pt-2 flex items-center justify-between">
+                <button type="button"
+                        onclick="closeSectionModal()"
+                        class="px-4 py-2 rounded-[8px] bg-white border border-[#EAEAE9] text-[13.5px] font-medium text-[#2B2823] shadow-[0_1px_2px_rgba(0,0,0,0.05)] hover:bg-[#FAFAFA] transition-colors cursor-pointer">
+                    Cancel
+                </button>
+                <button type="submit"
+                        id="sectionModalSubmitBtn"
+                        class="px-5 py-2 rounded-[8px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[13.5px] font-semibold shadow-sm transition-colors cursor-pointer">
+                    Save
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const SECTION_ADD_URL = "{% url 'backend:section_add' %}";
+
+    function openAddSectionModal() {
+        const form = document.getElementById('sectionModalForm');
+        if (form) {
+            form.reset();
+            form.action = SECTION_ADD_URL;
+        }
+        const title = document.getElementById('sectionModalTitle');
+        if (title) title.textContent = 'Add Section';
+        const submitBtn = document.getElementById('sectionModalSubmitBtn');
+        if (submitBtn) submitBtn.textContent = 'Save';
+
+        const modal = document.getElementById('sectionModal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+            setTimeout(function() {
+                const select = document.getElementById('modalSecParentSubdivision');
+                if (select) select.focus();
+            }, 50);
+        }
+    }
+
+    function openEditSectionModal(btn) {
+        const form = document.getElementById('sectionModalForm');
+        if (form) {
+            form.action = btn.getAttribute('data-url') || SECTION_ADD_URL;
+        }
+        const title = document.getElementById('sectionModalTitle');
+        if (title) title.textContent = 'Edit Section';
+        const submitBtn = document.getElementById('sectionModalSubmitBtn');
+        if (submitBtn) submitBtn.textContent = 'Save Changes';
+
+        const subSelect = document.getElementById('modalSecParentSubdivision');
+        const nameInput = document.getElementById('modalSecName');
+        const codeInput = document.getElementById('modalSecCode');
+        const statusSelect = document.getElementById('modalSecStatus');
+        if (subSelect) subSelect.value = btn.getAttribute('data-subdivision') || '';
+        if (nameInput) nameInput.value = btn.getAttribute('data-name') || '';
+        if (codeInput) codeInput.value = btn.getAttribute('data-code') || '';
+        if (statusSelect) statusSelect.value = btn.getAttribute('data-status') || '1';
+
+        const modal = document.getElementById('sectionModal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+            setTimeout(function() {
+                if (nameInput) nameInput.focus();
+            }, 50);
+        }
+    }
+
+    function closeSectionModal() {
+        const modal = document.getElementById('sectionModal');
+        if (modal) {
+            modal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        }
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('sectionModal');
+            if (modal && !modal.classList.contains('hidden')) {
+                closeSectionModal();
+            }
+        }
+    });
+</script>
 {% endblock %}

@@ -99,6 +99,7 @@ urlpatterns = [
     path('api/quick-create-division/', views.quick_create_division, name='quick_create_division'),
     path('api/quick-create-subdivision/', views.quick_create_subdivision, name='quick_create_subdivision'),
     path('api/quick-create-section/', views.quick_create_section, name='quick_create_section'),
+    path('api/quick-create-equipment-type/', views.quick_create_equipment_type, name='quick_create_equipment_type'),
     path('maintenance/scan/<str:qr_code>/', views.maintanaince_scan, name='maintanaince_scan'),
     path('maintenance-record/<int:record_id>/review/', views.maintenance_record_review, name='maintenance_record_review'),
 

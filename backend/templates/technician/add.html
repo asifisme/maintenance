@@ -1,88 +1,259 @@
 {% extends 'base.html' %}
-{% block title %}<span class="hidden">{{ action }} Building</span>{% endblock %}
+{% load static %}
+
+{% block title %}Add Technician{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    body,
+    #mainContentWrapper {
+        background-color: #F2F2F2 !important;
+        font-family: 'Urbanist', Inter, system-ui, ui-sans-serif, sans-serif;
+    }
+
+    .tech-mono {
+        font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        letter-spacing: -0.02em;
+    }
+
+    .wizard-outer-frame {
+        width: 100%;
+        max-width: 597px;
+        margin: 0 auto;
+        border-radius: 12px;
+        padding: 14px 6px 6px 6px;
+        background-color: #FFFFFF;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        box-sizing: border-box;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+
+    .wizard-inner-frame {
+        width: 100%;
+        border-radius: 6px;
+        padding: 14px 10px;
+        background-color: #F3F3F3;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        box-sizing: border-box;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #2B2823;
+        margin-bottom: 6px;
+    }
+
+    .form-input-field,
+    .form-select-field,
+    .form-textarea-field {
+        width: 100%;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        border-radius: 10px;
+        padding: 10px 14px;
+        font-size: 13.5px;
+        color: #2B2823;
+        transition: all 0.15s ease;
+        outline: none;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    .form-select-field {
+        appearance: none;
+        -webkit-appearance: none;
+        padding-right: 36px;
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23716F6C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+    }
+
+    .form-input-field::placeholder,
+    .form-textarea-field::placeholder {
+        color: #BDBCBB;
+    }
+
+    .form-input-field:focus,
+    .form-select-field:focus,
+    .form-textarea-field:focus {
+        border-color: #0B7A44;
+        box-shadow: 0 0 0 3px rgba(11, 122, 68, 0.08);
+    }
+
+    .btn-forest {
+        background-color: #0B7A44;
+        color: #FFFFFF;
+        font-size: 13.5px;
+        font-weight: 600;
+        padding: 10px 22px;
+        border-radius: 9px;
+        transition: background-color 0.15s ease, transform 0.1s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+        border: none;
+    }
+
+    .btn-forest:hover {
+        background-color: #08683A;
+    }
+
+    .btn-secondary {
+        background-color: #FFFFFF;
+        color: #2B2823;
+        border: 1px solid #E5E5E4;
+        font-size: 13.5px;
+        font-weight: 600;
+        padding: 10px 20px;
+        border-radius: 9px;
+        transition: background-color 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+        background-color: #F7F7F7;
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <a href="{% url 'backend:technician_list' %}" class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#5C5B59] font-medium hover:bg-[#E0E0DF] transition-colors shrink-0">
+        Technicians
+    </a>
+{% endblock %}
+
+{% block main_class %}w-full px-[15px] py-4 flex-1{% endblock %}
+
+{% block page_header %}
+<div class="w-full pt-1 pb-4">
+    <h1 class="tech-mono text-[24px] font-medium text-[#2B2823] leading-tight">Technician Management</h1>
+    <p class="text-[13.5px] text-[#716F6C] mt-1">Register and manage maintenance technicians and their profiles.</p>
+</div>
+{% endblock %}
+
 {% block content %}
-    <section class="bg-slate-50 min-h-screen p-4 md:p-8 font-sans">
-        <div class="max-w-3xl mx-auto">
-            <!-- Header Section -->
-            <div class="flex items-center gap-4 mb-8">
-                <a href="{% url 'backend:technician_list' %}"
-                   class="text-gray-600 hover:text-gray-900 bg-white p-2.5 rounded-xl border border-gray-300 shadow-sm transition hover:shadow-md">
-                    <svg width="20"
-                         height="20"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="2.5"
-                         stroke-linecap="round"
-                         stroke-linejoin="round">
-                        <path d="M15 18l-6-6 6-6" />
-                    </svg>
-                </a>
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Add Technician</h2>
-                    <p class="text-sm text-gray-500 mt-0.5">Register a new technician profile in the system.</p>
-                </div>
-            </div>
-            <!-- Form Card Container -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-200/80 overflow-hidden">
-                <form method="POST" class="p-6 md:p-8 space-y-6">
-                    {% csrf_token %}
-                    <!-- Name Fields -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-800 mb-2">First Name</label>
-                            <input type="text"
-                                   name="first_name"
-                                   required
-                                   class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition shadow-sm" />
-                        </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-800 mb-2">Last Name</label>
-                            <input type="text"
-                                   name="last_name"
-                                   required
-                                   class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition shadow-sm" />
-                        </div>
-                    </div>
-                    <!-- Email Field -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-800 mb-2">Email Address</label>
-                        <input type="email"
-                               name="email"
-                               required
-                               class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition shadow-sm"
-                               placeholder="technician@example.com" />
-                    </div>
-                    <!-- Phone Number Field -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-800 mb-2">Phone Number</label>
-                        <input type="text"
-                               name="phone_number"
-                               required
-                               class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition shadow-sm"
-                               placeholder="e.g. +1 (234) 567-890" />
-                    </div>
-                    <!-- Bio Field -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-800 mb-2">About / Bio</label>
-                        <textarea name="about"
-                                  rows="4"
-                                  class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition shadow-sm resize-none"
-                                  placeholder="Describe skills, specializations, certifications, etc..."></textarea>
-                    </div>
-                    <!-- Action Buttons -->
-                    <div class="pt-6 flex justify-end gap-3 border-t border-gray-100">
-                        <a href="{% url 'backend:technician_list' %}"
-                           class="px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition shadow-sm">
-                            Cancel
-                        </a>
-                        <button type="submit"
-                                class="px-5 py-2.5 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 active:bg-blue-800 transition shadow-sm shadow-blue-500/10">
-                            Save Technician
-                        </button>
-                    </div>
-                </form>
-            </div>
+<div class="w-full pb-16">
+    <div class="wizard-outer-frame">
+        <!-- Header inside outer frame -->
+        <div class="px-2 pt-0.5 flex items-center justify-between">
+            <h2 class="text-[18px] font-bold text-[#2B2823] tracking-tight">
+                Add Technician
+            </h2>
         </div>
-    </section>
+
+        <!-- Inner Frame (#F3F3F3) -->
+        <div class="wizard-inner-frame">
+            <form method="POST" action="{% url 'backend:technician_add' %}" class="space-y-4">
+                {% csrf_token %}
+
+                <!-- Row 1: First Name & Last Name -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="inputTechFirstName" class="form-label">
+                            First Name <span class="text-[#D93025]">*</span>
+                        </label>
+                        <input type="text"
+                               id="inputTechFirstName"
+                               name="first_name"
+                               placeholder="Enter first name"
+                               class="form-input-field"
+                               required
+                               autofocus>
+                    </div>
+                    <div>
+                        <label for="inputTechLastName" class="form-label">
+                            Last Name <span class="text-[#D93025]">*</span>
+                        </label>
+                        <input type="text"
+                               id="inputTechLastName"
+                               name="last_name"
+                               placeholder="Enter last name"
+                               class="form-input-field"
+                               required>
+                    </div>
+                </div>
+
+                <!-- Row 2: Email & Phone -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="inputTechEmail" class="form-label">
+                            Email Address <span class="text-[#D93025]">*</span>
+                        </label>
+                        <input type="email"
+                               id="inputTechEmail"
+                               name="email"
+                               placeholder="technician@example.com"
+                               class="form-input-field"
+                               required>
+                    </div>
+                    <div>
+                        <label for="inputTechPhone" class="form-label">
+                            Phone Number <span class="text-[#D93025]">*</span>
+                        </label>
+                        <input type="text"
+                               id="inputTechPhone"
+                               name="phone_number"
+                               placeholder="e.g. +880 17XX-XXXXXX"
+                               class="form-input-field"
+                               required>
+                    </div>
+                </div>
+
+                <!-- Row 3: Optional Linked User Account -->
+                {% if users %}
+                <div>
+                    <label for="inputTechUser" class="form-label">
+                        User Account <span class="text-[12px] font-normal text-[#716F6C]">(Optional)</span>
+                    </label>
+                    <select id="inputTechUser" name="user_id" class="form-select-field">
+                        <option value="">-- No User Account --</option>
+                        {% for user in users %}
+                            <option value="{{ user.id }}">{{ user.get_full_name|default:user.username }} ({{ user.email }})</option>
+                        {% endfor %}
+                    </select>
+                    <p class="text-[12px] text-[#9D9C9A] mt-1">Optionally link an existing system user account.</p>
+                </div>
+                {% endif %}
+
+                <!-- Row 4: About / Bio -->
+                <div>
+                    <label for="inputTechAbout" class="form-label">
+                        About / Bio
+                    </label>
+                    <textarea id="inputTechAbout"
+                              name="about"
+                              rows="4"
+                              placeholder="Describe skills, specializations, certifications, etc..."
+                              class="form-textarea-field resize-none"></textarea>
+                </div>
+
+                <!-- Footer Actions -->
+                <div class="pt-4 border-t border-[#EAEAE9] flex items-center justify-between">
+                    <a href="{% url 'backend:technician_list' %}" class="btn-secondary">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn-forest px-7">
+                        Save Technician
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

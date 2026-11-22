@@ -29,16 +29,18 @@ def menu_items(request):
         .order_by('menu__id')
     )
 
-    # Find best breadcrumb match
+    # Find best match and track hierarchy
+    best_item = None
+    best_match_length = 0
+
     for menu in menu_list:
         menu.is_current = False
-        if menu.menu.menu_url and menu.menu.menu_url in current_path:
-            match_length = len(menu.menu.menu_url)
-            if match_length > best_match_length:
-                best_match_length = match_length
-                breadcrumb = menu.menu
-            menu.is_current = True
-            dashboard_active = False
+        m_url = (menu.menu.menu_url or "").strip()
+        if m_url and m_url in current_path:
+            m_len = len(m_url)
+            if m_len > best_match_length:
+                best_match_length = m_len
+                best_item = (menu, None, None)
 
         sub_menu = list(
             UserMenuPermission.objects.filter(
@@ -51,14 +53,12 @@ def menu_items(request):
 
         for sub in sub_menu:
             sub.is_current = False
-            if sub.menu.menu_url and sub.menu.menu_url in current_path:
-                match_length = len(sub.menu.menu_url)
-                if match_length > best_match_length:
-                    best_match_length = match_length
-                    breadcrumb = sub.menu
-                sub.is_current = True
-                menu.is_current = True
-                dashboard_active = False
+            s_url = (sub.menu.menu_url or "").strip()
+            if s_url and s_url in current_path:
+                s_len = len(s_url)
+                if s_len > best_match_length:
+                    best_match_length = s_len
+                    best_item = (menu, sub, None)
 
             child_menu = list(
                 UserMenuPermission.objects.filter(
@@ -71,19 +71,31 @@ def menu_items(request):
 
             for child in child_menu:
                 child.is_current = False
-                if child.menu.menu_url and child.menu.menu_url in current_path:
-                    match_length = len(child.menu.menu_url)
-                    if match_length > best_match_length:
-                        best_match_length = match_length
-                        breadcrumb = child.menu
-                    child.is_current = True
-                    sub.is_current = True
-                    menu.is_current = True
-                    dashboard_active = False
+                c_url = (child.menu.menu_url or "").strip()
+                if c_url and c_url in current_path:
+                    c_len = len(c_url)
+                    if c_len > best_match_length:
+                        best_match_length = c_len
+                        best_item = (menu, sub, child)
 
             sub.child_menu = child_menu
 
         menu.sub_menu = sub_menu
+
+    if best_item:
+        top_m, sub_m, ch_m = best_item
+        dashboard_active = False
+        if ch_m:
+            ch_m.is_current = True
+            breadcrumb = ch_m.menu
+        if sub_m:
+            sub_m.is_current = True
+            if not breadcrumb:
+                breadcrumb = sub_m.menu
+        if top_m:
+            top_m.is_current = True
+            if not breadcrumb:
+                breadcrumb = top_m.menu
 
     # Separate User Management so sidebar can render it below Help & Support
     sidebar_main_menus = []

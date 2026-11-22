@@ -1,93 +1,280 @@
 {% extends 'base.html' %}
-{% block title %}<span class="hidden">{{ action }} Building</span>{% endblock %}
+{% load static %}
+
+{% block title %}Update Technician{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    body,
+    #mainContentWrapper {
+        background-color: #F2F2F2 !important;
+        font-family: 'Urbanist', Inter, system-ui, ui-sans-serif, sans-serif;
+    }
+
+    .tech-mono {
+        font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        letter-spacing: -0.02em;
+    }
+
+    .wizard-outer-frame {
+        width: 100%;
+        max-width: 597px;
+        margin: 0 auto;
+        border-radius: 12px;
+        padding: 14px 6px 6px 6px;
+        background-color: #FFFFFF;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        box-sizing: border-box;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+
+    .wizard-inner-frame {
+        width: 100%;
+        border-radius: 6px;
+        padding: 14px 10px;
+        background-color: #F3F3F3;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        box-sizing: border-box;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #2B2823;
+        margin-bottom: 6px;
+    }
+
+    .form-input-field,
+    .form-select-field,
+    .form-textarea-field {
+        width: 100%;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        border-radius: 10px;
+        padding: 10px 14px;
+        font-size: 13.5px;
+        color: #2B2823;
+        transition: all 0.15s ease;
+        outline: none;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    .form-input-field:disabled {
+        background-color: #FAFAFA;
+        color: #716F6C;
+        cursor: not-allowed;
+    }
+
+    .form-select-field {
+        appearance: none;
+        -webkit-appearance: none;
+        padding-right: 36px;
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23716F6C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+    }
+
+    .form-input-field::placeholder,
+    .form-textarea-field::placeholder {
+        color: #BDBCBB;
+    }
+
+    .form-input-field:focus,
+    .form-select-field:focus,
+    .form-textarea-field:focus {
+        border-color: #0B7A44;
+        box-shadow: 0 0 0 3px rgba(11, 122, 68, 0.08);
+    }
+
+    .btn-forest {
+        background-color: #0B7A44;
+        color: #FFFFFF;
+        font-size: 13.5px;
+        font-weight: 600;
+        padding: 10px 22px;
+        border-radius: 9px;
+        transition: background-color 0.15s ease, transform 0.1s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+        border: none;
+    }
+
+    .btn-forest:hover {
+        background-color: #08683A;
+    }
+
+    .btn-secondary {
+        background-color: #FFFFFF;
+        color: #2B2823;
+        border: 1px solid #E5E5E4;
+        font-size: 13.5px;
+        font-weight: 600;
+        padding: 10px 20px;
+        border-radius: 9px;
+        transition: background-color 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+        background-color: #F7F7F7;
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <a href="{% url 'backend:technician_list' %}" class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#5C5B59] font-medium hover:bg-[#E0E0DF] transition-colors shrink-0">
+        Technicians
+    </a>
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <span class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#2B2823] font-medium shrink-0">
+        Update {% if obj.first_name %}{{ obj.first_name }}{% elif obj.user %}{{ obj.user.username }}{% else %}Technician{% endif %}
+    </span>
+{% endblock %}
+
+{% block main_class %}w-full px-[15px] py-4 flex-1{% endblock %}
+
+{% block page_header %}
+<div class="w-full pt-1 pb-4">
+    <h1 class="tech-mono text-[24px] font-medium text-[#2B2823] leading-tight">Technician Management</h1>
+    <p class="text-[13.5px] text-[#716F6C] mt-1">Register and manage maintenance technicians and their profiles.</p>
+</div>
+{% endblock %}
+
 {% block content %}
-    <section class="bg-slate-50 min-h-screen p-4 md:p-8 font-sans">
-        <div class="max-w-3xl mx-auto">
-            <div class="flex items-center gap-4 mb-8">
-                <a href="{% url 'backend:technician_list' %}"
-                   class="text-gray-600 hover:text-gray-900 bg-white p-2 rounded-lg border border-gray-200 shadow-sm transition">
-                    <svg width="20"
-                         height="20"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="2"
-                         stroke-linecap="round"
-                         stroke-linejoin="round">
-                        <path d="M15 18l-6-6 6-6" />
-                    </svg>
-                </a>
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-900">Update Technician</h2>
-                    <p class="text-sm text-gray-500 mt-1">Edit profile for {{ obj.user.get_full_name|default:obj.user.username }}</p>
-                </div>
-            </div>
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <form method="POST" class="p-6 md:p-8 space-y-6">
-                    {% csrf_token %}
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-900 mb-2">User Account</label>
-                        {% if obj.user %}
-                            <input type="text"
-                                   value="{{ obj.user.username }} ({{ obj.user.email }})"
-                                   disabled
-                                   class="w-full border-gray-200 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed" />
-                            <p class="text-xs text-gray-400 mt-2">The linked user account cannot be changed.</p>
-                        {% else %}
-                            <select name="user_id"
-                                    class="w-full border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-gray-50/50">
-                                <option value="" selected>-- No User Account --</option>
-                                {% for user in users %}
-                                    <option value="{{ user.id }}">{{ user.get_full_name|default:user.username }} ({{ user.email }})</option>
-                                {% endfor %}
-                            </select>
-                            <p class="text-xs text-gray-400 mt-2">You can link an existing user account to this technician.</p>
-                        {% endif %}
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-900 mb-2">First Name</label>
-                            <input type="text"
-                                   name="first_name"
-                                   value="{{ obj.first_name }}"
-                                   class="w-full border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-gray-50/50" />
-                        </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-900 mb-2">Last Name</label>
-                            <input type="text"
-                                   name="last_name"
-                                   value="{{ obj.last_name }}"
-                                   class="w-full border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-gray-50/50" />
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-900 mb-2">Email</label>
-                        <input type="email"
-                               name="email"
-                               value="{{ obj.email }}"
-                               class="w-full border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-gray-50/50" />
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-900 mb-2">Phone Number</label>
-                        <input type="text"
-                               name="phone_number"
-                               value="{{ obj.phone_number }}"
-                               class="w-full border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-gray-50/50" />
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-900 mb-2">About / Bio</label>
-                        <textarea name="about"
-                                  rows="4"
-                                  class="w-full border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-gray-50/50">{{ obj.about }}</textarea>
-                    </div>
-                    <div class="pt-4 flex justify-end gap-3 border-t border-gray-100">
-                        <a href="{% url 'backend:technician_list' %}"
-                           class="px-6 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition">Cancel</a>
-                        <button type="submit"
-                                class="px-6 py-2.5 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-sm transition">Update Technician</button>
-                    </div>
-                </form>
-            </div>
+<div class="w-full pb-16">
+    <div class="wizard-outer-frame">
+        <!-- Header inside outer frame -->
+        <div class="px-2 pt-0.5 flex items-center justify-between">
+            <h2 class="text-[18px] font-bold text-[#2B2823] tracking-tight">
+                Update Technician
+            </h2>
         </div>
-    </section>
+
+        <!-- Inner Frame (#F3F3F3) -->
+        <div class="wizard-inner-frame">
+            <form method="POST" action="{% url 'backend:technician_update' obj.id %}" class="space-y-4">
+                {% csrf_token %}
+
+                <!-- User Account -->
+                <div>
+                    <label class="form-label">
+                        User Account
+                    </label>
+                    {% if obj.user %}
+                        <input type="text"
+                               value="{{ obj.user.username }}{% if obj.user.email %} ({{ obj.user.email }}){% endif %}"
+                               disabled
+                               class="form-input-field">
+                        <p class="text-[12px] text-[#9D9C9A] mt-1">The linked user account cannot be changed.</p>
+                    {% else %}
+                        <select name="user_id" class="form-select-field">
+                            <option value="" selected>-- No User Account --</option>
+                            {% for user in users %}
+                                <option value="{{ user.id }}">{{ user.get_full_name|default:user.username }} ({{ user.email }})</option>
+                            {% endfor %}
+                        </select>
+                        <p class="text-[12px] text-[#9D9C9A] mt-1">Optionally link an existing user account to this technician.</p>
+                    {% endif %}
+                </div>
+
+                <!-- Row 1: First Name & Last Name -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="inputTechFirstName" class="form-label">
+                            First Name <span class="text-[#D93025]">*</span>
+                        </label>
+                        <input type="text"
+                               id="inputTechFirstName"
+                               name="first_name"
+                               value="{{ obj.first_name|default:'' }}"
+                               placeholder="Enter first name"
+                               class="form-input-field"
+                               required>
+                    </div>
+                    <div>
+                        <label for="inputTechLastName" class="form-label">
+                            Last Name <span class="text-[#D93025]">*</span>
+                        </label>
+                        <input type="text"
+                               id="inputTechLastName"
+                               name="last_name"
+                               value="{{ obj.last_name|default:'' }}"
+                               placeholder="Enter last name"
+                               class="form-input-field"
+                               required>
+                    </div>
+                </div>
+
+                <!-- Row 2: Email & Phone -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="inputTechEmail" class="form-label">
+                            Email Address <span class="text-[#D93025]">*</span>
+                        </label>
+                        <input type="email"
+                               id="inputTechEmail"
+                               name="email"
+                               value="{{ obj.email|default:'' }}"
+                               placeholder="technician@example.com"
+                               class="form-input-field"
+                               required>
+                    </div>
+                    <div>
+                        <label for="inputTechPhone" class="form-label">
+                            Phone Number <span class="text-[#D93025]">*</span>
+                        </label>
+                        <input type="text"
+                               id="inputTechPhone"
+                               name="phone_number"
+                               value="{{ obj.phone_number|default:'' }}"
+                               placeholder="e.g. +880 17XX-XXXXXX"
+                               class="form-input-field"
+                               required>
+                    </div>
+                </div>
+
+                <!-- Row 3: About / Bio -->
+                <div>
+                    <label for="inputTechAbout" class="form-label">
+                        About / Bio
+                    </label>
+                    <textarea id="inputTechAbout"
+                              name="about"
+                              rows="4"
+                              placeholder="Describe skills, specializations, certifications, etc..."
+                              class="form-textarea-field resize-none">{{ obj.about|default:'' }}</textarea>
+                </div>
+
+                <!-- Footer Actions -->
+                <div class="pt-4 border-t border-[#EAEAE9] flex items-center justify-between">
+                    <a href="{% url 'backend:technician_list' %}" class="btn-secondary">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn-forest px-7">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -1,12 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Maintenance Sessions{% endblock %}
+{% block title %}Maintenance Schedule{% endblock %}
 
 {% block extra_head %}
 <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-    /* Design Tokens — Consistent with Building & Technicians Pattern */
     body,
     #mainContentWrapper {
         background-color: #F2F2F2 !important;
@@ -18,41 +17,7 @@
         letter-spacing: -0.02em;
     }
 
-    /* Search input box */
-    .mnt-search-box {
-        width: 100%;
-        max-width: 320px;
-        height: 38px;
-        background-color: #FFFFFF;
-        border: 1px solid #EAEAE9;
-        border-radius: 8px;
-        padding: 0 12px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        transition: border-color 150ms ease, box-shadow 150ms ease;
-    }
-    .mnt-search-box:focus-within {
-        border-color: #CFCED0;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-    }
-    .mnt-search-input {
-        border: 0 !important;
-        outline: none !important;
-        background: transparent !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        box-shadow: none !important;
-        font-family: 'Urbanist', sans-serif;
-        font-size: 13px;
-        color: #2B2823;
-        width: 100%;
-    }
-    .mnt-search-input::placeholder {
-        color: #9D9C9A;
-    }
-
-    /* Table Outer Tray: Fill w-full, radius 12px, padding 16px 6px 6px 6px, gap 16px, bg #F9F9F9 */
+    /* Table Outer Tray */
     .mnt-table-tray {
         background-color: #F9F9F9;
         border-radius: 12px;
@@ -64,62 +29,16 @@
         width: 100%;
     }
 
-    /* Table Inner Container: Fill w-full, radius 6px, padding 14px, gap 10px, bg #FFFFFF */
+    /* Table Inner Container */
     .mnt-table-inner {
         background-color: #FFFFFF;
-        border-radius: 6px;
+        border-radius: 8px;
         padding: 14px;
         box-sizing: border-box;
         width: 100%;
     }
 
-    /* Filter Select Pill */
-    .mnt-filter-select {
-        background-color: #EAEAE8 !important;
-        border: 1px solid #E2E2E0 !important;
-        border-radius: 8px !important;
-        height: 34px;
-        padding: 0 28px 0 11px !important;
-        font-size: 12.5px;
-        font-weight: 500;
-        color: #555452;
-        outline: none !important;
-        cursor: pointer;
-        appearance: none;
-        -webkit-appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23716F6C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 9px center;
-        transition: background-color 150ms ease, border-color 150ms ease;
-    }
-    .mnt-filter-select:hover,
-    .mnt-filter-select:focus {
-        background-color: #E3E3E1 !important;
-        border-color: #CFCED0 !important;
-        color: #2B2A29;
-    }
-
-    /* Reset button */
-    .mnt-btn-reset {
-        height: 34px;
-        padding: 0 12px;
-        border-radius: 8px;
-        background-color: #FFFFFF;
-        border: 1px solid #EAEAE9;
-        font-size: 12.5px;
-        font-weight: 500;
-        color: #2B2823;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        transition: background-color 150ms ease, border-color 150ms ease;
-    }
-    .mnt-btn-reset:hover {
-        background-color: #F7F7F6;
-        border-color: #D8D7D5;
-    }
-
-    /* Primary Forest Green Button (+ Add Maintenance Session) */
+    /* Primary Forest Green Button (+ Create Schedule) */
     .mnt-btn-primary {
         background-color: #0B7A44;
         color: #FFFFFF;
@@ -139,7 +58,49 @@
         background-color: #08683A;
     }
 
-    /* Table Styles */
+    /* Outlined Forest Green Button (Generate Due Tasks) */
+    .mnt-btn-outline-green {
+        height: 36px;
+        padding: 0 14px;
+        border-radius: 8px;
+        background-color: #FFFFFF;
+        border: 1px solid #0B7A44;
+        color: #2B2823;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background-color 150ms ease, color 150ms ease;
+    }
+    .mnt-btn-outline-green:hover {
+        background-color: #E7F6EC;
+        color: #0B7A44;
+    }
+
+    /* Date input inside automation bar */
+    .mnt-date-input {
+        height: 36px;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        border-radius: 8px;
+        padding: 0 12px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13px;
+        color: #2B2823;
+        outline: none;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+        transition: border-color 150ms ease;
+    }
+    .mnt-date-input:focus {
+        border-color: #0B7A44;
+    }
+
+    /* Table Styles matching Figma */
     .mnt-table {
         width: 100%;
         border-collapse: collapse;
@@ -157,11 +118,17 @@
         white-space: nowrap;
     }
     .mnt-table td {
-        padding: 13px 14px;
+        padding: 14px 14px;
         font-family: 'Urbanist', sans-serif;
         font-size: 13px;
-        color: #2B2823;
+        color: #4A4947;
         vertical-align: middle;
+    }
+    .mnt-table tbody tr:nth-child(even) {
+        background-color: #FAFAFA;
+    }
+    .mnt-table tbody tr:hover {
+        background-color: #F4F5F4;
     }
 
     /* Action 3-dots circular button */
@@ -176,6 +143,7 @@
         justify-content: center;
         color: #5C5B59;
         cursor: pointer;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
         transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
     }
     .mnt-action-circle-btn:hover {
@@ -191,7 +159,7 @@
         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
     </svg>
     <span class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#2B2823] font-medium shrink-0">
-        Maintenance
+        Maintenance Schedule
     </span>
 {% endblock %}
 
@@ -202,15 +170,14 @@
     <!-- Page Title & Primary Action -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h1 class="mnt-mono text-[24px] font-medium text-[#2B2823] leading-tight">Maintenance Sessions</h1>
-            <p class="text-[13.5px] text-[#716F6C] mt-1">Track scheduled and completed equipment maintenance sessions across buildings.</p>
+            <h1 class="mnt-mono text-[24px] font-medium text-[#2B2823] leading-tight">Maintenance Schedule</h1>
         </div>
         <div>
             <a href="{% url 'backend:maintenance_add' %}" class="mnt-btn-primary">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 5v14M5 12h14" />
                 </svg>
-                <span>Add Maintenance Session</span>
+                <span>Create Schedule</span>
             </a>
         </div>
     </div>
@@ -220,155 +187,139 @@
 {% block content %}
 <div class="w-full space-y-4 pb-10">
 
-    <!-- ════════════════════════ ROW 1: Search Input ════════════════════════ -->
-    <div class="pt-1">
-        <form method="get" action="{% url 'backend:maintenance' %}" id="maintenanceSearchForm" class="mnt-search-box">
-            <svg class="w-4 h-4 text-[#9D9C9A] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8" />
-                <path d="M21 21l-4.35-4.35" />
-            </svg>
-            <input type="text"
-                   name="search"
-                   value="{{ search }}"
-                   placeholder="Search Serial, QR Code, or Equipment"
-                   class="mnt-search-input">
-            {% if selected_status %}<input type="hidden" name="status" value="{{ selected_status }}">{% endif %}
-            {% if per_page != 10 %}<input type="hidden" name="per_page" value="{{ per_page }}">{% endif %}
-        </form>
-    </div>
-
-    <!-- ════════════════════════ ROW 2: Table Outer Tray ════════════════════════ -->
+    <!-- ════════════════════════ Table Outer Tray (Matches Figma) ════════════════════════ -->
     <div class="mnt-table-tray">
-        <!-- Tray Header: Title + Counter Badge + Filter Selects + Reset -->
+        <!-- Tray Header: Test Automation + Pretend today is + Date + Generate Due Tasks -->
         <div class="px-2.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             <div class="flex items-center gap-2">
-                <h2 class="text-[16.5px] font-semibold text-[#2B2823] tracking-[-0.01em]">Total Maintenance Sessions</h2>
-                <span class="inline-flex items-center justify-center min-w-[24px] h-[22px] px-2 rounded-full bg-[#EAEAE8] text-[#4A4947] text-[12px] font-semibold leading-none">
-                    {{ filtered_total_count }}
-                </span>
+                <h2 class="text-[16px] font-semibold text-[#2B2823] tracking-[-0.01em]">Test Automation</h2>
             </div>
 
-            <!-- Filters Form -->
-            <form method="get" action="{% url 'backend:maintenance' %}" id="maintenanceFilterForm" class="flex flex-wrap items-center gap-2">
-                {% if search %}
-                    <input type="hidden" name="search" value="{{ search }}">
+            <form method="get" action="{% url 'backend:maintenance' %}" class="flex flex-wrap items-center gap-2.5">
+                <input type="hidden" name="generate_due" value="1">
+                <label for="pretendTodayInput" class="text-[13px] text-[#716F6C] font-medium">Pretend today is</label>
+                <input type="date"
+                       id="pretendTodayInput"
+                       name="pretend_date"
+                       value="{{ pretend_date }}"
+                       class="mnt-date-input">
+                <button type="submit" class="mnt-btn-outline-green">
+                    Generate Due Tasks
+                </button>
+                {% if request.GET.generate_due == '1' or search or selected_status %}
+                    <a href="{% url 'backend:maintenance' %}"
+                       class="h-[36px] px-3 rounded-[8px] bg-white border border-[#EAEAE9] text-[12.5px] font-medium text-[#5C5B59] hover:text-[#2B2823] inline-flex items-center transition-colors">
+                        Reset
+                    </a>
                 {% endif %}
-                {% if per_page != 10 %}
-                    <input type="hidden" name="per_page" value="{{ per_page }}">
-                {% endif %}
-
-                <!-- All Statuses -->
-                <select name="status" onchange="this.form.submit()" class="mnt-filter-select" aria-label="Filter by status">
-                    <option value="">All Statuses</option>
-                    {% for st in status_choices %}
-                        <option value="{{ st }}" {% if selected_status == st %}selected{% endif %}>{{ st }}</option>
-                    {% endfor %}
-                </select>
-
-                <!-- Reset Button -->
-                <a href="{% url 'backend:maintenance' %}" class="mnt-btn-reset" title="Reset Filters">
-                    <span>Reset</span>
-                    <svg class="w-3.5 h-3.5 text-[#5C5B59]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                        <path d="M3 3v5h5" />
-                    </svg>
-                </a>
             </form>
         </div>
 
         <!-- Table Inner Container -->
         <div class="mnt-table-inner overflow-hidden">
             <div class="overflow-x-auto custom-scrollbar">
-                <table class="mnt-table min-w-[900px]">
+                <table class="mnt-table min-w-[980px]">
                     <thead>
                         <tr>
-                            <th class="rounded-l-[4px]">Serial</th>
+                            <th class="rounded-l-[4px]">Schedule ID</th>
                             <th>Equipment</th>
-                            <th>QR Code</th>
-                            <th>Records Logged</th>
-                            <th>Created By</th>
-                            <th>Created At</th>
+                            <th>Equipment ID</th>
+                            <th>Building</th>
+                            <th>Type</th>
+                            <th>Frequency</th>
+                            <th>Last Service</th>
+                            <th>Next Due</th>
                             <th>Status</th>
                             <th class="text-center rounded-r-[4px]">Action</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-[#F2F2F0]">
                         {% for data in data_list %}
-                            <tr class="hover:bg-[#FAFAFA] transition-colors">
-                                <!-- Serial -->
+                            <tr>
+                                <!-- Schedule ID (underlined link matching Figma) -->
                                 <td>
-                                    <a href="{% url 'backend:maintenance_detail' data.id %}" class="font-mono font-semibold text-[#2B2823] hover:text-[#0B7A44] transition-colors">
+                                    <a href="{% url 'backend:maintenance_detail' data.id %}"
+                                       class="mnt-mono font-medium text-[#2B2823] underline underline-offset-2 hover:text-[#0B7A44] transition-colors">
                                         {{ data.maintenance_serial }}
                                     </a>
                                 </td>
 
                                 <!-- Equipment -->
-                                <td>
-                                    <div class="flex items-center gap-2">
-                                        <div class="w-7 h-7 rounded-full bg-[#F5F5F4] border border-[#E7E7E5] flex items-center justify-center text-[#716F6C] shrink-0">
-                                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                                            </svg>
-                                        </div>
-                                        <div class="flex flex-col">
-                                            {% if data.equipment.all %}
-                                                {% for eq in data.equipment.all %}
-                                                    <span class="font-medium text-[#2B2823] text-[13px]">
-                                                        {% if eq.equipment_type %}{{ eq.equipment_type.name }}{% endif %}
-                                                        <span class="text-[#716F6C] font-normal">({{ eq.equipment_id }})</span>
-                                                    </span>
-                                                {% endfor %}
-                                            {% elif data.maintenance_records.all %}
-                                                {% for rec in data.maintenance_records.all %}
-                                                    {% if rec.equipment %}
-                                                        <span class="font-medium text-[#2B2823] text-[13px]">
-                                                            {% if rec.equipment.equipment_type %}{{ rec.equipment.equipment_type.name }}{% endif %}
-                                                            <span class="text-[#716F6C] font-normal">({{ rec.equipment.equipment_id }})</span>
-                                                        </span>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            {% else %}
-                                                <span class="text-[#9D9C9A]">-</span>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </td>
-
-                                <!-- QR Code -->
-                                <td class="font-mono text-[#716F6C] text-[12.5px]">
-                                    {{ data.qr_code|default:"-" }}
-                                </td>
-
-                                <!-- Records Logged -->
-                                <td>
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#F5F5F4] text-[#716F6C] border border-[#E5E5E3]">
-                                        {{ data.num_records|default:"0" }}
-                                    </span>
-                                </td>
-
-                                <!-- Created By -->
-                                <td class="text-[#716F6C] text-[13px]">
-                                    {% if data.created_by %}
-                                        <span class="font-medium text-[#2B2823]">{{ data.created_by.get_full_name|default:data.created_by.username }}</span>
+                                <td class="text-[#4A4947] font-medium">
+                                    {% if data.primary_eq %}
+                                        <span>{{ data.primary_eq.equipment_name|default:data.primary_eq.equipment_id }}</span>
+                                        {% if data.extra_eq_count %}
+                                            <span class="ml-1 inline-flex items-center px-1.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#F0F0F0] text-[#5C5B59]">+{{ data.extra_eq_count }}</span>
+                                        {% endif %}
                                     {% else %}
-                                        System
+                                        <span class="text-[#9D9C9A]">—</span>
                                     {% endif %}
                                 </td>
 
-                                <!-- Created At -->
-                                <td class="text-[#716F6C] text-[13px] whitespace-nowrap">
-                                    {{ data.created_at|date:"d F Y H:i" }}
+                                <!-- Equipment ID -->
+                                <td class="mnt-mono text-[#5C5B59] text-[12.5px]">
+                                    {% if data.primary_eq %}
+                                        {{ data.primary_eq.equipment_id|default:"—" }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+
+                                <!-- Building -->
+                                <td class="text-[#5C5B59] max-w-[180px] truncate" title="{% if data.building %}{{ data.building.name }}{% elif data.primary_eq and data.primary_eq.building %}{{ data.primary_eq.building.name }}{% endif %}">
+                                    {% if data.building %}
+                                        {{ data.building.name }}
+                                    {% elif data.primary_eq and data.primary_eq.building %}
+                                        {{ data.primary_eq.building.name }}
+                                    {% else %}
+                                        <span class="text-[#9D9C9A]">—</span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Type -->
+                                <td class="text-[#5C5B59]">
+                                    {% if data.primary_eq and data.primary_eq.equipment_type %}
+                                        {{ data.primary_eq.equipment_type.name }}
+                                    {% else %}
+                                        Routine
+                                    {% endif %}
+                                </td>
+
+                                <!-- Frequency -->
+                                <td class="text-[#5C5B59] whitespace-nowrap">
+                                    {% if data.primary_eq and data.primary_eq.maintenance_period_days %}
+                                        {{ data.primary_eq.maintenance_period_days }} {{ data.primary_eq.frequency_unit|default:"days" }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+
+                                <!-- Last Service -->
+                                <td class="text-[#5C5B59] whitespace-nowrap">
+                                    {% if data.primary_eq and data.primary_eq.last_maintenance_date %}
+                                        {{ data.primary_eq.last_maintenance_date|date:"d M Y" }}
+                                    {% else %}
+                                        {{ data.created_at|date:"d M Y" }}
+                                    {% endif %}
+                                </td>
+
+                                <!-- Next Due -->
+                                <td class="text-[#5C5B59] whitespace-nowrap">
+                                    {% if data.primary_eq and data.primary_eq.next_service_due %}
+                                        {{ data.primary_eq.next_service_due|date:"d M Y" }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
                                 </td>
 
                                 <!-- Status Badge -->
                                 <td>
                                     {% if data.is_active %}
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#E6F4EA] text-[#137333] border border-[#CEEAD6]">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#E6F4EA] text-[#137333]">
                                             Active
                                         </span>
                                     {% else %}
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#F1F3F4] text-[#5F6368] border border-[#DADCE0]">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#F1F3F4] text-[#5F6368]">
                                             Inactive
                                         </span>
                                     {% endif %}
@@ -397,7 +348,7 @@
                                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                                     <circle cx="12" cy="12" r="3"></circle>
                                                 </svg>
-                                                <span>Details</span>
+                                                <span>View Details</span>
                                             </a>
 
                                             <!-- Edit -->
@@ -408,7 +359,7 @@
                                                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                                                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                                 </svg>
-                                                <span>Edit</span>
+                                                <span>Edit Schedule</span>
                                             </a>
 
                                             <div class="my-1 border-t border-[#F2F2F0]"></div>
@@ -417,7 +368,7 @@
                                             <form action="{% url 'backend:maintenance_status' data.id %}" method="post" class="block m-0">
                                                 {% csrf_token %}
                                                 <button type="submit"
-                                                        onclick="return confirm('Are you sure you want to {% if data.is_active %}deactivate{% else %}activate{% endif %} this maintenance session?');"
+                                                        onclick="return confirm('Are you sure you want to {% if data.is_active %}deactivate{% else %}activate{% endif %} this schedule?');"
                                                         class="w-full flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-left transition-colors {% if data.is_active %}text-[#D93025] hover:bg-[#FDF2F2]{% else %}text-[#1E8E3E] hover:bg-[#EAF7EE]{% endif %}"
                                                         role="menuitem">
                                                     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -438,14 +389,14 @@
                             </tr>
                         {% empty %}
                             <tr>
-                                <td colspan="8" class="py-12 text-center text-[#9E9D9B]">
+                                <td colspan="10" class="py-12 text-center text-[#9E9D9B]">
                                     <div class="flex flex-col items-center justify-center gap-2">
                                         <svg class="w-8 h-8 text-[#C7C6C4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                                             <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
                                             <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
                                         </svg>
-                                        <p class="text-[13.5px] font-medium text-[#4A4947]">No maintenance sessions found</p>
-                                        <p class="text-[12.5px] text-[#8E8C89]">Try clearing filters or search criteria.</p>
+                                        <p class="text-[13.5px] font-medium text-[#4A4947]">No maintenance schedules found</p>
+                                        <p class="text-[12.5px] text-[#8E8C89]">Click "Create Schedule" to add a new scheduled maintenance.</p>
                                     </div>
                                 </td>
                             </tr>
@@ -454,9 +405,9 @@
                 </table>
             </div>
         </div>
-
-        <!-- ════════════════════════ ROW 3: Pagination Bar ════════════════════════ -->
-        {% include 'includes/pagination.html' with data_list=data_list %}
     </div>
+
+    <!-- ════════════════════════ Pagination Bar (Outside tray, matches Figma) ════════════════════════ -->
+    {% include 'includes/pagination.html' with data_list=data_list %}
 </div>
 {% endblock %}

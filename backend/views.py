@@ -613,16 +613,20 @@ def division_add(request):
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
         code = request.POST.get('code', '').strip()
-        location = request.POST.get('location', '').strip()
+        is_active = request.POST.get('is_active', '1') != '0'
 
         if not name or not code:
             messages.error(request, 'Name and Code are required.')
+            if request.POST.get('from_modal') == '1':
+                return redirect('backend:division_list')
         elif Division.objects.filter(code=code, deleted=False).exists():
             messages.error(request, 'A division with this code already exists.')
+            if request.POST.get('from_modal') == '1':
+                return redirect('backend:division_list')
         else:
             Division.objects.create(
                 name=name, code=code,
-                is_active=True, 
+                is_active=is_active,
                 created_by=request.user,
             )
             messages.success(request, 'Division added successfully.')
@@ -641,16 +645,20 @@ def division_update(request, data_id):
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
         code = request.POST.get('code', '').strip()
-        location = request.POST.get('location', '').strip()
 
         if not name or not code:
             messages.error(request, 'Name and Code are required.')
+            if request.POST.get('from_modal') == '1':
+                return redirect('backend:division_list')
         elif Division.objects.filter(code=code, deleted=False).exclude(pk=data_id).exists():
             messages.error(request, 'A division with this code already exists.')
+            if request.POST.get('from_modal') == '1':
+                return redirect('backend:division_list')
         else:
             obj.name = name
             obj.code = code
-            obj.is_active = True
+            if 'is_active' in request.POST:
+                obj.is_active = request.POST.get('is_active') != '0'
             obj.updated_by = request.user
             obj.save()
             messages.success(request, 'Division updated successfully.')
@@ -734,16 +742,18 @@ def subdivision_add(request):
         division_id = request.POST.get('division')
         name = request.POST.get('name', '').strip()
         code = request.POST.get('code', '').strip()
-        location = request.POST.get('location', '').strip()
+        is_active = request.POST.get('is_active', '1') != '0'
 
         if not division_id or not name or not code:
             messages.error(request, 'Division, Name and Code are required.')
+            if request.POST.get('from_modal') == '1':
+                return redirect('backend:subdivision_list')
         else:
             SubDivision.objects.create(
-                division_id=division_id, 
+                division_id=division_id,
                 name=name,
                 code=code,
-                is_active=True, 
+                is_active=is_active,
                 created_by=request.user,
             )
 
@@ -766,15 +776,17 @@ def subdivision_update(request, data_id):
         division_id = request.POST.get('division')
         name = request.POST.get('name', '').strip()
         code = request.POST.get('code', '').strip()
-        location = request.POST.get('location', '').strip()
 
         if not division_id or not name or not code:
             messages.error(request, 'Division, Name and Code are required.')
+            if request.POST.get('from_modal') == '1':
+                return redirect('backend:subdivision_list')
         else:
             obj.division_id = division_id
             obj.name = name
             obj.code = code
-            obj.is_active = True
+            if 'is_active' in request.POST:
+                obj.is_active = request.POST.get('is_active') != '0'
             obj.updated_by = request.user
             obj.save()
             messages.success(request, 'Sub-Division updated successfully.')
@@ -861,16 +873,20 @@ def section_add(request):
         subdivision_id = request.POST.get('subdivision')
         name = request.POST.get('name', '').strip()
         code = request.POST.get('code', '').strip()
-        location = request.POST.get('location', '').strip()
+        is_active = request.POST.get('is_active', '1') != '0'
 
         if not subdivision_id or not name or not code:
             messages.error(request, 'Sub-Division, Name and Code are required.')
+            if request.POST.get('from_modal') == '1':
+                return redirect('backend:section_list')
         elif Section.objects.filter(subdivision_id=subdivision_id, code=code).exists():
             messages.error(request, 'A section with this code already exists in this sub-division.')
+            if request.POST.get('from_modal') == '1':
+                return redirect('backend:section_list')
         else:
             Section.objects.create(
                 subdivision_id=subdivision_id, name=name, code=code,
-                is_active=True, created_by=request.user,
+                is_active=is_active, created_by=request.user,
             )
             messages.success(request, 'Section added successfully.')
             return redirect('backend:section_list')
@@ -891,17 +907,21 @@ def section_update(request, data_id):
         subdivision_id = request.POST.get('subdivision')
         name = request.POST.get('name', '').strip()
         code = request.POST.get('code', '').strip()
-        location = request.POST.get('location', '').strip()
 
         if not subdivision_id or not name or not code:
             messages.error(request, 'Sub-Division, Name and Code are required.')
+            if request.POST.get('from_modal') == '1':
+                return redirect('backend:section_list')
         elif Section.objects.filter(subdivision_id=subdivision_id, code=code).exclude(pk=data_id).exists():
             messages.error(request, 'A section with this code already exists in this sub-division.')
+            if request.POST.get('from_modal') == '1':
+                return redirect('backend:section_list')
         else:
             obj.subdivision_id = subdivision_id
             obj.name = name
             obj.code = code
-            obj.is_active = True
+            if 'is_active' in request.POST:
+                obj.is_active = request.POST.get('is_active') != '0'
             obj.updated_by = request.user
             obj.save()
             messages.success(request, 'Section updated successfully.')
@@ -1090,34 +1110,72 @@ def building_add(request):
                     for item in eq_list:
                         eq_id = item.get('equipment_id', '').strip()
                         eq_type_id = item.get('equipment_type_id')
-                        if eq_id and eq_type_id:
-                            if not Equipment.objects.filter(equipment_id=eq_id, deleted=False).exists():
-                                Equipment.objects.create(
-                                    equipment_id=eq_id,
-                                    qr_code=eq_id,
-                                    equipment_type_id=eq_type_id,
-                                    building=building,
-                                    brand=item.get('brand', '').strip(),
-                                    model_number=item.get('model_number', '').strip(),
-                                    serial_number=item.get('serial_number', '').strip(),
-                                    floor_location=item.get('floor_location', '').strip(),
-                                    status='active',
-                                    maintenance_period_days=int(item.get('maintenance_period_days') or 90),
-                                    created_by=request.user,
-                                    is_active=True
-                                )
+                        existing_pk = item.get('id')
+
+                        eq_record = None
+                        if existing_pk:
+                            eq_record = Equipment.objects.filter(id=existing_pk, deleted=False).first()
+                        if not eq_record and eq_id:
+                            eq_record = Equipment.objects.filter(equipment_id=eq_id, deleted=False).first()
+
+                        if eq_record:
+                            eq_record.building = building
+                            if item.get('floor_location'):
+                                eq_record.floor_location = item.get('floor_location').strip()
+                            eq_record.updated_by = request.user
+                            eq_record.save()
+                        elif eq_id and eq_type_id:
+                            Equipment.objects.create(
+                                equipment_id=eq_id,
+                                equipment_name=item.get('equipment_name') or item.get('brand', '') + ' ' + (item.get('model_number') or ''),
+                                qr_code=eq_id,
+                                equipment_type_id=eq_type_id,
+                                building=building,
+                                brand=item.get('brand', '').strip(),
+                                model_number=item.get('model_number', '').strip(),
+                                serial_number=item.get('serial_number', '').strip(),
+                                floor_location=item.get('floor_location', '').strip(),
+                                status='active',
+                                maintenance_period_days=int(item.get('maintenance_period_days') or 90),
+                                created_by=request.user,
+                                is_active=True
+                            )
                 except Exception as e:
                     pass
 
             messages.success(request, 'Building added successfully.')
             return redirect('backend:building_list')
 
+    # Fetch all active equipments for the directory picker
+    directory_equipments = Equipment.objects.filter(deleted=False, is_active=True).select_related('equipment_type', 'building').order_by('-id')
+    directory_equipments_data = [
+        {
+            'id': eq.id,
+            'equipment_id': eq.equipment_id,
+            'equipment_name': eq.equipment_name or (f"{eq.brand} {eq.model_number}".strip() if (eq.brand or eq.model_number) else eq.equipment_id),
+            'equipment_type_id': str(eq.equipment_type_id) if eq.equipment_type_id else '',
+            'equipment_type_name': eq.equipment_type.name if eq.equipment_type else 'Equipment',
+            'brand': eq.brand or '',
+            'model_number': eq.model_number or '',
+            'serial_number': eq.serial_number or '',
+            'floor_location': eq.floor_location or '',
+            'room_location': eq.room_location or '',
+            'status': eq.status or 'active',
+            'building_id': eq.building_id or '',
+            'building_name': eq.building.name if eq.building else 'Unassigned',
+            'is_unassigned': eq.building is None,
+            'maintenance_period_days': eq.maintenance_period_days or 90,
+        }
+        for eq in directory_equipments
+    ]
+
     context = {
         'action': 'Add',
         'divisions': divisions,
         'subdivisions': subdivisions,
         'sections': sections,
-        'equipment_types': equipment_types
+        'equipment_types': equipment_types,
+        'directory_equipments_json': json.dumps(directory_equipments_data)
     }
     return render(request, 'building/add.html', context)
 
@@ -1127,9 +1185,29 @@ def building_update(request, data_id):
         return render(request, '403.html', status=403)
 
     obj = get_object_or_404(Building, pk=data_id, deleted=False)
-    divisions = Division.objects.filter(deleted=False, is_active=True)
-    subdivisions = SubDivision.objects.filter(deleted=False, is_active=True)
-    sections = Section.objects.filter(deleted=False, is_active=True)
+    divisions = Division.objects.filter(deleted=False, is_active=True).order_by('name')
+    subdivisions = SubDivision.objects.filter(deleted=False, is_active=True).order_by('name')
+    sections = Section.objects.filter(deleted=False, is_active=True).order_by('name')
+    equipment_types = EquipmentType.objects.filter(deleted=False, is_active=True).order_by('name')
+
+    # Fetch existing equipments for this building
+    existing_equipments = Equipment.objects.filter(building=obj, deleted=False).select_related('equipment_type')
+    existing_equipments_data = [
+        {
+            'id': eq.id,
+            'equipment_id': eq.equipment_id,
+            'equipment_name': eq.equipment_name or (f"{eq.brand} {eq.model_number}".strip() if (eq.brand or eq.model_number) else eq.equipment_id),
+            'equipment_type_id': str(eq.equipment_type_id) if eq.equipment_type_id else '',
+            'equipment_type_name': eq.equipment_type.name if eq.equipment_type else '',
+            'brand': eq.brand or '',
+            'floor_location': eq.floor_location or '',
+            'model_number': eq.model_number or '',
+            'serial_number': eq.serial_number or '',
+            'status': eq.status or 'active',
+            'maintenance_period_days': eq.maintenance_period_days or 90,
+        }
+        for eq in existing_equipments
+    ]
 
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
@@ -1141,7 +1219,7 @@ def building_update(request, data_id):
         address = request.POST.get('address', '').strip()
         latitude = request.POST.get('latitude')
         longitude = request.POST.get('longitude')
-        status = request.POST.get('status', 'Active')
+        status = request.POST.get('status', obj.status or 'Active')
 
         try:
             latitude = float(latitude) if latitude else None
@@ -1153,9 +1231,11 @@ def building_update(request, data_id):
         except ValueError:
             longitude = None
 
+        has_sections = Section.objects.filter(subdivision__division_id=division_id, deleted=False).exists() if division_id else False
+
         if not name:
             messages.error(request, 'Building Name is required.')
-        elif not section_id:
+        elif has_sections and not section_id:
             messages.error(request, 'Section is required.')
         elif not address:
             messages.error(request, 'Physical Address is required.')
@@ -1174,10 +1254,102 @@ def building_update(request, data_id):
             obj.status = status
             obj.updated_by = request.user
             obj.save()
+
+            # Process any equipments updated/added in Step 2
+            equipments_json = request.POST.get('equipments_data', '').strip()
+            if equipments_json:
+                try:
+                    eq_list = json.loads(equipments_json)
+                    submitted_ids = set()
+                    for item in eq_list:
+                        eq_id = item.get('equipment_id', '').strip()
+                        eq_type_id = item.get('equipment_type_id') or None
+                        existing_pk = item.get('id')
+
+                        eq_record = None
+                        if existing_pk:
+                            eq_record = Equipment.objects.filter(id=existing_pk, deleted=False).first()
+                        if not eq_record and eq_id:
+                            eq_record = Equipment.objects.filter(equipment_id=eq_id, deleted=False).first()
+
+                        if eq_record:
+                            submitted_ids.add(eq_record.equipment_id)
+                            eq_record.building = obj
+                            if eq_type_id:
+                                eq_record.equipment_type_id = eq_type_id
+                            if item.get('floor_location'):
+                                eq_record.floor_location = item.get('floor_location').strip()
+                            if item.get('brand'):
+                                eq_record.brand = item.get('brand').strip()
+                            if item.get('model_number'):
+                                eq_record.model_number = item.get('model_number').strip()
+                            if item.get('serial_number'):
+                                eq_record.serial_number = item.get('serial_number').strip()
+                            if item.get('maintenance_period_days'):
+                                try:
+                                    eq_record.maintenance_period_days = int(item.get('maintenance_period_days'))
+                                except (ValueError, TypeError):
+                                    pass
+                            eq_record.updated_by = request.user
+                            eq_record.save()
+                        elif eq_id and eq_type_id:
+                            submitted_ids.add(eq_id)
+                            Equipment.objects.create(
+                                equipment_id=eq_id,
+                                equipment_name=item.get('equipment_name') or item.get('brand', '') + ' ' + (item.get('model_number') or ''),
+                                qr_code=eq_id,
+                                equipment_type_id=eq_type_id,
+                                building=obj,
+                                brand=item.get('brand', '').strip(),
+                                floor_location=item.get('floor_location', '').strip(),
+                                model_number=item.get('model_number', '').strip(),
+                                serial_number=item.get('serial_number', '').strip(),
+                                maintenance_period_days=int(item.get('maintenance_period_days') or 90),
+                                is_active=True,
+                                deleted=False,
+                                created_by=request.user
+                            )
+                    # Unassign equipments that belonged to this building but were removed
+                    Equipment.objects.filter(building=obj, deleted=False).exclude(equipment_id__in=submitted_ids).update(building=None, updated_by=request.user)
+                except Exception as e:
+                    print('Error updating equipments in building_update:', e)
+
             messages.success(request, 'Building updated successfully.')
             return redirect('backend:building_list')
 
-    context = {'action': 'Update', 'obj': obj, 'divisions': divisions, 'subdivisions': subdivisions, 'sections': sections}
+    # Directory of all active equipments for picker
+    directory_equipments = Equipment.objects.filter(deleted=False, is_active=True).select_related('equipment_type', 'building').order_by('-id')
+    directory_equipments_data = [
+        {
+            'id': eq.id,
+            'equipment_id': eq.equipment_id,
+            'equipment_name': eq.equipment_name or (f"{eq.brand} {eq.model_number}".strip() if (eq.brand or eq.model_number) else eq.equipment_id),
+            'equipment_type_id': str(eq.equipment_type_id) if eq.equipment_type_id else '',
+            'equipment_type_name': eq.equipment_type.name if eq.equipment_type else 'Equipment',
+            'brand': eq.brand or '',
+            'model_number': eq.model_number or '',
+            'serial_number': eq.serial_number or '',
+            'floor_location': eq.floor_location or '',
+            'room_location': eq.room_location or '',
+            'status': eq.status or 'active',
+            'building_id': eq.building_id or '',
+            'building_name': eq.building.name if eq.building else 'Unassigned',
+            'is_unassigned': eq.building is None,
+            'maintenance_period_days': eq.maintenance_period_days or 90,
+        }
+        for eq in directory_equipments
+    ]
+
+    context = {
+        'action': 'Update',
+        'obj': obj,
+        'divisions': divisions,
+        'subdivisions': subdivisions,
+        'sections': sections,
+        'equipment_types': equipment_types,
+        'existing_equipments_json': json.dumps(existing_equipments_data),
+        'directory_equipments_json': json.dumps(directory_equipments_data)
+    }
     return render(request, 'building/update.html', context)
 
 @login_required
@@ -1892,14 +2064,16 @@ def equipment_type_add(request):
     
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
-        description = request.POST.get('description', '').strip() 
+        description = request.POST.get('description', '').strip()
+        is_active = request.POST.get('is_active', '1') != '0'
         
         if not name:
             messages.error(request, 'Name is required.')
         else:
             obj = EquipmentType(
                 name=name,
-                description=description, 
+                description=description,
+                is_active=is_active,
                 created_by=request.user
             )
             obj.save()
@@ -1926,6 +2100,8 @@ def equipment_type_update(request, data_id):
         else:
             obj.name = name
             obj.description = description
+            if 'is_active' in request.POST:
+                obj.is_active = request.POST.get('is_active') != '0'
             obj.updated_by = request.user
             obj.save()
             messages.success(request, 'Equipment Type updated successfully.')
@@ -2007,8 +2183,8 @@ def equipment_type_data_add(request):
         equipment_type_id = request.POST.get('equipment_type_id', '').strip()
         field_name = request.POST.get('field_name', '').strip()
         field_type = request.POST.get('field_type', '').strip()
-        is_required = request.POST.get('is_required', 'False')
-    
+        is_required = request.POST.get('is_required', '') in ('True', 'true', '1', 'on')
+        is_active = request.POST.get('is_active', '1') != '0'
         
         if not equipment_type_id or not field_name or not field_type:
             messages.error(request, 'Equipment Type, Field Name, and Field Type are required.')
@@ -2018,6 +2194,7 @@ def equipment_type_data_add(request):
                 field_name=field_name,
                 field_type=field_type,
                 is_required=is_required,
+                is_active=is_active,
                 created_by=request.user
             )
             obj.save()
@@ -2040,7 +2217,7 @@ def equipment_type_data_update(request, data_id):
         equipment_type_id = request.POST.get('equipment_type_id', '').strip()
         field_name = request.POST.get('field_name', '').strip()
         field_type = request.POST.get('field_type', '').strip()
-        is_required = request.POST.get('is_required', 'False')
+        is_required = request.POST.get('is_required', '') in ('True', 'true', '1', 'on')
       
         if not equipment_type_id or not field_name or not field_type:
             messages.error(request, 'Equipment Type, Field Name, and Field Type are required.')
@@ -2049,6 +2226,8 @@ def equipment_type_data_update(request, data_id):
             obj.field_name = field_name
             obj.field_type = field_type
             obj.is_required = is_required
+            if 'is_active' in request.POST:
+                obj.is_active = request.POST.get('is_active') != '0'
             obj.updated_by = request.user
             obj.save()
             messages.success(request, 'Equipment Type Data updated successfully.')
@@ -2130,6 +2309,7 @@ def equipment_component_preset_add(request):
         name = request.POST.get('name', '').strip()
         equipment_type_id = request.POST.get('equipment_type', '').strip()
         description = request.POST.get('description', '').strip()
+        is_active = request.POST.get('is_active', '1') != '0'
         
         if not name or not equipment_type_id:
             messages.error(request, 'Name and Equipment Type are required.')
@@ -2139,7 +2319,7 @@ def equipment_component_preset_add(request):
                 equipment_type_id=equipment_type_id,
                 description=description,
                 created_by=request.user,
-                is_active=True
+                is_active=is_active
             )
             messages.success(request, 'Component Preset added successfully.')
             return redirect('backend:equipment_component_preset_list')
@@ -2171,6 +2351,8 @@ def equipment_component_preset_update(request, data_id):
             obj.name = name
             obj.equipment_type_id = equipment_type_id
             obj.description = description
+            if 'is_active' in request.POST:
+                obj.is_active = request.POST.get('is_active') != '0'
             obj.updated_by = request.user
             obj.save()
             messages.success(request, 'Component Preset updated successfully.')
@@ -2260,14 +2442,88 @@ def equipment_list(request):
 from backend.models import EquipmentComponents 
 
 @login_required
+@require_POST
+def quick_create_equipment_type(request):
+    """AJAX endpoint to quick-create an equipment type from the searchable dropdown"""
+    name = request.POST.get('name', '').strip()
+    if not name:
+        return JsonResponse({'success': False, 'error': 'Equipment type name is required.'}, status=400)
+    
+    existing = EquipmentType.objects.filter(name__iexact=name).first()
+    if existing:
+        if existing.deleted:
+            existing.deleted = False
+            existing.is_active = True
+            existing.updated_by = request.user
+            existing.save()
+        return JsonResponse({
+            'success': True,
+            'id': existing.id,
+            'name': existing.name,
+            'already_existed': True,
+            'fields': []
+        })
+    
+    new_type = EquipmentType.objects.create(
+        name=name,
+        created_by=request.user,
+        is_active=True
+    )
+    return JsonResponse({
+        'success': True,
+        'id': new_type.id,
+        'name': new_type.name,
+        'already_existed': False,
+        'fields': []
+    })
+
+
+@login_required
 def equipment_add(request):
     if not checkUserPermission(request, 'can_add', '/backend/equipment/equipment/'):
         messages.error(request, 'You do not have permission to add equipment.')
         return render(request, '403.html', status=403)
         
-    equipment_types = EquipmentType.objects.filter(deleted=False, is_active=True)
-    buildings = Building.objects.filter(deleted=False, is_active=True).order_by('-created_at')
-    presets = EquipmentComponentPreset.objects.filter(deleted=False, is_active=True)
+    equipment_types = EquipmentType.objects.filter(deleted=False, is_active=True).order_by('name')
+    buildings = Building.objects.filter(deleted=False, is_active=True).select_related('division', 'subdivision', 'section').order_by('name')
+    
+    # Query distinct brands or provide curated defaults
+    existing_brands = list(Equipment.objects.filter(deleted=False).exclude(brand='').values_list('brand', flat=True).distinct().order_by('brand'))
+    default_brands = ['Carrier', 'Caterpillar', 'Cummins', 'Daikin', 'Honeywell', 'Otis', 'Schindler', 'Siemens']
+    all_brands = sorted(list(set(existing_brands + default_brands)))
+
+    # Serialize equipment types with their dynamic data_fields
+    equipment_types_data = []
+    for et in equipment_types:
+        fields = [
+            {
+                'id': df.id,
+                'field_name': df.field_name,
+                'field_type': df.field_type,
+                'is_required': df.is_required,
+            }
+            for df in et.data_fields.filter(is_active=True, deleted=False).order_by('id')
+        ]
+        equipment_types_data.append({
+            'id': et.id,
+            'name': et.name,
+            'fields': fields,
+        })
+    
+    # Serialize buildings with metadata for review step
+    buildings_data = []
+    for b in buildings:
+        sec = b.section.name if b.section else ''
+        sub = b.subdivision.name if b.subdivision else ''
+        div = b.division.name if b.division else ''
+        org_parts = [p for p in [sec, sub, div] if p]
+        org_subdivision = " / ".join(org_parts) if org_parts else ""
+        buildings_data.append({
+            'id': b.id,
+            'name': b.name,
+            'code': b.building_id or '',
+            'org_subdivision': org_subdivision,
+        })
 
     from_building = request.POST.get('from_building') or request.GET.get('building') or request.GET.get('building_id')
     from_building_id = None
@@ -2276,97 +2532,154 @@ def equipment_add(request):
             from_building_id = int(from_building)
         except (ValueError, TypeError):
             from_building_id = None
-    
-    obj = None
+
     if request.method == 'POST':
+        is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.POST.get('is_ajax') == '1'
+
         equipment_id = request.POST.get('equipment_id', '').strip()
-        equipment_type_id = request.POST.get('equipment_type_id', '')
-        building_id = request.POST.get('building_id', '')
+        equipment_name = request.POST.get('equipment_name', '').strip()
+        equipment_type_id = request.POST.get('equipment_type_id') or None
+        serial_number = request.POST.get('serial_number', '').strip()
+        model_number = request.POST.get('model_number', '').strip()
         brand = request.POST.get('brand', '').strip()
-        floor_location = request.POST.get('floor_location', '').strip()
-        installment_date = request.POST.get('installment_date', '').strip() 
-
-        # presets
-        component_preset_ids = request.POST.getlist('component_preset')
-
-        # components 
-        component_names = request.POST.getlist('component_name[]')
-        component_descriptions = request.POST.getlist('component_description[]')
         
-        maintenance_period_days = request.POST.get('maintenance_period_days', '90')
-        next_service_due = request.POST.get('next_service_due', '')
-        
-        # Build obj for form re-population in case of error
+        # Custom dynamic fields
+        custom_fields_raw = request.POST.get('custom_fields', '{}')
+        try:
+            custom_fields = json.loads(custom_fields_raw) if isinstance(custom_fields_raw, str) else custom_fields_raw
+        except Exception:
+            custom_fields = {}
+
+        # Building assignment
+        assign_to_building = request.POST.get('assign_to_building') in ['true', 'on', '1', True]
+        building_id = request.POST.get('building_id') if assign_to_building else None
+        floor_location = request.POST.get('floor_location', '').strip() if assign_to_building else ''
+        room_location = request.POST.get('room_location', '').strip() if assign_to_building else ''
+        installment_date = request.POST.get('installment_date', '').strip() if assign_to_building else None
+        purchase_date = request.POST.get('purchase_date', '').strip() if assign_to_building else None
+        warranty_expire_date = request.POST.get('warranty_expire_date', '').strip() if assign_to_building else None
+        installation_notes = request.POST.get('installation_notes', '').strip() if assign_to_building else ''
+
+        # Maintenance
+        maintenance_period_days = request.POST.get('maintenance_period_days', '90').strip()
+        frequency_unit = request.POST.get('frequency_unit', 'Days').strip()
+        last_maintenance_date = request.POST.get('last_maintenance_date', '').strip()
+        next_service_due = request.POST.get('next_service_due', '').strip()
+        maintenance_notes = request.POST.get('maintenance_notes', '').strip()
+        status = request.POST.get('status', 'active').strip()
+
+        # Validation
+        errors = []
+        if not equipment_id:
+            errors.append('Equipment ID is required.')
+        elif Equipment.objects.filter(equipment_id=equipment_id, deleted=False).exists():
+            errors.append(f"Equipment ID '{equipment_id}' already exists. Please use a unique ID.")
+
+        if not equipment_type_id:
+            errors.append('Equipment Type is required.')
+        if not equipment_name:
+            errors.append('Equipment Name is required.')
+        if not serial_number:
+            errors.append('Serial Number is required.')
+        if not model_number:
+            errors.append('Model Number is required.')
+        if not brand:
+            errors.append('Brand is required.')
+
+        if assign_to_building:
+            if not building_id:
+                errors.append('Building selection is required when assigning to a building.')
+            if not installment_date:
+                errors.append('Installation Date is required when assigning to a building.')
+
+        if errors:
+            if is_ajax:
+                return JsonResponse({'success': False, 'errors': errors}, status=400)
+            for err in errors:
+                messages.error(request, err)
+            context = {
+                'equipment_types': equipment_types,
+                'equipment_types_json': json.dumps(equipment_types_data),
+                'buildings': buildings,
+                'buildings_json': json.dumps(buildings_data),
+                'brands': all_brands,
+                'from_building': from_building_id,
+            }
+            return render(request, 'equipment/add.html', context)
+
+        # Parse numeric and foreign key values safely
+        try:
+            m_days = int(maintenance_period_days) if maintenance_period_days else 90
+        except ValueError:
+            m_days = 90
+
         try:
             b_id = int(building_id) if building_id else None
-        except ValueError:
+        except (ValueError, TypeError):
             b_id = None
+
         try:
             t_id = int(equipment_type_id) if equipment_type_id else None
-        except ValueError:
+        except (ValueError, TypeError):
             t_id = None
 
         obj = Equipment(
             equipment_id=equipment_id,
+            equipment_name=equipment_name,
             equipment_type_id=t_id,
             building_id=b_id,
             brand=brand,
+            model_number=model_number,
+            serial_number=serial_number,
             floor_location=floor_location,
-            maintenance_period_days=maintenance_period_days if maintenance_period_days else 90,
+            room_location=room_location,
+            installment_date=installment_date if installment_date else None,
+            purchase_date=purchase_date if purchase_date else None,
+            warranty_expire_date=warranty_expire_date if warranty_expire_date else None,
+            installation_notes=installation_notes,
+            maintenance_period_days=m_days,
+            frequency_unit=frequency_unit,
+            last_maintenance_date=last_maintenance_date if last_maintenance_date else None,
             next_service_due=next_service_due if next_service_due else None,
-            installment_date=installment_date if installment_date else None,            
+            maintenance_notes=maintenance_notes,
+            status=status if status else 'active',
+            custom_fields=custom_fields,
+            created_by=request.user,
+            is_active=True,
+            deleted=False,
         )
+        obj.save()
 
-        if not equipment_id or not equipment_type_id or not building_id:
-            messages.error(request, 'Equipment ID, Type, and Building are required.')
-        elif Equipment.objects.filter(equipment_id=equipment_id).exists():
-            messages.error(request, f"Equipment ID '{equipment_id}' already exists. Please use a unique ID.")
-        else:
-            obj.created_by = request.user
-            obj.save()
-            
-            # Save presets relation
-            if component_preset_ids:
-                obj.component_preset.set(component_preset_ids)
-            
-            # Save components
-            for i in range(len(component_names)):
-                c_name = component_names[i].strip()
-                c_desc = component_descriptions[i].strip() if i < len(component_descriptions) else ''
-                if c_name:
-                    EquipmentComponents.objects.create(
-                        equipment=obj,
-                        name=c_name,
-                        description=c_desc,
-                        created_by=request.user
-                    )
-            
-            messages.success(request, 'Equipment added successfully.')
-            if from_building_id:
-                return redirect('backend:building_details', data_id=from_building_id)
-            return redirect('backend:equipment_list')
-    else:
-        initial_type = request.GET.get('equipment_type_id') or request.GET.get('type')
-        t_id = None
-        if initial_type:
-            try:
-                t_id = int(initial_type)
-            except (ValueError, TypeError):
-                t_id = None
+        detail_url = reverse('backend:equipment_detail', kwargs={'data_id': obj.id})
+        building_name = obj.building.name if obj.building else "Unassigned"
 
-        if from_building_id or t_id:
-            obj = Equipment(
-                building_id=from_building_id,
-                equipment_type_id=t_id,
-            )
-    
+        if is_ajax:
+            return JsonResponse({
+                'success': True,
+                'equipment_id': obj.id,
+                'equipment_code': obj.equipment_id,
+                'equipment_name': obj.equipment_name,
+                'building_name': building_name,
+                'detail_url': detail_url,
+                'message': 'Equipment registered successfully.'
+            })
+
+        messages.success(request, 'Equipment registered successfully.')
+        if from_building_id:
+            return redirect('backend:building_details', data_id=from_building_id)
+        return redirect('backend:equipment_detail', data_id=obj.id)
+
+    # Initial type from GET if provided
+    initial_type_id = request.GET.get('equipment_type_id') or request.GET.get('type')
+
     context = {
-        'action': 'Add',
-        'obj': obj,
         'equipment_types': equipment_types,
+        'equipment_types_json': json.dumps(equipment_types_data),
         'buildings': buildings,
-        'presets': presets,
+        'buildings_json': json.dumps(buildings_data),
+        'brands': all_brands,
         'from_building': from_building_id,
+        'initial_type_id': initial_type_id,
     }
     return render(request, 'equipment/add.html', context)
 
@@ -2514,12 +2827,13 @@ from io import BytesIO
 
 def qr_equipement_views(request, data_id):
     obj = get_object_or_404(Equipment, pk=data_id, deleted=False)
+    building_param = obj.building_id or ''
     
     if request.GET.get('view') == '1':
         last_maintenance = obj.maintenance_records.filter(deleted=False).order_by('-maintenance_date').first()
         
         add_url = request.build_absolute_uri(reverse('backend:static_otp_verification'))
-        qr_data = f"{add_url}?building={obj.building.id}&equipment={obj.id}"
+        qr_data = f"{add_url}?building={building_param}&equipment={obj.id}"
         img = generate_qr_code(qr_data)
         buffer = BytesIO()
         img.save(buffer, format="PNG")
@@ -2534,7 +2848,7 @@ def qr_equipement_views(request, data_id):
     
     # Redirect to static_otp_verification with auto-fill parameters
     redirect_url = reverse('backend:static_otp_verification')
-    return redirect(f"{redirect_url}?building={obj.building.id}&equipment={obj.id}")
+    return redirect(f"{redirect_url}?building={building_param}&equipment={obj.id}")
 
 # ======================================== Maintenance Record Review ========================================
 
@@ -2589,51 +2903,50 @@ def equipment_history(request):
 
     # ── Filters ──────────────────────────────────────────────────────────
     search        = request.GET.get('search', '').strip()
-    equipment_id  = request.GET.get('equipment_id', '').strip()
+    building_id   = request.GET.get('building_id', '').strip()
     record_type   = request.GET.get('record_type', '').strip()
-    review_status = request.GET.get('review_status', '').strip()
-    date_from     = request.GET.get('date_from', '').strip()
-    date_to       = request.GET.get('date_to', '').strip()
+    technician_id = request.GET.get('technician_id', '').strip()
+    source_filter = request.GET.get('source', '').strip()
+    date_filter   = request.GET.get('date', '').strip()
 
     qs = MaintenanceRecord.objects.filter(deleted=False).select_related(
         'equipment', 'equipment__building', 'equipment__equipment_type',
-        'technician', 'reviewed_by'
+        'maintenance', 'ticket', 'technician', 'assigned_to', 'reviewed_by'
     ).order_by('-maintenance_date', '-created_at')
 
     if search:
         qs = qs.filter(
             Q(equipment__equipment_id__icontains=search)
+            | Q(equipment__equipment_name__icontains=search)
             | Q(equipment__building__name__icontains=search)
+            | Q(maintenance__maintenance_serial__icontains=search)
             | Q(work_description__icontains=search)
             | Q(technician__first_name__icontains=search)
             | Q(technician__last_name__icontains=search)
             | Q(technician__username__icontains=search)
+            | Q(assigned_to__first_name__icontains=search)
+            | Q(assigned_to__last_name__icontains=search)
         )
-    if equipment_id:
-        qs = qs.filter(equipment_id=equipment_id)
+    if building_id:
+        qs = qs.filter(equipment__building_id=building_id)
     if record_type:
         qs = qs.filter(record_type=record_type)
-    if review_status:
-        qs = qs.filter(review_status=review_status)
-    if date_from:
+    if technician_id:
+        qs = qs.filter(
+            Q(assigned_to_id=technician_id)
+            | Q(technician__technician_profile__id=technician_id)
+        )
+    if source_filter == 'Scheduled':
+        qs = qs.filter(maintenance__isnull=False)
+    elif source_filter == 'Request':
+        qs = qs.filter(ticket__isnull=False)
+    elif source_filter == 'Manual':
+        qs = qs.filter(maintenance__isnull=True, ticket__isnull=True)
+    if date_filter:
         try:
-            from datetime import datetime
-            qs = qs.filter(maintenance_date__gte=datetime.strptime(date_from, '%Y-%m-%d').date())
+            qs = qs.filter(maintenance_date=datetime.strptime(date_filter, '%Y-%m-%d').date())
         except ValueError:
             pass
-    if date_to:
-        try:
-            from datetime import datetime
-            qs = qs.filter(maintenance_date__lte=datetime.strptime(date_to, '%Y-%m-%d').date())
-        except ValueError:
-            pass
-
-    # ── Summary stats (from the FULL unfiltered set) ──────────────────────
-    all_records    = MaintenanceRecord.objects.filter(deleted=False)
-    total_count    = all_records.count()
-    pending_count  = all_records.filter(review_status='pending').count()
-    approved_count = all_records.filter(review_status='approved').count()
-    rejected_count = all_records.filter(review_status='rejected').count()
 
     # ── Pagination ────────────────────────────────────────────────────────
     page_num = request.GET.get('page', 1)
@@ -2642,7 +2955,8 @@ def equipment_history(request):
     filtered_total_count = data_list.paginator.count
 
     # ── Filter options ────────────────────────────────────────────────────
-    equipment_list = Equipment.objects.filter(deleted=False, is_active=True).order_by('equipment_id')
+    buildings = Building.objects.filter(deleted=False, is_active=True).order_by('name')
+    technicians = Technician.objects.filter(deleted=False, is_active=True).order_by('first_name', 'last_name')
 
     context = {
         'data_list'     : data_list,
@@ -2652,20 +2966,16 @@ def equipment_history(request):
         'filtered_total_count': filtered_total_count,
         # active filters
         'search'        : search,
-        'f_equipment_id': equipment_id,
+        'f_building_id' : building_id,
         'f_record_type' : record_type,
-        'f_review_status': review_status,
-        'f_date_from'   : date_from,
-        'f_date_to'     : date_to,
+        'f_technician_id': technician_id,
+        'f_source'      : source_filter,
+        'f_date'        : date_filter,
         # filter options
-        'equipment_list': equipment_list,
+        'buildings'     : buildings,
         'record_type_choices': MaintenanceRecord.RECORD_TYPE_CHOICES,
-        'review_status_choices': MaintenanceRecord.REVIEW_STATUS_CHOICES,
-        # stats
-        'total_count'   : total_count,
-        'pending_count' : pending_count,
-        'approved_count': approved_count,
-        'rejected_count': rejected_count,
+        'technicians'   : technicians,
+        'source_choices': ['Scheduled', 'Request', 'Manual'],
     }
     return render(request, 'equipment/history.html', context)
 
@@ -2731,6 +3041,86 @@ def ticket_detail(request, data_id):
             messages.error(request, 'You do not have permission to update this ticket.')
             return redirect('backend:ticket_detail', data_id=obj.id)
 
+        # --- Handle complete & log service record into Service History ---
+        if request.POST.get('action') == 'complete_service':
+            if not obj.equipment:
+                messages.error(request, 'Cannot log service record: this request has no linked equipment.')
+                return redirect('backend:ticket_detail', data_id=obj.id)
+
+            work_description = request.POST.get('work_description', '').strip() or obj.issue_description or obj.title
+            record_type = request.POST.get('record_type', 'repair').strip() or 'repair'
+            maint_date_str = request.POST.get('maintenance_date', '').strip()
+            parts_replaced = request.POST.get('parts_replaced', '').strip()
+            cost_raw = request.POST.get('cost', '').strip()
+            duration_raw = request.POST.get('duration_hours', '').strip()
+            service_tech_id = request.POST.get('service_technician_id', '').strip()
+
+            try:
+                maint_date = datetime.strptime(maint_date_str, '%Y-%m-%d').date() if maint_date_str else timezone.localdate()
+            except ValueError:
+                maint_date = timezone.localdate()
+
+            assigned_tech = None
+            tech_user = None
+            if service_tech_id:
+                assigned_tech = Technician.objects.filter(id=service_tech_id, deleted=False).first()
+                if assigned_tech:
+                    tech_user = assigned_tech.user
+            else:
+                first_assign = obj.assigned_technicians.filter(deleted=False).select_related('technician', 'technician__user').first()
+                if first_assign:
+                    assigned_tech = first_assign.technician
+                    tech_user = assigned_tech.user
+
+            cost_val = None
+            if cost_raw:
+                try:
+                    cost_val = float(cost_raw)
+                except ValueError:
+                    cost_val = None
+
+            duration_val = None
+            if duration_raw:
+                try:
+                    duration_val = float(duration_raw)
+                except ValueError:
+                    duration_val = None
+
+            MaintenanceRecord.objects.create(
+                equipment=obj.equipment,
+                ticket=obj,
+                record_type=record_type,
+                maintenance_date=maint_date,
+                assigned_to=assigned_tech,
+                technician=tech_user or request.user,
+                work_description=work_description,
+                parts_replaced=parts_replaced or None,
+                cost=cost_val,
+                duration_hours=duration_val,
+                maintainance_status='completed',
+                created_by=request.user,
+            )
+
+            obj.status = 'resolved'
+            obj.resolved_at = timezone.now()
+            obj.updated_by = request.user
+            obj.save()
+
+            AssignActivities.objects.filter(ticket=obj, is_active=True).update(
+                status='completed',
+                completion_status='completed',
+            )
+
+            tech_label = assigned_tech.display_name if assigned_tech else request.user.get_full_name() or request.user.username
+            TicketActivityLog.objects.create(
+                ticket=obj,
+                actor=request.user,
+                action_type='resolved',
+                description=f"Completed & logged to Service History (Technician: {tech_label}): {work_description}"
+            )
+            messages.success(request, 'Maintenance request resolved and logged to Service History.')
+            return redirect('backend:ticket_detail', data_id=obj.id)
+
         # --- Handle comment submission ---
         comment_body = request.POST.get('comment_body', '').strip()
         if comment_body:
@@ -2793,11 +3183,17 @@ def ticket_detail(request, data_id):
                 
         return redirect('backend:ticket_detail', data_id=obj.id)
         
-    technicians = Technician.objects.filter(deleted=False, is_active=True)
+    technicians = Technician.objects.filter(deleted=False, is_active=True).order_by('first_name', 'last_name')
+    service_records = MaintenanceRecord.objects.filter(ticket=obj, deleted=False).select_related('assigned_to', 'technician').order_by('-maintenance_date', '-created_at')
+    first_assigned = obj.assigned_technicians.filter(deleted=False).first()
     
     context = {
         'obj': obj,
         'technicians': technicians,
+        'service_records': service_records,
+        'default_tech_id': first_assigned.technician_id if first_assigned else '',
+        'record_type_choices': MaintenanceRecord.RECORD_TYPE_CHOICES,
+        'today_iso': timezone.localdate().strftime('%Y-%m-%d'),
     }
     return render(request, 'ticket/detail.html', context) 
 
@@ -2947,19 +3343,25 @@ def maintenance_list(request):
 
     search = request.GET.get('search', '').strip()
     status = request.GET.get('status', '').strip()
-    qs = Maintenance.objects.filter(deleted=False).prefetch_related(
+    pretend_date_str = request.GET.get('pretend_date', '').strip()
+
+    qs = Maintenance.objects.filter(deleted=False).select_related('building', 'created_by').prefetch_related(
         'equipment',
         'equipment__equipment_type',
+        'equipment__building',
         'maintenance_records',
         'maintenance_records__equipment',
-        'maintenance_records__equipment__equipment_type'
+        'maintenance_records__equipment__equipment_type',
+        'maintenance_records__equipment__building',
     )
 
     if search:
         qs = qs.filter(
             Q(maintenance_serial__icontains=search) |
             Q(qr_code__icontains=search) |
+            Q(building__name__icontains=search) |
             Q(equipment__equipment_id__icontains=search) |
+            Q(equipment__equipment_name__icontains=search) |
             Q(equipment__equipment_type__name__icontains=search) |
             Q(maintenance_records__equipment__equipment_id__icontains=search)
         ).distinct()
@@ -2968,6 +3370,19 @@ def maintenance_list(request):
         qs = qs.filter(is_active=True)
     elif status == 'Inactive':
         qs = qs.filter(is_active=False)
+
+    if request.GET.get('generate_due') == '1' and pretend_date_str:
+        try:
+            pretend_dt = datetime.strptime(pretend_date_str, '%Y-%m-%d').date()
+            due_qs = qs.filter(is_active=True, equipment__next_service_due__lte=pretend_dt).distinct()
+            due_count = due_qs.count()
+            if due_count:
+                messages.success(request, f'Found {due_count} due maintenance schedule(s) as of {pretend_dt.strftime("%d %b %Y")}.')
+                qs = due_qs
+            else:
+                messages.info(request, f'No maintenance schedules are due as of {pretend_dt.strftime("%d %b %Y")}.')
+        except ValueError:
+            pass
 
     qs = qs.annotate(
         num_records=Count(
@@ -2982,6 +3397,20 @@ def maintenance_list(request):
     per_page = request.GET.get('per_page', 10)
     filtered_total_count = data_list.paginator.count
 
+    # Attach primary equipment info for clean schedule table rendering
+    for item in data_list:
+        eqs = list(item.equipment.all())
+        primary_eq = eqs[0] if eqs else None
+        if not primary_eq:
+            for rec in item.maintenance_records.all():
+                if rec.equipment:
+                    primary_eq = rec.equipment
+                    break
+        item.primary_eq = primary_eq
+        item.extra_eq_count = max(0, len(eqs) - 1)
+
+    today_iso = timezone.localdate().strftime('%Y-%m-%d')
+
     context = {
         'data_list': data_list,
         'paginator_list': paginator_list,
@@ -2991,6 +3420,7 @@ def maintenance_list(request):
         'search': search,
         'selected_status': status,
         'status_choices': ['Active', 'Inactive'],
+        'pretend_date': pretend_date_str or today_iso,
     }
     return render(request, 'maintenance/list.html', context)
 

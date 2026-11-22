@@ -1,0 +1,91 @@
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- ADD EQUIPMENT POPUP MODAL (Unassigned Only, Matches Add Building Step 1 UI) -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div id="addEquipmentModal"
+     class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/45 backdrop-blur-[2px]"
+     onclick="if (event.target === this) closeEquipmentModal();">
+    <div class="bg-white rounded-[12px] p-[14px_6px_6px_6px] shadow-[0_24px_60px_rgba(0,0,0,0.18)] w-full max-w-[597px] max-h-[88vh] flex flex-col gap-[10px] overflow-hidden">
+        <!-- Header inside outer frame (matches Add Building Step 1 header) -->
+        <div class="px-2 pt-0.5 flex items-center justify-between">
+            <h3 class="text-[18px] font-bold text-[#2B2823] tracking-tight">Add Equipment</h3>
+            <button type="button"
+                    onclick="closeEquipmentModal()"
+                    title="Close"
+                    class="w-7 h-7 rounded-full flex items-center justify-center text-[#9D9C9A] hover:text-[#2B2823] hover:bg-[#F3F3F3] transition-colors cursor-pointer">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Inner Frame (#F3F3F3, matches wizard-inner-frame) -->
+        <div class="bg-[#F3F3F3] rounded-[6px] p-[14px_10px] flex flex-col gap-4 overflow-y-auto no-scrollbar">
+            <!-- Locked Building Context Card -->
+            <div class="bg-white border border-[#EAEAE9] rounded-[10px] px-3.5 py-2.5">
+                <span class="block text-[11px] font-semibold text-[#716F6C] uppercase tracking-wider mb-1">BUILDING</span>
+                <div class="flex items-center gap-2 flex-wrap">
+                    <span id="modalBuildingNameDisplay" class="text-[14px] font-bold text-[#2B2823]">New Building</span>
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#FAFAFA] border border-[#EAEAE9] text-[11.5px] font-medium text-[#716F6C]">
+                        <svg class="w-3 h-3 text-[#D97706]" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17 10h-1V7a4 4 0 0 0-8 0v3H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2zm-7-3a2 2 0 1 1 4 0v3h-4V7z"/>
+                        </svg>
+                        Locked
+                    </span>
+                </div>
+            </div>
+
+            <!-- Search & Equipment Type Row (same 2-col grid as Step 1) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="form-label">Search Equipment</label>
+                    <div class="relative">
+                        <input type="text"
+                               id="modalDirectorySearchInput"
+                               placeholder="Search ID, name, brand..."
+                               autocomplete="off"
+                               class="form-input-field pr-9">
+                        <button type="button"
+                                id="btnModalSearchClear"
+                                onclick="clearModalSearch()"
+                                class="hidden input-clear-btn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 6L6 18M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label">Equipment Type</label>
+                    <select id="modalDirectoryTypeFilter" class="form-select-field">
+                        <option value="">All Types</option>
+                        {% for t in equipment_types %}
+                            <option value="{{ t.id }}">{{ t.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Scrollable Unassigned Equipment List (No visible scrollbar) -->
+            <div id="modalDirectoryListContainer"
+                 class="space-y-2 overflow-y-auto max-h-[300px] no-scrollbar">
+                <!-- Dynamically rendered unassigned equipment cards -->
+            </div>
+
+            <!-- Footer Navigation (matches Step 1 footer) -->
+            <div class="pt-3 border-t border-[#EAEAE9] flex items-center justify-between">
+                <button type="button"
+                        onclick="closeEquipmentModal()"
+                        class="btn-secondary">
+                    Cancel
+                </button>
+                <button type="button"
+                        onclick="applyModalSelection()"
+                        class="btn-forest">
+                    <span>Add Equipment</span>
+                    <span id="btnModalApplyCountBadge" class="ml-1 px-1.5 py-0.5 rounded-full bg-white/20 text-[11px] font-bold">0</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

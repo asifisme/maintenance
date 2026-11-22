@@ -399,13 +399,17 @@ class Equipment(models.Model):
         ("decommissioned",     "Decommissioned"),
     ]
 
+    equipment_name = models.CharField(max_length=150, blank=True, null=True)
     equipment_id   = models.CharField(max_length=50, unique=True, blank=True) 
     equipment_type = models.ForeignKey(EquipmentType, on_delete=models.CASCADE, related_name="equipment")
-    building       = models.ForeignKey(Building, on_delete=models.CASCADE, related_name="equipment")
+    building       = models.ForeignKey(Building, on_delete=models.SET_NULL, null=True, blank=True, related_name="equipment")
     component_preset = models.ManyToManyField(EquipmentComponentPreset, related_name="equipment", blank=True)
     brand          = models.CharField(max_length=100, blank=True, help_text="e.g. Otis, Daikin")
     floor_location = models.CharField(max_length=100, blank=True, help_text="e.g. Level 4 Lobby")
+    room_location  = models.CharField(max_length=100, blank=True, null=True, help_text="e.g. Room 502, Server Room")
     installment_date = models.DateTimeField(null=True, blank=True)
+    purchase_date   = models.DateField(null=True, blank=True)
+    warranty_expire_date = models.DateField(null=True, blank=True)
 
     model_number   = models.CharField(max_length=100, blank=True)
     serial_number  = models.CharField(max_length=100, blank=True)
@@ -415,14 +419,18 @@ class Equipment(models.Model):
 
     image          = models.ImageField(upload_to="equipment/", null=True, blank=True)
     notes          = models.TextField(blank=True)
+    installation_notes = models.TextField(blank=True, null=True)
+    maintenance_notes = models.TextField(blank=True, null=True)
  
     # Status
     status         = models.CharField(max_length=30, choices=STATUS_CHOICES, default="active")
  
     # Maintenance scheduling 
-    maintenance_period_days = models.PositiveIntegerField(default=90,)
+    maintenance_period_days = models.PositiveIntegerField(default=90)
+    frequency_unit = models.CharField(max_length=20, default="Days", blank=True)
     last_maintenance_date   = models.DateField(null=True, blank=True)
-    next_service_due        = models.DateField(null=True, blank=True, db_index=True,)
+    next_service_due        = models.DateField(null=True, blank=True, db_index=True)
+    custom_fields  = models.JSONField(default=dict, blank=True)
 
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipment_created_by', blank=True, null=True)
     updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipment_updated_by', blank=True, null=True)
@@ -438,7 +446,9 @@ class Equipment(models.Model):
         super().save(*args, **kwargs)
     
     def __str__(self):
-        return f"[{self.equipment_id}] {self.equipment_type.name} at {self.building.name}"
+        bld_name = self.building.name if self.building else "Unassigned"
+        name = self.equipment_name or (self.equipment_type.name if self.equipment_type else "Equipment")
+        return f"[{self.equipment_id}] {name} at {bld_name}"
  
 
 
