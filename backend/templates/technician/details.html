@@ -1,0 +1,1057 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_title %}{{ tech.display_name }}{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    body,
+    #mainContentWrapper {
+        background-color: #F2F2F2 !important;
+        font-family: 'Urbanist', Inter, system-ui, ui-sans-serif, sans-serif;
+    }
+
+    .tech-mono {
+        font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        letter-spacing: -0.02em;
+    }
+
+    .figma-card-outer {
+        background-color: #F9F9F9;
+        border-radius: 12px;
+        padding: 16px 6px 6px 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        box-sizing: border-box;
+    }
+
+    .figma-card-inner {
+        background-color: #FFFFFF;
+        border-radius: 6px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        box-sizing: border-box;
+    }
+
+    .detail-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 11px 0;
+        border-bottom: 1px solid #F2F2F2;
+    }
+    .detail-row:first-child {
+        padding-top: 2px;
+    }
+    .detail-row:last-child {
+        border-bottom: none;
+        padding-bottom: 2px;
+    }
+    .detail-label {
+        width: 122px;
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: flex-start;
+        gap: 7px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #9D9C9A;
+        line-height: 1.35;
+    }
+    .detail-label svg {
+        width: 15px;
+        height: 15px;
+        flex-shrink: 0;
+        margin-top: 1px;
+        color: #B4B3B1;
+    }
+    .detail-value {
+        flex: 1;
+        min-width: 0;
+        font-size: 13.5px;
+        font-weight: 500;
+        color: #2B2823;
+        line-height: 1.4;
+        word-break: break-word;
+    }
+
+    .filter-select-pill {
+        height: 34px;
+        padding: 0 28px 0 12px;
+        border-radius: 8px;
+        background-color: #EAEAE8 !important;
+        border: 1px solid transparent;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        color: #5C5B59;
+        outline: none;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23716F6C' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 9px center;
+        background-size: 13px;
+    }
+
+    .tab-pill-group {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px;
+        border-radius: 10px;
+        background-color: #EAEAE8;
+    }
+    .tab-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 7px;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #5C5B59;
+        transition: all 150ms ease;
+    }
+    .tab-pill:hover {
+        color: #2B2823;
+    }
+    .tab-pill.active {
+        background-color: #FFFFFF;
+        color: #2B2823;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    }
+
+    .svc-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+    .svc-table thead tr {
+        background-color: #F7F7F7;
+    }
+    .svc-table thead th {
+        padding: 11px 14px;
+        text-align: left;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #2B2823;
+        white-space: nowrap;
+    }
+    .svc-table thead th:first-child {
+        border-radius: 6px 0 0 6px;
+    }
+    .svc-table thead th:last-child {
+        border-radius: 0 6px 6px 0;
+        text-align: right;
+    }
+    .svc-table tbody tr {
+        border-bottom: 1px solid #F2F2F2;
+        background-color: #FFFFFF;
+    }
+    .svc-table tbody tr:nth-child(even) {
+        background-color: #FAFAFA;
+    }
+    .svc-table tbody tr:last-child {
+        border-bottom: none;
+    }
+    .svc-table tbody td {
+        padding: 13px 14px;
+        color: #5C5B59;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+    .svc-table tbody td:last-child {
+        text-align: right;
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <a href="{% url 'backend:technician_list' %}" class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#5C5B59] font-medium hover:bg-[#E0E0DF] transition-colors shrink-0">
+        Technicians
+    </a>
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <span class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#2B2823] font-medium shrink-0">
+        {{ tech.display_name }}
+    </span>
+{% endblock %}
+
+{% block main_class %}w-full px-[10px] pt-2 pb-10 flex-1{% endblock %}
+
+{% block page_header %}
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-5">
+    <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-[#2B2823] text-white flex items-center justify-center text-[15px] font-semibold shrink-0">
+            {{ tech.first_initial }}
+        </div>
+        <h1 id="page_title" class="tech-mono text-[24px] lg:text-[26px] font-medium text-[#2B2823] leading-tight">
+            {{ tech.display_name }}
+        </h1>
+    </div>
+    <div class="flex items-center gap-2.5 shrink-0">
+        <a href="{% url 'backend:technician_update' tech.id %}"
+           class="inline-flex items-center justify-center px-4 py-2 rounded-[8px] bg-white border border-[#EAEAE9] text-[13.5px] font-medium text-[#2B2823] hover:bg-[#F7F7F6] shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-colors">
+            Edit Technician
+        </a>
+        <a href="{% url 'backend:service_history' %}?technician_id={{ tech.id }}"
+           class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-[8px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[13.5px] font-semibold shadow-[0_1px_2px_rgba(11,122,68,0.2)] transition-colors">
+            <span>View Full History</span>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-[10px]">
+    <!-- TOP ROW: Technician Details (Left) + Service Overview & Ticket Workload (Right) -->
+    <div class="grid grid-cols-1 lg:grid-cols-[1.13fr_1fr] gap-[10px] items-stretch">
+
+        <!-- LEFT CARD: Technician Details -->
+        <div class="figma-card-outer h-full">
+            <div class="px-2.5 flex items-center justify-between">
+                <h2 class="text-[16px] font-semibold text-[#2B2823] tracking-tight">Technician Details</h2>
+                <a href="{% url 'backend:technician_update' tech.id %}"
+                   title="Edit Technician"
+                   class="w-7 h-7 rounded-[6px] flex items-center justify-center text-[#5C5B59] hover:text-[#0B7A44] hover:bg-white transition-colors">
+                    <svg class="w-[17px] h-[17px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                </a>
+            </div>
+
+            <div class="figma-card-inner flex-1">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-7">
+                    <!-- Column 1 -->
+                    <div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg>
+                                <span>Full Name :</span>
+                            </span>
+                            <span class="detail-value">{{ tech.display_name }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                    <rect x="3" y="4" width="18" height="16" rx="2" />
+                                    <path d="M7 10h2v4H7zM12 10h3a2 2 0 0 1 0 4h-3v-4z" />
+                                </svg>
+                                <span>Tech ID :</span>
+                            </span>
+                            <span class="detail-value tech-mono">TECH-{{ tech.id|stringformat:"03d" }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                    <circle cx="12" cy="12" r="9" />
+                                    <path d="M9 12l2 2 4-4" />
+                                </svg>
+                                <span>Status :</span>
+                            </span>
+                            <span class="detail-value">
+                                {% if tech.is_active %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#E7F6EC] text-[#0B7A44]">Active</span>
+                                {% else %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#EFEFEF] text-[#5C5B59]">Inactive</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                                    <line x1="16" y1="2" x2="16" y2="6" />
+                                    <line x1="8" y1="2" x2="8" y2="6" />
+                                    <line x1="3" y1="10" x2="21" y2="10" />
+                                </svg>
+                                <span>Date Joined :</span>
+                            </span>
+                            <span class="detail-value">{{ tech.created_at|date:"d F Y" }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Column 2 -->
+                    <div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                    <rect x="2" y="4" width="20" height="16" rx="2" />
+                                    <path d="M22 6l-10 7L2 6" />
+                                </svg>
+                                <span>Email :</span>
+                            </span>
+                            <span class="detail-value">
+                                {% if tech.email %}{{ tech.email }}{% elif tech.user and tech.user.email %}{{ tech.user.email }}{% else %}-{% endif %}
+                            </span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+                                </svg>
+                                <span>Phone :</span>
+                            </span>
+                            <span class="detail-value">{{ tech.phone_number|default:"-" }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                </svg>
+                                <span>User Account :</span>
+                            </span>
+                            <span class="detail-value">
+                                {% if tech.user %}@{{ tech.user.username }}{% else %}Not Linked{% endif %}
+                            </span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                    <polyline points="14 2 14 8 20 8" />
+                                </svg>
+                                <span>About :</span>
+                            </span>
+                            <span class="detail-value text-[#5C5B59] font-normal">{{ tech.about|default:"-" }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assigned Skills Strip -->
+                <div class="pt-3 border-t border-[#F2F2F2]">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[12.5px] font-semibold text-[#9D9C9A] uppercase tracking-wider">Assigned Skills</span>
+                        <a href="{% url 'backend:skill_list' %}" class="text-[12px] font-semibold text-[#0B7A44] hover:underline">Manage Skills ›</a>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        {% for sk in skills_list %}
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-[12.5px] font-semibold bg-[#EAF7EE] text-[#1E8E3E] border border-[#CEEAD6]">
+                                {{ sk.name }}
+                            </span>
+                        {% empty %}
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-[12.5px] font-medium bg-[#F5F5F4] text-[#716F6C] border border-[#EAEAE9]">
+                                {{ tech.primary_skill }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Service Overview + Task Workload -->
+        <div class="flex flex-col gap-[10px]">
+            <!-- Service Overview Card -->
+            <div class="figma-card-outer">
+                <div class="px-2.5 flex items-center justify-between">
+                    <h2 class="text-[16px] font-semibold text-[#2B2823] tracking-tight">Service Overview</h2>
+                    <a href="{% url 'backend:technician_details' tech.id %}?tab=history#techTasksSection" class="inline-flex items-center gap-0.5 text-[13px] font-semibold text-[#0B7A44] hover:underline">
+                        <span>View History</span>
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                </div>
+
+                <div class="figma-card-inner gap-4">
+                    <div class="flex flex-col sm:flex-row items-center gap-6">
+                        <div class="relative w-[148px] h-[148px] shrink-0">
+                            <svg id="techServiceDonutSvg" viewBox="0 0 148 148" class="w-full h-full"></svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                <span class="text-[24px] font-semibold text-[#2B2823] leading-none">{{ total_services }}</span>
+                                <span class="text-[10px] font-medium text-[#9D9C9A] mt-1">Total Services</span>
+                            </div>
+                        </div>
+
+                        <div class="flex-1 w-full divide-y divide-[#F2F2F2]">
+                            <a href="{% url 'backend:technician_details' tech.id %}?tab=tasks&stage=completed#techTasksSection" class="py-1.5 first:pt-0 flex items-center justify-between hover:opacity-80 transition">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-3.5 h-3.5 rounded-[4px] shrink-0" style="background-color: #FFC4A2;"></span>
+                                    <span class="text-[13px] font-medium text-[#716F6C]">Completed</span>
+                                </div>
+                                <span class="text-[14px] font-semibold text-[#2B2823]">{{ completed_services|stringformat:"02d" }}</span>
+                            </a>
+                            <a href="{% url 'backend:technician_details' tech.id %}?tab=tasks&stage=in_progress#techTasksSection" class="py-1.5 flex items-center justify-between hover:opacity-80 transition">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-3.5 h-3.5 rounded-[4px] bg-[#FDE7B2] shrink-0"></span>
+                                    <span class="text-[13px] font-medium text-[#716F6C]">In Progress</span>
+                                </div>
+                                <span class="text-[14px] font-semibold text-[#2B2823]">{{ in_progress_services|stringformat:"02d" }}</span>
+                            </a>
+                            <a href="{% url 'backend:technician_details' tech.id %}?tab=tasks&stage=pending_review#techTasksSection" class="py-1.5 flex items-center justify-between hover:opacity-80 transition">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-3.5 h-3.5 rounded-[4px] shrink-0" style="background-color: #C7D2FE;"></span>
+                                    <span class="text-[13px] font-medium text-[#716F6C]">Pending Review</span>
+                                </div>
+                                <span class="text-[14px] font-semibold text-[#2B2823]">{{ pending_review_services|stringformat:"02d" }}</span>
+                            </a>
+                            <a href="{% url 'backend:technician_details' tech.id %}?tab=tasks#techTasksSection" class="py-1.5 last:pb-0 flex items-center justify-between hover:opacity-80 transition">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-3.5 h-3.5 rounded-[4px] bg-[#D6D6D6] shrink-0"></span>
+                                    <span class="text-[13px] font-medium text-[#716F6C]">Pending / Ready</span>
+                                </div>
+                                <span class="text-[14px] font-semibold text-[#2B2823]">{{ pending_services|stringformat:"02d" }}</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 pt-2 border-t border-[#F2F2F2]">
+                        <div class="pr-4 border-r border-[#F0F0F0]">
+                            <div class="text-[12px] font-medium text-[#9D9C9A]">Approved Reviews</div>
+                            <div class="text-[16px] font-semibold text-[#2B2823] mt-0.5">{{ approved_services }}</div>
+                        </div>
+                        <div class="pl-5">
+                            <div class="text-[12px] font-medium text-[#9D9C9A]">Assigned Skills</div>
+                            <div class="text-[16px] font-semibold text-[#2B2823] mt-0.5">{{ skills_list|length }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ticket Workload Card -->
+            <div class="figma-card-outer flex-1">
+                <div class="px-2.5 flex items-center justify-between">
+                    <h2 class="text-[16px] font-semibold text-[#2B2823] tracking-tight">Assigned Tasks Workload</h2>
+                    <a href="#techTasksSection" class="text-[12.5px] font-semibold text-[#0B7A44] hover:underline">View Tasks ›</a>
+                </div>
+                <div class="bg-white rounded-[6px] px-4 py-[18px] flex-1 flex flex-col justify-center gap-2.5">
+                    <div class="flex items-center justify-between gap-3 flex-wrap px-1">
+                        <a href="{% url 'backend:technician_details' tech.id %}?tab=tasks#techTasksSection" class="inline-flex items-center gap-2 hover:opacity-80 transition">
+                            <span class="text-[13px] font-medium text-[#2B2823] underline underline-offset-4 decoration-[#2B2823]/40">Assigned</span>
+                            <span class="inline-flex items-center justify-center min-w-[26px] h-[24px] px-2 rounded-full bg-[#EFEFEF] text-[12.5px] font-semibold text-[#2B2823]">{{ total_tickets }}</span>
+                        </a>
+                        <a href="{% url 'backend:technician_details' tech.id %}?tab=tasks&acceptance=pending#techTasksSection" class="inline-flex items-center gap-2 hover:opacity-80 transition">
+                            <span class="text-[13px] font-medium text-[#2B2823] underline underline-offset-4 decoration-[#2B2823]/40">Pending Accept</span>
+                            <span class="inline-flex items-center justify-center min-w-[26px] h-[24px] px-2 rounded-full bg-[#FEF3C7] text-[12.5px] font-semibold text-[#B45309]">{{ pending_acceptance_count }}</span>
+                        </a>
+                        <a href="{% url 'backend:technician_details' tech.id %}?tab=tasks&stage=in_progress#techTasksSection" class="inline-flex items-center gap-2 hover:opacity-80 transition">
+                            <span class="text-[13px] font-medium text-[#2B2823] underline underline-offset-4 decoration-[#2B2823]/40">Active</span>
+                            <span class="inline-flex items-center justify-center min-w-[26px] h-[24px] px-2 rounded-full bg-[#E0F2FE] text-[12.5px] font-semibold text-[#0369A1]">{{ active_work_count }}</span>
+                        </a>
+                        <a href="{% url 'backend:technician_details' tech.id %}?tab=tasks&stage=completed#techTasksSection" class="inline-flex items-center gap-2 hover:opacity-80 transition">
+                            <span class="text-[13px] font-medium text-[#2B2823] underline underline-offset-4 decoration-[#2B2823]/40">Completed</span>
+                            <span class="inline-flex items-center justify-center min-w-[26px] h-[24px] px-2 rounded-full bg-[#E7F6EC] text-[12.5px] font-semibold text-[#0B7A44]">{{ resolved_tickets }}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM CARD: Assigned Tasks (Default) & Service History (Tab) -->
+    <div id="techTasksSection" class="figma-card-outer !gap-4">
+        <div class="px-2.5 flex flex-wrap items-center justify-between gap-3">
+            <!-- Tab Switcher -->
+            <div class="tab-pill-group">
+                <a href="{% url 'backend:technician_details' tech.id %}?tab=tasks#techTasksSection"
+                   class="tab-pill {% if active_tab == 'tasks' %}active{% endif %}">
+                    <span>Assigned Tasks</span>
+                    <span class="inline-flex items-center justify-center min-w-[22px] h-[20px] px-1.5 rounded-full text-[11.5px] font-semibold {% if active_tab == 'tasks' %}bg-[#E7F6EC] text-[#0B7A44]{% else %}bg-[#DFDFDD] text-[#5C5B59]{% endif %}">
+                        {{ tasks_total_count }}
+                    </span>
+                </a>
+                <a href="{% url 'backend:technician_details' tech.id %}?tab=history#techTasksSection"
+                   class="tab-pill {% if active_tab == 'history' %}active{% endif %}">
+                    <span>Service History</span>
+                    <span class="inline-flex items-center justify-center min-w-[22px] h-[20px] px-1.5 rounded-full text-[11.5px] font-semibold {% if active_tab == 'history' %}bg-[#E7F6EC] text-[#0B7A44]{% else %}bg-[#DFDFDD] text-[#5C5B59]{% endif %}">
+                        {{ history_total_count }}
+                    </span>
+                </a>
+            </div>
+
+            <!-- Contextual Filters -->
+            {% if active_tab == 'tasks' %}
+                <form method="get" action="{% url 'backend:technician_details' tech.id %}#techTasksSection" class="flex flex-wrap items-center gap-2">
+                    <input type="hidden" name="tab" value="tasks">
+                    <input type="hidden" name="per_page" value="{{ per_page }}">
+                    <select name="acceptance" onchange="this.form.submit()" class="filter-select-pill">
+                        <option value="">All Acceptance</option>
+                        {% for val, label in acceptance_choices %}
+                            <option value="{{ val }}" {% if selected_acceptance == val %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <select name="stage" onchange="this.form.submit()" class="filter-select-pill">
+                        <option value="">All Stages</option>
+                        {% for val, label in task_stage_choices %}
+                            <option value="{{ val }}" {% if selected_stage == val %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <a href="{% url 'backend:technician_details' tech.id %}?tab=tasks#techTasksSection"
+                       class="inline-flex items-center gap-1.5 h-[34px] px-3 rounded-[8px] bg-white border border-[#EAEAE9] text-[13px] font-medium text-[#5C5B59] hover:text-[#2B2823] hover:bg-[#F7F7F6] transition-colors">
+                        <span>Reset</span>
+                    </a>
+                </form>
+            {% else %}
+                <form method="get" action="{% url 'backend:technician_details' tech.id %}#techTasksSection" class="flex flex-wrap items-center gap-2">
+                    <input type="hidden" name="tab" value="history">
+                    <input type="hidden" name="per_page" value="{{ per_page }}">
+                    <select name="type" onchange="this.form.submit()" class="filter-select-pill">
+                        <option value="">All Types</option>
+                        {% for val, label in record_type_choices %}
+                            <option value="{{ val }}" {% if selected_type == val %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <select name="status" onchange="this.form.submit()" class="filter-select-pill">
+                        <option value="">All Statuses</option>
+                        {% for val, label in maint_status_choices %}
+                            <option value="{{ val }}" {% if selected_status == val %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <a href="{% url 'backend:technician_details' tech.id %}?tab=history#techTasksSection"
+                       class="inline-flex items-center gap-1.5 h-[34px] px-3 rounded-[8px] bg-white border border-[#EAEAE9] text-[13px] font-medium text-[#5C5B59] hover:text-[#2B2823] hover:bg-[#F7F7F6] transition-colors">
+                        <span>Reset</span>
+                    </a>
+                </form>
+            {% endif %}
+        </div>
+
+        <div class="bg-white rounded-[6px] p-[14px] overflow-x-auto custom-scrollbar">
+            {% if active_tab == 'tasks' %}
+                <!-- ASSIGNED TASKS TABLE -->
+                <table class="svc-table min-w-[960px]">
+                    <thead>
+                        <tr>
+                            <th>Ticket ID</th>
+                            <th>Task &amp; Equipment</th>
+                            <th>Building</th>
+                            <th>Priority</th>
+                            <th>Acceptance</th>
+                            <th>Task Stage</th>
+                            <th>Assigned Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in assigned_tasks %}
+                            <tr>
+                                <td class="tech-mono font-semibold text-[#2B2823]">
+                                    <a href="{% url 'backend:ticket_detail' row.ticket.id %}" class="underline underline-offset-2 hover:text-[#0B7A44]">
+                                        #{{ row.ticket.id }}
+                                    </a>
+                                </td>
+                                <td class="!whitespace-normal max-w-[280px]">
+                                    <div class="flex flex-col">
+                                        <a href="{% url 'backend:ticket_detail' row.ticket.id %}" class="font-semibold text-[#2B2823] hover:text-[#0B7A44] leading-snug">
+                                            {{ row.ticket.title }}
+                                        </a>
+                                        {% if row.ticket.equipment %}
+                                            <span class="text-[12px] text-[#8E8C89] mt-0.5">
+                                                {{ row.ticket.equipment.equipment_name|default:row.ticket.equipment.equipment_id }}
+                                                <span class="tech-mono text-[11px]">({{ row.ticket.equipment.equipment_id }})</span>
+                                                {% if row.checklist_total > 0 %}
+                                                    &bull; <span class="font-semibold text-[#0B7A44]">{{ row.checklist_done }}/{{ row.checklist_total }} tasks</span>
+                                                {% endif %}
+                                            </span>
+                                        {% endif %}
+                                        {% if row.needs_rework and row.revision_notes %}
+                                            <div class="mt-1.5 rounded-[6px] border border-[#FAD2CF] bg-[#FFF8F8] px-2 py-1.5 text-[11.5px] text-[#991B1B] leading-snug">
+                                                <span class="font-semibold">Revision #{{ row.revision_count }} Feedback:</span>
+                                                {{ row.revision_notes }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td>
+                                    {% if row.ticket.building %}
+                                        <a href="{% url 'backend:building_details' row.ticket.building.id %}" class="text-[#4A4947] hover:text-[#0B7A44] hover:underline">
+                                            {{ row.ticket.building.name }}
+                                        </a>
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if row.ticket.priority == 'critical' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#FCE8E6] text-[#C5221F] border border-[#FAD2CF]">Critical</span>
+                                    {% elif row.ticket.priority == 'high' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#FEF3E6] text-[#C86E12] border border-[#FDD8B5]">High</span>
+                                    {% elif row.ticket.priority == 'medium' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#FEF9E7] text-[#B07200] border border-[#FDE68A]">Medium</span>
+                                    {% else %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#F5F5F4] text-[#5C5B59] border border-[#E5E5E3]">Low</span>
+                                    {% endif %}
+                                </td>
+                                <!-- Acceptance Status -->
+                                <td>
+                                    {% if row.acceptance_status == 'accepted' %}
+                                        <div class="inline-flex flex-col items-start">
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#E7F6EC] text-[#0B7A44] border border-[#CEEAD6]">
+                                                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                Accepted
+                                            </span>
+                                            {% if row.activity and row.activity.accepted_at %}
+                                                <span class="text-[11px] text-[#9D9C9A] mt-0.5">{{ row.activity.accepted_at|date:"d M, g:i A" }}</span>
+                                            {% endif %}
+                                        </div>
+                                    {% elif row.acceptance_status == 'rejected' %}
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#FCE8E6] text-[#C5221F] border border-[#FAD2CF]">
+                                            Rejected
+                                        </span>
+                                    {% else %}
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#FEF3C7] text-[#B45309] border border-[#FDE68A]">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#D97706]"></span>
+                                            Pending Acceptance
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <!-- Task Stage -->
+                                <td>
+                                    <div class="inline-flex flex-col items-start gap-1">
+                                        {% if row.stage_key == 'completed' %}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#E7F6EC] text-[#0B7A44] border border-[#CEEAD6]">
+                                                Completed &amp; Approved
+                                            </span>
+                                        {% elif row.stage_key == 'pending_review' %}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#EEF2FF] text-[#4338CA] border border-[#C7D2FE]">
+                                                Pending Review
+                                            </span>
+                                        {% elif row.stage_key == 'in_progress' %}
+                                            <div class="inline-flex items-center gap-1.5">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#FEF3E6] text-[#C86E12] border border-[#FDD8B5]">
+                                                    In Progress
+                                                </span>
+                                                {% if row.needs_rework %}
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#FCE8E6] text-[#C5221F] border border-[#FAD2CF]" title="Supervisor requested revision">
+                                                        Revision #{{ row.revision_count }}
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                        {% elif row.stage_key == 'accepted' %}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#E0F2FE] text-[#0369A1] border border-[#BAE6FD]">
+                                                Ready to Start
+                                            </span>
+                                        {% elif row.stage_key == 'rejected' %}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#FCE8E6] text-[#C5221F] border border-[#FAD2CF]">
+                                                Declined
+                                            </span>
+                                        {% else %}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#F3E8FD] text-[#7C3AED] border border-[#E9D5FF]">
+                                                Assigned
+                                            </span>
+                                        {% endif %}
+
+                                        {% if row.review_count > 0 or row.submission_count > 1 %}
+                                            <span class="text-[11px] text-[#8E8C89] font-medium">
+                                                {% if row.stage_key == 'pending_review' %}
+                                                    Submission #{{ row.submission_count }} &bull; {{ row.review_count }} prior review{{ row.review_count|pluralize }}
+                                                {% else %}
+                                                    Reviews: {{ row.review_count }}{% if row.revision_count > 0 %} &bull; Revisions: {{ row.revision_count }}{% endif %}
+                                                {% endif %}
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td class="text-[#716F6C]">{{ row.assignment.assigned_at|date:"d M Y" }}</td>
+                                <!-- Stage-Aware Actions (Accept/Reject while pending; ONLY Details after accepting) -->
+                                <td>
+                                    <div class="inline-flex items-center justify-end gap-1.5">
+                                        {% if row.can_accept %}
+                                            <form method="post" action="{% url 'backend:ticket_detail' row.ticket.id %}" class="inline">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="accept_task">
+                                                <input type="hidden" name="technician_id" value="{{ tech.id }}">
+                                                <input type="hidden" name="next" value="{% url 'backend:technician_details' tech.id %}?tab=tasks">
+                                                <button type="submit"
+                                                        class="inline-flex items-center gap-1 px-2.5 py-1 rounded-[6px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[12px] font-semibold transition-colors cursor-pointer">
+                                                    Accept
+                                                </button>
+                                            </form>
+                                            <button type="button"
+                                                    onclick="openTechRejectModal('{% url 'backend:ticket_detail' row.ticket.id %}', '{{ row.ticket.id }}', '{{ row.ticket.title|escapejs }}')"
+                                                    class="inline-flex items-center px-2.5 py-1 rounded-[6px] bg-white border border-[#FAD2CF] text-[#C5221F] hover:bg-[#FCE8E6] text-[12px] font-semibold transition-colors cursor-pointer">
+                                                Reject
+                                            </button>
+                                        {% elif row.acceptance_status == 'accepted' %}
+                                            {% if row.can_start and row.ticket.equipment %}
+                                                <a href="{% url 'backend:equipment_qr' row.ticket.equipment.id %}?view=1&ticket={{ row.ticket.id }}&technician={{ tech.id }}"
+                                                   class="inline-flex items-center gap-1 px-3 py-1.5 rounded-[6px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[12px] font-semibold transition-colors">
+                                                    Details
+                                                </a>
+                                            {% elif row.needs_rework %}
+                                                <a href="{% url 'backend:technician_task_detail' tech.id row.ticket.id %}"
+                                                   class="inline-flex items-center gap-1 px-3 py-1.5 rounded-[6px] bg-[#C86E12] hover:bg-[#A65A0E] text-white text-[12px] font-semibold transition-colors">
+                                                    Details
+                                                </a>
+                                            {% elif row.stage_key == 'in_progress' %}
+                                                <a href="{% url 'backend:technician_task_detail' tech.id row.ticket.id %}"
+                                                   class="inline-flex items-center gap-1 px-3 py-1.5 rounded-[6px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[12px] font-semibold transition-colors">
+                                                    Details
+                                                </a>
+                                            {% else %}
+                                                <a href="{% url 'backend:technician_task_detail' tech.id row.ticket.id %}"
+                                                   class="inline-flex items-center gap-1 px-3 py-1.5 rounded-[6px] bg-[#F5F5F4] hover:bg-[#EAEAE8] text-[#2B2823] text-[12px] font-semibold transition-colors">
+                                                    Details
+                                                </a>
+                                            {% endif %}
+                                        {% else %}
+                                            <a href="{% url 'backend:ticket_detail' row.ticket.id %}"
+                                               class="inline-flex items-center px-3 py-1.5 rounded-[6px] bg-[#F5F5F4] hover:bg-[#EAEAE8] text-[12px] font-semibold text-[#2B2823] transition-colors">
+                                                Details
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="8" class="py-10 text-center text-[#716F6C]">
+                                    No tasks assigned to this technician yet.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <!-- SERVICE HISTORY TABLE -->
+                <table class="svc-table min-w-[900px]">
+                    <thead>
+                        <tr>
+                            <th>Service ID</th>
+                            <th>Equipment</th>
+                            <th>Building</th>
+                            <th>Type</th>
+                            <th>Source</th>
+                            <th>Status</th>
+                            <th>Service Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rec in service_records %}
+                            <tr>
+                                <td class="tech-mono font-medium text-[#2B2823]">
+                                    <a href="{% url 'backend:service_history_detail' rec.id %}" class="underline underline-offset-2 hover:text-[#0B7A44]">
+                                        {% if rec.maintenance %}{{ rec.maintenance.maintenance_serial }}{% else %}SR-{{ rec.id|stringformat:"03d" }}{% endif %}
+                                    </a>
+                                </td>
+                                <td>
+                                    {% if rec.equipment %}
+                                        <a href="{% url 'backend:equipment_detail' rec.equipment.id %}" class="font-medium text-[#2B2823] hover:text-[#0B7A44]">
+                                            {{ rec.equipment.equipment_name|default:rec.equipment.equipment_id }}
+                                        </a>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if rec.equipment and rec.equipment.building %}
+                                        {{ rec.equipment.building.name }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#EFEFEF] text-[#4A4947]">
+                                        {{ rec.get_record_type_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if rec.ticket %}
+                                        <a href="{% url 'backend:ticket_detail' rec.ticket.id %}" class="text-[#0B7A44] font-medium hover:underline">Ticket #{{ rec.ticket.id }}</a>
+                                    {% elif rec.maintenance %}
+                                        <span>Scheduled</span>
+                                    {% else %}
+                                        <span>Manual</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if rec.maintainance_status == 'completed' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#E7F6EC] text-[#0B7A44]">Completed</span>
+                                    {% elif rec.maintainance_status == 'in_progress' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#FEF3C7] text-[#B45309]">In Progress</span>
+                                    {% else %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#EFEFEF] text-[#5C5B59]">{{ rec.get_maintainance_status_display }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ rec.maintenance_date|date:"d M Y" }}</td>
+                                <td>
+                                    <a href="{% url 'backend:service_history_detail' rec.id %}"
+                                       class="inline-flex items-center px-2.5 py-1 rounded-[6px] bg-[#F5F5F4] hover:bg-[#E7F6EC] text-[12px] font-semibold text-[#2B2823] hover:text-[#0B7A44] transition-colors">
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="8" class="py-10 text-center text-[#716F6C]">
+                                    No approved service history records for this technician yet.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+    </div>
+
+    {% include 'includes/pagination.html' with data_list=page_obj %}
+</div>
+
+<!-- Submit Completed Work Modal (from Technician Profile) -->
+<div id="techSubmitWorkModal"
+     class="hidden fixed inset-0 bg-black/45 backdrop-blur-[1px] flex items-center justify-center z-50 p-4">
+    <div class="w-full max-w-[512px] rounded-[13px] bg-[#F3F3F3] border-2 border-white/35 p-4 shadow-[0_0_0_2px_rgba(255,255,255,0.2),3px_9px_21px_rgba(48,48,48,0.1)]"
+         style="background-clip: padding-box;">
+        <div class="flex items-center justify-between mb-3.5">
+            <div>
+                <h3 id="techSubmitModalTitle" class="text-[18px] font-semibold text-[#2B2823]">Submit Completed Work</h3>
+                <p id="techSubmitModalSub" class="text-[12.5px] text-[#716F6C] mt-0.5"></p>
+            </div>
+            <button type="button"
+                    onclick="document.getElementById('techSubmitWorkModal').classList.add('hidden')"
+                    class="w-9 h-9 rounded-[10px] bg-white border border-[#EAEAEA] flex items-center justify-center text-[#2B2823] hover:bg-[#FAFAFA] cursor-pointer">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <!-- Supervisor Revision Instructions Banner (shown only on rework) -->
+        <div id="techSubmitRevisionBanner" class="hidden mb-3 rounded-[10px] border border-[#FAD2CF] bg-[#FFF8F8] p-3 text-[12.5px] text-[#991B1B]">
+            <div id="techSubmitRevisionHeading" class="font-semibold text-[#C5221F] mb-0.5"></div>
+            <div id="techSubmitRevisionText" class="text-[#7F1D1D] whitespace-pre-line"></div>
+        </div>
+        <form id="techSubmitWorkForm" method="POST" action="" class="space-y-3">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="submit_work">
+            <input type="hidden" name="service_technician_id" value="{{ tech.id }}">
+            <input type="hidden" name="next" value="{% url 'backend:technician_details' tech.id %}?tab=tasks">
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-[13px] font-medium text-[#2B2823] mb-1">Service Type</label>
+                    <select name="record_type"
+                            class="w-full h-[41px] rounded-[13px] bg-white border border-[#F0F0F0] px-3 text-[13.5px] text-[#2B2823] shadow-sm focus:outline-none focus:border-[#0B7A44]">
+                        {% for key, val in record_type_choices %}
+                            <option value="{{ key }}" {% if key == 'repair' %}selected{% endif %}>{{ val }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[13px] font-medium text-[#2B2823] mb-1">Completed Date</label>
+                    <input type="date"
+                           name="maintenance_date"
+                           value="{{ today_iso }}"
+                           class="w-full h-[41px] rounded-[13px] bg-white border border-[#F0F0F0] px-3 text-[13px] text-[#2B2823] shadow-sm focus:outline-none focus:border-[#0B7A44]">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-[13px] font-medium text-[#2B2823] mb-1">Cost</label>
+                    <input type="number" step="0.01" name="cost" placeholder="0.00"
+                           class="w-full h-[41px] rounded-[13px] bg-white border border-[#F0F0F0] px-3 text-[13.5px] text-[#2B2823] shadow-sm focus:outline-none focus:border-[#0B7A44]">
+                </div>
+                <div>
+                    <label class="block text-[13px] font-medium text-[#2B2823] mb-1">Duration (Hours)</label>
+                    <input type="number" step="0.25" name="duration_hours" placeholder="1.5"
+                           class="w-full h-[41px] rounded-[13px] bg-white border border-[#F0F0F0] px-3 text-[13.5px] text-[#2B2823] shadow-sm focus:outline-none focus:border-[#0B7A44]">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[13px] font-medium text-[#2B2823] mb-1">Work Completed Summary <span class="text-[#D93025]">*</span></label>
+                <textarea id="techSubmitWorkDesc"
+                          name="work_description"
+                          rows="3"
+                          required
+                          placeholder="Describe the repair/maintenance work performed..."
+                          class="w-full rounded-[13px] bg-white border border-[#F0F0F0] p-3 text-[13.5px] text-[#2B2823] shadow-sm resize-none focus:outline-none focus:border-[#0B7A44]"></textarea>
+            </div>
+
+            <div>
+                <label class="block text-[13px] font-medium text-[#2B2823] mb-1">Parts Replaced</label>
+                <input type="text" name="parts_replaced" placeholder="Optional parts replaced"
+                       class="w-full h-[41px] rounded-[13px] bg-white border border-[#F0F0F0] px-3 text-[13.5px] text-[#2B2823] shadow-sm focus:outline-none focus:border-[#0B7A44]">
+            </div>
+
+            <div class="pt-2 flex items-center justify-between">
+                <button type="button"
+                        onclick="document.getElementById('techSubmitWorkModal').classList.add('hidden')"
+                        class="px-4 py-2 rounded-[8px] bg-white border border-[#EAEAE9] text-[13.5px] font-medium text-[#2B2823] shadow-sm hover:bg-[#FAFAFA] cursor-pointer">
+                    Cancel
+                </button>
+                <button id="techSubmitWorkBtn"
+                        type="submit"
+                        class="px-5 py-2 rounded-[8px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[13.5px] font-semibold shadow-sm cursor-pointer">
+                    Submit for Review
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Reject Assignment Modal -->
+<div id="techRejectModal"
+     class="hidden fixed inset-0 bg-black/45 backdrop-blur-[1px] flex items-center justify-center z-50 p-4">
+    <div class="w-full max-w-[440px] rounded-[13px] bg-[#F3F3F3] border-2 border-white/35 p-4 shadow-[0_0_0_2px_rgba(255,255,255,0.2),3px_9px_21px_rgba(48,48,48,0.1)]"
+         style="background-clip: padding-box;">
+        <div class="flex items-center justify-between mb-3">
+            <div>
+                <h3 class="text-[17px] font-semibold text-[#2B2823]">Decline Task Assignment</h3>
+                <p id="techRejectModalSub" class="text-[12.5px] text-[#716F6C] mt-0.5"></p>
+            </div>
+            <button type="button"
+                    onclick="document.getElementById('techRejectModal').classList.add('hidden')"
+                    class="w-9 h-9 rounded-[10px] bg-white border border-[#EAEAEA] flex items-center justify-center text-[#2B2823] hover:bg-[#FAFAFA] cursor-pointer">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <form id="techRejectForm" method="POST" action="" class="space-y-3">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="reject_task">
+            <input type="hidden" name="technician_id" value="{{ tech.id }}">
+            <input type="hidden" name="next" value="{% url 'backend:technician_details' tech.id %}?tab=tasks">
+            <div>
+                <label class="block text-[13px] font-medium text-[#2B2823] mb-1">Reason (Optional)</label>
+                <textarea name="reject_reason" rows="3"
+                          placeholder="Explain why this task cannot be accepted..."
+                          class="w-full rounded-[13px] bg-white border border-[#F0F0F0] p-3 text-[13.5px] text-[#2B2823] shadow-sm resize-none focus:outline-none focus:border-[#D93025]"></textarea>
+            </div>
+            <div class="pt-1 flex items-center justify-between">
+                <button type="button"
+                        onclick="document.getElementById('techRejectModal').classList.add('hidden')"
+                        class="px-4 py-2 rounded-[8px] bg-white border border-[#EAEAE9] text-[13.5px] font-medium text-[#2B2823] hover:bg-[#FAFAFA] cursor-pointer">
+                    Cancel
+                </button>
+                <button type="submit"
+                        class="px-4 py-2 rounded-[8px] bg-[#D93025] hover:bg-[#B91C1C] text-white text-[13.5px] font-semibold cursor-pointer">
+                    Confirm Decline
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function openTechSubmitModal(actionUrl, ticketId, title, desc, revisionCount, revisionNotes, submissionCount) {
+        const modal = document.getElementById('techSubmitWorkModal');
+        const form = document.getElementById('techSubmitWorkForm');
+        const titleEl = document.getElementById('techSubmitModalTitle');
+        const sub = document.getElementById('techSubmitModalSub');
+        const descEl = document.getElementById('techSubmitWorkDesc');
+        const btnEl = document.getElementById('techSubmitWorkBtn');
+        const revBanner = document.getElementById('techSubmitRevisionBanner');
+        const revHeading = document.getElementById('techSubmitRevisionHeading');
+        const revText = document.getElementById('techSubmitRevisionText');
+        if (!modal || !form) return;
+        form.action = actionUrl;
+        const nextSubmission = (Number(submissionCount) || 0) + 1;
+        if (revisionCount > 0) {
+            if (titleEl) titleEl.textContent = 'Submit Updated Work (Submission #' + nextSubmission + ')';
+            if (btnEl) btnEl.textContent = 'Resubmit for Review';
+            if (revBanner) revBanner.classList.remove('hidden');
+            if (revHeading) revHeading.textContent = 'Supervisor Requested Revision #' + revisionCount + ' — Required Changes:';
+            if (revText) revText.textContent = revisionNotes || 'Please review supervisor notes on the ticket.';
+        } else {
+            if (titleEl) titleEl.textContent = 'Submit Completed Work';
+            if (btnEl) btnEl.textContent = 'Submit for Review';
+            if (revBanner) revBanner.classList.add('hidden');
+        }
+        if (sub) sub.textContent = 'Ticket #' + ticketId + ' — ' + title;
+        if (descEl) descEl.value = desc || '';
+        modal.classList.remove('hidden');
+    }
+
+    function openTechRejectModal(actionUrl, ticketId, title) {
+        const modal = document.getElementById('techRejectModal');
+        const form = document.getElementById('techRejectForm');
+        const sub = document.getElementById('techRejectModalSub');
+        if (!modal || !form) return;
+        form.action = actionUrl;
+        if (sub) sub.textContent = 'Ticket #' + ticketId + ' — ' + title;
+        modal.classList.remove('hidden');
+    }
+
+    ['techSubmitWorkModal', 'techRejectModal'].forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('click', function(e) {
+                if (e.target === this) this.classList.add('hidden');
+            });
+        }
+    });
+
+    (function renderTechDonut() {
+        const svg = document.getElementById('techServiceDonutSvg');
+        if (!svg) return;
+
+        const segments = [
+            { value: {{ completed_services|default:0 }}, color: '#FFC4A2' },
+            { value: {{ in_progress_services|default:0 }}, color: '#FDE7B2' },
+            { value: {{ pending_review_services|default:0 }}, color: '#C7D2FE' },
+            { value: {{ pending_services|default:0 }}, color: '#BDBDBD' },
+        ];
+
+        const cx = 74, cy = 74, rOuter = 69, rInner = 45, cornerStroke = 9;
+        const rMid = (rOuter + rInner) / 2;
+        const ringWidth = (rOuter - rInner) + cornerStroke;
+        const total = segments.reduce((sum, s) => sum + s.value, 0);
+
+        if (total === 0) {
+            svg.innerHTML = `<circle cx="${cx}" cy="${cy}" r="${rMid}" fill="none" stroke="#EAEAE8" stroke-width="${ringWidth}" />`;
+            return;
+        }
+
+        const nonZero = segments.filter(s => s.value > 0);
+        if (nonZero.length === 1) {
+            svg.innerHTML = `<circle cx="${cx}" cy="${cy}" r="${rMid}" fill="none" stroke="${nonZero[0].color}" stroke-width="${ringWidth}" />`;
+            return;
+        }
+
+        const gapDeg = 10;
+        const availableDeg = 360 - gapDeg * nonZero.length;
+
+        function polarToCartesian(r, deg) {
+            const rad = (deg - 90) * Math.PI / 180;
+            return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+        }
+
+        function arcPath(startDeg, endDeg) {
+            const sweep = endDeg - startDeg;
+            const largeArc = sweep > 180 ? 1 : 0;
+            const p1 = polarToCartesian(rOuter, startDeg);
+            const p2 = polarToCartesian(rOuter, endDeg);
+            const p3 = polarToCartesian(rInner, endDeg);
+            const p4 = polarToCartesian(rInner, startDeg);
+            return [
+                `M ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}`,
+                `A ${rOuter} ${rOuter} 0 ${largeArc} 1 ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`,
+                `L ${p3.x.toFixed(2)} ${p3.y.toFixed(2)}`,
+                `A ${rInner} ${rInner} 0 ${largeArc} 0 ${p4.x.toFixed(2)} ${p4.y.toFixed(2)}`,
+                'Z'
+            ].join(' ');
+        }
+
+        let angle = -12;
+        let paths = '';
+        nonZero.forEach(seg => {
+            const span = (seg.value / total) * availableDeg;
+            const d = arcPath(angle, angle + span);
+            paths += `<path d="${d}" fill="${seg.color}" fill-rule="evenodd" stroke="${seg.color}" stroke-width="${cornerStroke}" stroke-linejoin="round" paint-order="stroke fill" />`;
+            angle += span + gapDeg;
+        });
+
+        svg.innerHTML = paths;
+    })();
+</script>
+{% endblock %}

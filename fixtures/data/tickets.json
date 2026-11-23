@@ -112,5 +112,556 @@
             "created_at": "2026-06-13T08:30:00Z",
             "updated_at": "2026-06-13T08:30:00Z"
         }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 201,
+        "fields": {
+            "title": "Unusual vibration during startup (EQ-HVAC-001)",
+            "equipment": 1,
+            "building": 1,
+            "status": "open",
+            "priority": "low",
+            "issue_type": "breakdown",
+            "issue_description": "Reported issue on Main Office Chiller AC at Roof. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 202,
+        "fields": {
+            "title": "Cooling output below target (EQ-ELV-001)",
+            "equipment": 2,
+            "building": 1,
+            "status": "assigned",
+            "priority": "medium",
+            "issue_type": "performance",
+            "issue_description": "Reported issue on Lobby Passenger Elevator A at Lobby. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 203,
+        "fields": {
+            "title": "Intermittent power trip on load (EQ-GEN-001)",
+            "equipment": 3,
+            "building": 2,
+            "status": "in_progress",
+            "priority": "high",
+            "issue_type": "leakage",
+            "issue_description": "Reported issue on Basement Diesel Generator at Basement. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 204,
+        "fields": {
+            "title": "Sensor calibration warning active (EQ-FIRE-001)",
+            "equipment": 4,
+            "building": 3,
+            "status": "resolved",
+            "priority": "critical",
+            "issue_type": "electrical",
+            "issue_description": "Reported issue on Central Fire Suppression Panel at All Floors. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 205,
+        "fields": {
+            "title": "Periodic safety inspection requested (EQ-HVAC-002)",
+            "equipment": 5,
+            "building": 2,
+            "status": "closed",
+            "priority": "low",
+            "issue_type": "safety",
+            "issue_description": "Reported issue on Mezzanine Air Handler at Floor 4 Mezzanine. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 206,
+        "fields": {
+            "title": "Minor oil seepage near seal (EQ-ELV-002)",
+            "equipment": 6,
+            "building": 3,
+            "status": "open",
+            "priority": "medium",
+            "issue_type": "routine_check",
+            "issue_description": "Reported issue on Tower A Service Lift at Tower A. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 207,
+        "fields": {
+            "title": "Control panel display flickering (EQ-GEN-002)",
+            "equipment": 7,
+            "building": 1,
+            "status": "assigned",
+            "priority": "high",
+            "issue_type": "breakdown",
+            "issue_description": "Reported issue on Backup Power Generator 500kVA at Basement. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 208,
+        "fields": {
+            "title": "Door interlock response sluggish (EQ-FIRE-002)",
+            "equipment": 8,
+            "building": 1,
+            "status": "in_progress",
+            "priority": "critical",
+            "issue_type": "performance",
+            "issue_description": "Reported issue on Main Fire Alarm Control Unit at Basement. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 209,
+        "fields": {
+            "title": "Filter pressure drop alarm (EQ-HQ-005)",
+            "equipment": 101,
+            "building": 1,
+            "status": "resolved",
+            "priority": "low",
+            "issue_type": "leakage",
+            "issue_description": "Reported issue on Executive Floor VRF Unit at Floor 5. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 210,
+        "fields": {
+            "title": "Backup battery voltage low (EQ-HQ-006)",
+            "equipment": 102,
+            "building": 1,
+            "status": "closed",
+            "priority": "medium",
+            "issue_type": "electrical",
+            "issue_description": "Reported issue on Conference Hall Split AC at Floor 3. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 211,
+        "fields": {
+            "title": "Unusual vibration during startup (EQ-HQ-007)",
+            "equipment": 103,
+            "building": 1,
+            "status": "open",
+            "priority": "high",
+            "issue_type": "safety",
+            "issue_description": "Reported issue on Server Room Precision AC at Floor 2. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 212,
+        "fields": {
+            "title": "Cooling output below target (EQ-HQ-008)",
+            "equipment": 104,
+            "building": 1,
+            "status": "assigned",
+            "priority": "critical",
+            "issue_type": "routine_check",
+            "issue_description": "Reported issue on East Wing Passenger Lift B at Ground Floor. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 213,
+        "fields": {
+            "title": "Intermittent power trip on load (EQ-HQ-009)",
+            "equipment": 105,
+            "building": 1,
+            "status": "in_progress",
+            "priority": "low",
+            "issue_type": "breakdown",
+            "issue_description": "Reported issue on Service Cargo Elevator at Basement. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 214,
+        "fields": {
+            "title": "Sensor calibration warning active (EQ-HQ-010)",
+            "equipment": 106,
+            "building": 1,
+            "status": "resolved",
+            "priority": "medium",
+            "issue_type": "performance",
+            "issue_description": "Reported issue on Standby Generator 250kVA at Basement. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 215,
+        "fields": {
+            "title": "Periodic safety inspection requested (EQ-HQ-011)",
+            "equipment": 107,
+            "building": 1,
+            "status": "closed",
+            "priority": "high",
+            "issue_type": "leakage",
+            "issue_description": "Reported issue on Sprinkler Booster Pump at Basement. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 216,
+        "fields": {
+            "title": "Minor oil seepage near seal (EQ-HQ-012)",
+            "equipment": 108,
+            "building": 1,
+            "status": "open",
+            "priority": "critical",
+            "issue_type": "electrical",
+            "issue_description": "Reported issue on North Wing Smoke Detector Hub at Floor 4. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 217,
+        "fields": {
+            "title": "Control panel display flickering (EQ-HQ-013)",
+            "equipment": 109,
+            "building": 1,
+            "status": "assigned",
+            "priority": "low",
+            "issue_type": "safety",
+            "issue_description": "Reported issue on Auditorium Ducted AC at Floor 1. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 218,
+        "fields": {
+            "title": "Door interlock response sluggish (EQ-HQ-014)",
+            "equipment": 110,
+            "building": 1,
+            "status": "in_progress",
+            "priority": "medium",
+            "issue_type": "routine_check",
+            "issue_description": "Reported issue on Auxiliary Cooling Tower at Roof. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 219,
+        "fields": {
+            "title": "Filter pressure drop alarm (EQ-HQ-015)",
+            "equipment": 111,
+            "building": 1,
+            "status": "resolved",
+            "priority": "high",
+            "issue_type": "breakdown",
+            "issue_description": "Reported issue on Emergency Lighting UPS Pack at Floor 1. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 220,
+        "fields": {
+            "title": "Backup battery voltage low (EQ-HQ-016)",
+            "equipment": 112,
+            "building": 1,
+            "status": "closed",
+            "priority": "critical",
+            "issue_type": "performance",
+            "issue_description": "Reported issue on Reception Cassette AC at Ground Floor. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 221,
+        "fields": {
+            "title": "Unusual vibration during startup (EQ-FX-001)",
+            "equipment": 201,
+            "building": 201,
+            "status": "open",
+            "priority": "low",
+            "issue_type": "leakage",
+            "issue_description": "Reported issue on Daikin HVAC Unit 01 at Basement. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 222,
+        "fields": {
+            "title": "Cooling output below target (EQ-FX-002)",
+            "equipment": 202,
+            "building": 202,
+            "status": "assigned",
+            "priority": "medium",
+            "issue_type": "electrical",
+            "issue_description": "Reported issue on Otis Elevator Unit 02 at Ground Floor. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 223,
+        "fields": {
+            "title": "Intermittent power trip on load (EQ-FX-003)",
+            "equipment": 203,
+            "building": 203,
+            "status": "in_progress",
+            "priority": "high",
+            "issue_type": "safety",
+            "issue_description": "Reported issue on Carrier Generator Unit 03 at Floor 1. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 224,
+        "fields": {
+            "title": "Sensor calibration warning active (EQ-FX-004)",
+            "equipment": 204,
+            "building": 204,
+            "status": "resolved",
+            "priority": "critical",
+            "issue_type": "routine_check",
+            "issue_description": "Reported issue on Cummins Fire Safety Unit 04 at Floor 2. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 225,
+        "fields": {
+            "title": "Periodic safety inspection requested (EQ-FX-005)",
+            "equipment": 205,
+            "building": 205,
+            "status": "closed",
+            "priority": "low",
+            "issue_type": "breakdown",
+            "issue_description": "Reported issue on Honeywell Chiller System Unit 05 at Floor 3. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 226,
+        "fields": {
+            "title": "Minor oil seepage near seal (EQ-FX-006)",
+            "equipment": 206,
+            "building": 206,
+            "status": "open",
+            "priority": "medium",
+            "issue_type": "performance",
+            "issue_description": "Reported issue on Siemens Water Pump Unit 06 at Floor 4. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 227,
+        "fields": {
+            "title": "Control panel display flickering (EQ-FX-007)",
+            "equipment": 207,
+            "building": 207,
+            "status": "assigned",
+            "priority": "high",
+            "issue_type": "leakage",
+            "issue_description": "Reported issue on Mitsubishi Electrical Substation Unit 07 at Floor 5. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 228,
+        "fields": {
+            "title": "Door interlock response sluggish (EQ-FX-008)",
+            "equipment": 208,
+            "building": 208,
+            "status": "in_progress",
+            "priority": "critical",
+            "issue_type": "electrical",
+            "issue_description": "Reported issue on Schindler Power Transformer Unit 08 at Roof. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticket",
+        "pk": 229,
+        "fields": {
+            "title": "Filter pressure drop alarm (EQ-FX-009)",
+            "equipment": 209,
+            "building": 209,
+            "status": "resolved",
+            "priority": "low",
+            "issue_type": "safety",
+            "issue_description": "Reported issue on ABB UPS Battery Bank Unit 09 at Basement. Technician inspection required.",
+            "user": 1,
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
     }
 ]

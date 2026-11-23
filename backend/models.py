@@ -274,6 +274,24 @@ class Building(models.Model):
         return f"[{self.id}] — {label}"
  
 
+class Skill(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True)
+
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='skill_created_by', blank=True, null=True)
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='skill_updated_by', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    deleted = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
 class Technician(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="technician_profile", null=True, blank=True)
     first_name = models.CharField(max_length=50, blank=True)
@@ -281,6 +299,7 @@ class Technician(models.Model):
     email = models.EmailField(blank=True) 
     phone_number = models.CharField(max_length=20, blank=True)
     about = models.TextField(blank=True)
+    skills = models.ManyToManyField(Skill, related_name="technicians", blank=True)
 
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='technician_created_by', blank=True, null=True)
     updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='technician_updated_by', blank=True, null=True)
@@ -306,7 +325,14 @@ class Technician(models.Model):
         return name[0].upper() if name else "T"
 
     @property
+    def active_skills(self):
+        return [s for s in self.skills.all() if not s.deleted and s.is_active]
+
+    @property
     def primary_skill(self):
+        assigned = self.active_skills
+        if assigned:
+            return assigned[0].name
         text = (self.about or '').lower()
         if 'electric' in text:
             return 'Electrical'
@@ -332,13 +358,17 @@ class Technician(models.Model):
 
     @property
     def extra_skills_count(self):
+        assigned = self.active_skills
+        if assigned:
+            extra = len(assigned) - 1
+            return f'+{extra}' if extra > 0 else ''
         text = (self.about or '')
         words = len(text.split())
         if words > 10:
-            return '3+'
+            return '+3'
         elif words > 5:
-            return '2+'
-        return '1+'
+            return '+2'
+        return '+1'
 
 
 class EquipmentType(models.Model):
@@ -598,7 +628,9 @@ class Ticket(models.Model):
     STATUS_CHOICES = [
         ("open", "Open"),
         ("assigned", "Assigned"),
+        ("accepted", "Accepted"),
         ("in_progress", "In Progress"),
+        ("pending_review", "Pending Review"),
         ("resolved", "Resolved"),
         ("closed", "Closed | Done"),
         ("rejected", "Rejected"),
@@ -654,6 +686,28 @@ class Ticket(models.Model):
 
     def __str__(self):
         return f"{self.id}: {self.title}"
+
+
+class TicketTaskItem(models.Model):
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="checklist_items")
+    title = models.CharField(max_length=255)
+    is_completed = models.BooleanField(default=False)
+    technician_feedback = models.TextField(blank=True)
+    order = models.PositiveIntegerField(default=0)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="ticket_task_created_by")
+    updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="ticket_task_updated_by")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    deleted = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["order", "id"]
+
+    def __str__(self):
+        return f"Task on Ticket #{self.ticket_id}: {self.title}"
  
  
 class TicketComment(models.Model):
@@ -681,6 +735,12 @@ class TicketActivityLog(models.Model):
         ("created", "Created Ticket"),
         ("status_changed", "Status Changed"),
         ("assigned", "Technician Assigned"),
+        ("accepted", "Technician Accepted"),
+        ("rejected_assignment", "Assignment Rejected"),
+        ("work_started", "Work Started"),
+        ("submitted_for_review", "Submitted for Review"),
+        ("review_approved", "Review Approved"),
+        ("review_rejected", "Revision Requested"),
         ("comment_added", "Comment Added"),
         ("priority_changed", "Priority Changed"),
         ("resolved", "Marked Resolved"),
@@ -723,6 +783,8 @@ class AssignActivities(models.Model):
 
     COMPLATE_STATUS_CHOICES = [
         ("pending", "Pending"),
+        ("in_progress", "In Progress"),
+        ("submitted", "Submitted for Review"),
         ("completed", "Completed"),
         ("skipped", "Skipped"),
         ('overdue', "Overdue"),
@@ -735,6 +797,8 @@ class AssignActivities(models.Model):
     completion_status = models.CharField(max_length=20, choices=COMPLATE_STATUS_CHOICES, default="pending")
     
     assigned_at = models.DateTimeField(auto_now_add=True)
+    accepted_at = models.DateTimeField(null=True, blank=True)
+    started_at = models.DateTimeField(null=True, blank=True)
     completed_at = models.DateTimeField(null=True, blank=True) 
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assign_activity_created_by', blank=True, null=True)
     updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assign_activity_updated_by', blank=True, null=True)

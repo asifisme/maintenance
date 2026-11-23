@@ -178,5 +178,425 @@
             "is_active": true,
             "deleted": false
         }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 201,
+        "fields": {
+            "equipment_type": 1,
+            "name": "Compressor Assembly",
+            "description": "Standard inspection checklist component: Compressor Assembly.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 202,
+        "fields": {
+            "equipment_type": 2,
+            "name": "Condenser Coil",
+            "description": "Standard inspection checklist component: Condenser Coil.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 203,
+        "fields": {
+            "equipment_type": 3,
+            "name": "Evaporator Fan Motor",
+            "description": "Standard inspection checklist component: Evaporator Fan Motor.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 204,
+        "fields": {
+            "equipment_type": 4,
+            "name": "Expansion Valve",
+            "description": "Standard inspection checklist component: Expansion Valve.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 205,
+        "fields": {
+            "equipment_type": 201,
+            "name": "Control PCB Module",
+            "description": "Standard inspection checklist component: Control PCB Module.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 206,
+        "fields": {
+            "equipment_type": 202,
+            "name": "Hoist Traction Rope",
+            "description": "Standard inspection checklist component: Hoist Traction Rope.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 207,
+        "fields": {
+            "equipment_type": 203,
+            "name": "Door Interlock Switch",
+            "description": "Standard inspection checklist component: Door Interlock Switch.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 208,
+        "fields": {
+            "equipment_type": 204,
+            "name": "Safety Gear Brake",
+            "description": "Standard inspection checklist component: Safety Gear Brake.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 209,
+        "fields": {
+            "equipment_type": 205,
+            "name": "Fuel Injection Pump",
+            "description": "Standard inspection checklist component: Fuel Injection Pump.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 210,
+        "fields": {
+            "equipment_type": 206,
+            "name": "Alternator Stator",
+            "description": "Standard inspection checklist component: Alternator Stator.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 211,
+        "fields": {
+            "equipment_type": 207,
+            "name": "Radiator Core",
+            "description": "Standard inspection checklist component: Radiator Core.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 212,
+        "fields": {
+            "equipment_type": 208,
+            "name": "Starter Solenoid",
+            "description": "Standard inspection checklist component: Starter Solenoid.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 213,
+        "fields": {
+            "equipment_type": 209,
+            "name": "Smoke Detector Loop",
+            "description": "Standard inspection checklist component: Smoke Detector Loop.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 214,
+        "fields": {
+            "equipment_type": 210,
+            "name": "Sprinkler Flow Switch",
+            "description": "Standard inspection checklist component: Sprinkler Flow Switch.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 215,
+        "fields": {
+            "equipment_type": 211,
+            "name": "Jockey Pump Seal",
+            "description": "Standard inspection checklist component: Jockey Pump Seal.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 216,
+        "fields": {
+            "equipment_type": 212,
+            "name": "Battery Cell Bank",
+            "description": "Standard inspection checklist component: Battery Cell Bank.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 217,
+        "fields": {
+            "equipment_type": 213,
+            "name": "Inverter IGBT Bridge",
+            "description": "Standard inspection checklist component: Inverter IGBT Bridge.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 218,
+        "fields": {
+            "equipment_type": 214,
+            "name": "Circuit Breaker Trip Unit",
+            "description": "Standard inspection checklist component: Circuit Breaker Trip Unit.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 219,
+        "fields": {
+            "equipment_type": 215,
+            "name": "Transformer Bushing",
+            "description": "Standard inspection checklist component: Transformer Bushing.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 220,
+        "fields": {
+            "equipment_type": 216,
+            "name": "Cooling Fan Relay",
+            "description": "Standard inspection checklist component: Cooling Fan Relay.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 221,
+        "fields": {
+            "equipment_type": 217,
+            "name": "Pressure Transducer",
+            "description": "Standard inspection checklist component: Pressure Transducer.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 222,
+        "fields": {
+            "equipment_type": 218,
+            "name": "Thermostat Sensor",
+            "description": "Standard inspection checklist component: Thermostat Sensor.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 223,
+        "fields": {
+            "equipment_type": 219,
+            "name": "Surge Protection Device",
+            "description": "Standard inspection checklist component: Surge Protection Device.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 224,
+        "fields": {
+            "equipment_type": 220,
+            "name": "Bearing & Shaft Seal",
+            "description": "Standard inspection checklist component: Bearing & Shaft Seal.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 225,
+        "fields": {
+            "equipment_type": 221,
+            "name": "VFD Drive Controller",
+            "description": "Standard inspection checklist component: VFD Drive Controller.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 226,
+        "fields": {
+            "equipment_type": 222,
+            "name": "PLC I/O Module",
+            "description": "Standard inspection checklist component: PLC I/O Module.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 227,
+        "fields": {
+            "equipment_type": 223,
+            "name": "Optical Fiber Transceiver",
+            "description": "Standard inspection checklist component: Optical Fiber Transceiver.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 228,
+        "fields": {
+            "equipment_type": 224,
+            "name": "Emergency Stop Switch",
+            "description": "Standard inspection checklist component: Emergency Stop Switch.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
     }
 ]

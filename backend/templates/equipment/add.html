@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Add New Equipment{% endblock %}
+{% block title %}{% if is_edit %}Update Equipment{% else %}Add New Equipment{% endif %}{% endblock %}
 
 {% block extra_head %}
 <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -379,7 +379,7 @@
 {% block page_header %}
 <div class="w-full pt-1 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-        <h1 class="bld-mono text-[24px] font-medium text-[#2B2823] leading-tight">Add  New  Equipment</h1>
+        <h1 class="bld-mono text-[24px] font-medium text-[#2B2823] leading-tight">{% if is_edit %}Update Equipment{% else %}Add  New  Equipment{% endif %}</h1>
         <p class="text-[13.5px] text-[#716F6C] mt-1">Manage government buildings and their equipment from one place.</p>
     </div>
     <div class="flex items-center gap-2.5">
@@ -403,7 +403,7 @@
         <!-- Header: Title inside outer frame (Urbanist 600, 18px, #272420, 166px x 22px) -->
         <div class="px-2 pt-0.5">
             <h2 id="wizardStepTitle" class="text-[18px] font-semibold text-[#272420] tracking-normal leading-[22px]" style="font-family: 'Urbanist', sans-serif;">
-                Add New Equipment
+                {% if is_edit %}Update Equipment{% else %}Add New Equipment{% endif %}
             </h2>
         </div>
 
@@ -424,14 +424,14 @@
             </div>
 
             <!-- Form starts -->
-            <form id="equipmentAddForm" method="post" action="{% url 'backend:equipment_add' %}" novalidate>
+            <form id="equipmentAddForm" method="post" action="{% if is_edit %}{% url 'backend:equipment_update' obj.id %}{% else %}{% url 'backend:equipment_add' %}{% endif %}" novalidate>
                 {% csrf_token %}
-                <input type="hidden" name="from_building" value="{{ from_building|default:'' }}">
+                <input type="hidden" name="from_building" value="{% if not is_edit %}{{ from_building|default:'' }}{% endif %}">
                 <input type="hidden" name="is_ajax" value="1">
-                <input type="hidden" id="hiddenEquipmentTypeId" name="equipment_type_id" value="">
-                <input type="hidden" id="hiddenCustomFields" name="custom_fields" value="{}">
-                <input type="hidden" id="hiddenAssignToBuilding" name="assign_to_building" value="false">
-                <input type="hidden" id="hiddenStatus" name="status" value="active">
+                <input type="hidden" id="hiddenEquipmentTypeId" name="equipment_type_id" value="{{ obj.equipment_type_id|default:'' }}">
+                <input type="hidden" id="hiddenCustomFields" name="custom_fields" value="{{ existing_custom_fields_json|default:'{}' }}">
+                <input type="hidden" id="hiddenAssignToBuilding" name="assign_to_building" value="{% if obj.building_id %}true{% else %}false{% endif %}">
+                <input type="hidden" id="hiddenStatus" name="status" value="{{ obj.status|default:'active' }}">
 
                 <!-- ========================================== -->
                 <!-- STEP 1: Equipment Information              -->
@@ -486,6 +486,7 @@
                             <input type="text"
                                    id="equipment_id"
                                    name="equipment_id"
+                                   value="{{ obj.equipment_id|default:'' }}"
                                    class="form-input-field"
                                    placeholder="e.g. EQ-2026-001">
                             <p class="text-[11.5px] text-[#969491] mt-1">Cannot be changed after creation.</p>
@@ -498,6 +499,7 @@
                             <input type="text"
                                    id="equipment_name"
                                    name="equipment_name"
+                                   value="{{ obj.equipment_name|default:'' }}"
                                    class="form-input-field"
                                    placeholder="Enter equipment name">
                             <p id="err_equipment_name" class="text-xs text-[#D93025] mt-1 hidden">Equipment Name is required.</p>
@@ -513,6 +515,7 @@
                             <input type="text"
                                    id="serial_number"
                                    name="serial_number"
+                                   value="{{ obj.serial_number|default:'' }}"
                                    class="form-input-field"
                                    placeholder="Enter manufacturer's serial number">
                             <p id="err_serial_number" class="text-xs text-[#D93025] mt-1 hidden">Serial number is required.</p>
@@ -524,6 +527,7 @@
                             <input type="text"
                                    id="model_number"
                                    name="model_number"
+                                   value="{{ obj.model_number|default:'' }}"
                                    class="form-input-field"
                                    placeholder="Enter model number">
                             <p id="err_model_number" class="text-xs text-[#D93025] mt-1 hidden">Model number is required.</p>
@@ -539,6 +543,7 @@
                             <input type="text"
                                    id="brandInput"
                                    name="brand"
+                                   value="{{ obj.brand|default:'' }}"
                                    autocomplete="off"
                                    class="form-input-field pr-9"
                                    placeholder="Select or create a brand">
@@ -562,6 +567,26 @@
                         </div>
                     </div>
 
+                    <!-- Row 4: Purchase Date & Warranty Expire Date -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <div>
+                            <label class="form-label" for="purchase_date">Purchase Date</label>
+                            <input type="date"
+                                   id="purchase_date"
+                                   name="purchase_date"
+                                   value="{% if obj.purchase_date %}{{ obj.purchase_date|date:'Y-m-d' }}{% endif %}"
+                                   class="form-input-field">
+                        </div>
+                        <div>
+                            <label class="form-label" for="warranty_expire_date">Warranty Expire Date</label>
+                            <input type="date"
+                                   id="warranty_expire_date"
+                                   name="warranty_expire_date"
+                                   value="{% if obj.warranty_expire_date %}{{ obj.warranty_expire_date|date:'Y-m-d' }}{% endif %}"
+                                   class="form-input-field">
+                        </div>
+                    </div>
+
                     <!-- Dynamic Configured Type Fields Container -->
                     <div id="dynamicFieldsSection" class="hidden border-t border-[#EAEAEA] pt-3.5 space-y-3.5">
                         <h3 id="dynamicFieldsHeading" class="text-[13.5px] font-semibold text-[#2B2823]">
@@ -569,6 +594,18 @@
                         </h3>
                         <div id="dynamicFieldsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                             <!-- Populated dynamically based on selected Equipment Type -->
+                        </div>
+                    </div>
+
+                    <!-- Equipment Status Section -->
+                    <div class="border-t border-[#EAEAEA] pt-3.5 space-y-2.5">
+                        <label class="form-label mb-1">Equipment Status</label>
+                        <div class="flex flex-wrap items-center gap-2" id="statusPillsGroup">
+                            <span class="status-pill is-selected" data-status="active" onclick="selectStatus('active', this)">Active</span>
+                            <span class="status-pill" data-status="in_repair" onclick="selectStatus('in_repair', this)">In Repair</span>
+                            <span class="status-pill" data-status="under_maintenance" onclick="selectStatus('under_maintenance', this)">Under Maintenance</span>
+                            <span class="status-pill" data-status="inactive" onclick="selectStatus('inactive', this)">Inactive</span>
+                            <span class="status-pill" data-status="decommissioned" onclick="selectStatus('decommissioned', this)">Decommissioned</span>
                         </div>
                     </div>
 
@@ -635,23 +672,23 @@
                                     <input type="text"
                                            id="floor_location"
                                            name="floor_location"
+                                           value="{{ obj.floor_location|default:'' }}"
                                            class="form-input-field"
                                            placeholder="e.g. Ground Floor, Basement">
                                 </div>
                             </div>
 
-                            <!-- Row 2: Room / Location -->
-                            <div>
-                                <label class="form-label" for="room_location">Room / Location</label>
-                                <input type="text"
-                                       id="room_location"
-                                       name="room_location"
-                                       class="form-input-field"
-                                       placeholder="e.g. Room 502, Server Room">
-                            </div>
-
-                            <!-- Row 3: Installation Date & Purchase Date -->
+                            <!-- Row 2: Room / Location & Installation Date -->
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                                <div>
+                                    <label class="form-label" for="room_location">Room / Location</label>
+                                    <input type="text"
+                                           id="room_location"
+                                           name="room_location"
+                                           value="{{ obj.room_location|default:'' }}"
+                                           class="form-input-field"
+                                           placeholder="e.g. Room 502, Server Room">
+                                </div>
                                 <div>
                                     <label class="form-label" for="installment_date">
                                         Installation Date <span class="text-[#D93025]">*</span>
@@ -659,35 +696,20 @@
                                     <input type="date"
                                            id="installment_date"
                                            name="installment_date"
+                                           value="{% if obj.installment_date %}{{ obj.installment_date|date:'Y-m-d' }}{% endif %}"
                                            class="form-input-field">
                                     <p id="err_installment_date" class="text-xs text-[#D93025] mt-1 hidden">Installation Date is required.</p>
                                 </div>
-                                <div>
-                                    <label class="form-label" for="purchase_date">Purchase Date</label>
-                                    <input type="date"
-                                           id="purchase_date"
-                                           name="purchase_date"
-                                           class="form-input-field">
-                                </div>
                             </div>
 
-                            <!-- Row 4: Warranty Expire Date -->
-                            <div>
-                                <label class="form-label" for="warranty_expire_date">Warranty Expire Date</label>
-                                <input type="date"
-                                       id="warranty_expire_date"
-                                       name="warranty_expire_date"
-                                       class="form-input-field">
-                            </div>
-
-                            <!-- Row 5: Installation Notes -->
+                            <!-- Row 4: Installation Notes -->
                             <div>
                                 <label class="form-label" for="installation_notes">Installation Notes</label>
                                 <textarea id="installation_notes"
                                           name="installation_notes"
                                           rows="2"
                                           class="form-textarea-field"
-                                          placeholder="Optional notes"></textarea>
+                                          placeholder="Optional notes">{{ obj.installation_notes|default:'' }}</textarea>
                             </div>
                         </div>
 
@@ -704,7 +726,7 @@
                                     <input type="number"
                                            id="maintenance_period_days"
                                            name="maintenance_period_days"
-                                           value="90"
+                                           value="{{ obj.maintenance_period_days|default:'90' }}"
                                            min="1"
                                            class="form-input-field"
                                            placeholder="90">
@@ -716,9 +738,9 @@
                                     </label>
                                     <div class="relative">
                                         <select id="frequency_unit" name="frequency_unit" class="form-select-field">
-                                            <option value="Days" selected>Days</option>
-                                            <option value="Months">Months</option>
-                                            <option value="Years">Years</option>
+                                            <option value="Days" {% if not obj or obj.frequency_unit == 'Days' %}selected{% endif %}>Days</option>
+                                            <option value="Months" {% if obj.frequency_unit == 'Months' %}selected{% endif %}>Months</option>
+                                            <option value="Years" {% if obj.frequency_unit == 'Years' %}selected{% endif %}>Years</option>
                                         </select>
                                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-[#716F6C]">
                                             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -736,6 +758,7 @@
                                     <input type="date"
                                            id="last_maintenance_date"
                                            name="last_maintenance_date"
+                                           value="{% if obj.last_maintenance_date %}{{ obj.last_maintenance_date|date:'Y-m-d' }}{% endif %}"
                                            class="form-input-field">
                                     <p class="text-[11.5px] text-[#969491] mt-1">Optional for newly installed equipment.</p>
                                 </div>
@@ -744,6 +767,7 @@
                                     <input type="date"
                                            id="next_service_due"
                                            name="next_service_due"
+                                           value="{% if obj.next_service_due %}{{ obj.next_service_due|date:'Y-m-d' }}{% endif %}"
                                            class="form-input-field">
                                     <p class="text-[11.5px] text-[#969491] mt-1">Enter the last service date to calculate this automatically, or set it manually.</p>
                                 </div>
@@ -756,19 +780,7 @@
                                           name="maintenance_notes"
                                           rows="2"
                                           class="form-textarea-field"
-                                          placeholder="Optional notes"></textarea>
-                            </div>
-                        </div>
-
-                        <!-- Equipment Status Section -->
-                        <div class="border-t border-[#EAEAEA] pt-4 space-y-2.5">
-                            <label class="form-label mb-1">Equipment Status</label>
-                            <div class="flex flex-wrap items-center gap-2" id="statusPillsGroup">
-                                <span class="status-pill is-selected" data-status="active" onclick="selectStatus('active', this)">Active</span>
-                                <span class="status-pill" data-status="in_repair" onclick="selectStatus('in_repair', this)">In Repair</span>
-                                <span class="status-pill" data-status="under_maintenance" onclick="selectStatus('under_maintenance', this)">Under Maintenance</span>
-                                <span class="status-pill" data-status="inactive" onclick="selectStatus('inactive', this)">Inactive</span>
-                                <span class="status-pill" data-status="decommissioned" onclick="selectStatus('decommissioned', this)">Decommissioned</span>
+                                          placeholder="Optional notes">{{ obj.maintenance_notes|default:'' }}</textarea>
                             </div>
                         </div>
 
@@ -1603,11 +1615,8 @@
                 submitBtnText.textContent = 'Save Equipment';
 
                 if (data.success) {
-                    const eqName = data.equipment_name || 'Equipment';
-                    const bldName = data.building_name || 'inventory';
-                    modalSubtitle.textContent = `${eqName} is now in the equipment directory and in ${bldName}'s inventory.`;
-                    viewBtn.href = data.detail_url;
-                    modal.classList.remove('hidden');
+                    const fallbackUrl = "{% if from_building %}{% url 'backend:building_details' from_building %}{% else %}{% url 'backend:equipment_list' %}{% endif %}";
+                    window.location.href = data.redirect_url || fallbackUrl;
                 } else {
                     alert((data.errors && data.errors.join('\n')) || 'Failed to save equipment.');
                 }
@@ -1622,7 +1631,7 @@
         // Modal Action Handlers
         closeBtn.addEventListener('click', () => {
             modal.classList.add('hidden');
-            window.location.href = "{% url 'backend:equipment_list' %}";
+            window.location.href = "{% if from_building %}{% url 'backend:building_details' from_building %}{% else %}{% url 'backend:equipment_list' %}{% endif %}";
         });
 
         addAnotherBtn.addEventListener('click', () => {
@@ -1664,11 +1673,37 @@
         {% if initial_type_id %}
             const preType = EQUIPMENT_TYPES.find(t => String(t.id) === "{{ initial_type_id }}");
             if (preType) {
+                selectedType = preType;
                 document.getElementById('hiddenEquipmentTypeId').value = preType.id;
                 document.getElementById('typeSearchInput').value = preType.name;
                 document.getElementById('btnClearType').classList.remove('hidden');
                 renderDynamicFields(preType);
             }
+        {% endif %}
+
+        // Edit mode pre-population (brand clear btn, status pill, dynamic custom fields)
+        {% if is_edit %}
+            const brandVal = document.getElementById('brandInput').value;
+            if (brandVal) {
+                document.getElementById('btnClearBrand').classList.remove('hidden');
+            }
+            const initStatus = "{{ obj.status|default:'active' }}";
+            const statusPill = document.querySelector(`#statusPillsGroup .status-pill[data-status="${initStatus}"]`);
+            if (statusPill) {
+                selectStatus(initStatus, statusPill);
+            }
+            const existingCustom = {{ existing_custom_fields_json|default:'{}'|safe }};
+            if (existingCustom && typeof existingCustom === 'object') {
+                document.querySelectorAll('.dyn-input').forEach(inp => {
+                    const key = inp.dataset.fieldName;
+                    if (key && existingCustom[key] !== undefined && existingCustom[key] !== null) {
+                        inp.value = existingCustom[key];
+                    }
+                });
+                document.getElementById('hiddenCustomFields').value = JSON.stringify(existingCustom);
+            }
+            const submitBtnText = document.getElementById('btnSubmitEquipmentText');
+            if (submitBtnText) submitBtnText.textContent = 'Save Changes';
         {% endif %}
     });
 </script>

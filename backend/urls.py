@@ -28,8 +28,17 @@ urlpatterns = [
     # Technician Management
     path('technician/', views.technician_list, name='technician_list'),
     path('technician/add/', views.technician_add, name='technician_add'),
+    path('technician/details/<int:data_id>/', views.technician_details, name='technician_details'),
+    path('technician/<int:tech_id>/task/<int:ticket_id>/', views.technician_task_detail, name='technician_task_detail'),
     path('technician/update/<int:data_id>/', views.technician_update, name='technician_update'),
     path('technician/delete/<int:data_id>/', views.technician_delete, name='technician_delete'),
+
+    # Skill Management
+    path('technician/skills/', views.skill_list, name='skill_list'),
+    path('technician/skills/add/', views.skill_add, name='skill_add'),
+    path('technician/skills/update/<int:data_id>/', views.skill_update, name='skill_update'),
+    path('technician/skills/status/<int:data_id>/', views.skill_status, name='skill_status'),
+    path('technician/skills/delete/<int:data_id>/', views.skill_delete, name='skill_delete'),
 
     # Division
     path('division/', views.division_list, name='division_list'),
@@ -83,6 +92,8 @@ urlpatterns = [
     path('equipment/update/<int:data_id>/', views.equipment_update, name='equipment_update'),
     path('equipment/status/<int:data_id>/', views.equipment_status, name='equipment_status'),
     path('equipment/history/', views.equipment_history, name='equipment_history'),
+    path('maintenance/history/', views.equipment_history, name='service_history'),
+    path('maintenance/history/<int:record_id>/', views.maintenance_record_detail, name='service_history_detail'),
 
     # Maintenance Record Review (approve / reject)
     path('maintenance/',views.maintenance_list,name='maintenance'),

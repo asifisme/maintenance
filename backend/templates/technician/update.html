@@ -252,7 +252,24 @@
                     </div>
                 </div>
 
-                <!-- Row 3: About / Bio -->
+                <!-- Row 3: Skills Selection -->
+                {% if all_skills %}
+                <div>
+                    <label class="form-label">
+                        Assigned Skills
+                    </label>
+                    <div class="bg-white rounded-[13px] border border-[#EAEAE9] p-3 flex flex-wrap gap-2">
+                        {% for sk in all_skills %}
+                            <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#F7F7F6] hover:bg-[#E7F6EC] border border-[#EAEAE9] text-[12.5px] font-medium text-[#2B2823] cursor-pointer transition-colors">
+                                <input type="checkbox" name="skills" value="{{ sk.id }}" {% if sk.id in selected_skill_ids %}checked{% endif %} class="rounded text-[#0B7A44] focus:ring-[#0B7A44]">
+                                <span>{{ sk.name }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Row 4: About / Bio -->
                 <div>
                     <label for="inputTechAbout" class="form-label">
                         About / Bio

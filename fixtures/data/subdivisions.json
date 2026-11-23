@@ -54,5 +54,439 @@
             "created_at": "2026-06-10T07:34:21Z",
             "updated_at": "2026-06-10T07:34:21Z"
         }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 201,
+        "fields": {
+            "division": 1,
+            "name": "Subdivision Zone 01",
+            "code": "FX-SUB-01",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 202,
+        "fields": {
+            "division": 2,
+            "name": "Subdivision Zone 02",
+            "code": "FX-SUB-02",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 203,
+        "fields": {
+            "division": 3,
+            "name": "Subdivision Zone 03",
+            "code": "FX-SUB-03",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 204,
+        "fields": {
+            "division": 4,
+            "name": "Subdivision Zone 04",
+            "code": "FX-SUB-04",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 205,
+        "fields": {
+            "division": 201,
+            "name": "Subdivision Zone 05",
+            "code": "FX-SUB-05",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 206,
+        "fields": {
+            "division": 202,
+            "name": "Subdivision Zone 06",
+            "code": "FX-SUB-06",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 207,
+        "fields": {
+            "division": 203,
+            "name": "Subdivision Zone 07",
+            "code": "FX-SUB-07",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 208,
+        "fields": {
+            "division": 204,
+            "name": "Subdivision Zone 08",
+            "code": "FX-SUB-08",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 209,
+        "fields": {
+            "division": 205,
+            "name": "Subdivision Zone 09",
+            "code": "FX-SUB-09",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 210,
+        "fields": {
+            "division": 206,
+            "name": "Subdivision Zone 10",
+            "code": "FX-SUB-10",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 211,
+        "fields": {
+            "division": 207,
+            "name": "Subdivision Zone 11",
+            "code": "FX-SUB-11",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 212,
+        "fields": {
+            "division": 208,
+            "name": "Subdivision Zone 12",
+            "code": "FX-SUB-12",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 213,
+        "fields": {
+            "division": 209,
+            "name": "Subdivision Zone 13",
+            "code": "FX-SUB-13",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 214,
+        "fields": {
+            "division": 210,
+            "name": "Subdivision Zone 14",
+            "code": "FX-SUB-14",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 215,
+        "fields": {
+            "division": 211,
+            "name": "Subdivision Zone 15",
+            "code": "FX-SUB-15",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 216,
+        "fields": {
+            "division": 212,
+            "name": "Subdivision Zone 16",
+            "code": "FX-SUB-16",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 217,
+        "fields": {
+            "division": 213,
+            "name": "Subdivision Zone 17",
+            "code": "FX-SUB-17",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 218,
+        "fields": {
+            "division": 214,
+            "name": "Subdivision Zone 18",
+            "code": "FX-SUB-18",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 219,
+        "fields": {
+            "division": 215,
+            "name": "Subdivision Zone 19",
+            "code": "FX-SUB-19",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 220,
+        "fields": {
+            "division": 216,
+            "name": "Subdivision Zone 20",
+            "code": "FX-SUB-20",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 221,
+        "fields": {
+            "division": 217,
+            "name": "Subdivision Zone 21",
+            "code": "FX-SUB-21",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 222,
+        "fields": {
+            "division": 218,
+            "name": "Subdivision Zone 22",
+            "code": "FX-SUB-22",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 223,
+        "fields": {
+            "division": 219,
+            "name": "Subdivision Zone 23",
+            "code": "FX-SUB-23",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 224,
+        "fields": {
+            "division": 220,
+            "name": "Subdivision Zone 24",
+            "code": "FX-SUB-24",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 225,
+        "fields": {
+            "division": 221,
+            "name": "Subdivision Zone 25",
+            "code": "FX-SUB-25",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 226,
+        "fields": {
+            "division": 222,
+            "name": "Subdivision Zone 26",
+            "code": "FX-SUB-26",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 227,
+        "fields": {
+            "division": 223,
+            "name": "Subdivision Zone 27",
+            "code": "FX-SUB-27",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 228,
+        "fields": {
+            "division": 224,
+            "name": "Subdivision Zone 28",
+            "code": "FX-SUB-28",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 229,
+        "fields": {
+            "division": 225,
+            "name": "Subdivision Zone 29",
+            "code": "FX-SUB-29",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 230,
+        "fields": {
+            "division": 226,
+            "name": "Subdivision Zone 30",
+            "code": "FX-SUB-30",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.subdivision",
+        "pk": 231,
+        "fields": {
+            "division": 227,
+            "name": "Subdivision Zone 31",
+            "code": "FX-SUB-31",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
     }
 ]

@@ -150,5 +150,518 @@
             "is_active": true,
             "deleted": false
         }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 201,
+        "fields": {
+            "maintenance_record": 1,
+            "name": "Compressor Assembly",
+            "description": "Inspected compressor assembly during service.",
+            "is_checked": false,
+            "remark": "Needs replacement next cycle",
+            "suggestion": "Order OEM spare part",
+            "proceed": false,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 202,
+        "fields": {
+            "maintenance_record": 2,
+            "name": "Condenser Coil",
+            "description": "Inspected condenser coil during service.",
+            "is_checked": true,
+            "remark": "Operating normally",
+            "suggestion": "Continue standard interval",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 203,
+        "fields": {
+            "maintenance_record": 3,
+            "name": "Evaporator Fan Motor",
+            "description": "Inspected evaporator fan motor during service.",
+            "is_checked": true,
+            "remark": "Operating normally",
+            "suggestion": "Continue standard interval",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 204,
+        "fields": {
+            "maintenance_record": 4,
+            "name": "Expansion Valve",
+            "description": "Inspected expansion valve during service.",
+            "is_checked": true,
+            "remark": "Operating normally",
+            "suggestion": "Continue standard interval",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 205,
+        "fields": {
+            "maintenance_record": 5,
+            "name": "Control PCB Module",
+            "description": "Inspected control pcb module during service.",
+            "is_checked": false,
+            "remark": "Needs replacement next cycle",
+            "suggestion": "Order OEM spare part",
+            "proceed": false,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 206,
+        "fields": {
+            "maintenance_record": 6,
+            "name": "Hoist Traction Rope",
+            "description": "Inspected hoist traction rope during service.",
+            "is_checked": true,
+            "remark": "Operating normally",
+            "suggestion": "Continue standard interval",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 207,
+        "fields": {
+            "maintenance_record": 201,
+            "name": "Door Interlock Switch",
+            "description": "Inspected door interlock switch during service.",
+            "is_checked": true,
+            "remark": "Operating normally",
+            "suggestion": "Continue standard interval",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 208,
+        "fields": {
+            "maintenance_record": 202,
+            "name": "Safety Gear Brake",
+            "description": "Inspected safety gear brake during service.",
+            "is_checked": true,
+            "remark": "Operating normally",
+            "suggestion": "Continue standard interval",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 209,
+        "fields": {
+            "maintenance_record": 203,
+            "name": "Fuel Injection Pump",
+            "description": "Inspected fuel injection pump during service.",
+            "is_checked": false,
+            "remark": "Needs replacement next cycle",
+            "suggestion": "Order OEM spare part",
+            "proceed": false,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 210,
+        "fields": {
+            "maintenance_record": 204,
+            "name": "Alternator Stator",
+            "description": "Inspected alternator stator during service.",
+            "is_checked": true,
+            "remark": "Operating normally",
+            "suggestion": "Continue standard interval",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 211,
+        "fields": {
+            "maintenance_record": 205,
+            "name": "Radiator Core",
+            "description": "Inspected radiator core during service.",
+            "is_checked": true,
+            "remark": "Operating normally",
+            "suggestion": "Continue standard interval",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 212,
+        "fields": {
+            "maintenance_record": 206,
+            "name": "Starter Solenoid",
+            "description": "Inspected starter solenoid during service.",
+            "is_checked": true,
+            "remark": "Operating normally",
+            "suggestion": "Continue standard interval",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 213,
+        "fields": {
+            "maintenance_record": 207,
+            "name": "Smoke Detector Loop",
+            "description": "Inspected smoke detector loop during service.",
+            "is_checked": false,
+            "remark": "Needs replacement next cycle",
+            "suggestion": "Order OEM spare part",
+            "proceed": false,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 214,
+        "fields": {
+            "maintenance_record": 208,
+            "name": "Sprinkler Flow Switch",
+            "description": "Inspected sprinkler flow switch during service.",
+            "is_checked": true,
+            "remark": "Operating normally",
+            "suggestion": "Continue standard interval",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 215,
+        "fields": {
+            "maintenance_record": 209,
+            "name": "Jockey Pump Seal",
+            "description": "Inspected jockey pump seal during service.",
+            "is_checked": true,
+            "remark": "Operating normally",
+            "suggestion": "Continue standard interval",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 216,
+        "fields": {
+            "maintenance_record": 210,
+            "name": "Battery Cell Bank",
+            "description": "Inspected battery cell bank during service.",
+            "is_checked": true,
+            "remark": "Operating normally",
+            "suggestion": "Continue standard interval",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 217,
+        "fields": {
+            "maintenance_record": 211,
+            "name": "Inverter IGBT Bridge",
+            "description": "Inspected inverter igbt bridge during service.",
+            "is_checked": false,
+            "remark": "Needs replacement next cycle",
+            "suggestion": "Order OEM spare part",
+            "proceed": false,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 218,
+        "fields": {
+            "maintenance_record": 212,
+            "name": "Circuit Breaker Trip Unit",
+            "description": "Inspected circuit breaker trip unit during service.",
+            "is_checked": true,
+            "remark": "Operating normally",
+            "suggestion": "Continue standard interval",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 219,
+        "fields": {
+            "maintenance_record": 213,
+            "name": "Transformer Bushing",
+            "description": "Inspected transformer bushing during service.",
+            "is_checked": true,
+            "remark": "Operating normally",
+            "suggestion": "Continue standard interval",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 220,
+        "fields": {
+            "maintenance_record": 214,
+            "name": "Cooling Fan Relay",
+            "description": "Inspected cooling fan relay during service.",
+            "is_checked": true,
+            "remark": "Operating normally",
+            "suggestion": "Continue standard interval",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 221,
+        "fields": {
+            "maintenance_record": 215,
+            "name": "Pressure Transducer",
+            "description": "Inspected pressure transducer during service.",
+            "is_checked": false,
+            "remark": "Needs replacement next cycle",
+            "suggestion": "Order OEM spare part",
+            "proceed": false,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 222,
+        "fields": {
+            "maintenance_record": 216,
+            "name": "Thermostat Sensor",
+            "description": "Inspected thermostat sensor during service.",
+            "is_checked": true,
+            "remark": "Operating normally",
+            "suggestion": "Continue standard interval",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 223,
+        "fields": {
+            "maintenance_record": 217,
+            "name": "Surge Protection Device",
+            "description": "Inspected surge protection device during service.",
+            "is_checked": true,
+            "remark": "Operating normally",
+            "suggestion": "Continue standard interval",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 224,
+        "fields": {
+            "maintenance_record": 218,
+            "name": "Bearing & Shaft Seal",
+            "description": "Inspected bearing & shaft seal during service.",
+            "is_checked": true,
+            "remark": "Operating normally",
+            "suggestion": "Continue standard interval",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 225,
+        "fields": {
+            "maintenance_record": 219,
+            "name": "VFD Drive Controller",
+            "description": "Inspected vfd drive controller during service.",
+            "is_checked": false,
+            "remark": "Needs replacement next cycle",
+            "suggestion": "Order OEM spare part",
+            "proceed": false,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 226,
+        "fields": {
+            "maintenance_record": 220,
+            "name": "PLC I/O Module",
+            "description": "Inspected plc i/o module during service.",
+            "is_checked": true,
+            "remark": "Operating normally",
+            "suggestion": "Continue standard interval",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 227,
+        "fields": {
+            "maintenance_record": 221,
+            "name": "Optical Fiber Transceiver",
+            "description": "Inspected optical fiber transceiver during service.",
+            "is_checked": true,
+            "remark": "Operating normally",
+            "suggestion": "Continue standard interval",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
     }
 ]

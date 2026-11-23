@@ -331,7 +331,7 @@
                             <tr>
                                 <!-- Service ID (underlined monospace link matching Figma) -->
                                 <td>
-                                    <a href="{% url 'backend:maintenance_record_detail' record.id %}"
+                                    <a href="{% url 'backend:service_history_detail' record.id %}"
                                        class="eqh-mono font-medium text-[#2B2823] underline underline-offset-2 hover:text-[#0B7A44] transition-colors">
                                         {% if record.maintenance %}
                                             {{ record.maintenance.maintenance_serial }}
@@ -418,7 +418,7 @@
                                         </button>
                                         <div data-menu class="hidden py-1.5 w-44 text-left rounded-lg bg-white shadow-xl border border-[#EAEAE9] z-50" role="menu">
                                             <!-- View Service Record -->
-                                            <a href="{% url 'backend:maintenance_record_detail' record.id %}"
+                                            <a href="{% url 'backend:service_history_detail' record.id %}"
                                                class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-[#2B2823] hover:bg-[#F7F7F6] transition-colors"
                                                role="menuitem">
                                                 <svg class="w-4 h-4 text-[#716F6C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">

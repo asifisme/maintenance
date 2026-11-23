@@ -1,6 +1,6 @@
 {% load pagination_tags %}
 {% get_page_object as current_page_obj %}
-{% if current_page_obj and current_page_obj.paginator %}
+{% if current_page_obj.paginator %}
 {% get_current_per_page as current_per_page %}
 
 <style>

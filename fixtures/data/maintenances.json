@@ -6,7 +6,9 @@
             "maintenance_serial": "MNT-2026-0001",
             "qr_code": "MNT-2026-0001",
             "building": 1,
-            "equipment": [1],
+            "equipment": [
+                1
+            ],
             "created_by": 1,
             "updated_by": 1,
             "created_at": "2026-03-01T09:00:00Z",
@@ -22,7 +24,9 @@
             "maintenance_serial": "MNT-2026-0002",
             "qr_code": "MNT-2026-0002",
             "building": 1,
-            "equipment": [2],
+            "equipment": [
+                2
+            ],
             "created_by": 1,
             "updated_by": 1,
             "created_at": "2026-05-15T10:00:00Z",
@@ -38,7 +42,9 @@
             "maintenance_serial": "MNT-2026-0003",
             "qr_code": "MNT-2026-0003",
             "building": 2,
-            "equipment": [3],
+            "equipment": [
+                3
+            ],
             "created_by": 1,
             "updated_by": 1,
             "created_at": "2026-06-08T13:00:00Z",
@@ -54,7 +60,9 @@
             "maintenance_serial": "MNT-2026-0004",
             "qr_code": "MNT-2026-0004",
             "building": 3,
-            "equipment": [4],
+            "equipment": [
+                4
+            ],
             "created_by": 1,
             "updated_by": 1,
             "created_at": "2026-06-12T11:00:00Z",
@@ -70,7 +78,9 @@
             "maintenance_serial": "MNT-2026-0005",
             "qr_code": "MNT-2026-0005",
             "building": 2,
-            "equipment": [5],
+            "equipment": [
+                5
+            ],
             "created_by": 1,
             "updated_by": 1,
             "created_at": "2026-06-15T08:30:00Z",
@@ -86,11 +96,535 @@
             "maintenance_serial": "MNT-2026-0006",
             "qr_code": "MNT-2026-0006",
             "building": 1,
-            "equipment": [7],
+            "equipment": [
+                7
+            ],
             "created_by": 1,
             "updated_by": 1,
             "created_at": "2026-06-18T13:00:00Z",
             "updated_at": "2026-06-18T17:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 201,
+        "fields": {
+            "maintenance_serial": "MT-2026-0100",
+            "qr_code": "QR-MT-2026-0100",
+            "building": 1,
+            "equipment": [
+                1
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 202,
+        "fields": {
+            "maintenance_serial": "MT-2026-0101",
+            "qr_code": "QR-MT-2026-0101",
+            "building": 1,
+            "equipment": [
+                2
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 203,
+        "fields": {
+            "maintenance_serial": "MT-2026-0102",
+            "qr_code": "QR-MT-2026-0102",
+            "building": 2,
+            "equipment": [
+                3
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 204,
+        "fields": {
+            "maintenance_serial": "MT-2026-0103",
+            "qr_code": "QR-MT-2026-0103",
+            "building": 3,
+            "equipment": [
+                4
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 205,
+        "fields": {
+            "maintenance_serial": "MT-2026-0104",
+            "qr_code": "QR-MT-2026-0104",
+            "building": 2,
+            "equipment": [
+                5
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 206,
+        "fields": {
+            "maintenance_serial": "MT-2026-0105",
+            "qr_code": "QR-MT-2026-0105",
+            "building": 3,
+            "equipment": [
+                6
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 207,
+        "fields": {
+            "maintenance_serial": "MT-2026-0106",
+            "qr_code": "QR-MT-2026-0106",
+            "building": 1,
+            "equipment": [
+                7
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 208,
+        "fields": {
+            "maintenance_serial": "MT-2026-0107",
+            "qr_code": "QR-MT-2026-0107",
+            "building": 1,
+            "equipment": [
+                8
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 209,
+        "fields": {
+            "maintenance_serial": "MT-2026-0108",
+            "qr_code": "QR-MT-2026-0108",
+            "building": 1,
+            "equipment": [
+                101
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 210,
+        "fields": {
+            "maintenance_serial": "MT-2026-0109",
+            "qr_code": "QR-MT-2026-0109",
+            "building": 1,
+            "equipment": [
+                102
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 211,
+        "fields": {
+            "maintenance_serial": "MT-2026-0110",
+            "qr_code": "QR-MT-2026-0110",
+            "building": 1,
+            "equipment": [
+                103
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 212,
+        "fields": {
+            "maintenance_serial": "MT-2026-0111",
+            "qr_code": "QR-MT-2026-0111",
+            "building": 1,
+            "equipment": [
+                104
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 213,
+        "fields": {
+            "maintenance_serial": "MT-2026-0112",
+            "qr_code": "QR-MT-2026-0112",
+            "building": 1,
+            "equipment": [
+                105
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 214,
+        "fields": {
+            "maintenance_serial": "MT-2026-0113",
+            "qr_code": "QR-MT-2026-0113",
+            "building": 1,
+            "equipment": [
+                106
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 215,
+        "fields": {
+            "maintenance_serial": "MT-2026-0114",
+            "qr_code": "QR-MT-2026-0114",
+            "building": 1,
+            "equipment": [
+                107
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 216,
+        "fields": {
+            "maintenance_serial": "MT-2026-0115",
+            "qr_code": "QR-MT-2026-0115",
+            "building": 1,
+            "equipment": [
+                108
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 217,
+        "fields": {
+            "maintenance_serial": "MT-2026-0116",
+            "qr_code": "QR-MT-2026-0116",
+            "building": 1,
+            "equipment": [
+                109
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 218,
+        "fields": {
+            "maintenance_serial": "MT-2026-0117",
+            "qr_code": "QR-MT-2026-0117",
+            "building": 1,
+            "equipment": [
+                110
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 219,
+        "fields": {
+            "maintenance_serial": "MT-2026-0118",
+            "qr_code": "QR-MT-2026-0118",
+            "building": 1,
+            "equipment": [
+                111
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 220,
+        "fields": {
+            "maintenance_serial": "MT-2026-0119",
+            "qr_code": "QR-MT-2026-0119",
+            "building": 1,
+            "equipment": [
+                112
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 221,
+        "fields": {
+            "maintenance_serial": "MT-2026-0120",
+            "qr_code": "QR-MT-2026-0120",
+            "building": 201,
+            "equipment": [
+                201
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 222,
+        "fields": {
+            "maintenance_serial": "MT-2026-0121",
+            "qr_code": "QR-MT-2026-0121",
+            "building": 202,
+            "equipment": [
+                202
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 223,
+        "fields": {
+            "maintenance_serial": "MT-2026-0122",
+            "qr_code": "QR-MT-2026-0122",
+            "building": 203,
+            "equipment": [
+                203
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 224,
+        "fields": {
+            "maintenance_serial": "MT-2026-0123",
+            "qr_code": "QR-MT-2026-0123",
+            "building": 204,
+            "equipment": [
+                204
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 225,
+        "fields": {
+            "maintenance_serial": "MT-2026-0124",
+            "qr_code": "QR-MT-2026-0124",
+            "building": 205,
+            "equipment": [
+                205
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 226,
+        "fields": {
+            "maintenance_serial": "MT-2026-0125",
+            "qr_code": "QR-MT-2026-0125",
+            "building": 206,
+            "equipment": [
+                206
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 227,
+        "fields": {
+            "maintenance_serial": "MT-2026-0126",
+            "qr_code": "QR-MT-2026-0126",
+            "building": 207,
+            "equipment": [
+                207
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 228,
+        "fields": {
+            "maintenance_serial": "MT-2026-0127",
+            "qr_code": "QR-MT-2026-0127",
+            "building": 208,
+            "equipment": [
+                208
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenance",
+        "pk": 229,
+        "fields": {
+            "maintenance_serial": "MT-2026-0128",
+            "qr_code": "QR-MT-2026-0128",
+            "building": 209,
+            "equipment": [
+                209
+            ],
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
             "is_active": true,
             "deleted": false
         }

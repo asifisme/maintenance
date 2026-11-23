@@ -196,13 +196,13 @@
         background-color: #F6F6F5;
     }
 
-    /* Quick Action Card (Frame 2147207714: 182.5px x 178px, radius 5px, BG/bg-100 #FBFBFB, padding 16px 14px) */
+    /* Quick Action Card (Responsive 2-col grid, radius 5px, BG/bg-100 #FBFBFB, padding 16px 14px) */
     .ov-action-card {
         background-color: #FBFBFB;
         border-radius: 5px;
         width: 100%;
-        max-width: 182.5px;
-        height: 178px;
+        min-height: 178px;
+        height: 100%;
         padding: 16px 14px;
         display: flex;
         flex-direction: column;
@@ -285,7 +285,7 @@
 
 {% block top_header %}
 <header class="sticky top-0 z-30 bg-[#F2F2F2]/90 backdrop-blur-sm">
-    <div class="max-w-[1112px] mx-auto px-4 sm:px-6 lg:px-0 pt-4 pb-2 flex items-center justify-between gap-3">
+    <div class="w-full px-[10px] lg:pl-8 pt-4 pb-2 flex items-center justify-between gap-3">
         <!-- Left: Mobile hamburger + Home > Dashboard Breadcrumb -->
         <div class="flex items-center gap-2.5">
             <button id="btnOpen"
@@ -359,9 +359,11 @@
 </header>
 {% endblock %}
 
+{% block main_class %}w-full px-[10px] py-4 flex-1{% endblock %}
+
 {% block page_header %}
-<!-- Overview Title & Filter Controls Bar (1112px Container) -->
-<div class="max-w-[1112px] mx-auto px-4 sm:px-6 lg:px-0 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3 mb-5">
+<!-- Overview Title & Filter Controls Bar -->
+<div class="w-full flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3 mb-5">
     <h1 id="page_title" class="ov-mono text-[22px] font-medium text-[#2B2A29] leading-tight">Overview</h1>
 
     <form id="overviewFilterForm" method="get" action="{% url 'backend:dash_board' %}" class="flex flex-wrap items-center gap-2">
@@ -424,13 +426,13 @@
 {% endblock %}
 
 {% block content %}
-<div class="max-w-[1112px] mx-auto space-y-5 pb-8">
+<div class="w-full space-y-[10px] pb-8">
 
-    <!-- ════════════════════════ ROW 1: Building Operations Overview (351px) + Unassigned Tickets (741px) ════════════════════════ -->
-    <div class="flex flex-col lg:flex-row gap-5 items-start">
+    <!-- ════════════════════════ ROW 1: Building Operations Overview + Unassigned Tickets ════════════════════════ -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-[10px] items-stretch">
 
-        <!-- Building Operations Overview (Fixed 351px x Hug 366px) -->
-        <div class="w-full lg:w-[351px] shrink-0 ov-card">
+        <!-- Building Operations Overview -->
+        <div class="lg:col-span-4 min-w-0 ov-card h-full">
             <div class="ov-card-header">
                 <h2 class="ov-card-title">Building Operations Overview</h2>
             </div>
@@ -485,8 +487,8 @@
             </div>
         </div>
 
-        <!-- Unassigned Tickets (Fixed 741px x Hug 365px) -->
-        <div class="w-full lg:w-[741px] flex-1 min-w-0 ov-card">
+        <!-- Unassigned Tickets -->
+        <div class="lg:col-span-8 min-w-0 ov-card h-full">
             <div class="ov-card-header">
                 <div class="flex items-center gap-2">
                     <h2 class="ov-card-title">Unassigned Tickets</h2>
@@ -498,9 +500,9 @@
                 </a>
             </div>
 
-            <div class="ov-inner-card py-[8px] px-[6px] flex flex-col gap-[10px] min-h-[305px]">
+            <div class="ov-inner-card py-[8px] px-[6px] flex flex-col gap-[10px] flex-1 min-h-[305px]">
                 {% for ticket in unassigned_tickets %}
-                    <div class="rounded-[6px] bg-white border border-[#F2F2F2] py-[11px] px-[14px] flex items-center justify-between gap-4 hover:border-[#E5E5E3] transition-colors h-[89px]">
+                    <div class="rounded-[6px] bg-white border border-[#F2F2F2] py-[11px] px-[14px] flex items-center justify-between gap-4 hover:border-[#E5E5E3] transition-colors flex-1 min-h-[89px]">
                         <div class="flex items-center gap-3.5 min-w-0">
                             <div class="w-10 h-10 rounded-[8px] bg-[#FFF8F4] border border-[#FFD6BE] flex items-center justify-center text-[#55534F] shrink-0">
                                 <svg class="w-[18px] h-[18px]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -548,11 +550,11 @@
         </div>
     </div>
 
-    <!-- ════════════════════════ ROW 2: Left (691px) + Right (401px) Columns ════════════════════════ -->
-    <div class="flex flex-col lg:flex-row gap-5 items-start">
+    <!-- ════════════════════════ ROW 2: Left (8 cols) + Right (4 cols) Columns ════════════════════════ -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-[10px] items-stretch">
 
-        <!-- LEFT COLUMN (691px): Trend + Critical Requests + Overdue Maintenance -->
-        <div class="w-full lg:w-[691px] shrink-0 space-y-5">
+        <!-- LEFT COLUMN: Trend + Critical Requests + Overdue Maintenance -->
+        <div class="lg:col-span-8 min-w-0 space-y-[10px]">
 
             <!-- Card 1: Maintenance Activity Trend (691px x 304px, Inner 679px x 244px) -->
             <div class="ov-card">
@@ -600,8 +602,8 @@
                         </div>
                     </div>
 
-                    <!-- Right Grouped Bar Chart (Frame 2147207687: Top 8px, Left 254px, 417px x 228px, bg #F6F6F6, radius 4px) -->
-                    <div class="w-full md:w-[417px] md:h-[228px] shrink-0 bg-[#F6F6F6] rounded-[4px] p-2.5 flex flex-col justify-between box-border">
+                    <!-- Right Grouped Bar Chart -->
+                    <div class="w-full md:flex-1 min-w-0 md:h-[228px] bg-[#F6F6F6] rounded-[4px] p-2.5 flex flex-col justify-between box-border">
                         <div class="relative h-[178px] w-full">
                             <canvas id="activityTrendChart"></canvas>
                         </div>
@@ -697,8 +699,8 @@
             </div>
         </div>
 
-        <!-- RIGHT COLUMN (401px): Equipment Overview + Quick Actions -->
-        <div class="w-full lg:w-[401px] shrink-0 space-y-5">
+        <!-- RIGHT COLUMN: Equipment Overview + Quick Actions -->
+        <div class="lg:col-span-4 min-w-0 flex flex-col gap-[10px]">
 
             <!-- Card 1: Equipment Overview (401px x 586px) -->
             <div class="ov-card">
@@ -761,8 +763,8 @@
                 </div>
             </div>
 
-            <!-- Card 2: Quick Actions (401px x 440px with 2x2 Grid of 182.5px x 178px Cards) -->
-            <div class="ov-card">
+            <!-- Card 2: Quick Actions (stretches to match left column bottom) -->
+            <div class="ov-card flex-1">
                 <div class="ov-card-header">
                     <h2 class="ov-card-title">Quick Actions</h2>
                     <a href="{% url 'backend:building_list' %}" class="ov-link-orange">
@@ -771,8 +773,8 @@
                     </a>
                 </div>
 
-                <div class="ov-inner-card p-[8px] flex flex-col justify-center h-[380px] box-border">
-                    <div class="grid grid-cols-2 gap-[8px]">
+                <div class="ov-inner-card p-[8px] flex flex-col flex-1 min-h-[380px] box-border">
+                    <div class="grid grid-cols-2 gap-[8px] flex-1">
                         <!-- Building -->
                         <div class="ov-action-card">
                             <div>

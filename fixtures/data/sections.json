@@ -54,5 +54,439 @@
             "created_at": "2026-06-10T07:34:21Z",
             "updated_at": "2026-06-10T07:34:21Z"
         }
+    },
+    {
+        "model": "backend.section",
+        "pk": 201,
+        "fields": {
+            "subdivision": 1,
+            "name": "Section Unit 01",
+            "code": "FX-SEC-01",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 202,
+        "fields": {
+            "subdivision": 2,
+            "name": "Section Unit 02",
+            "code": "FX-SEC-02",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 203,
+        "fields": {
+            "subdivision": 3,
+            "name": "Section Unit 03",
+            "code": "FX-SEC-03",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 204,
+        "fields": {
+            "subdivision": 4,
+            "name": "Section Unit 04",
+            "code": "FX-SEC-04",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 205,
+        "fields": {
+            "subdivision": 201,
+            "name": "Section Unit 05",
+            "code": "FX-SEC-05",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 206,
+        "fields": {
+            "subdivision": 202,
+            "name": "Section Unit 06",
+            "code": "FX-SEC-06",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 207,
+        "fields": {
+            "subdivision": 203,
+            "name": "Section Unit 07",
+            "code": "FX-SEC-07",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 208,
+        "fields": {
+            "subdivision": 204,
+            "name": "Section Unit 08",
+            "code": "FX-SEC-08",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 209,
+        "fields": {
+            "subdivision": 205,
+            "name": "Section Unit 09",
+            "code": "FX-SEC-09",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 210,
+        "fields": {
+            "subdivision": 206,
+            "name": "Section Unit 10",
+            "code": "FX-SEC-10",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 211,
+        "fields": {
+            "subdivision": 207,
+            "name": "Section Unit 11",
+            "code": "FX-SEC-11",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 212,
+        "fields": {
+            "subdivision": 208,
+            "name": "Section Unit 12",
+            "code": "FX-SEC-12",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 213,
+        "fields": {
+            "subdivision": 209,
+            "name": "Section Unit 13",
+            "code": "FX-SEC-13",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 214,
+        "fields": {
+            "subdivision": 210,
+            "name": "Section Unit 14",
+            "code": "FX-SEC-14",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 215,
+        "fields": {
+            "subdivision": 211,
+            "name": "Section Unit 15",
+            "code": "FX-SEC-15",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 216,
+        "fields": {
+            "subdivision": 212,
+            "name": "Section Unit 16",
+            "code": "FX-SEC-16",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 217,
+        "fields": {
+            "subdivision": 213,
+            "name": "Section Unit 17",
+            "code": "FX-SEC-17",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 218,
+        "fields": {
+            "subdivision": 214,
+            "name": "Section Unit 18",
+            "code": "FX-SEC-18",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 219,
+        "fields": {
+            "subdivision": 215,
+            "name": "Section Unit 19",
+            "code": "FX-SEC-19",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 220,
+        "fields": {
+            "subdivision": 216,
+            "name": "Section Unit 20",
+            "code": "FX-SEC-20",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 221,
+        "fields": {
+            "subdivision": 217,
+            "name": "Section Unit 21",
+            "code": "FX-SEC-21",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 222,
+        "fields": {
+            "subdivision": 218,
+            "name": "Section Unit 22",
+            "code": "FX-SEC-22",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 223,
+        "fields": {
+            "subdivision": 219,
+            "name": "Section Unit 23",
+            "code": "FX-SEC-23",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 224,
+        "fields": {
+            "subdivision": 220,
+            "name": "Section Unit 24",
+            "code": "FX-SEC-24",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 225,
+        "fields": {
+            "subdivision": 221,
+            "name": "Section Unit 25",
+            "code": "FX-SEC-25",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 226,
+        "fields": {
+            "subdivision": 222,
+            "name": "Section Unit 26",
+            "code": "FX-SEC-26",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 227,
+        "fields": {
+            "subdivision": 223,
+            "name": "Section Unit 27",
+            "code": "FX-SEC-27",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 228,
+        "fields": {
+            "subdivision": 224,
+            "name": "Section Unit 28",
+            "code": "FX-SEC-28",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 229,
+        "fields": {
+            "subdivision": 225,
+            "name": "Section Unit 29",
+            "code": "FX-SEC-29",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 230,
+        "fields": {
+            "subdivision": 226,
+            "name": "Section Unit 30",
+            "code": "FX-SEC-30",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 231,
+        "fields": {
+            "subdivision": 227,
+            "name": "Section Unit 31",
+            "code": "FX-SEC-31",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
     }
 ]

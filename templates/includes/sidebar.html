@@ -287,7 +287,7 @@
             overflow: visible;
         }
         body.sidebar-collapsed #mainContentWrapper {
-            padding-left: 84px;
+            padding-left: 84px !important;
         }
         /* Smoothly fade & collapse text labels while keeping icon positions pixel-locked */
         body.sidebar-collapsed #sidebar .sidebar-brand-text,
@@ -855,6 +855,8 @@
             if (toggleBtn) {
                 toggleBtn.setAttribute('title', collapsed ? 'Expand sidebar' : 'Collapse sidebar');
             }
+            // Trigger resize after CSS padding transition so responsive charts/tables refill the new width
+            setTimeout(() => window.dispatchEvent(new Event('resize')), 280);
         };
 
         if (toggleBtn && document.body.classList.contains('sidebar-collapsed')) {

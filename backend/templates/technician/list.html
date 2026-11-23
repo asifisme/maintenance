@@ -361,9 +361,10 @@
                                                 <circle cx="12" cy="7" r="4"></circle>
                                             </svg>
                                         </div>
-                                        <span class="font-medium text-[#2B2823] text-[13.5px]">
+                                        <a href="{% url 'backend:technician_details' obj.id %}"
+                                           class="font-medium text-[#2B2823] text-[13.5px] hover:text-[#0B7A44] underline underline-offset-2 decoration-[#2B2823]/30 hover:decoration-[#0B7A44] transition-colors">
                                             {{ obj.display_name }}
-                                        </span>
+                                        </a>
                                     </div>
                                 </td>
 
@@ -389,9 +390,11 @@
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#EAF7EE] text-[#1E8E3E] border border-[#CEEAD6]">
                                             {{ obj.primary_skill }}
                                         </span>
-                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#F5F5F4] text-[#716F6C] border border-[#E5E5E3]">
-                                            {{ obj.extra_skills_count }}
-                                        </span>
+                                        {% if obj.extra_skills_count %}
+                                            <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#F5F5F4] text-[#716F6C] border border-[#E5E5E3]">
+                                                {{ obj.extra_skills_count }}
+                                            </span>
+                                        {% endif %}
                                     </div>
                                 </td>
 
@@ -413,9 +416,17 @@
                                     {{ obj.created_at|date:"d F Y" }}
                                 </td>
 
-                                <!-- Action Buttons (Edit + Delete) -->
+                                <!-- Action Buttons (View + Edit + Delete) -->
                                 <td>
                                     <div class="flex items-center justify-center gap-1.5">
+                                        <a href="{% url 'backend:technician_details' obj.id %}"
+                                           class="w-7 h-7 rounded-[6px] border border-[#E5E5E3] bg-[#FAFAFA] hover:bg-[#EAEAE8] flex items-center justify-center text-[#5C5B59] hover:text-[#0B7A44] transition-colors"
+                                           title="View Technician Details">
+                                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                                <circle cx="12" cy="12" r="3"></circle>
+                                            </svg>
+                                        </a>
                                         <a href="{% url 'backend:technician_update' obj.id %}"
                                            class="w-7 h-7 rounded-[6px] border border-[#E5E5E3] bg-[#FAFAFA] hover:bg-[#EAEAE8] flex items-center justify-center text-[#5C5B59] hover:text-[#0B7A44] transition-colors"
                                            title="Edit Technician">

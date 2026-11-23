@@ -1,507 +1,1023 @@
 {% extends 'base.html' %}
-{% block title %}Ticket #{{ obj.id }}{% endblock %}
+{% load static %}
+
+{% block page_title %}Ticket #{{ obj.id }}{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    body,
+    #mainContentWrapper {
+        background-color: #F2F2F2 !important;
+        font-family: 'Urbanist', Inter, system-ui, ui-sans-serif, sans-serif;
+    }
+
+    .tkt-mono {
+        font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        letter-spacing: -0.02em;
+    }
+
+    .figma-card-outer {
+        background-color: #F9F9F9;
+        border-radius: 12px;
+        padding: 16px 6px 6px 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        box-sizing: border-box;
+    }
+
+    .figma-card-inner {
+        background-color: #FFFFFF;
+        border-radius: 6px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        box-sizing: border-box;
+    }
+
+    .detail-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px 0;
+        border-bottom: 1px solid #F2F2F2;
+    }
+    .detail-row:first-child { padding-top: 2px; }
+    .detail-row:last-child { border-bottom: none; padding-bottom: 2px; }
+
+    .detail-label {
+        width: 120px;
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #9D9C9A;
+    }
+    .detail-label svg {
+        width: 15px;
+        height: 15px;
+        color: #B4B3B1;
+        flex-shrink: 0;
+    }
+    .detail-value {
+        flex: 1;
+        min-width: 0;
+        font-size: 13.5px;
+        font-weight: 500;
+        color: #2B2823;
+        word-break: break-word;
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <a href="{% url 'backend:ticket_list' %}" class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#5C5B59] font-medium hover:bg-[#E0E0DF] transition-colors shrink-0">
+        Tickets
+    </a>
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <span class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#2B2823] font-medium shrink-0">
+        Ticket #{{ obj.id }}
+    </span>
+{% endblock %}
+
+{% block main_class %}w-full px-[10px] pt-2 pb-10 flex-1{% endblock %}
+
+{% block page_header %}
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-5">
+    <div class="flex items-start gap-3">
+        <a href="{% url 'backend:ticket_list' %}"
+           title="Back to Tickets"
+           class="mt-0.5 w-9 h-9 rounded-[8px] bg-white border border-[#EAEAE9] flex items-center justify-center text-[#5C5B59] hover:text-[#2B2823] hover:bg-[#F7F7F6] shrink-0 transition-colors">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 18l-6-6 6-6" />
+            </svg>
+        </a>
+        <div>
+            <div class="flex flex-wrap items-center gap-2.5">
+                <h1 id="page_title" class="tkt-mono text-[22px] lg:text-[25px] font-medium text-[#2B2823] leading-tight">
+                    #{{ obj.id }} — {{ obj.title }}
+                </h1>
+                {% if stage_key == 'resolved' %}
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#E7F6EC] text-[#0B7A44] border border-[#CEEAD6]">
+                        <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        {{ stage_label }}
+                    </span>
+                {% elif stage_key == 'pending_review' %}
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#EEF2FF] text-[#4338CA] border border-[#C7D2FE]">
+                        {{ stage_label }}
+                    </span>
+                {% elif stage_key == 'in_progress' %}
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#FEF3E6] text-[#C86E12] border border-[#FDD8B5]">
+                        {{ stage_label }}
+                    </span>
+                {% elif stage_key == 'accepted' %}
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#E0F2FE] text-[#0369A1] border border-[#BAE6FD]">
+                        {{ stage_label }}
+                    </span>
+                {% elif stage_key == 'assigned' %}
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#F3E8FD] text-[#7C3AED] border border-[#E9D5FF]">
+                        {{ stage_label }}
+                    </span>
+                {% else %}
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#E8F0FE] text-[#1A73E8] border border-[#D2E3FC]">
+                        {{ stage_label }}
+                    </span>
+                {% endif %}
+            </div>
+            <p class="text-[12.5px] text-[#8E8C89] mt-1">
+                Opened {{ obj.opened_at|date:"d M Y, g:i A" }} &bull; Last updated {{ obj.updated_at|date:"d M Y, g:i A" }}
+            </p>
+        </div>
+    </div>
+
+    <div class="flex items-center gap-2 shrink-0">
+        <a href="{% url 'backend:ticket_update' obj.id %}"
+           class="inline-flex items-center justify-center px-4 py-2 rounded-[8px] bg-white border border-[#EAEAE9] text-[13.5px] font-medium text-[#2B2823] hover:bg-[#F7F7F6] shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-colors">
+            Edit Ticket
+        </a>
+        {% if approved_record %}
+            <a href="{% url 'backend:service_history_detail' approved_record.id %}"
+               class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-[8px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[13.5px] font-semibold shadow-sm transition-colors">
+                <span>Service Record (SR-{{ approved_record.id|stringformat:"03d" }})</span>
+            </a>
+        {% elif stage_key != 'resolved' %}
+            <button type="button"
+                    onclick="document.getElementById('assignModal').classList.remove('hidden')"
+                    class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-[8px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[13.5px] font-semibold shadow-sm transition-colors cursor-pointer">
+                <span>+ Assign Technician</span>
+            </button>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
 {% block content %}
-    <section class="bg-[var(--bg-color)] min-h-screen p-4 md:p-2 font-sans">
-        <div class="max-w-6xl mx-auto">
-            <!-- Header -->
-            <div class="flex items-center justify-between mb-8 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                <div class="flex items-center gap-4">
-                    <a href="{% url 'backend:ticket_list' %}"
-                       class="text-gray-600 hover:text-gray-900 bg-white p-2 rounded-lg transition">
-                        <svg width="20"
-                             height="20"
-                             viewBox="0 0 24 24"
-                             fill="none"
-                             stroke="currentColor"
-                             stroke-width="2"
-                             stroke-linecap="round"
-                             stroke-linejoin="round">
-                            <path d="M15 18l-6-6 6-6" />
-                        </svg>
-                    </a>
+<div class="space-y-[10px]">
+
+    <!-- TOP CARD: 6-STAGE LIFECYCLE PROGRESS STEPPER -->
+    <div class="figma-card-outer">
+        <div class="px-2.5 flex flex-wrap items-center justify-between gap-2">
+            <h2 class="text-[15.5px] font-semibold text-[#2B2823] tracking-tight">Task Workflow Stage</h2>
+            <span class="text-[12.5px] font-medium text-[#716F6C]">
+                Step <strong class="text-[#2B2823]">{{ current_step }}</strong> of 6 &mdash; {{ stage_label }}
+            </span>
+        </div>
+
+        <div class="figma-card-inner">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+                {% for st in workflow_steps %}
+                    {% if current_step == 6 or st.num < current_step %}
+                        <!-- Completed Step -->
+                        <div class="rounded-[8px] border border-[#CEEAD6] bg-[#F2FBF5] px-3 py-2.5 flex items-start gap-2.5">
+                            <span class="w-6 h-6 rounded-full bg-[#0B7A44] text-white flex items-center justify-center shrink-0 mt-0.5">
+                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </span>
+                            <div class="min-w-0">
+                                <div class="text-[12.5px] font-semibold text-[#0B7A44] leading-tight">{{ st.label }}</div>
+                                <div class="text-[11px] text-[#5C5B59] truncate mt-0.5" title="{{ st.sub }}">{{ st.sub }}</div>
+                            </div>
+                        </div>
+                    {% elif st.num == current_step %}
+                        <!-- Active Step -->
+                        <div class="rounded-[8px] border-2 border-[#0B7A44] bg-white px-3 py-2.5 flex items-start gap-2.5 shadow-sm">
+                            <span class="w-6 h-6 rounded-full bg-[#E7F6EC] text-[#0B7A44] border border-[#0B7A44] text-[12px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                                {{ st.num }}
+                            </span>
+                            <div class="min-w-0">
+                                <div class="text-[12.5px] font-bold text-[#2B2823] leading-tight">{{ st.label }}</div>
+                                <div class="text-[11px] text-[#0B7A44] font-medium truncate mt-0.5" title="{{ st.sub }}">{{ st.sub }}</div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <!-- Upcoming Step -->
+                        <div class="rounded-[8px] border border-[#EFEFED] bg-[#FAFAFA] px-3 py-2.5 flex items-start gap-2.5 opacity-75">
+                            <span class="w-6 h-6 rounded-full bg-[#EAEAE8] text-[#716F6C] text-[12px] font-semibold flex items-center justify-center shrink-0 mt-0.5">
+                                {{ st.num }}
+                            </span>
+                            <div class="min-w-0">
+                                <div class="text-[12.5px] font-medium text-[#716F6C] leading-tight">{{ st.label }}</div>
+                                <div class="text-[11px] text-[#9D9C9A] truncate mt-0.5" title="{{ st.sub }}">{{ st.sub }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            {% if rejected_record and stage_key == 'in_progress' %}
+                <div class="rounded-[8px] border border-[#FAD2CF] bg-[#FDF2F2] px-3.5 py-2.5 flex items-start gap-2.5 text-[13px] text-[#991B1B]">
+                    <svg class="w-4 h-4 shrink-0 mt-0.5 text-[#D93025]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
                     <div>
-                        <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">{{ obj.ticket_id|default:obj.id }} - {{ obj.title|default:"TIC-1001" }}</h2>
-                        <p class="text-xs text-gray-500 mt-1 flex items-center gap-1">
-                            <svg width="12"
-                                 height="12"
-                                 viewBox="0 0 24 24"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 stroke-width="2"
-                                 stroke-linecap="round"
-                                 stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <polyline points="12 6 12 12 16 14"></polyline>
-                            </svg>
-                            Last updated {{ obj.updated_at|date:"n/j/Y, g:i A" }}
-                        </p>
+                        <span class="font-semibold">Supervisor Requested Revision:</span>
+                        {{ rejected_record.review_notes }}
+                        <span class="text-[11.5px] text-[#B91C1C] ml-1">({{ rejected_record.reviewed_at|date:"d M Y, g:i A" }})</span>
                     </div>
                 </div>
-                <div class="px-4 py-1.5 rounded-full text-sm font-semibold border {% if obj.status == 'open' %}bg-blue-50 text-blue-600 border-blue-100{% elif obj.status == 'resolved' or obj.status == 'closed' %}bg-green-50 text-green-600 border-green-100{% else %}bg-gray-50 text-gray-600 border-gray-100{% endif %}">
-                    {{ obj.get_status_display }}
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- MAIN 2-COLUMN BODY -->
+    <div class="grid grid-cols-1 lg:grid-cols-[1.55fr_1fr] gap-[10px] items-start">
+
+        <!-- LEFT COLUMN: Request Details + Work Submission/Review + Complete Activity Log -->
+        <div class="space-y-[10px]">
+
+            <!-- 1. BUILDING REQUEST & EQUIPMENT DETAILS -->
+            <div class="figma-card-outer">
+                <div class="px-2.5 flex items-center justify-between">
+                    <h2 class="text-[15.5px] font-semibold text-[#2B2823] tracking-tight">Request Details</h2>
+                    <div class="flex items-center gap-2">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#EAEAE8] text-[#4A4947]">
+                            {{ obj.get_issue_type_display }}
+                        </span>
+                        {% if obj.priority == 'critical' %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#FCE8E6] text-[#C5221F] border border-[#FAD2CF]">Critical Priority</span>
+                        {% elif obj.priority == 'high' %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#FEF3E6] text-[#C86E12] border border-[#FDD8B5]">High Priority</span>
+                        {% elif obj.priority == 'medium' %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#FEF9E7] text-[#B07200] border border-[#FDE68A]">Medium Priority</span>
+                        {% else %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#F5F5F4] text-[#5C5B59] border border-[#E5E5E3]">Low Priority</span>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Left Column -->
-                <div class="lg:col-span-2 space-y-6">
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-6">
-                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-6">EQUIPMENT DETAILS</h3>
-                        <div class="flex flex-wrap items-center gap-x-12 gap-y-6 mb-8 border-b border-gray-100 pb-6">
-                            <!-- Equipment -->
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center shrink-0">
-                                    <svg width="20"
-                                         height="20"
-                                         viewBox="0 0 24 24"
-                                         fill="none"
-                                         stroke="currentColor"
-                                         stroke-width="2"
-                                         stroke-linecap="round"
-                                         stroke-linejoin="round">
-                                        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">
-                                        </path>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h4 class="text-sm font-bold text-gray-900">{{ obj.equipment.qr_code|default:obj.equipment.equipment_id|default:obj.equipment.id|default:"EQ-001" }}</h4>
-                                    <p class="text-xs text-gray-500 uppercase">{{ obj.equipment.equipment_type.name|default:"HVAC" }}</p>
-                                </div>
-                            </div>
-                            <!-- Location -->
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-lg bg-green-50 text-green-500 flex items-center justify-center shrink-0">
-                                    <svg width="20"
-                                         height="20"
-                                         viewBox="0 0 24 24"
-                                         fill="none"
-                                         stroke="currentColor"
-                                         stroke-width="2"
-                                         stroke-linecap="round"
-                                         stroke-linejoin="round">
+
+                <div class="figma-card-inner">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-7">
+                        <div>
+                            <div class="detail-row">
+                                <span class="detail-label">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                                         <circle cx="12" cy="10" r="3"></circle>
                                     </svg>
-                                </div>
-                                <div>
-                                    <h4 class="text-sm font-bold text-gray-900">
-                                        {% if obj.building %}
-                                            [{{ obj.building.building_id|default:"B1" }}] &mdash; {{ obj.building.name }}
-                                        {% else %}
-                                            [B1] &mdash; Main Tower (North Wing)
+                                    <span>Building :</span>
+                                </span>
+                                <span class="detail-value">
+                                    {% if obj.building %}
+                                        <a href="{% url 'backend:building_details' obj.building.id %}" class="text-[#0B7A44] hover:underline font-semibold">
+                                            {{ obj.building.name }}
+                                        </a>
+                                        {% if obj.building.building_id %}
+                                            <span class="tkt-mono text-[11.5px] text-[#8E8C89] ml-1">({{ obj.building.building_id }})</span>
                                         {% endif %}
-                                    </h4>
-                                    <p class="text-xs text-gray-500 uppercase">LOCATION</p>
-                                </div>
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </span>
                             </div>
-                            <!-- Reporter -->
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-lg bg-gray-50 text-gray-500 flex items-center justify-center shrink-0">
-                                    <svg width="20"
-                                         height="20"
-                                         viewBox="0 0 24 24"
-                                         fill="none"
-                                         stroke="currentColor"
-                                         stroke-width="2"
-                                         stroke-linecap="round"
-                                         stroke-linejoin="round">
+                            <div class="detail-row">
+                                <span class="detail-label">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                                    </svg>
+                                    <span>Equipment :</span>
+                                </span>
+                                <span class="detail-value">
+                                    {% if obj.equipment %}
+                                        <a href="{% url 'backend:equipment_detail' obj.equipment.id %}" class="text-[#2B2823] hover:text-[#0B7A44] hover:underline font-semibold">
+                                            {{ obj.equipment.equipment_name|default:obj.equipment.equipment_id }}
+                                        </a>
+                                        <div class="text-[12px] text-[#8E8C89] mt-0.5">
+                                            <span class="tkt-mono">{{ obj.equipment.equipment_id }}</span>
+                                            {% if obj.equipment.equipment_type %} &bull; {{ obj.equipment.equipment_type.name }}{% endif %}
+                                        </div>
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="detail-row">
+                                <span class="detail-label">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                         <circle cx="12" cy="7" r="4"></circle>
                                     </svg>
-                                </div>
-                                <div>
-                                    <h4 class="text-sm font-bold text-gray-900">{{ obj.user.get_full_name|default:obj.user.username|default:"John Doe" }}</h4>
-                                    <p class="text-xs text-gray-500 uppercase">REPORTER &bull; INTERNAL</p>
-                                </div>
+                                    <span>Requested By :</span>
+                                </span>
+                                <span class="detail-value">
+                                    {{ obj.user.get_full_name|default:obj.user.username|default:"System" }}
+                                </span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                        <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                    <span>Floor / Room :</span>
+                                </span>
+                                <span class="detail-value">
+                                    {% if obj.equipment %}
+                                        {{ obj.equipment.floor_location|default:"-" }}{% if obj.equipment.room_location %} &bull; {{ obj.equipment.room_location }}{% endif %}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </span>
                             </div>
                         </div>
-                        <h3 class="text-sm font-bold text-gray-900 mb-4">Issue Description</h3>
-                        <div class="bg-slate-50 rounded-lg p-4 text-sm text-gray-600 whitespace-pre-line leading-relaxed">
-                            {% if obj.issue_description %}
-                                {{ obj.issue_description }}
-                            {% else %}
-                                AC unit making loud grinding noise and leaking water.
-                            {% endif %}
+                    </div>
+
+                    <div class="pt-2 border-t border-[#F2F2F2]">
+                        <div class="text-[12.5px] font-semibold text-[#9D9C9A] uppercase tracking-wider mb-1.5">What Was Requested</div>
+                        <div class="rounded-[8px] bg-[#F8F8F7] border border-[#EFEFED] p-3.5 text-[13.5px] text-[#3F3E3C] whitespace-pre-line leading-relaxed">
+                            {{ obj.issue_description|default:"No detailed issue description was provided for this request." }}
                         </div>
                     </div>
-                    <!-- Activity Timeline -->
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mt-6">
-                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-6 flex items-center gap-2">
-                            <svg width="16"
-                                 height="16"
-                                 viewBox="0 0 24 24"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 stroke-width="2"
-                                 stroke-linecap="round"
-                                 stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <polyline points="12 6 12 12 16 14"></polyline>
-                            </svg>
-                            ACTIVITY TIMELINE
-                        </h3>
-                        <div class="space-y-6">
-                            {% if not obj.activity_log.exists %}
-                                <div class="relative pl-6 pb-6">
-                                    <div class="absolute w-3 h-3 bg-blue-500 rounded-full -left-[6px] top-1 border-2 border-white ring-2 ring-blue-50">
-                                    </div>
-                                    <div>
-                                        <div class="flex items-center gap-2 mb-1">
-                                            <h4 class="text-sm font-bold text-gray-900">Created Ticket</h4>
-                                            <span class="text-xs text-gray-400">&bull; {{ obj.created_at|date:"n/j/Y, g:i A" }}</span>
-                                        </div>
-                                        <p class="text-xs text-gray-500 mb-2">by <span class="font-semibold text-gray-900">{{ obj.user.get_full_name|default:obj.user.username|default:"John Doe" }}</span></p>
-                                        <div class="bg-slate-50 rounded text-sm text-gray-600 p-3 italic">"Initial report"</div>
-                                    </div>
-                                </div>
-                            {% else %}
-                                {% for log in obj.activity_log.all %}
-                                    <div class="relative pl-6 pb-6 {% if not forloop.last %}border-l border-gray-200{% endif %}">
-                                        <div class="absolute w-3 h-3 bg-blue-500 rounded-full -left-[6px] top-1 border-2 border-white ring-2 ring-blue-50">
-                                        </div>
-                                        <div>
-                                            <div class="flex items-center gap-2 mb-1">
-                                                <h4 class="text-sm font-bold text-gray-900">{{ log.get_action_type_display }}</h4>
-                                            </div>
-                                            <p class="text-xs text-gray-500 mb-2">by <span class="font-semibold text-gray-900">{{ log.actor.get_full_name|default:log.actor.username|default:"System" }}</span></p>
-                                            {% if log.description %}
-                                                <div class="bg-slate-50 rounded text-sm text-gray-600 p-3 italic">"{{ log.description }}"</div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
+
+                    {% if checklist_items %}
+                    <div class="pt-2 border-t border-[#F2F2F2]">
+                        <div class="flex items-center justify-between gap-2 mb-2">
+                            <span class="text-[12.5px] font-semibold text-[#9D9C9A] uppercase tracking-wider">Task Checklist</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold {% if checklist_done == checklist_total %}bg-[#E7F6EC] text-[#0B7A44]{% else %}bg-[#EAEAE8] text-[#4A4947]{% endif %}">
+                                {{ checklist_done }} / {{ checklist_total }} Completed
+                            </span>
                         </div>
-                    </div>
-                </div>
-                <!-- Right Column -->
-                <div class="lg:col-span-1 space-y-6">
-                    <!-- Lifecycle Action -->
-                    <div class="bg-white rounded-xl shadow-sm border border-blue-100 overflow-hidden">
-                        <div class="p-6 space-y-3">
-                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">LIFECYCLE ACTION</h3>
-                            <button type="button"
-                                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition shadow-sm cursor-pointer"
-                                    onclick="document.getElementById('assignModal').classList.remove('hidden')">
-                                <svg width="18"
-                                     height="18"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="2"
-                                     stroke-linecap="round"
-                                     stroke-linejoin="round">
-                                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="8.5" cy="7" r="4"></circle>
-                                    <line x1="20" y1="8" x2="20" y2="14"></line>
-                                    <line x1="23" y1="11" x2="17" y2="11"></line>
-                                </svg>
-                                Assign Technician
-                            </button>
-                            {% if obj.equipment %}
-                            <button type="button"
-                                    class="w-full bg-[#0B7A44] hover:bg-[#08683A] text-white font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition shadow-sm cursor-pointer"
-                                    onclick="document.getElementById('completeServiceModal').classList.remove('hidden')">
-                                <svg width="18"
-                                     height="18"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="2"
-                                     stroke-linecap="round"
-                                     stroke-linejoin="round">
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                                </svg>
-                                Complete &amp; Log Service
-                            </button>
-                            {% endif %}
-                        </div>
-                    </div>
-                    {% if service_records %}
-                    <!-- Logged Service History -->
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">SERVICE HISTORY</h3>
-                            <a href="{% url 'backend:equipment_history' %}?source=Request"
-                               class="text-xs font-semibold text-[#0B7A44] hover:underline">View All</a>
-                        </div>
-                        <div class="space-y-3">
-                            {% for rec in service_records %}
-                                <a href="{% url 'backend:maintenance_record_detail' rec.id %}"
-                                   class="block p-3 rounded-lg border border-gray-100 bg-[#FAFAFA] hover:border-[#0B7A44] transition">
+                        <div class="space-y-2">
+                            {% for item in checklist_items %}
+                                <div class="rounded-[8px] border {% if item.is_completed %}border-[#CEEAD6] bg-[#F4FBF6]{% else %}border-[#EFEFED] bg-[#FAFAFA]{% endif %} px-3 py-2.5">
                                     <div class="flex items-center justify-between gap-2">
-                                        <span class="font-mono text-xs font-semibold text-gray-900">SR-{{ rec.id|stringformat:"03d" }}</span>
-                                        <span class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-[#E6F4EA] text-[#137333]">{{ rec.get_record_type_display }}</span>
+                                        <div class="flex items-center gap-2 min-w-0">
+                                            {% if item.is_completed %}
+                                                <span class="w-4 h-4 rounded-full bg-[#0B7A44] text-white flex items-center justify-center shrink-0">
+                                                    <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                </span>
+                                            {% else %}
+                                                <span class="w-4 h-4 rounded-full border border-[#CFCED0] bg-white shrink-0"></span>
+                                            {% endif %}
+                                            <span class="text-[13px] font-medium text-[#2B2823]">{{ item.title }}</span>
+                                        </div>
+                                        <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full shrink-0 {% if item.is_completed %}bg-[#E7F6EC] text-[#0B7A44]{% else %}bg-[#EAEAE8] text-[#716F6C]{% endif %}">
+                                            {% if item.is_completed %}Done{% else %}Pending{% endif %}
+                                        </span>
                                     </div>
-                                    <p class="text-xs text-gray-600 mt-1 line-clamp-2">{{ rec.work_description }}</p>
-                                    <div class="flex items-center justify-between text-[11px] text-gray-400 mt-1.5">
-                                        <span>{% if rec.assigned_to %}{{ rec.assigned_to.display_name }}{% elif rec.technician %}{{ rec.technician.get_full_name|default:rec.technician.username }}{% else %}—{% endif %}</span>
-                                        <span>{{ rec.maintenance_date|date:"d M Y" }}</span>
-                                    </div>
-                                </a>
+                                    {% if item.technician_feedback %}
+                                        <p class="text-[12px] text-[#5C5B59] mt-1 pl-6">
+                                            <strong class="text-[#2B2823]">Technician Note:</strong> {{ item.technician_feedback }}
+                                        </p>
+                                    {% endif %}
+                                </div>
                             {% endfor %}
                         </div>
                     </div>
                     {% endif %}
-                    <!-- Assigned Personnel -->
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">ASSIGNED PERSONNEL</h3>
-                        {% if obj.assigned_technicians.exists %}
-                            <div class="space-y-4">
-                                {% for assign in obj.assigned_technicians.all %}
-                                    {% if not assign.deleted %}
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center font-bold text-sm shrink-0 uppercase">
-                                                {{ assign.technician.first_initial }}
-                                            </div>
-                                            <div>
-                                                <p class="text-sm font-semibold text-gray-900">{{ assign.technician.display_name }}</p>
-                                            </div>
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            <div class="flex items-center gap-2 text-gray-400">
-                                <svg width="16"
-                                     height="16"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="2"
-                                     stroke-linecap="round"
-                                     stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <line x1="12" y1="8" x2="12" y2="12"></line>
-                                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                                </svg>
-                                <p class="text-sm italic">No technician assigned yet</p>
-                            </div>
+                </div>
+            </div>
+
+            <!-- 2. SUBMITTED WORK & SUPERVISOR REVIEW CARD (shown when work has been submitted) -->
+            {% if pending_record or approved_record or service_records %}
+            <div id="supervisorReviewSection" class="figma-card-outer">
+                <div class="px-2.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <h2 class="text-[15.5px] font-semibold text-[#2B2823] tracking-tight">
+                            {% if pending_record %}Work Submitted — Supervisor Review{% elif approved_record %}Approved Service Record{% else %}Review &amp; Revision History{% endif %}
+                        </h2>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#EAEAE8] text-[#4A4947]">
+                            Submissions: {{ submission_count }}
+                        </span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#EEF2FF] text-[#4338CA]">
+                            Reviews: {{ review_count }}
+                        </span>
+                        {% if revision_count > 0 %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#FCE8E6] text-[#C5221F]">
+                                Revisions: {{ revision_count }}
+                            </span>
                         {% endif %}
                     </div>
-                    <!-- Comments -->
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                            <svg width="16"
-                                 height="16"
-                                 viewBox="0 0 24 24"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 stroke-width="2"
-                                 stroke-linecap="round"
-                                 stroke-linejoin="round">
-                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                            </svg>
-                            COMMENTS
-                        </h3>
-                        <!-- Existing comments -->
-                        {% if obj.comments.exists %}
-                            <div class="space-y-3 mb-4">
-                                {% for comment in obj.comments.all %}
-                                    {% if not comment.deleted %}
-                                        <div class="bg-slate-50 rounded-lg p-3">
-                                            <div class="flex items-center gap-2 mb-1">
-                                                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold uppercase shrink-0">
-                                                    {{ comment.author.username|first }}
-                                                </span>
-                                                <span class="text-xs font-semibold text-gray-700">{{ comment.author.get_full_name|default:comment.author.username }}</span>
-                                                <span class="text-xs text-gray-400 ml-auto">{{ comment.created_at|date:"n/j/Y, g:i A" }}</span>
+                    {% if approved_record %}
+                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#E7F6EC] text-[#0B7A44]">
+                            In Service History
+                        </span>
+                    {% elif pending_record %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#EEF2FF] text-[#4338CA]">
+                            Review Round #{{ next_review_round }}
+                        </span>
+                    {% endif %}
+                </div>
+
+                <div class="figma-card-inner space-y-4">
+                    {% if pending_record %}
+                        <div class="rounded-[8px] border border-[#C7D2FE] bg-[#F8F9FF] p-4 space-y-3">
+                            <div class="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-[#E0E7FF]">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="tkt-mono text-[13px] font-semibold text-[#2B2823]">SR-{{ pending_record.id|stringformat:"03d" }}</span>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#4338CA] text-white">
+                                        Submission #{{ submission_count }}
+                                    </span>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11.5px] font-medium bg-white border border-[#C7D2FE] text-[#4338CA]">
+                                        {{ pending_record.get_record_type_display }}
+                                    </span>
+                                    {% if revision_count > 0 %}
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11.5px] font-medium bg-[#FEF3C7] text-[#B45309]">
+                                            Updated after Revision #{{ revision_count }}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                <span class="text-[12px] text-[#5C5B59]">
+                                    Submitted {{ pending_record.created_at|date:"d M Y, g:i A" }}
+                                </span>
+                            </div>
+
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-[12.5px]">
+                                <div>
+                                    <div class="text-[#8E8C89]">Technician</div>
+                                    <div class="font-semibold text-[#2B2823] mt-0.5">
+                                        {% if pending_record.assigned_to %}{{ pending_record.assigned_to.display_name }}{% elif pending_record.technician %}{{ pending_record.technician.get_full_name|default:pending_record.technician.username }}{% else %}—{% endif %}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="text-[#8E8C89]">Completed Date</div>
+                                    <div class="font-semibold text-[#2B2823] mt-0.5">{{ pending_record.maintenance_date|date:"d M Y" }}</div>
+                                </div>
+                                <div>
+                                    <div class="text-[#8E8C89]">Cost</div>
+                                    <div class="font-semibold text-[#2B2823] mt-0.5">{% if pending_record.cost %}{{ pending_record.cost }}{% else %}—{% endif %}</div>
+                                </div>
+                                <div>
+                                    <div class="text-[#8E8C89]">Duration</div>
+                                    <div class="font-semibold text-[#2B2823] mt-0.5">{% if pending_record.duration_hours %}{{ pending_record.duration_hours }} hrs{% else %}—{% endif %}</div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="text-[12px] font-semibold text-[#716F6C] mb-1">Work Completed Report</div>
+                                <div class="rounded-[6px] bg-white border border-[#E5E7EB] p-3 text-[13.5px] text-[#2B2823] whitespace-pre-line">
+                                    {{ pending_record.work_description }}
+                                </div>
+                            </div>
+
+                            {% if pending_record.components.all %}
+                                <div>
+                                    <div class="text-[12px] font-semibold text-[#716F6C] mb-1.5">Submitted Task Checklist</div>
+                                    <div class="space-y-1.5">
+                                        {% for comp in pending_record.components.all %}
+                                            <div class="rounded-[6px] bg-white border {% if comp.is_checked %}border-[#CEEAD6]{% else %}border-[#E5E7EB]{% endif %} px-3 py-2 text-[12.5px]">
+                                                <div class="flex items-center justify-between gap-2">
+                                                    <div class="flex items-center gap-2">
+                                                        {% if comp.is_checked %}
+                                                            <span class="w-4 h-4 rounded-full bg-[#0B7A44] text-white flex items-center justify-center shrink-0">
+                                                                <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                            </span>
+                                                        {% else %}
+                                                            <span class="w-4 h-4 rounded-full bg-[#FCE8E6] text-[#C5221F] flex items-center justify-center shrink-0 text-[10px] font-bold">&times;</span>
+                                                        {% endif %}
+                                                        <span class="font-medium text-[#2B2823]">{{ comp.description|default:comp.name }}</span>
+                                                    </div>
+                                                    <span class="text-[11px] font-semibold {% if comp.is_checked %}text-[#0B7A44]{% else %}text-[#C5221F]{% endif %}">
+                                                        {% if comp.is_checked %}Checked{% else %}Not Checked{% endif %}
+                                                    </span>
+                                                </div>
+                                                {% if comp.remark %}
+                                                    <div class="text-[12px] text-[#5C5B59] mt-1 pl-6">Note: {{ comp.remark }}</div>
+                                                {% endif %}
                                             </div>
-                                            <p class="text-sm text-gray-600 pl-8">{{ comment.body }}</p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if pending_record.parts_replaced %}
+                                <div class="text-[12.5px] text-[#4A4947]">
+                                    <span class="font-semibold text-[#2B2823]">Parts Replaced:</span> {{ pending_record.parts_replaced }}
+                                </div>
+                            {% endif %}
+
+                            <!-- Supervisor Decision Actions -->
+                            <div class="pt-3 border-t border-[#E0E7FF] space-y-3">
+                                <form method="POST" action="{% url 'backend:ticket_detail' obj.id %}" id="approveReviewForm" class="space-y-2.5">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="record_id" value="{{ pending_record.id }}">
+                                    <input type="hidden" name="action" value="approve_review">
+                                    <div>
+                                        <label for="approve_notes" class="block text-[12px] font-medium text-[#716F6C] mb-1">
+                                            Approval Notes <span class="text-[#9D9C9A]">(optional)</span>
+                                        </label>
+                                        <input type="text"
+                                               id="approve_notes"
+                                               name="review_notes"
+                                               placeholder="Optional note when approving..."
+                                               class="w-full h-[38px] rounded-[8px] bg-white border border-[#D8D7D5] px-3 text-[13px] text-[#2B2823] focus:outline-none focus:border-[#0B7A44]" />
+                                    </div>
+                                    <div class="flex flex-wrap items-center justify-end gap-2.5">
+                                        <button type="button"
+                                                id="toggleRevisionBoxBtn"
+                                                onclick="toggleRevisionFeedbackBox()"
+                                                class="inline-flex items-center gap-1.5 px-4 py-2 rounded-[8px] bg-white border border-[#FAD2CF] text-[#C5221F] hover:bg-[#FCE8E6] text-[13px] font-semibold transition-colors cursor-pointer">
+                                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                                            <span>Request Revision</span>
+                                        </button>
+                                        <button type="submit"
+                                                class="inline-flex items-center gap-1.5 px-4 py-2 rounded-[8px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[13px] font-semibold shadow-sm transition-colors cursor-pointer">
+                                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                            <span>Approve &amp; Move to Service History</span>
+                                        </button>
+                                    </div>
+                                </form>
+
+                                <!-- Expandable Revision Input Box (revealed on clicking Request Revision) -->
+                                <form method="POST"
+                                      action="{% url 'backend:ticket_detail' obj.id %}"
+                                      id="revisionInputBox"
+                                      class="hidden rounded-[8px] border border-[#FAD2CF] bg-[#FFF8F8] p-3.5 space-y-2.5">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="record_id" value="{{ pending_record.id }}">
+                                    <input type="hidden" name="action" value="reject_review">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <label for="revision_feedback_textarea" class="text-[13px] font-semibold text-[#991B1B]">
+                                            Revision #{{ revision_count|add:1 }} — What does the technician need to fix? <span class="text-[#D93025]">*</span>
+                                        </label>
+                                        <span class="text-[11.5px] font-medium text-[#B91C1C]">Sent directly to Technician Profile</span>
+                                    </div>
+                                    <textarea id="revision_feedback_textarea"
+                                              name="review_notes"
+                                              rows="3"
+                                              required
+                                              placeholder="Write clear instructions on what needs to be checked, repaired, or updated..."
+                                              class="w-full rounded-[8px] bg-white border border-[#F5B7B1] p-2.5 text-[13px] text-[#2B2823] focus:outline-none focus:border-[#D93025]"></textarea>
+                                    <div class="flex items-center justify-end gap-2">
+                                        <button type="button"
+                                                onclick="toggleRevisionFeedbackBox(false)"
+                                                class="px-3.5 py-1.5 rounded-[8px] bg-white border border-[#EAEAE9] text-[12.5px] font-medium text-[#4A4947] hover:bg-[#F7F7F6] cursor-pointer">
+                                            Cancel
+                                        </button>
+                                        <button type="submit"
+                                                class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-[8px] bg-[#D93025] hover:bg-[#B91C1C] text-white text-[12.5px] font-semibold shadow-sm cursor-pointer">
+                                            Send Revision #{{ revision_count|add:1 }} to Technician
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if approved_record %}
+                        <div class="rounded-[8px] border border-[#CEEAD6] bg-[#F2FBF5] p-4 space-y-3">
+                            <div class="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-[#CEEAD6]">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="tkt-mono text-[13.5px] font-semibold text-[#0B7A44]">SR-{{ approved_record.id|stringformat:"03d" }}</span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#0B7A44] text-white">
+                                        Approved &amp; Archived
+                                    </span>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11.5px] font-medium bg-white border border-[#CEEAD6] text-[#0B7A44]">
+                                        Approved on Review #{{ review_count }}
+                                    </span>
+                                </div>
+                                <a href="{% url 'backend:service_history_detail' approved_record.id %}"
+                                   class="inline-flex items-center gap-1 text-[12.5px] font-semibold text-[#0B7A44] hover:underline">
+                                    <span>View in Service History</span>
+                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 5l7 7-7 7"></path></svg>
+                                </a>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-[12.5px]">
+                                <div>
+                                    <div class="text-[#716F6C]">Technician</div>
+                                    <div class="font-semibold text-[#2B2823] mt-0.5">
+                                        {% if approved_record.assigned_to %}{{ approved_record.assigned_to.display_name }}{% elif approved_record.technician %}{{ approved_record.technician.get_full_name|default:approved_record.technician.username }}{% else %}—{% endif %}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="text-[#716F6C]">Service Date</div>
+                                    <div class="font-semibold text-[#2B2823] mt-0.5">{{ approved_record.maintenance_date|date:"d M Y" }}</div>
+                                </div>
+                                <div>
+                                    <div class="text-[#716F6C]">Reviewed By</div>
+                                    <div class="font-semibold text-[#2B2823] mt-0.5">
+                                        {% if approved_record.reviewed_by %}{{ approved_record.reviewed_by.get_full_name|default:approved_record.reviewed_by.username }}{% else %}—{% endif %}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="text-[#716F6C]">Approved At</div>
+                                    <div class="font-semibold text-[#2B2823] mt-0.5">
+                                        {% if approved_record.reviewed_at %}{{ approved_record.reviewed_at|date:"d M Y, g:i A" }}{% else %}—{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="rounded-[6px] bg-white border border-[#DCEFE2] p-3 text-[13.5px] text-[#2B2823] whitespace-pre-line">
+                                {{ approved_record.work_description }}
+                            </div>
+                            {% if approved_record.review_notes %}
+                                <div class="text-[12.5px] text-[#0B7A44]">
+                                    <span class="font-semibold">Supervisor Notes:</span> {{ approved_record.review_notes }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if numbered_rejected_records %}
+                        <div class="space-y-2.5">
+                            <div class="text-[12px] font-semibold text-[#9D9C9A] uppercase tracking-wider">
+                                Revision History ({{ numbered_rejected_records|length }})
+                            </div>
+                            {% for item in numbered_rejected_records %}
+                                <div class="rounded-[8px] border border-[#FAD2CF] bg-[#FFF8F8] p-3 text-[12.5px] space-y-1.5">
+                                    <div class="flex flex-wrap items-center justify-between gap-2">
+                                        <div class="flex items-center gap-2">
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#FCE8E6] text-[#C5221F]">
+                                                Revision #{{ item.revision_num }}
+                                            </span>
+                                            <span class="tkt-mono font-semibold text-[#991B1B]">
+                                                Submission #{{ item.attempt_num }} (SR-{{ item.record.id|stringformat:"03d" }})
+                                            </span>
+                                        </div>
+                                        <span class="text-[11.5px] text-[#8E8C89]">
+                                            {{ item.record.reviewed_at|default:item.record.created_at|date:"d M Y, g:i A" }}
+                                        </span>
+                                    </div>
+                                    <p class="text-[#4A4947]">
+                                        <span class="font-semibold text-[#2B2823]">Submitted:</span> {{ item.record.work_description }}
+                                    </p>
+                                    {% if item.record.review_notes %}
+                                        <div class="rounded-[6px] bg-white border border-[#FAD2CF] px-2.5 py-2 text-[#991B1B]">
+                                            <span class="font-semibold">Supervisor Feedback:</span> {{ item.record.review_notes }}
                                         </div>
                                     {% endif %}
-                                {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- 3. CHRONOLOGICAL TASK ACTIVITY LOG TIMELINE -->
+            <div class="figma-card-outer">
+                <div class="px-2.5 flex items-center justify-between">
+                    <h2 class="text-[15.5px] font-semibold text-[#2B2823] tracking-tight">Task Activity Log</h2>
+                    <span class="inline-flex items-center justify-center min-w-[24px] h-[22px] px-2 rounded-full bg-[#EAEAE8] text-[12px] font-semibold text-[#4A4947]">
+                        {% if has_created_log %}{{ activity_logs|length }}{% else %}{{ activity_logs|length|add:1 }}{% endif %}
+                    </span>
+                </div>
+
+                <div class="figma-card-inner">
+                    <div class="relative pl-6 space-y-5 before:content-[''] before:absolute before:left-[9px] before:top-2 before:bottom-2 before:w-[2px] before:bg-[#ECECE9]">
+
+                        <!-- Fallback Step 1 entry for tickets created before auto-logging -->
+                        {% if not has_created_log %}
+                            <div class="relative">
+                                <span class="absolute -left-[22px] top-1 w-3.5 h-3.5 rounded-full bg-[#1A73E8] border-2 border-white ring-2 ring-[#E8F0FE]"></span>
+                                <div class="flex flex-wrap items-center gap-2 mb-1">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#E8F0FE] text-[#1A73E8]">
+                                        Request Received
+                                    </span>
+                                    <span class="text-[12px] text-[#8E8C89]">{{ obj.opened_at|date:"d M Y, g:i A" }}</span>
+                                    <span class="text-[12px] text-[#9D9C9A]">&bull; by <strong class="text-[#4A4947]">{{ obj.user.get_full_name|default:obj.user.username|default:"System" }}</strong></span>
+                                </div>
+                                <div class="rounded-[8px] bg-[#F8F8F7] border border-[#EFEFED] px-3.5 py-2.5 text-[13px] text-[#3F3E3C]">
+                                    Request submitted from <strong>{{ obj.building.name|default:"Building" }}</strong> for <strong>{{ obj.equipment.equipment_name|default:obj.equipment.equipment_id|default:"Equipment" }}</strong> ({{ obj.get_issue_type_display }}, {{ obj.get_priority_display }} priority).
+                                    {% if obj.issue_description %}<div class="mt-1 text-[#5C5B59]">"{{ obj.issue_description }}"</div>{% endif %}
+                                </div>
                             </div>
                         {% endif %}
-                        <!-- Add comment form -->
-                        <form method="POST"
-                              action="{% url 'backend:ticket_detail' obj.id %}"
-                              class="flex items-center gap-2">
-                            {% csrf_token %}
-                            <input type="text"
-                                   name="comment_body"
-                                   id="comment_body"
-                                   placeholder="Type a comment..."
-                                   class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 outline-none"
-                                   autocomplete="off" />
-                            <button type="submit"
-                                    class="bg-slate-100 text-slate-500 hover:bg-blue-50 hover:text-blue-600 p-2 rounded-lg transition border border-slate-200 hover:border-blue-100 shrink-0">
-                                <svg width="20"
-                                     height="20"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="2"
-                                     stroke-linecap="round"
-                                     stroke-linejoin="round">
-                                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                                </svg>
-                            </button>
-                        </form>
+
+                        {% for log in activity_logs %}
+                            <div class="relative">
+                                <!-- Color-coded timeline dot -->
+                                {% if log.action_type == 'review_approved' or log.action_type == 'resolved' or log.action_type == 'closed' %}
+                                    <span class="absolute -left-[22px] top-1 w-3.5 h-3.5 rounded-full bg-[#0B7A44] border-2 border-white ring-2 ring-[#E7F6EC]"></span>
+                                {% elif log.action_type == 'submitted_for_review' %}
+                                    <span class="absolute -left-[22px] top-1 w-3.5 h-3.5 rounded-full bg-[#4338CA] border-2 border-white ring-2 ring-[#EEF2FF]"></span>
+                                {% elif log.action_type == 'work_started' %}
+                                    <span class="absolute -left-[22px] top-1 w-3.5 h-3.5 rounded-full bg-[#D97706] border-2 border-white ring-2 ring-[#FEF3C7]"></span>
+                                {% elif log.action_type == 'accepted' %}
+                                    <span class="absolute -left-[22px] top-1 w-3.5 h-3.5 rounded-full bg-[#0284C7] border-2 border-white ring-2 ring-[#E0F2FE]"></span>
+                                {% elif log.action_type == 'assigned' %}
+                                    <span class="absolute -left-[22px] top-1 w-3.5 h-3.5 rounded-full bg-[#7C3AED] border-2 border-white ring-2 ring-[#F3E8FD]"></span>
+                                {% elif log.action_type == 'rejected_assignment' or log.action_type == 'review_rejected' %}
+                                    <span class="absolute -left-[22px] top-1 w-3.5 h-3.5 rounded-full bg-[#D93025] border-2 border-white ring-2 ring-[#FCE8E6]"></span>
+                                {% elif log.action_type == 'created' %}
+                                    <span class="absolute -left-[22px] top-1 w-3.5 h-3.5 rounded-full bg-[#1A73E8] border-2 border-white ring-2 ring-[#E8F0FE]"></span>
+                                {% else %}
+                                    <span class="absolute -left-[22px] top-1 w-3.5 h-3.5 rounded-full bg-[#716F6C] border-2 border-white ring-2 ring-[#EFEFEF]"></span>
+                                {% endif %}
+
+                                <div class="flex flex-wrap items-center gap-2 mb-1">
+                                    {% if log.action_type == 'review_approved' or log.action_type == 'resolved' or log.action_type == 'closed' %}
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#E7F6EC] text-[#0B7A44]">{{ log.get_action_type_display }}</span>
+                                    {% elif log.action_type == 'submitted_for_review' %}
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#EEF2FF] text-[#4338CA]">{{ log.get_action_type_display }}</span>
+                                    {% elif log.action_type == 'work_started' %}
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#FEF3E6] text-[#C86E12]">{{ log.get_action_type_display }}</span>
+                                    {% elif log.action_type == 'accepted' %}
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#E0F2FE] text-[#0369A1]">{{ log.get_action_type_display }}</span>
+                                    {% elif log.action_type == 'assigned' %}
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#F3E8FD] text-[#7C3AED]">{{ log.get_action_type_display }}</span>
+                                    {% elif log.action_type == 'rejected_assignment' or log.action_type == 'review_rejected' %}
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#FCE8E6] text-[#C5221F]">{{ log.get_action_type_display }}</span>
+                                    {% elif log.action_type == 'created' %}
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#E8F0FE] text-[#1A73E8]">{{ log.get_action_type_display }}</span>
+                                    {% else %}
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#EFEFEF] text-[#4A4947]">{{ log.get_action_type_display }}</span>
+                                    {% endif %}
+                                    <span class="text-[12px] text-[#8E8C89]">{{ log.created_at|date:"d M Y, g:i A" }}</span>
+                                    <span class="text-[12px] text-[#9D9C9A]">&bull; by <strong class="text-[#4A4947]">{{ log.actor.get_full_name|default:log.actor.username|default:"System" }}</strong></span>
+                                </div>
+
+                                {% if log.description %}
+                                    <div class="rounded-[8px] bg-[#F8F8F7] border border-[#EFEFED] px-3.5 py-2.5 text-[13px] text-[#3F3E3C] leading-relaxed">
+                                        {{ log.description }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-    <!-- Modal for Assign Technician -->
-    <div id="assignModal"
-         class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
-            <form method="POST" action="{% url 'backend:ticket_detail' obj.id %}">
-                {% csrf_token %}
-                <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                    <h3 class="text-lg font-bold text-gray-900">Update Ticket Status</h3>
-                    <button type="button"
-                            class="text-gray-400 hover:text-gray-600"
-                            onclick="document.getElementById('assignModal').classList.add('hidden')">
-                        <svg width="20"
-                             height="20"
-                             viewBox="0 0 24 24"
-                             fill="none"
-                             stroke="currentColor"
-                             stroke-width="2"
-                             stroke-linecap="round"
-                             stroke-linejoin="round">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                    </button>
+
+        <!-- RIGHT COLUMN: Workflow Action Panel + Assigned Technicians + Comments -->
+        <div class="space-y-[10px]">
+
+            <!-- 1. NEXT WORKFLOW ACTION CARD -->
+            <div class="figma-card-outer">
+                <div class="px-2.5 flex items-center justify-between">
+                    <h2 class="text-[15.5px] font-semibold text-[#2B2823] tracking-tight">Workflow Actions</h2>
                 </div>
-                <div class="p-6">
-                    <label class="block text-sm font-semibold text-gray-900 mb-2">Select Technician</label>
-                    <select name="technician_id"
-                            required
-                            class="w-full border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm">
-                        <option value="" disabled selected>✓ Select someone...</option>
-                        {% for tech in technicians %}
-                            <option value="{{ tech.id }}">{{ tech.display_name }}</option>
-                        {% endfor %}
-                    </select>
+                <div class="figma-card-inner space-y-3">
+                    {% if stage_key == 'open' %}
+                        <p class="text-[13px] text-[#5C5B59] leading-relaxed">
+                            No technician is currently assigned. Assign a technician so they can review and accept this task.
+                        </p>
+                        <button type="button"
+                                onclick="document.getElementById('assignModal').classList.remove('hidden')"
+                                class="w-full py-2.5 px-4 rounded-[8px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 shadow-sm transition-colors cursor-pointer">
+                            <span>Assign Technician</span>
+                        </button>
+
+                    {% elif stage_key == 'assigned' %}
+                        <div class="rounded-[8px] bg-[#FEF9E7] border border-[#FDE68A] px-3 py-2.5 text-[12.5px] text-[#92400E] leading-relaxed">
+                            <strong>Waiting for Technician Acceptance:</strong>
+                            {% if first_pending_row %}{{ first_pending_row.technician.display_name }}{% else %}The assigned technician{% endif %} must accept or decline this assignment from their Technician Profile before work can begin.
+                        </div>
+                        <button type="button"
+                                onclick="document.getElementById('assignModal').classList.remove('hidden')"
+                                class="w-full py-2.5 px-4 rounded-[8px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 shadow-sm transition-colors cursor-pointer">
+                            <span>Assign Another Technician</span>
+                        </button>
+                        {% if first_pending_row %}
+                            <a href="{% url 'backend:technician_details' first_pending_row.technician.id %}"
+                               class="w-full py-2 px-3 rounded-[8px] bg-white border border-[#EAEAE9] text-[#2B2823] hover:bg-[#F7F7F6] text-[12.5px] font-semibold flex items-center justify-center gap-1.5 transition-colors">
+                                <span>View {{ first_pending_row.technician.display_name }}'s Profile</span>
+                            </a>
+                        {% endif %}
+
+                    {% elif stage_key == 'accepted' %}
+                        <div class="rounded-[8px] bg-[#E0F2FE] border border-[#BAE6FD] px-3 py-2.5 text-[12.5px] text-[#0369A1] leading-relaxed">
+                            <strong>Task Accepted!</strong>
+                            {% if first_accepted_row %}{{ first_accepted_row.technician.display_name }} accepted the assignment.{% endif %} Waiting for the technician to verify equipment QR &amp; PIN and start work.
+                        </div>
+                        <button type="button"
+                                onclick="document.getElementById('assignModal').classList.remove('hidden')"
+                                class="w-full py-2.5 px-4 rounded-[8px] bg-white border border-[#EAEAE9] hover:bg-[#F7F7F6] text-[#2B2823] text-[13px] font-semibold flex items-center justify-center gap-2 transition-colors cursor-pointer">
+                            <span>Assign Another Technician</span>
+                        </button>
+                        {% if first_accepted_row %}
+                            <a href="{% url 'backend:technician_details' first_accepted_row.technician.id %}"
+                               class="w-full py-2 px-3 rounded-[8px] bg-[#F5F5F4] hover:bg-[#EAEAE8] text-[#2B2823] text-[12.5px] font-semibold flex items-center justify-center gap-1.5 transition-colors">
+                                <span>View {{ first_accepted_row.technician.display_name }}'s Profile</span>
+                            </a>
+                        {% endif %}
+
+                    {% elif stage_key == 'in_progress' %}
+                        <div class="rounded-[8px] bg-[#FEF3E6] border border-[#FDD8B5] px-3 py-2.5 text-[12.5px] text-[#9A3412] leading-relaxed">
+                            <strong>Work In Progress:</strong> The technician is currently working on this equipment. Once completed, they will submit their work report for your review.
+                        </div>
+                        {% if first_accepted_row %}
+                            <a href="{% url 'backend:technician_details' first_accepted_row.technician.id %}"
+                               class="w-full py-2 px-3 rounded-[8px] bg-white border border-[#EAEAE9] text-[#2B2823] hover:bg-[#F7F7F6] text-[12.5px] font-semibold flex items-center justify-center gap-1.5 transition-colors">
+                                <span>View {{ first_accepted_row.technician.display_name }}'s Profile</span>
+                            </a>
+                        {% endif %}
+
+                    {% elif stage_key == 'pending_review' %}
+                        <div class="rounded-[8px] bg-[#EEF2FF] border border-[#C7D2FE] px-3 py-2.5 text-[12.5px] text-[#3730A3]">
+                            <strong>Pending Supervisor Review:</strong> Review the submitted work report. Approving it resolves this ticket and moves it into Service History.
+                        </div>
+                        <a href="#supervisorReviewSection"
+                           class="w-full py-2.5 px-4 rounded-[8px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 shadow-sm transition-colors">
+                            <span>Go to Supervisor Review</span>
+                        </a>
+
+                    {% elif stage_key == 'resolved' %}
+                        <div class="rounded-[8px] bg-[#E7F6EC] border border-[#CEEAD6] px-3 py-2.5 text-[12.5px] text-[#0B7A44]">
+                            <strong>Workflow Complete!</strong> Approved by supervisor and recorded in Service History.
+                        </div>
+                        {% if approved_record %}
+                            <a href="{% url 'backend:service_history_detail' approved_record.id %}"
+                               class="w-full py-2.5 px-4 rounded-[8px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 shadow-sm transition-colors">
+                                <span>Open Service History (SR-{{ approved_record.id|stringformat:"03d" }})</span>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'backend:service_history' %}?source=Request"
+                               class="w-full py-2.5 px-4 rounded-[8px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 shadow-sm transition-colors">
+                                <span>View Service History</span>
+                            </a>
+                        {% endif %}
+                    {% endif %}
                 </div>
-                <div class="px-6 py-4 bg-gray-50 flex justify-end gap-3 rounded-b-xl border-t border-gray-100">
-                    <button type="button"
-                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
-                            onclick="document.getElementById('assignModal').classList.add('hidden')">Cancel</button>
-                    <button type="submit"
-                            class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
-                        Confirm Update
-                    </button>
+            </div>
+
+            <!-- 2. ASSIGNED TECHNICIANS CARD -->
+            <div class="figma-card-outer">
+                <div class="px-2.5 flex items-center justify-between">
+                    <h2 class="text-[15.5px] font-semibold text-[#2B2823] tracking-tight">Assigned Technicians</h2>
+                    {% if stage_key != 'resolved' %}
+                        <button type="button"
+                                onclick="document.getElementById('assignModal').classList.remove('hidden')"
+                                class="text-[12.5px] font-semibold text-[#0B7A44] hover:underline cursor-pointer">
+                            + Assign
+                        </button>
+                    {% endif %}
                 </div>
-            </form>
+
+                <div class="figma-card-inner">
+                    {% if assigned_rows %}
+                        <div class="divide-y divide-[#F2F2F2]">
+                            {% for row in assigned_rows %}
+                                <div class="py-2.5 first:pt-0 last:pb-0 space-y-2">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <a href="{% url 'backend:technician_details' row.technician.id %}" class="flex items-center gap-2.5 min-w-0 group">
+                                            <div class="w-8 h-8 rounded-full bg-[#2B2823] text-white flex items-center justify-center text-[12.5px] font-semibold shrink-0 uppercase">
+                                                {{ row.technician.first_initial }}
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="text-[13.5px] font-semibold text-[#2B2823] group-hover:text-[#0B7A44] truncate">
+                                                    {{ row.technician.display_name }}
+                                                </div>
+                                                <div class="text-[11.5px] text-[#8E8C89]">
+                                                    Assigned {{ row.link.assigned_at|date:"d M Y, g:i A" }}
+                                                </div>
+                                            </div>
+                                        </a>
+                                        {% if row.acceptance_status == 'accepted' %}
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#E7F6EC] text-[#0B7A44] shrink-0">
+                                                Accepted
+                                            </span>
+                                        {% elif row.acceptance_status == 'rejected' %}
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#FCE8E6] text-[#C5221F] shrink-0">
+                                                Rejected
+                                            </span>
+                                        {% else %}
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#FEF3C7] text-[#B45309] shrink-0">
+                                                Pending
+                                            </span>
+                                        {% endif %}
+                                    </div>
+
+                                    {% if row.activity %}
+                                        <div class="flex flex-wrap items-center gap-x-3 gap-y-1 pl-10 text-[11.5px] text-[#716F6C]">
+                                            <span>Work: <strong class="text-[#2B2823]">{{ row.activity.get_completion_status_display }}</strong></span>
+                                            {% if row.activity.accepted_at %}
+                                                <span>&bull; Accepted {{ row.activity.accepted_at|date:"d M, g:i A" }}</span>
+                                            {% endif %}
+                                            {% if row.activity.started_at %}
+                                                <span>&bull; Started {{ row.activity.started_at|date:"d M, g:i A" }}</span>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-[13px] text-[#8E8C89] italic py-2">No technician assigned yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- 3. COMMENTS CARD -->
+            <div class="figma-card-outer">
+                <div class="px-2.5 flex items-center justify-between">
+                    <h2 class="text-[15.5px] font-semibold text-[#2B2823] tracking-tight">Comments</h2>
+                    <span class="text-[12px] font-semibold text-[#716F6C]">{{ comments|length }}</span>
+                </div>
+                <div class="figma-card-inner space-y-3">
+                    {% if comments %}
+                        <div class="space-y-2.5 max-h-[280px] overflow-y-auto custom-scrollbar pr-1">
+                            {% for comment in comments %}
+                                <div class="rounded-[8px] bg-[#F8F8F7] border border-[#EFEFED] p-3">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="w-6 h-6 rounded-full bg-[#E7F6EC] text-[#0B7A44] flex items-center justify-center text-[11px] font-bold uppercase shrink-0">
+                                            {{ comment.author.username|first }}
+                                        </span>
+                                        <span class="text-[12.5px] font-semibold text-[#2B2823]">{{ comment.author.get_full_name|default:comment.author.username }}</span>
+                                        <span class="text-[11px] text-[#9D9C9A] ml-auto">{{ comment.created_at|date:"d M, g:i A" }}</span>
+                                    </div>
+                                    <p class="text-[13px] text-[#4A4947] pl-8">{{ comment.body }}</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-[12.5px] text-[#9D9C9A] italic">No comments yet.</p>
+                    {% endif %}
+
+                    <form method="POST" action="{% url 'backend:ticket_detail' obj.id %}" class="flex items-center gap-2 pt-1">
+                        {% csrf_token %}
+                        <input type="text"
+                               name="comment_body"
+                               id="comment_body"
+                               placeholder="Add a note or comment..."
+                               class="w-full h-[38px] text-[13px] border border-[#EAEAE9] rounded-[8px] px-3 bg-[#FAFAFA] focus:bg-white focus:border-[#0B7A44] outline-none"
+                               autocomplete="off" />
+                        <button type="submit"
+                                class="h-[38px] px-3.5 rounded-[8px] bg-[#2B2823] hover:bg-[#1a1815] text-white text-[13px] font-semibold shrink-0 transition-colors cursor-pointer">
+                            Send
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
-    <!-- Complete & Log Service Modal -->
-    <div id="completeServiceModal"
-         class="hidden fixed inset-0 bg-black/45 backdrop-blur-[1px] flex items-center justify-center z-50 p-4">
-        <div class="w-full max-w-[512px] rounded-[13px] bg-[#F3F3F3] border-2 border-white/35 p-4 shadow-[0_0_0_2px_rgba(255,255,255,0.2),3px_9px_21px_rgba(48,48,48,0.1)]"
-             style="background-clip: padding-box;">
-            <div class="flex items-center justify-between mb-3.5">
-                <h3 class="text-[18px] font-semibold text-[#2B2823]">Complete &amp; Log Service</h3>
+</div>
+
+<!-- MODAL 1: Assign Technician -->
+<div id="assignModal"
+     class="hidden fixed inset-0 bg-black/45 backdrop-blur-[1px] flex items-center justify-center z-50 p-4">
+    <div class="w-full max-w-[460px] rounded-[13px] bg-[#F3F3F3] border-2 border-white/35 p-4 shadow-[0_0_0_2px_rgba(255,255,255,0.2),3px_9px_21px_rgba(48,48,48,0.1)]"
+         style="background-clip: padding-box;">
+        <div class="flex items-center justify-between mb-3.5">
+            <h3 class="text-[18px] font-semibold text-[#2B2823]">Assign Technician</h3>
+            <button type="button"
+                    onclick="document.getElementById('assignModal').classList.add('hidden')"
+                    class="w-9 h-9 rounded-[10px] bg-white border border-[#EAEAEA] flex items-center justify-center text-[#2B2823] hover:bg-[#FAFAFA] cursor-pointer">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <form method="POST" action="{% url 'backend:ticket_detail' obj.id %}" class="space-y-3.5">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="assign_technician">
+            <div>
+                <label class="block text-[13px] font-medium text-[#2B2823] mb-1.5">Select Technician <span class="text-[#D93025]">*</span></label>
+                <select name="technician_id"
+                        required
+                        class="w-full h-[41px] rounded-[13px] bg-white border border-[#F0F0F0] px-3 text-[13.5px] text-[#2B2823] shadow-sm focus:outline-none focus:border-[#0B7A44]">
+                    <option value="" disabled selected>Select a technician...</option>
+                    {% for tech in technicians %}
+                        <option value="{{ tech.id }}">{{ tech.display_name }} ({{ tech.primary_skill }})</option>
+                    {% endfor %}
+                </select>
+                <p class="text-[11.5px] text-[#716F6C] mt-1.5">The task will appear on the technician's profile as Pending Acceptance.</p>
+            </div>
+            <div class="pt-1 flex items-center justify-between">
                 <button type="button"
-                        onclick="document.getElementById('completeServiceModal').classList.add('hidden')"
-                        class="w-9 h-9 rounded-[10px] bg-white border border-[#EAEAEA] flex items-center justify-center text-[#2B2823] hover:bg-[#FAFAFA] cursor-pointer">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
+                        onclick="document.getElementById('assignModal').classList.add('hidden')"
+                        class="px-4 py-2 rounded-[8px] bg-white border border-[#EAEAE9] text-[13.5px] font-medium text-[#2B2823] hover:bg-[#FAFAFA] cursor-pointer">
+                    Cancel
+                </button>
+                <button type="submit"
+                        class="px-5 py-2 rounded-[8px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[13.5px] font-semibold shadow-sm cursor-pointer">
+                    Assign Task
                 </button>
             </div>
-            <form method="POST" action="{% url 'backend:ticket_detail' obj.id %}" class="space-y-3">
-                {% csrf_token %}
-                <input type="hidden" name="action" value="complete_service">
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[13px] font-medium text-[#2B2823] mb-1">Technician</label>
-                        <select name="service_technician_id"
-                                class="w-full h-[41px] rounded-[13px] bg-white border border-[#F0F0F0] px-3 text-[13.5px] text-[#2B2823] shadow-sm focus:outline-none focus:border-[#0B7A44]">
-                            <option value="">Select technician</option>
-                            {% for tech in technicians %}
-                                <option value="{{ tech.id }}" {% if default_tech_id == tech.id %}selected{% endif %}>{{ tech.display_name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-[13px] font-medium text-[#2B2823] mb-1">Service Type</label>
-                        <select name="record_type"
-                                class="w-full h-[41px] rounded-[13px] bg-white border border-[#F0F0F0] px-3 text-[13.5px] text-[#2B2823] shadow-sm focus:outline-none focus:border-[#0B7A44]">
-                            {% for key, val in record_type_choices %}
-                                <option value="{{ key }}" {% if key == 'repair' %}selected{% endif %}>{{ val }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div>
-                        <label class="block text-[13px] font-medium text-[#2B2823] mb-1">Completed Date</label>
-                        <input type="date"
-                               name="maintenance_date"
-                               value="{{ today_iso }}"
-                               class="w-full h-[41px] rounded-[13px] bg-white border border-[#F0F0F0] px-3 text-[13px] text-[#2B2823] shadow-sm focus:outline-none focus:border-[#0B7A44]">
-                    </div>
-                    <div>
-                        <label class="block text-[13px] font-medium text-[#2B2823] mb-1">Cost</label>
-                        <input type="number"
-                               step="0.01"
-                               name="cost"
-                               placeholder="0.00"
-                               class="w-full h-[41px] rounded-[13px] bg-white border border-[#F0F0F0] px-3 text-[13.5px] text-[#2B2823] shadow-sm focus:outline-none focus:border-[#0B7A44]">
-                    </div>
-                    <div>
-                        <label class="block text-[13px] font-medium text-[#2B2823] mb-1">Hours</label>
-                        <input type="number"
-                               step="0.25"
-                               name="duration_hours"
-                               placeholder="1.5"
-                               class="w-full h-[41px] rounded-[13px] bg-white border border-[#F0F0F0] px-3 text-[13.5px] text-[#2B2823] shadow-sm focus:outline-none focus:border-[#0B7A44]">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-[13px] font-medium text-[#2B2823] mb-1">Work Description <span class="text-[#D93025]">*</span></label>
-                    <textarea name="work_description"
-                              rows="3"
-                              required
-                              placeholder="Describe work completed to resolve this request..."
-                              class="w-full rounded-[13px] bg-white border border-[#F0F0F0] p-3 text-[13.5px] text-[#2B2823] shadow-sm resize-none focus:outline-none focus:border-[#0B7A44]">{{ obj.issue_description|default:'' }}</textarea>
-                </div>
-
-                <div>
-                    <label class="block text-[13px] font-medium text-[#2B2823] mb-1">Parts Replaced</label>
-                    <input type="text"
-                           name="parts_replaced"
-                           placeholder="Optional parts replaced"
-                           class="w-full h-[41px] rounded-[13px] bg-white border border-[#F0F0F0] px-3 text-[13.5px] text-[#2B2823] shadow-sm focus:outline-none focus:border-[#0B7A44]">
-                </div>
-
-                <div class="pt-2 flex items-center justify-between">
-                    <button type="button"
-                            onclick="document.getElementById('completeServiceModal').classList.add('hidden')"
-                            class="px-4 py-2 rounded-[8px] bg-white border border-[#EAEAE9] text-[13.5px] font-medium text-[#2B2823] shadow-sm hover:bg-[#FAFAFA] cursor-pointer">
-                        Cancel
-                    </button>
-                    <button type="submit"
-                            class="px-5 py-2 rounded-[8px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[13.5px] font-semibold shadow-sm cursor-pointer">
-                        Complete &amp; Save
-                    </button>
-                </div>
-            </form>
-        </div>
+        </form>
     </div>
+</div>
 
-    <script>
-    // Close modals when clicking outside
-    ['assignModal', 'completeServiceModal'].forEach(function(id) {
-        const el = document.getElementById(id);
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function toggleRevisionFeedbackBox(forceState) {
+        const box = document.getElementById('revisionInputBox');
+        const textarea = document.getElementById('revision_feedback_textarea');
+        if (!box) return;
+        const shouldOpen = (typeof forceState === 'boolean') ? forceState : box.classList.contains('hidden');
+        if (shouldOpen) {
+            box.classList.remove('hidden');
+            if (textarea) {
+                setTimeout(function() { textarea.focus(); }, 50);
+            }
+        } else {
+            box.classList.add('hidden');
+        }
+    }
+
+    (function() {
+        const el = document.getElementById('assignModal');
         if (el) {
             el.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.classList.add('hidden');
-                }
+                if (e.target === this) this.classList.add('hidden');
             });
         }
-    });
-    </script>
+    })();
+</script>
 {% endblock %}

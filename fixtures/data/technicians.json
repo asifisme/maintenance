@@ -168,5 +168,430 @@
             "created_at": "2026-06-11T09:30:00Z",
             "updated_at": "2026-06-11T09:30:00Z"
         }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 201,
+        "fields": {
+            "user": null,
+            "first_name": "Tariq",
+            "last_name": "Rahman",
+            "email": "tariq.rahman.1@pwd-maint.gov.bd",
+            "phone_number": "+8801711200000",
+            "about": "Commercial HVAC & Chiller specialist.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 202,
+        "fields": {
+            "user": null,
+            "first_name": "Nadia",
+            "last_name": "Islam",
+            "email": "nadia.islam.2@pwd-maint.gov.bd",
+            "phone_number": "+8801711200001",
+            "about": "Certified elevator & escalator service engineer.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 203,
+        "fields": {
+            "user": null,
+            "first_name": "Rafiq",
+            "last_name": "Hossain",
+            "email": "rafiq.hossain.3@pwd-maint.gov.bd",
+            "phone_number": "+8801711200002",
+            "about": "High-voltage generator & substation technician.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 204,
+        "fields": {
+            "user": null,
+            "first_name": "Sadia",
+            "last_name": "Ahmed",
+            "email": "sadia.ahmed.4@pwd-maint.gov.bd",
+            "phone_number": "+8801711200003",
+            "about": "Fire alarm, sprinkler & life-safety inspector.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 205,
+        "fields": {
+            "user": null,
+            "first_name": "Kamrul",
+            "last_name": "Chowdhury",
+            "email": "kamrul.chowdhury.5@pwd-maint.gov.bd",
+            "phone_number": "+8801711200004",
+            "about": "BMS automation & electrical controls engineer.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 206,
+        "fields": {
+            "user": null,
+            "first_name": "Farhana",
+            "last_name": "Karim",
+            "email": "farhana.karim.6@pwd-maint.gov.bd",
+            "phone_number": "+8801711200005",
+            "about": "Commercial HVAC & Chiller specialist.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 207,
+        "fields": {
+            "user": null,
+            "first_name": "Imran",
+            "last_name": "Siddiqui",
+            "email": "imran.siddiqui.7@pwd-maint.gov.bd",
+            "phone_number": "+8801711200006",
+            "about": "Certified elevator & escalator service engineer.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 208,
+        "fields": {
+            "user": null,
+            "first_name": "Tasnim",
+            "last_name": "Hasan",
+            "email": "tasnim.hasan.8@pwd-maint.gov.bd",
+            "phone_number": "+8801711200007",
+            "about": "High-voltage generator & substation technician.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 209,
+        "fields": {
+            "user": null,
+            "first_name": "Shafiq",
+            "last_name": "Mahmood",
+            "email": "shafiq.mahmood.9@pwd-maint.gov.bd",
+            "phone_number": "+8801711200008",
+            "about": "Fire alarm, sprinkler & life-safety inspector.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 210,
+        "fields": {
+            "user": null,
+            "first_name": "Nusrat",
+            "last_name": "Uddin",
+            "email": "nusrat.uddin.10@pwd-maint.gov.bd",
+            "phone_number": "+8801711200009",
+            "about": "BMS automation & electrical controls engineer.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 211,
+        "fields": {
+            "user": null,
+            "first_name": "Mahmud",
+            "last_name": "Akter",
+            "email": "mahmud.akter.11@pwd-maint.gov.bd",
+            "phone_number": "+8801711200010",
+            "about": "Commercial HVAC & Chiller specialist.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 212,
+        "fields": {
+            "user": null,
+            "first_name": "Rubaiya",
+            "last_name": "Sarker",
+            "email": "rubaiya.sarker.12@pwd-maint.gov.bd",
+            "phone_number": "+8801711200011",
+            "about": "Certified elevator & escalator service engineer.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 213,
+        "fields": {
+            "user": null,
+            "first_name": "Ashraf",
+            "last_name": "Mia",
+            "email": "ashraf.mia.13@pwd-maint.gov.bd",
+            "phone_number": "+8801711200012",
+            "about": "High-voltage generator & substation technician.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 214,
+        "fields": {
+            "user": null,
+            "first_name": "Samira",
+            "last_name": "Talukder",
+            "email": "samira.talukder.14@pwd-maint.gov.bd",
+            "phone_number": "+8801711200013",
+            "about": "Fire alarm, sprinkler & life-safety inspector.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 215,
+        "fields": {
+            "user": null,
+            "first_name": "Zahir",
+            "last_name": "Bhuiyan",
+            "email": "zahir.bhuiyan.15@pwd-maint.gov.bd",
+            "phone_number": "+8801711200014",
+            "about": "BMS automation & electrical controls engineer.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 216,
+        "fields": {
+            "user": null,
+            "first_name": "Meher",
+            "last_name": "Rahman",
+            "email": "meher.rahman.16@pwd-maint.gov.bd",
+            "phone_number": "+8801711200015",
+            "about": "Commercial HVAC & Chiller specialist.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 217,
+        "fields": {
+            "user": null,
+            "first_name": "Tanvir",
+            "last_name": "Islam",
+            "email": "tanvir.islam.17@pwd-maint.gov.bd",
+            "phone_number": "+8801711200016",
+            "about": "Certified elevator & escalator service engineer.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 218,
+        "fields": {
+            "user": null,
+            "first_name": "Lamia",
+            "last_name": "Hossain",
+            "email": "lamia.hossain.18@pwd-maint.gov.bd",
+            "phone_number": "+8801711200017",
+            "about": "High-voltage generator & substation technician.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 219,
+        "fields": {
+            "user": null,
+            "first_name": "Sohel",
+            "last_name": "Ahmed",
+            "email": "sohel.ahmed.19@pwd-maint.gov.bd",
+            "phone_number": "+8801711200018",
+            "about": "Fire alarm, sprinkler & life-safety inspector.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 220,
+        "fields": {
+            "user": null,
+            "first_name": "Fariha",
+            "last_name": "Chowdhury",
+            "email": "fariha.chowdhury.20@pwd-maint.gov.bd",
+            "phone_number": "+8801711200019",
+            "about": "BMS automation & electrical controls engineer.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 221,
+        "fields": {
+            "user": null,
+            "first_name": "Anwar",
+            "last_name": "Karim",
+            "email": "anwar.karim.21@pwd-maint.gov.bd",
+            "phone_number": "+8801711200020",
+            "about": "Commercial HVAC & Chiller specialist.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 222,
+        "fields": {
+            "user": null,
+            "first_name": "Maliha",
+            "last_name": "Siddiqui",
+            "email": "maliha.siddiqui.22@pwd-maint.gov.bd",
+            "phone_number": "+8801711200021",
+            "about": "Certified elevator & escalator service engineer.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 223,
+        "fields": {
+            "user": null,
+            "first_name": "Rashed",
+            "last_name": "Hasan",
+            "email": "rashed.hasan.23@pwd-maint.gov.bd",
+            "phone_number": "+8801711200022",
+            "about": "High-voltage generator & substation technician.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 224,
+        "fields": {
+            "user": null,
+            "first_name": "Tania",
+            "last_name": "Mahmood",
+            "email": "tania.mahmood.24@pwd-maint.gov.bd",
+            "phone_number": "+8801711200023",
+            "about": "Fire alarm, sprinkler & life-safety inspector.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 225,
+        "fields": {
+            "user": null,
+            "first_name": "Arif",
+            "last_name": "Uddin",
+            "email": "arif.uddin.25@pwd-maint.gov.bd",
+            "phone_number": "+8801711200024",
+            "about": "BMS automation & electrical controls engineer.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
     }
 ]
