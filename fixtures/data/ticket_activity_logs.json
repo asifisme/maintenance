@@ -1,0 +1,1902 @@
+[
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 301,
+    "fields": {
+      "ticket": 301,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Headquarters Building for Main Office Chiller AC (Breakdown, High priority). Checklist (3 tasks): Inspect Compressor Unit; Service & test Condenser & Evaporator Coils; Verify safety & readings on Air Filter & Blower Fan.",
+      "metadata": {
+        "building_id": 1,
+        "equipment_id": 1,
+        "checklist_count": 3
+      },
+      "created_at": "2026-11-22T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 302,
+    "fields": {
+      "ticket": 301,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Michael Chen — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 2,
+        "technician_name": "Michael Chen"
+      },
+      "created_at": "2026-11-22T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 303,
+    "fields": {
+      "ticket": 301,
+      "actor": 1,
+      "action_type": "accepted",
+      "description": "Michael Chen accepted the assigned task and can now start work.",
+      "metadata": {
+        "technician_id": 2,
+        "technician_name": "Michael Chen"
+      },
+      "created_at": "2026-11-22T11:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 304,
+    "fields": {
+      "ticket": 301,
+      "actor": 1,
+      "action_type": "work_started",
+      "description": "Michael Chen verified equipment QR & PIN and started maintenance work on Main Office Chiller AC.",
+      "metadata": {
+        "technician_id": 2,
+        "technician_name": "Michael Chen",
+        "verified_via_qr": true
+      },
+      "created_at": "2026-11-22T12:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 305,
+    "fields": {
+      "ticket": 301,
+      "actor": 1,
+      "action_type": "submitted_for_review",
+      "description": "Submission #1 — Michael Chen submitted work [3/3 tasks checked] for supervisor review (SR-541): Quarterly condenser coil chemical wash, HEPA filter replacement, and R-410A pressure check.",
+      "metadata": {
+        "record_id": 541,
+        "technician_id": 2,
+        "submission_num": 1,
+        "checklist_done": 3,
+        "checklist_total": 3
+      },
+      "created_at": "2026-11-22T15:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 306,
+    "fields": {
+      "ticket": 301,
+      "actor": 1,
+      "action_type": "review_approved",
+      "description": "Review #1 (Approved) — Supervisor approved SR-541. Ticket marked Resolved and moved to Service History.",
+      "metadata": {
+        "record_id": 541,
+        "review_status": "approved",
+        "review_round": 1
+      },
+      "created_at": "2026-11-22T17:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 307,
+    "fields": {
+      "ticket": 302,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from South Annex Building for Basement Diesel Generator (Routine, Medium priority). Checklist (3 tasks): Inspect Diesel Engine & Fuel Injectors; Service & test Alternator & AVR Module; Verify safety & readings on Automatic Transfer Switch (ATS).",
+      "metadata": {
+        "building_id": 2,
+        "equipment_id": 3,
+        "checklist_count": 3
+      },
+      "created_at": "2026-11-21T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 308,
+    "fields": {
+      "ticket": 302,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Sarah Jenkins — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 3,
+        "technician_name": "Sarah Jenkins"
+      },
+      "created_at": "2026-11-21T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 309,
+    "fields": {
+      "ticket": 302,
+      "actor": 1,
+      "action_type": "accepted",
+      "description": "Sarah Jenkins accepted the assigned task and can now start work.",
+      "metadata": {
+        "technician_id": 3,
+        "technician_name": "Sarah Jenkins"
+      },
+      "created_at": "2026-11-21T11:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 310,
+    "fields": {
+      "ticket": 302,
+      "actor": 1,
+      "action_type": "work_started",
+      "description": "Sarah Jenkins verified equipment QR & PIN and started maintenance work on Basement Diesel Generator.",
+      "metadata": {
+        "technician_id": 3,
+        "technician_name": "Sarah Jenkins",
+        "verified_via_qr": true
+      },
+      "created_at": "2026-11-21T12:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 311,
+    "fields": {
+      "ticket": 302,
+      "actor": 1,
+      "action_type": "submitted_for_review",
+      "description": "Submission #1 — Sarah Jenkins submitted work [3/3 tasks checked] for supervisor review (SR-542): Full ATS failover drill under 75% building load and AVR output voltage calibration.",
+      "metadata": {
+        "record_id": 542,
+        "technician_id": 3,
+        "submission_num": 1,
+        "checklist_done": 3,
+        "checklist_total": 3
+      },
+      "created_at": "2026-11-21T15:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 312,
+    "fields": {
+      "ticket": 302,
+      "actor": 1,
+      "action_type": "review_approved",
+      "description": "Review #1 (Approved) — Supervisor approved SR-542. Ticket marked Resolved and moved to Service History.",
+      "metadata": {
+        "record_id": 542,
+        "review_status": "approved",
+        "review_round": 1
+      },
+      "created_at": "2026-11-21T17:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 313,
+    "fields": {
+      "ticket": 303,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from South Annex Building for Mezzanine Air Handler (Emergency, Critical priority). Checklist (3 tasks): Inspect Compressor Unit; Service & test Condenser & Evaporator Coils; Verify safety & readings on Air Filter & Blower Fan.",
+      "metadata": {
+        "building_id": 2,
+        "equipment_id": 5,
+        "checklist_count": 3
+      },
+      "created_at": "2026-11-20T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 314,
+    "fields": {
+      "ticket": 303,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician David Okonjo — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 4,
+        "technician_name": "David Okonjo"
+      },
+      "created_at": "2026-11-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 315,
+    "fields": {
+      "ticket": 303,
+      "actor": 1,
+      "action_type": "accepted",
+      "description": "David Okonjo accepted the assigned task and can now start work.",
+      "metadata": {
+        "technician_id": 4,
+        "technician_name": "David Okonjo"
+      },
+      "created_at": "2026-11-20T11:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 316,
+    "fields": {
+      "ticket": 303,
+      "actor": 1,
+      "action_type": "work_started",
+      "description": "David Okonjo verified equipment QR & PIN and started maintenance work on Mezzanine Air Handler.",
+      "metadata": {
+        "technician_id": 4,
+        "technician_name": "David Okonjo",
+        "verified_via_qr": true
+      },
+      "created_at": "2026-11-20T12:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 317,
+    "fields": {
+      "ticket": 303,
+      "actor": 1,
+      "action_type": "submitted_for_review",
+      "description": "Submission #1 — David Okonjo submitted work [3/3 tasks checked] for supervisor review (SR-543): Resolved refrigerant micro-leak on suction manifold and recharged system to spec.",
+      "metadata": {
+        "record_id": 543,
+        "technician_id": 4,
+        "submission_num": 1,
+        "checklist_done": 3,
+        "checklist_total": 3
+      },
+      "created_at": "2026-11-20T15:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 318,
+    "fields": {
+      "ticket": 304,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Headquarters Building for Backup Power Generator 500kVA (Inspection, Low priority). Checklist (3 tasks): Inspect Diesel Engine & Fuel Injectors; Service & test Alternator & AVR Module; Verify safety & readings on Automatic Transfer Switch (ATS).",
+      "metadata": {
+        "building_id": 1,
+        "equipment_id": 7,
+        "checklist_count": 3
+      },
+      "created_at": "2026-11-19T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 319,
+    "fields": {
+      "ticket": 304,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Elena Rodriguez — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 5,
+        "technician_name": "Elena Rodriguez"
+      },
+      "created_at": "2026-11-19T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 320,
+    "fields": {
+      "ticket": 304,
+      "actor": 1,
+      "action_type": "accepted",
+      "description": "Elena Rodriguez accepted the assigned task and can now start work.",
+      "metadata": {
+        "technician_id": 5,
+        "technician_name": "Elena Rodriguez"
+      },
+      "created_at": "2026-11-19T11:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 321,
+    "fields": {
+      "ticket": 304,
+      "actor": 1,
+      "action_type": "work_started",
+      "description": "Elena Rodriguez verified equipment QR & PIN and started maintenance work on Backup Power Generator 500kVA.",
+      "metadata": {
+        "technician_id": 5,
+        "technician_name": "Elena Rodriguez",
+        "verified_via_qr": true
+      },
+      "created_at": "2026-11-19T12:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 322,
+    "fields": {
+      "ticket": 305,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Headquarters Building for Executive Floor VRF Unit (Warranty, High priority). Checklist (3 tasks): Inspect Compressor Unit; Service & test Condenser & Evaporator Coils; Verify safety & readings on Air Filter & Blower Fan.",
+      "metadata": {
+        "building_id": 1,
+        "equipment_id": 101,
+        "checklist_count": 3
+      },
+      "created_at": "2026-11-18T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 323,
+    "fields": {
+      "ticket": 305,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician James O'Connor — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 6,
+        "technician_name": "James O'Connor"
+      },
+      "created_at": "2026-11-18T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 324,
+    "fields": {
+      "ticket": 305,
+      "actor": 1,
+      "action_type": "accepted",
+      "description": "James O'Connor accepted the assigned task and can now start work.",
+      "metadata": {
+        "technician_id": 6,
+        "technician_name": "James O'Connor"
+      },
+      "created_at": "2026-11-18T11:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 325,
+    "fields": {
+      "ticket": 306,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Headquarters Building for Server Room Precision AC (Breakdown, Medium priority). Checklist (3 tasks): Inspect Compressor Unit; Service & test Condenser & Evaporator Coils; Verify safety & readings on Air Filter & Blower Fan.",
+      "metadata": {
+        "building_id": 1,
+        "equipment_id": 103,
+        "checklist_count": 3
+      },
+      "created_at": "2026-11-17T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 326,
+    "fields": {
+      "ticket": 306,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Aisha Patel — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 7,
+        "technician_name": "Aisha Patel"
+      },
+      "created_at": "2026-11-17T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 327,
+    "fields": {
+      "ticket": 307,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Headquarters Building for Service Cargo Elevator (Routine, High priority). Checklist (3 tasks): Inspect Hoist Traction Motor; Service & test Safety Brake & Governor; Verify safety & readings on Door Operator & Sensor Curtain.",
+      "metadata": {
+        "building_id": 1,
+        "equipment_id": 105,
+        "checklist_count": 3
+      },
+      "created_at": "2026-11-16T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 328,
+    "fields": {
+      "ticket": 308,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Headquarters Building for Sprinkler Booster Pump (Emergency, Medium priority). Checklist (3 tasks): Inspect Addressable Fire Control Panel; Service & test Optical Smoke & Heat Detectors; Verify safety & readings on Backup Battery Bank.",
+      "metadata": {
+        "building_id": 1,
+        "equipment_id": 107,
+        "checklist_count": 3
+      },
+      "created_at": "2026-11-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 329,
+    "fields": {
+      "ticket": 308,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Liam Wong — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 9,
+        "technician_name": "Liam Wong"
+      },
+      "created_at": "2026-11-15T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 330,
+    "fields": {
+      "ticket": 308,
+      "actor": 1,
+      "action_type": "accepted",
+      "description": "Liam Wong accepted the assigned task and can now start work.",
+      "metadata": {
+        "technician_id": 9,
+        "technician_name": "Liam Wong"
+      },
+      "created_at": "2026-11-15T11:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 331,
+    "fields": {
+      "ticket": 308,
+      "actor": 1,
+      "action_type": "work_started",
+      "description": "Liam Wong verified equipment QR & PIN and started maintenance work on Sprinkler Booster Pump.",
+      "metadata": {
+        "technician_id": 9,
+        "technician_name": "Liam Wong",
+        "verified_via_qr": true
+      },
+      "created_at": "2026-11-15T12:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 332,
+    "fields": {
+      "ticket": 308,
+      "actor": 1,
+      "action_type": "submitted_for_review",
+      "description": "Submission #1 — Liam Wong submitted work [3/3 tasks checked] for supervisor review (SR-544): Semi-annual fire suppression pressure gauge verification and sprinkler valve test.",
+      "metadata": {
+        "record_id": 544,
+        "technician_id": 9,
+        "submission_num": 1,
+        "checklist_done": 3,
+        "checklist_total": 3
+      },
+      "created_at": "2026-11-15T15:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 333,
+    "fields": {
+      "ticket": 308,
+      "actor": 1,
+      "action_type": "review_approved",
+      "description": "Review #1 (Approved) — Supervisor approved SR-544. Ticket marked Resolved and moved to Service History.",
+      "metadata": {
+        "record_id": 544,
+        "review_status": "approved",
+        "review_round": 1
+      },
+      "created_at": "2026-11-15T17:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 334,
+    "fields": {
+      "ticket": 309,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Headquarters Building for Auditorium Ducted AC (Inspection, Critical priority). Checklist (3 tasks): Inspect Compressor Unit; Service & test Condenser & Evaporator Coils; Verify safety & readings on Air Filter & Blower Fan.",
+      "metadata": {
+        "building_id": 1,
+        "equipment_id": 109,
+        "checklist_count": 3
+      },
+      "created_at": "2026-11-14T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 335,
+    "fields": {
+      "ticket": 309,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Sophia Martinez — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 10,
+        "technician_name": "Sophia Martinez"
+      },
+      "created_at": "2026-11-14T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 336,
+    "fields": {
+      "ticket": 309,
+      "actor": 1,
+      "action_type": "accepted",
+      "description": "Sophia Martinez accepted the assigned task and can now start work.",
+      "metadata": {
+        "technician_id": 10,
+        "technician_name": "Sophia Martinez"
+      },
+      "created_at": "2026-11-14T11:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 337,
+    "fields": {
+      "ticket": 309,
+      "actor": 1,
+      "action_type": "work_started",
+      "description": "Sophia Martinez verified equipment QR & PIN and started maintenance work on Auditorium Ducted AC.",
+      "metadata": {
+        "technician_id": 10,
+        "technician_name": "Sophia Martinez",
+        "verified_via_qr": true
+      },
+      "created_at": "2026-11-14T12:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 338,
+    "fields": {
+      "ticket": 309,
+      "actor": 1,
+      "action_type": "submitted_for_review",
+      "description": "Submission #1 — Sophia Martinez submitted work [3/3 tasks checked] for supervisor review (SR-545): Quarterly condenser coil chemical wash, HEPA filter replacement, and R-410A pressure check.",
+      "metadata": {
+        "record_id": 545,
+        "technician_id": 10,
+        "submission_num": 1,
+        "checklist_done": 3,
+        "checklist_total": 3
+      },
+      "created_at": "2026-11-14T15:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 339,
+    "fields": {
+      "ticket": 309,
+      "actor": 1,
+      "action_type": "review_approved",
+      "description": "Review #1 (Approved) — Supervisor approved SR-545. Ticket marked Resolved and moved to Service History.",
+      "metadata": {
+        "record_id": 545,
+        "review_status": "approved",
+        "review_round": 1
+      },
+      "created_at": "2026-11-14T17:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 340,
+    "fields": {
+      "ticket": 310,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Headquarters Building for Emergency Lighting UPS Pack (Warranty, Low priority). Checklist (3 tasks): Inspect Diesel Engine & Fuel Injectors; Service & test Alternator & AVR Module; Verify safety & readings on Automatic Transfer Switch (ATS).",
+      "metadata": {
+        "building_id": 1,
+        "equipment_id": 111,
+        "checklist_count": 3
+      },
+      "created_at": "2026-11-13T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 341,
+    "fields": {
+      "ticket": 310,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Oliver Smith — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 11,
+        "technician_name": "Oliver Smith"
+      },
+      "created_at": "2026-11-13T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 342,
+    "fields": {
+      "ticket": 310,
+      "actor": 1,
+      "action_type": "accepted",
+      "description": "Oliver Smith accepted the assigned task and can now start work.",
+      "metadata": {
+        "technician_id": 11,
+        "technician_name": "Oliver Smith"
+      },
+      "created_at": "2026-11-13T11:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 343,
+    "fields": {
+      "ticket": 310,
+      "actor": 1,
+      "action_type": "work_started",
+      "description": "Oliver Smith verified equipment QR & PIN and started maintenance work on Emergency Lighting UPS Pack.",
+      "metadata": {
+        "technician_id": 11,
+        "technician_name": "Oliver Smith",
+        "verified_via_qr": true
+      },
+      "created_at": "2026-11-13T12:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 344,
+    "fields": {
+      "ticket": 310,
+      "actor": 1,
+      "action_type": "submitted_for_review",
+      "description": "Submission #1 — Oliver Smith submitted work [3/3 tasks checked] for supervisor review (SR-546): Full ATS failover drill under 75% building load and AVR output voltage calibration.",
+      "metadata": {
+        "record_id": 546,
+        "technician_id": 11,
+        "submission_num": 1,
+        "checklist_done": 3,
+        "checklist_total": 3
+      },
+      "created_at": "2026-11-13T15:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 345,
+    "fields": {
+      "ticket": 311,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Central Administrative Building for Daikin HVAC Unit 01 (Breakdown, High priority). Checklist (3 tasks): Inspect Compressor Unit; Service & test Condenser & Evaporator Coils; Verify safety & readings on Air Filter & Blower Fan.",
+      "metadata": {
+        "building_id": 201,
+        "equipment_id": 201,
+        "checklist_count": 3
+      },
+      "created_at": "2026-11-12T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 346,
+    "fields": {
+      "ticket": 311,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Tariq Rahman — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 201,
+        "technician_name": "Tariq Rahman"
+      },
+      "created_at": "2026-11-12T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 347,
+    "fields": {
+      "ticket": 311,
+      "actor": 1,
+      "action_type": "accepted",
+      "description": "Tariq Rahman accepted the assigned task and can now start work.",
+      "metadata": {
+        "technician_id": 201,
+        "technician_name": "Tariq Rahman"
+      },
+      "created_at": "2026-11-12T11:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 348,
+    "fields": {
+      "ticket": 311,
+      "actor": 1,
+      "action_type": "work_started",
+      "description": "Tariq Rahman verified equipment QR & PIN and started maintenance work on Daikin HVAC Unit 01.",
+      "metadata": {
+        "technician_id": 201,
+        "technician_name": "Tariq Rahman",
+        "verified_via_qr": true
+      },
+      "created_at": "2026-11-12T12:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 349,
+    "fields": {
+      "ticket": 312,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Public Works Directorate HQ for Carrier Generator Unit 03 (Routine, Medium priority). Checklist (3 tasks): Inspect Diesel Engine & Fuel Injectors; Service & test Alternator & AVR Module; Verify safety & readings on Automatic Transfer Switch (ATS).",
+      "metadata": {
+        "building_id": 203,
+        "equipment_id": 203,
+        "checklist_count": 3
+      },
+      "created_at": "2026-11-11T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 350,
+    "fields": {
+      "ticket": 312,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Nadia Islam — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 202,
+        "technician_name": "Nadia Islam"
+      },
+      "created_at": "2026-11-11T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 351,
+    "fields": {
+      "ticket": 312,
+      "actor": 1,
+      "action_type": "accepted",
+      "description": "Nadia Islam accepted the assigned task and can now start work.",
+      "metadata": {
+        "technician_id": 202,
+        "technician_name": "Nadia Islam"
+      },
+      "created_at": "2026-11-11T11:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 352,
+    "fields": {
+      "ticket": 313,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Regional Circuit House North for Honeywell Chiller System Unit 05 (Emergency, High priority). Checklist (3 tasks): Inspect Main Power & Control Module; Service & test Mechanical Drive Assembly; Verify safety & readings on Safety Sensor & Relay Bank.",
+      "metadata": {
+        "building_id": 205,
+        "equipment_id": 205,
+        "checklist_count": 3
+      },
+      "created_at": "2026-11-10T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 353,
+    "fields": {
+      "ticket": 313,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Rafiq Hossain — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 203,
+        "technician_name": "Rafiq Hossain"
+      },
+      "created_at": "2026-11-10T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 354,
+    "fields": {
+      "ticket": 314,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Sylhet Divisional Secretariat for Mitsubishi Electrical Substation Unit 07 (Inspection, Medium priority). Checklist (3 tasks): Inspect Main Power & Control Module; Service & test Mechanical Drive Assembly; Verify safety & readings on Safety Sensor & Relay Bank.",
+      "metadata": {
+        "building_id": 207,
+        "equipment_id": 207,
+        "checklist_count": 3
+      },
+      "created_at": "2026-11-09T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 355,
+    "fields": {
+      "ticket": 315,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Barishal Engineering Bhavan for ABB UPS Battery Bank Unit 09 (Warranty, Critical priority). Checklist (3 tasks): Inspect Main Power & Control Module; Service & test Mechanical Drive Assembly; Verify safety & readings on Safety Sensor & Relay Bank.",
+      "metadata": {
+        "building_id": 209,
+        "equipment_id": 209,
+        "checklist_count": 3
+      },
+      "created_at": "2026-11-08T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 356,
+    "fields": {
+      "ticket": 315,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Kamrul Chowdhury — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 205,
+        "technician_name": "Kamrul Chowdhury"
+      },
+      "created_at": "2026-11-08T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 357,
+    "fields": {
+      "ticket": 315,
+      "actor": 1,
+      "action_type": "accepted",
+      "description": "Kamrul Chowdhury accepted the assigned task and can now start work.",
+      "metadata": {
+        "technician_id": 205,
+        "technician_name": "Kamrul Chowdhury"
+      },
+      "created_at": "2026-11-08T11:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 358,
+    "fields": {
+      "ticket": 315,
+      "actor": 1,
+      "action_type": "work_started",
+      "description": "Kamrul Chowdhury verified equipment QR & PIN and started maintenance work on ABB UPS Battery Bank Unit 09.",
+      "metadata": {
+        "technician_id": 205,
+        "technician_name": "Kamrul Chowdhury",
+        "verified_via_qr": true
+      },
+      "created_at": "2026-11-08T12:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 359,
+    "fields": {
+      "ticket": 315,
+      "actor": 1,
+      "action_type": "submitted_for_review",
+      "description": "Submission #1 — Kamrul Chowdhury submitted work [3/3 tasks checked] for supervisor review (SR-547): Replaced worn contactor relay and tested full operational load cycle.",
+      "metadata": {
+        "record_id": 547,
+        "technician_id": 205,
+        "submission_num": 1,
+        "checklist_done": 3,
+        "checklist_total": 3
+      },
+      "created_at": "2026-11-08T15:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 360,
+    "fields": {
+      "ticket": 315,
+      "actor": 1,
+      "action_type": "review_approved",
+      "description": "Review #1 (Approved) — Supervisor approved SR-547. Ticket marked Resolved and moved to Service History.",
+      "metadata": {
+        "record_id": 547,
+        "review_status": "approved",
+        "review_round": 1
+      },
+      "created_at": "2026-11-08T17:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 361,
+    "fields": {
+      "ticket": 316,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Mymensingh Agriculture Complex for Daikin CCTV Surveillance Unit 11 (Breakdown, Low priority). Checklist (3 tasks): Inspect IP Camera Optical Module; Service & test PoE Network Switch & Injector; Verify safety & readings on NVR Storage Array.",
+      "metadata": {
+        "building_id": 211,
+        "equipment_id": 211,
+        "checklist_count": 3
+      },
+      "created_at": "2026-11-07T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 362,
+    "fields": {
+      "ticket": 316,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Farhana Karim — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 206,
+        "technician_name": "Farhana Karim"
+      },
+      "created_at": "2026-11-07T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 363,
+    "fields": {
+      "ticket": 316,
+      "actor": 1,
+      "action_type": "accepted",
+      "description": "Farhana Karim accepted the assigned task and can now start work.",
+      "metadata": {
+        "technician_id": 206,
+        "technician_name": "Farhana Karim"
+      },
+      "created_at": "2026-11-07T11:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 364,
+    "fields": {
+      "ticket": 316,
+      "actor": 1,
+      "action_type": "work_started",
+      "description": "Farhana Karim verified equipment QR & PIN and started maintenance work on Daikin CCTV Surveillance Unit 11.",
+      "metadata": {
+        "technician_id": 206,
+        "technician_name": "Farhana Karim",
+        "verified_via_qr": true
+      },
+      "created_at": "2026-11-07T12:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 365,
+    "fields": {
+      "ticket": 316,
+      "actor": 1,
+      "action_type": "submitted_for_review",
+      "description": "Submission #1 — Farhana Karim submitted work [3/3 tasks checked] for supervisor review (SR-548): Upgraded NVR firmware and recalibrated motion detection mask zones.",
+      "metadata": {
+        "record_id": 548,
+        "technician_id": 206,
+        "submission_num": 1,
+        "checklist_done": 3,
+        "checklist_total": 3
+      },
+      "created_at": "2026-11-07T15:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 366,
+    "fields": {
+      "ticket": 316,
+      "actor": 1,
+      "action_type": "review_approved",
+      "description": "Review #1 (Approved) — Supervisor approved SR-548. Ticket marked Resolved and moved to Service History.",
+      "metadata": {
+        "record_id": 548,
+        "review_status": "approved",
+        "review_round": 1
+      },
+      "created_at": "2026-11-07T17:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 367,
+    "fields": {
+      "ticket": 317,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Planning Commission Block B for Carrier Public Address System Unit 13 (Routine, High priority). Checklist (3 tasks): Inspect Main Power & Control Module; Service & test Mechanical Drive Assembly; Verify safety & readings on Safety Sensor & Relay Bank.",
+      "metadata": {
+        "building_id": 213,
+        "equipment_id": 213,
+        "checklist_count": 3
+      },
+      "created_at": "2026-11-06T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 368,
+    "fields": {
+      "ticket": 317,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Imran Siddiqui — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 207,
+        "technician_name": "Imran Siddiqui"
+      },
+      "created_at": "2026-11-06T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 369,
+    "fields": {
+      "ticket": 317,
+      "actor": 1,
+      "action_type": "accepted",
+      "description": "Imran Siddiqui accepted the assigned task and can now start work.",
+      "metadata": {
+        "technician_id": 207,
+        "technician_name": "Imran Siddiqui"
+      },
+      "created_at": "2026-11-06T11:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 370,
+    "fields": {
+      "ticket": 317,
+      "actor": 1,
+      "action_type": "work_started",
+      "description": "Imran Siddiqui verified equipment QR & PIN and started maintenance work on Carrier Public Address System Unit 13.",
+      "metadata": {
+        "technician_id": 207,
+        "technician_name": "Imran Siddiqui",
+        "verified_via_qr": true
+      },
+      "created_at": "2026-11-06T12:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 371,
+    "fields": {
+      "ticket": 317,
+      "actor": 1,
+      "action_type": "submitted_for_review",
+      "description": "Submission #1 — Imran Siddiqui submitted work [3/3 tasks checked] for supervisor review (SR-549): Preventive inspection, terminal torque check, cleaning, and operational verification.",
+      "metadata": {
+        "record_id": 549,
+        "technician_id": 207,
+        "submission_num": 1,
+        "checklist_done": 3,
+        "checklist_total": 3
+      },
+      "created_at": "2026-11-06T15:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 372,
+    "fields": {
+      "ticket": 318,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Central Medical Store Depot for Honeywell Cooling Tower Unit 15 (Emergency, Medium priority). Checklist (3 tasks): Inspect Main Power & Control Module; Service & test Mechanical Drive Assembly; Verify safety & readings on Safety Sensor & Relay Bank.",
+      "metadata": {
+        "building_id": 215,
+        "equipment_id": 215,
+        "checklist_count": 3
+      },
+      "created_at": "2026-11-05T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 373,
+    "fields": {
+      "ticket": 318,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Tasnim Hasan — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 208,
+        "technician_name": "Tasnim Hasan"
+      },
+      "created_at": "2026-11-05T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 374,
+    "fields": {
+      "ticket": 318,
+      "actor": 1,
+      "action_type": "accepted",
+      "description": "Tasnim Hasan accepted the assigned task and can now start work.",
+      "metadata": {
+        "technician_id": 208,
+        "technician_name": "Tasnim Hasan"
+      },
+      "created_at": "2026-11-05T11:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 375,
+    "fields": {
+      "ticket": 318,
+      "actor": 1,
+      "action_type": "work_started",
+      "description": "Tasnim Hasan verified equipment QR & PIN and started maintenance work on Honeywell Cooling Tower Unit 15.",
+      "metadata": {
+        "technician_id": 208,
+        "technician_name": "Tasnim Hasan",
+        "verified_via_qr": true
+      },
+      "created_at": "2026-11-05T12:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 376,
+    "fields": {
+      "ticket": 319,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Audit & Accounts Bhavan for Mitsubishi Air Handling Unit Unit 17 (Inspection, High priority). Checklist (3 tasks): Inspect Main Power & Control Module; Service & test Mechanical Drive Assembly; Verify safety & readings on Safety Sensor & Relay Bank.",
+      "metadata": {
+        "building_id": 217,
+        "equipment_id": 217,
+        "checklist_count": 3
+      },
+      "created_at": "2026-11-04T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 377,
+    "fields": {
+      "ticket": 319,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Shafiq Mahmood — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 209,
+        "technician_name": "Shafiq Mahmood"
+      },
+      "created_at": "2026-11-04T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 378,
+    "fields": {
+      "ticket": 319,
+      "actor": 1,
+      "action_type": "accepted",
+      "description": "Shafiq Mahmood accepted the assigned task and can now start work.",
+      "metadata": {
+        "technician_id": 209,
+        "technician_name": "Shafiq Mahmood"
+      },
+      "created_at": "2026-11-04T11:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 379,
+    "fields": {
+      "ticket": 320,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Water Development Board Annex for ABB VRF Outdoor Unit Unit 19 (Warranty, Medium priority). Checklist (3 tasks): Inspect Main Power & Control Module; Service & test Mechanical Drive Assembly; Verify safety & readings on Safety Sensor & Relay Bank.",
+      "metadata": {
+        "building_id": 219,
+        "equipment_id": 219,
+        "checklist_count": 3
+      },
+      "created_at": "2026-11-03T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 380,
+    "fields": {
+      "ticket": 320,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Nusrat Uddin — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 210,
+        "technician_name": "Nusrat Uddin"
+      },
+      "created_at": "2026-11-03T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 381,
+    "fields": {
+      "ticket": 321,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Fire Service Operations Center for Daikin Water Filtration Plant Unit 21 (Breakdown, Critical priority). Checklist (3 tasks): Inspect Main Power & Control Module; Service & test Mechanical Drive Assembly; Verify safety & readings on Safety Sensor & Relay Bank.",
+      "metadata": {
+        "building_id": 221,
+        "equipment_id": 221,
+        "checklist_count": 3
+      },
+      "created_at": "2026-11-02T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 382,
+    "fields": {
+      "ticket": 322,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Energy Regulatory Commission for Carrier Smoke Extraction Fan Unit 23 (Routine, Low priority). Checklist (3 tasks): Inspect Main Power & Control Module; Service & test Mechanical Drive Assembly; Verify safety & readings on Safety Sensor & Relay Bank.",
+      "metadata": {
+        "building_id": 223,
+        "equipment_id": 223,
+        "checklist_count": 3
+      },
+      "created_at": "2026-11-01T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 383,
+    "fields": {
+      "ticket": 322,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Rubaiya Sarker — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 212,
+        "technician_name": "Rubaiya Sarker"
+      },
+      "created_at": "2026-11-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 384,
+    "fields": {
+      "ticket": 322,
+      "actor": 1,
+      "action_type": "accepted",
+      "description": "Rubaiya Sarker accepted the assigned task and can now start work.",
+      "metadata": {
+        "technician_id": 212,
+        "technician_name": "Rubaiya Sarker"
+      },
+      "created_at": "2026-11-01T11:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 385,
+    "fields": {
+      "ticket": 322,
+      "actor": 1,
+      "action_type": "work_started",
+      "description": "Rubaiya Sarker verified equipment QR & PIN and started maintenance work on Carrier Smoke Extraction Fan Unit 23.",
+      "metadata": {
+        "technician_id": 212,
+        "technician_name": "Rubaiya Sarker",
+        "verified_via_qr": true
+      },
+      "created_at": "2026-11-01T12:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 386,
+    "fields": {
+      "ticket": 322,
+      "actor": 1,
+      "action_type": "submitted_for_review",
+      "description": "Submission #1 — Rubaiya Sarker submitted work [3/3 tasks checked] for supervisor review (SR-550): Thermal imaging scan, insulation resistance test, and sensor calibration.",
+      "metadata": {
+        "record_id": 550,
+        "technician_id": 212,
+        "submission_num": 1,
+        "checklist_done": 3,
+        "checklist_total": 3
+      },
+      "created_at": "2026-11-01T15:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 387,
+    "fields": {
+      "ticket": 322,
+      "actor": 1,
+      "action_type": "review_approved",
+      "description": "Review #1 (Approved) — Supervisor approved SR-550. Ticket marked Resolved and moved to Service History.",
+      "metadata": {
+        "record_id": 550,
+        "review_status": "approved",
+        "review_round": 1
+      },
+      "created_at": "2026-11-01T17:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 388,
+    "fields": {
+      "ticket": 323,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Department of Environment HQ for Honeywell Automatic Transfer Switch Unit 25 (Emergency, High priority). Checklist (3 tasks): Inspect Main Power & Control Module; Service & test Mechanical Drive Assembly; Verify safety & readings on Safety Sensor & Relay Bank.",
+      "metadata": {
+        "building_id": 225,
+        "equipment_id": 225,
+        "checklist_count": 3
+      },
+      "created_at": "2026-10-31T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 389,
+    "fields": {
+      "ticket": 323,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Ashraf Mia — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 213,
+        "technician_name": "Ashraf Mia"
+      },
+      "created_at": "2026-10-31T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 390,
+    "fields": {
+      "ticket": 323,
+      "actor": 1,
+      "action_type": "accepted",
+      "description": "Ashraf Mia accepted the assigned task and can now start work.",
+      "metadata": {
+        "technician_id": 213,
+        "technician_name": "Ashraf Mia"
+      },
+      "created_at": "2026-10-31T11:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 391,
+    "fields": {
+      "ticket": 323,
+      "actor": 1,
+      "action_type": "work_started",
+      "description": "Ashraf Mia verified equipment QR & PIN and started maintenance work on Honeywell Automatic Transfer Switch Unit 25.",
+      "metadata": {
+        "technician_id": 213,
+        "technician_name": "Ashraf Mia",
+        "verified_via_qr": true
+      },
+      "created_at": "2026-10-31T12:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 392,
+    "fields": {
+      "ticket": 323,
+      "actor": 1,
+      "action_type": "submitted_for_review",
+      "description": "Submission #1 — Ashraf Mia submitted work [3/3 tasks checked] for supervisor review (SR-551): Replaced worn contactor relay and tested full operational load cycle.",
+      "metadata": {
+        "record_id": 551,
+        "technician_id": 213,
+        "submission_num": 1,
+        "checklist_done": 3,
+        "checklist_total": 3
+      },
+      "created_at": "2026-10-31T15:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 393,
+    "fields": {
+      "ticket": 323,
+      "actor": 1,
+      "action_type": "review_approved",
+      "description": "Review #1 (Approved) — Supervisor approved SR-551. Ticket marked Resolved and moved to Service History.",
+      "metadata": {
+        "record_id": 551,
+        "review_status": "approved",
+        "review_round": 1
+      },
+      "created_at": "2026-10-31T17:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 394,
+    "fields": {
+      "ticket": 324,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from National Tax Revenue Complex for Mitsubishi Capacitor Bank Unit 27 (Inspection, Medium priority). Checklist (3 tasks): Inspect Main Power & Control Module; Service & test Mechanical Drive Assembly; Verify safety & readings on Safety Sensor & Relay Bank.",
+      "metadata": {
+        "building_id": 227,
+        "equipment_id": 227,
+        "checklist_count": 3
+      },
+      "created_at": "2026-10-30T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 395,
+    "fields": {
+      "ticket": 324,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Samira Talukder — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 214,
+        "technician_name": "Samira Talukder"
+      },
+      "created_at": "2026-10-30T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 396,
+    "fields": {
+      "ticket": 324,
+      "actor": 1,
+      "action_type": "accepted",
+      "description": "Samira Talukder accepted the assigned task and can now start work.",
+      "metadata": {
+        "technician_id": 214,
+        "technician_name": "Samira Talukder"
+      },
+      "created_at": "2026-10-30T11:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 397,
+    "fields": {
+      "ticket": 324,
+      "actor": 1,
+      "action_type": "work_started",
+      "description": "Samira Talukder verified equipment QR & PIN and started maintenance work on Mitsubishi Capacitor Bank Unit 27.",
+      "metadata": {
+        "technician_id": 214,
+        "technician_name": "Samira Talukder",
+        "verified_via_qr": true
+      },
+      "created_at": "2026-10-30T12:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 398,
+    "fields": {
+      "ticket": 324,
+      "actor": 1,
+      "action_type": "submitted_for_review",
+      "description": "Submission #1 — Samira Talukder submitted work [3/3 tasks checked] for supervisor review (SR-552): Lubricated bearings, checked vibration levels, and updated calibration sticker.",
+      "metadata": {
+        "record_id": 552,
+        "technician_id": 214,
+        "submission_num": 1,
+        "checklist_done": 3,
+        "checklist_total": 3
+      },
+      "created_at": "2026-10-30T15:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 399,
+    "fields": {
+      "ticket": 325,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Passport & Immigration HQ for ABB Building Management System Unit 29 (Warranty, High priority). Checklist (3 tasks): Inspect Main Power & Control Module; Service & test Mechanical Drive Assembly; Verify safety & readings on Safety Sensor & Relay Bank.",
+      "metadata": {
+        "building_id": 229,
+        "equipment_id": 229,
+        "checklist_count": 3
+      },
+      "created_at": "2026-10-29T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 400,
+    "fields": {
+      "ticket": 325,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Zahir Bhuiyan — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 215,
+        "technician_name": "Zahir Bhuiyan"
+      },
+      "created_at": "2026-10-29T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 401,
+    "fields": {
+      "ticket": 325,
+      "actor": 1,
+      "action_type": "accepted",
+      "description": "Zahir Bhuiyan accepted the assigned task and can now start work.",
+      "metadata": {
+        "technician_id": 215,
+        "technician_name": "Zahir Bhuiyan"
+      },
+      "created_at": "2026-10-29T11:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 402,
+    "fields": {
+      "ticket": 325,
+      "actor": 1,
+      "action_type": "work_started",
+      "description": "Zahir Bhuiyan verified equipment QR & PIN and started maintenance work on ABB Building Management System Unit 29.",
+      "metadata": {
+        "technician_id": 215,
+        "technician_name": "Zahir Bhuiyan",
+        "verified_via_qr": true
+      },
+      "created_at": "2026-10-29T12:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 403,
+    "fields": {
+      "ticket": 326,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Public Service Commission HQ for Daikin Boom Barrier Gate Unit 31 (Breakdown, Medium priority). Checklist (3 tasks): Inspect Main Power & Control Module; Service & test Mechanical Drive Assembly; Verify safety & readings on Safety Sensor & Relay Bank.",
+      "metadata": {
+        "building_id": 231,
+        "equipment_id": 231,
+        "checklist_count": 3
+      },
+      "created_at": "2026-10-28T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 404,
+    "fields": {
+      "ticket": 326,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Meher Rahman — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 216,
+        "technician_name": "Meher Rahman"
+      },
+      "created_at": "2026-10-28T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 405,
+    "fields": {
+      "ticket": 326,
+      "actor": 1,
+      "action_type": "accepted",
+      "description": "Meher Rahman accepted the assigned task and can now start work.",
+      "metadata": {
+        "technician_id": 216,
+        "technician_name": "Meher Rahman"
+      },
+      "created_at": "2026-10-28T11:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 406,
+    "fields": {
+      "ticket": 327,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Headquarters Building for Carrier Walk-Through Metal Detector Unit 33 (Routine, Critical priority). Checklist (3 tasks): Inspect Main Power & Control Module; Service & test Mechanical Drive Assembly; Verify safety & readings on Safety Sensor & Relay Bank.",
+      "metadata": {
+        "building_id": 1,
+        "equipment_id": 233,
+        "checklist_count": 3
+      },
+      "created_at": "2026-10-27T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 407,
+    "fields": {
+      "ticket": 327,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Tanvir Islam — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 217,
+        "technician_name": "Tanvir Islam"
+      },
+      "created_at": "2026-10-27T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 408,
+    "fields": {
+      "ticket": 328,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Headquarters Building for Daikin HVAC Pro-301 (Emergency, Low priority). Checklist (3 tasks): Inspect Compressor Unit; Service & test Condenser & Evaporator Coils; Verify safety & readings on Air Filter & Blower Fan.",
+      "metadata": {
+        "building_id": 1,
+        "equipment_id": 301,
+        "checklist_count": 3
+      },
+      "created_at": "2026-10-26T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 409,
+    "fields": {
+      "ticket": 329,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Tech Hub East for Caterpillar Generator Pro-303 (Inspection, High priority). Checklist (3 tasks): Inspect Diesel Engine & Fuel Injectors; Service & test Alternator & AVR Module; Verify safety & readings on Automatic Transfer Switch (ATS).",
+      "metadata": {
+        "building_id": 3,
+        "equipment_id": 303,
+        "checklist_count": 3
+      },
+      "created_at": "2026-10-25T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 410,
+    "fields": {
+      "ticket": 329,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Sohel Ahmed — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 219,
+        "technician_name": "Sohel Ahmed"
+      },
+      "created_at": "2026-10-25T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 411,
+    "fields": {
+      "ticket": 329,
+      "actor": 1,
+      "action_type": "accepted",
+      "description": "Sohel Ahmed accepted the assigned task and can now start work.",
+      "metadata": {
+        "technician_id": 219,
+        "technician_name": "Sohel Ahmed"
+      },
+      "created_at": "2026-10-25T11:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 412,
+    "fields": {
+      "ticket": 329,
+      "actor": 1,
+      "action_type": "work_started",
+      "description": "Sohel Ahmed verified equipment QR & PIN and started maintenance work on Caterpillar Generator Pro-303.",
+      "metadata": {
+        "technician_id": 219,
+        "technician_name": "Sohel Ahmed",
+        "verified_via_qr": true
+      },
+      "created_at": "2026-10-25T12:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 413,
+    "fields": {
+      "ticket": 329,
+      "actor": 1,
+      "action_type": "submitted_for_review",
+      "description": "Submission #1 — Sohel Ahmed submitted work [3/3 tasks checked] for supervisor review (SR-553): Engine oil & dual fuel filter change, coolant top-up, and 30-min no-load run test.",
+      "metadata": {
+        "record_id": 553,
+        "technician_id": 219,
+        "submission_num": 1,
+        "checklist_done": 3,
+        "checklist_total": 3
+      },
+      "created_at": "2026-10-25T15:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 414,
+    "fields": {
+      "ticket": 329,
+      "actor": 1,
+      "action_type": "review_approved",
+      "description": "Review #1 (Approved) — Supervisor approved SR-553. Ticket marked Resolved and moved to Service History.",
+      "metadata": {
+        "record_id": 553,
+        "review_status": "approved",
+        "review_round": 1
+      },
+      "created_at": "2026-10-25T17:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 415,
+    "fields": {
+      "ticket": 330,
+      "actor": 1,
+      "action_type": "created",
+      "description": "Maintenance request received from Ministry of Finance Annex for Schneider Chiller System Pro-305 (Warranty, Medium priority). Checklist (3 tasks): Inspect Main Power & Control Module; Service & test Mechanical Drive Assembly; Verify safety & readings on Safety Sensor & Relay Bank.",
+      "metadata": {
+        "building_id": 202,
+        "equipment_id": 305,
+        "checklist_count": 3
+      },
+      "created_at": "2026-10-24T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 416,
+    "fields": {
+      "ticket": 330,
+      "actor": 1,
+      "action_type": "assigned",
+      "description": "Assigned technician Fariha Chowdhury — waiting for technician to accept.",
+      "metadata": {
+        "technician_id": 220,
+        "technician_name": "Fariha Chowdhury"
+      },
+      "created_at": "2026-10-24T10:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 417,
+    "fields": {
+      "ticket": 330,
+      "actor": 1,
+      "action_type": "accepted",
+      "description": "Fariha Chowdhury accepted the assigned task and can now start work.",
+      "metadata": {
+        "technician_id": 220,
+        "technician_name": "Fariha Chowdhury"
+      },
+      "created_at": "2026-10-24T11:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 418,
+    "fields": {
+      "ticket": 330,
+      "actor": 1,
+      "action_type": "work_started",
+      "description": "Fariha Chowdhury verified equipment QR & PIN and started maintenance work on Schneider Chiller System Pro-305.",
+      "metadata": {
+        "technician_id": 220,
+        "technician_name": "Fariha Chowdhury",
+        "verified_via_qr": true
+      },
+      "created_at": "2026-10-24T12:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 419,
+    "fields": {
+      "ticket": 330,
+      "actor": 1,
+      "action_type": "submitted_for_review",
+      "description": "Submission #1 — Fariha Chowdhury submitted work [3/3 tasks checked] for supervisor review (SR-554): Thermal imaging scan, insulation resistance test, and sensor calibration.",
+      "metadata": {
+        "record_id": 554,
+        "technician_id": 220,
+        "submission_num": 1,
+        "checklist_done": 3,
+        "checklist_total": 3
+      },
+      "created_at": "2026-10-24T15:00:00Z"
+    }
+  },
+  {
+    "model": "backend.ticketactivitylog",
+    "pk": 420,
+    "fields": {
+      "ticket": 330,
+      "actor": 1,
+      "action_type": "review_approved",
+      "description": "Review #1 (Approved) — Supervisor approved SR-554. Ticket marked Resolved and moved to Service History.",
+      "metadata": {
+        "record_id": 554,
+        "review_status": "approved",
+        "review_round": 1
+      },
+      "created_at": "2026-10-24T17:00:00Z"
+    }
+  }
+]

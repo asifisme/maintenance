@@ -51,7 +51,7 @@ from backend.models import (
     LoginLog, BackendMenu, UserMenuPermission, WebImages, SiteSettings,
     Division, SubDivision, Section, Building, EquipmentType, EquipmentTypeData, Equipment,
     Ticket, TicketTaskItem, TicketComment, TicketActivityLog, AssignTechnician, Skill, Technician, AssignActivities,
-    ScheduledMaintenance, CriticalAlert, Maintenance, MaintenanceRecord, MaintenanceAttachment,
+    ScheduledMaintenance, CriticalAlert, Notification, Maintenance, MaintenanceRecord, MaintenanceAttachment,
     EquipmentComponents, MaintenanceComponent, EquipmentComponentPreset, 
 )
 from django.db.models import Count
@@ -2669,6 +2669,17 @@ def technician_task_detail(request, tech_id, ticket_id):
                     'checklist_total': len(checklist_items),
                 },
             )
+            _create_notification(
+                category='submitted_review',
+                level='warning',
+                title=f"Review Required — Ticket #{ticket.id} (Submission #{submission_num})",
+                message=f"{tech.display_name} submitted work{checklist_summary} for supervisor approval.",
+                link_url=f"{reverse('backend:ticket_detail', kwargs={'data_id': ticket.id})}#supervisorReviewSection",
+                actor=request.user,
+                ticket=ticket,
+                equipment=ticket.equipment,
+                technician=tech,
+            )
             messages.success(request, msg_text)
             return redirect(f"{reverse('backend:technician_details', kwargs={'data_id': tech.id})}?tab=tasks")
 
@@ -3799,15 +3810,169 @@ def equipment_detail(request, data_id):
     if not checkUserPermission(request, 'can_view', '/backend/equipment/equipment/'):
         messages.error(request, 'You do not have permission to view this equipment.')
         return render(request, '403.html', status=403)
-    
-    obj = get_object_or_404(Equipment, pk=data_id, deleted=False)
-    
-    # Get active components
-    components = obj.components.filter(deleted=False).order_by('name')
-    
+
+    obj = get_object_or_404(
+        Equipment.objects.select_related(
+            'equipment_type',
+            'building',
+            'building__division',
+            'building__subdivision',
+            'building__section',
+            'created_by',
+            'updated_by',
+        ).prefetch_related('component_preset'),
+        pk=data_id,
+        deleted=False,
+    )
+
+    today = timezone.localdate()
+
+    # Maintenance schedule due status
+    service_due_state = 'unscheduled'
+    service_due_days = None
+    if obj.next_service_due:
+        diff_days = (obj.next_service_due - today).days
+        service_due_days = abs(diff_days)
+        if diff_days < 0:
+            service_due_state = 'overdue'
+        elif diff_days <= 7:
+            service_due_state = 'due_soon'
+        else:
+            service_due_state = 'scheduled'
+
+    # Warranty status
+    warranty_state = 'none'
+    warranty_days = None
+    if obj.warranty_expire_date:
+        w_diff = (obj.warranty_expire_date - today).days
+        warranty_days = abs(w_diff)
+        if w_diff < 0:
+            warranty_state = 'expired'
+        elif w_diff <= 30:
+            warranty_state = 'expiring_soon'
+        else:
+            warranty_state = 'active'
+
+    # Components & custom specs
+    components = list(obj.components.filter(deleted=False, is_active=True).order_by('name'))
+    component_presets = list(obj.component_preset.filter(deleted=False, is_active=True).order_by('name'))
+    custom_fields_list = []
+    if isinstance(obj.custom_fields, dict):
+        for k, v in obj.custom_fields.items():
+            if v is not None and str(v).strip() != '':
+                custom_fields_list.append((str(k), str(v)))
+
+    # Service History (approved/completed records — excludes unapproved/rejected ticket drafts)
+    all_service_records = (
+        MaintenanceRecord.objects.filter(equipment=obj, deleted=False)
+        .exclude(ticket__isnull=False, review_status__in=['pending', 'rejected'])
+        .select_related('maintenance', 'ticket', 'assigned_to', 'technician', 'reviewed_by')
+        .prefetch_related('components')
+        .order_by('-maintenance_date', '-created_at')
+    )
+    total_services = all_service_records.count()
+    total_service_cost = sum((r.cost or 0) for r in all_service_records)
+    total_service_hours = sum((r.duration_hours or 0) for r in all_service_records)
+    last_service_record = all_service_records.first()
+
+    # Tickets raised for this equipment
+    all_tickets_qs = (
+        Ticket.objects.filter(equipment=obj, deleted=False)
+        .select_related('building', 'user')
+        .prefetch_related('assigned_technicians__technician', 'checklist_items')
+        .order_by('-created_at')
+    )
+    total_tickets = all_tickets_qs.count()
+    open_tickets = all_tickets_qs.filter(status__in=['open', 'assigned', 'accepted', 'in_progress', 'pending_review']).count()
+    resolved_tickets = all_tickets_qs.filter(status__in=['resolved', 'closed']).count()
+
+    # Inline QR preview
+    qr_base64 = ''
+    try:
+        add_url = request.build_absolute_uri(reverse('backend:static_otp_verification'))
+        qr_data = f"{add_url}?building={obj.building_id or ''}&equipment={obj.id}"
+        qr_img = generate_qr_code(qr_data)
+        buf = BytesIO()
+        qr_img.save(buf, format='PNG')
+        qr_base64 = base64.b64encode(buf.getvalue()).decode()
+    except Exception:
+        qr_base64 = ''
+
+    # Active tab & filters
+    active_tab = (request.GET.get('tab') or 'history').strip()
+    if active_tab not in ('history', 'tickets', 'components'):
+        active_tab = 'history'
+
+    selected_type = (request.GET.get('record_type') or '').strip()
+    selected_source = (request.GET.get('source') or '').strip()
+    selected_ticket_status = (request.GET.get('ticket_status') or '').strip()
+
+    filtered_records = all_service_records
+    if selected_type:
+        filtered_records = filtered_records.filter(record_type=selected_type)
+    if selected_source == 'Scheduled':
+        filtered_records = filtered_records.filter(maintenance__isnull=False)
+    elif selected_source == 'Request':
+        filtered_records = filtered_records.filter(ticket__isnull=False)
+    elif selected_source == 'Manual':
+        filtered_records = filtered_records.filter(maintenance__isnull=True, ticket__isnull=True)
+
+    filtered_tickets = all_tickets_qs
+    if selected_ticket_status:
+        filtered_tickets = filtered_tickets.filter(status=selected_ticket_status)
+
+    try:
+        per_page = int(request.GET.get('per_page', 10))
+        if per_page not in (10, 20, 50, 100):
+            per_page = 10
+    except (TypeError, ValueError):
+        per_page = 10
+
+    page_num = request.GET.get('page', 1)
+    if active_tab == 'tickets':
+        paginator = Paginator(filtered_tickets, per_page)
+        page_obj = paginator.get_page(page_num)
+        tickets_page = page_obj
+        records_page = Paginator(filtered_records, per_page).get_page(1)
+    elif active_tab == 'history':
+        paginator = Paginator(filtered_records, per_page)
+        page_obj = paginator.get_page(page_num)
+        records_page = page_obj
+        tickets_page = Paginator(filtered_tickets, per_page).get_page(1)
+    else:
+        page_obj = None
+        records_page = Paginator(filtered_records, per_page).get_page(1)
+        tickets_page = Paginator(filtered_tickets, per_page).get_page(1)
+
     context = {
         'obj': obj,
         'components': components,
+        'component_presets': component_presets,
+        'total_components': len(components) + len(component_presets),
+        'custom_fields_list': custom_fields_list,
+        'service_due_state': service_due_state,
+        'service_due_days': service_due_days,
+        'warranty_state': warranty_state,
+        'warranty_days': warranty_days,
+        'total_services': total_services,
+        'total_service_cost': total_service_cost,
+        'total_service_hours': total_service_hours,
+        'last_service_record': last_service_record,
+        'total_tickets': total_tickets,
+        'open_tickets': open_tickets,
+        'resolved_tickets': resolved_tickets,
+        'qr_base64': qr_base64,
+        'active_tab': active_tab,
+        'service_records': records_page,
+        'equipment_tickets': tickets_page,
+        'page_obj': page_obj,
+        'per_page': per_page,
+        'record_type_choices': MaintenanceRecord.RECORD_TYPE_CHOICES,
+        'source_choices': ['Scheduled', 'Request', 'Manual'],
+        'ticket_status_choices': Ticket.STATUS_CHOICES,
+        'selected_type': selected_type,
+        'selected_source': selected_source,
+        'selected_ticket_status': selected_ticket_status,
     }
     return render(request, 'equipment/detail.html', context)
 
@@ -3944,6 +4109,17 @@ def _approve_ticket_record(record, reviewer, review_notes=''):
                 'revision_count': revision_count,
             },
         )
+        _create_notification(
+            category='review_approved',
+            level='success',
+            title=f"Ticket #{tkt.id} Approved & Logged (SR-{record.id:03d})",
+            message=f"Approved by {reviewer_name} on Review #{review_round} and moved to Service History.",
+            link_url=reverse('backend:service_history_detail', kwargs={'record_id': record.id}),
+            actor=reviewer,
+            ticket=tkt,
+            equipment=record.equipment,
+            technician=record.assigned_to,
+        )
 
 
 def _reject_ticket_record(record, reviewer, review_notes):
@@ -3988,6 +4164,22 @@ def _reject_ticket_record(record, reviewer, review_notes):
                 'review_round': review_round,
                 'revision_count': revision_count,
             },
+        )
+        rev_link = (
+            reverse('backend:technician_task_detail', kwargs={'tech_id': record.assigned_to_id, 'ticket_id': tkt.id})
+            if record.assigned_to_id
+            else reverse('backend:ticket_detail', kwargs={'data_id': tkt.id})
+        )
+        _create_notification(
+            category='revision_requested',
+            level='critical',
+            title=f"Revision #{revision_count} Requested — Ticket #{tkt.id}",
+            message=f"{reviewer_name}: {review_notes}",
+            link_url=rev_link,
+            actor=reviewer,
+            ticket=tkt,
+            equipment=record.equipment,
+            technician=record.assigned_to,
         )
 
 
@@ -4255,6 +4447,17 @@ def ticket_detail(request, data_id):
                 description=f"{tech_obj.display_name} accepted the assigned task and can now start work.",
                 metadata={'technician_id': tech_obj.id, 'technician_name': tech_obj.display_name},
             )
+            _create_notification(
+                category='task_accepted',
+                level='info',
+                title=f"{tech_obj.display_name} accepted Ticket #{obj.id}",
+                message=f"{obj.title} — Ready for QR & PIN entry to start work.",
+                link_url=reverse('backend:ticket_detail', kwargs={'data_id': obj.id}),
+                actor=request.user,
+                ticket=obj,
+                equipment=obj.equipment,
+                technician=tech_obj,
+            )
             messages.success(request, f'Task accepted by {tech_obj.display_name}. You can now start work.')
             return _safe_redirect()
 
@@ -4283,6 +4486,17 @@ def ticket_detail(request, data_id):
                 action_type='rejected_assignment',
                 description=f"{tech_obj.display_name} declined the task assignment.{reason_txt}",
                 metadata={'technician_id': tech_obj.id, 'reason': reject_reason},
+            )
+            _create_notification(
+                category='task_rejected',
+                level='warning',
+                title=f"{tech_obj.display_name} declined Ticket #{obj.id}",
+                message=(f"Reason: {reject_reason}" if reject_reason else f"{obj.title} needs technician reassignment."),
+                link_url=reverse('backend:ticket_detail', kwargs={'data_id': obj.id}),
+                actor=request.user,
+                ticket=obj,
+                equipment=obj.equipment,
+                technician=tech_obj,
             )
 
             # If no active pending/accepted assignments remain, reopen ticket for reassignment
@@ -4564,6 +4778,17 @@ def ticket_detail(request, data_id):
                         description=f"{log_verb} technician {technician_obj.display_name} — waiting for technician to accept.",
                         metadata={'technician_id': technician_obj.id, 'technician_name': technician_obj.display_name},
                     )
+                    _create_notification(
+                        category='task_assigned',
+                        level='info',
+                        title=f"Ticket #{obj.id} assigned to {technician_obj.display_name}",
+                        message=f"{obj.title} — Waiting for technician acceptance.",
+                        link_url=f"{reverse('backend:technician_details', kwargs={'data_id': technician_obj.id})}?tab=tasks",
+                        actor=request.user,
+                        ticket=obj,
+                        equipment=obj.equipment,
+                        technician=technician_obj,
+                    )
                     messages.success(request, f'{technician_obj.display_name} assigned. Waiting for technician acceptance.')
             except Technician.DoesNotExist:
                 messages.error(request, 'Selected technician does not exist.')
@@ -4808,6 +5033,16 @@ def ticket_add(request):
                 action_type='created',
                 description=" ".join(desc_parts),
                 metadata={'building_id': obj.building_id, 'equipment_id': obj.equipment_id, 'checklist_count': len(checklist_titles)},
+            )
+            _create_notification(
+                category='ticket_created',
+                level='critical' if obj.priority == 'critical' else ('warning' if obj.priority == 'high' else 'info'),
+                title=f"New Ticket #{obj.id}: {obj.title}",
+                message=f"{bld_label} · {eq_label} ({obj.get_priority_display()} priority)",
+                link_url=reverse('backend:ticket_detail', kwargs={'data_id': obj.id}),
+                actor=request.user,
+                ticket=obj,
+                equipment=obj.equipment,
             )
             messages.success(request, 'Ticket created successfully.')
             return redirect('backend:ticket_detail', data_id=obj.id)
@@ -5874,6 +6109,17 @@ def _start_ticket_work(ticket_obj, accepted_act, actor=None, verified_via_qr=Fal
             'verified_via_qr': verified_via_qr,
         },
     )
+    _create_notification(
+        category='work_started',
+        level='info',
+        title=f"{tech_obj.display_name} started Ticket #{ticket_obj.id}",
+        message=f"{'QR & PIN verified · ' if verified_via_qr else ''}{eq_label} is now In Progress.",
+        link_url=reverse('backend:ticket_detail', kwargs={'data_id': ticket_obj.id}),
+        actor=actor if (actor and getattr(actor, 'is_authenticated', False)) else None,
+        ticket=ticket_obj,
+        equipment=ticket_obj.equipment,
+        technician=tech_obj,
+    )
 
 
 def static_otp_verification(request):
@@ -6155,6 +6401,248 @@ def quick_create_section(request):
         'name': section.name,
         'code': section.code
     })
+
+
+# ======================================== Notifications ========================================
+
+def _create_notification(
+    category,
+    title,
+    message='',
+    link_url='',
+    level='info',
+    actor=None,
+    recipient=None,
+    ticket=None,
+    equipment=None,
+    technician=None,
+):
+    """Safely create a live Notification entry without interrupting the calling flow."""
+    try:
+        return Notification.objects.create(
+            recipient=recipient,
+            actor=actor if (actor and getattr(actor, 'is_authenticated', False)) else None,
+            category=category,
+            level=level,
+            title=title[:255],
+            message=message,
+            link_url=link_url[:500] if link_url else '',
+            ticket=ticket,
+            equipment=equipment,
+            technician=technician,
+        )
+    except Exception:
+        return None
+
+
+def _sync_equipment_due_notifications(max_items=8):
+    """Create deduplicated overdue / due-soon equipment maintenance notifications."""
+    today = timezone.localdate()
+    due_soon_cutoff = today + timedelta(days=7)
+    recent_cutoff = timezone.now() - timedelta(days=7)
+    created = 0
+
+    overdue_eqs = (
+        Equipment.objects.filter(
+            deleted=False, is_active=True, next_service_due__isnull=False, next_service_due__lt=today
+        )
+        .select_related('building')
+        .order_by('next_service_due')[:max_items]
+    )
+    for eq in overdue_eqs:
+        exists = Notification.objects.filter(
+            deleted=False,
+            equipment=eq,
+            category='maintenance_overdue',
+            created_at__gte=recent_cutoff,
+        ).exists()
+        if not exists:
+            days_late = (today - eq.next_service_due).days
+            bld_name = eq.building.name if eq.building else 'Unassigned'
+            _create_notification(
+                category='maintenance_overdue',
+                level='critical',
+                title=f"Maintenance Overdue: {eq.equipment_name or eq.equipment_id}",
+                message=f"{bld_name} · Overdue by {days_late} day{'s' if days_late != 1 else ''} (Due {eq.next_service_due.strftime('%d %b %Y')}).",
+                link_url=reverse('backend:equipment_detail', kwargs={'data_id': eq.id}),
+                equipment=eq,
+            )
+            created += 1
+
+    due_soon_eqs = (
+        Equipment.objects.filter(
+            deleted=False,
+            is_active=True,
+            next_service_due__isnull=False,
+            next_service_due__gte=today,
+            next_service_due__lte=due_soon_cutoff,
+        )
+        .select_related('building')
+        .order_by('next_service_due')[:max_items]
+    )
+    for eq in due_soon_eqs:
+        exists = Notification.objects.filter(
+            deleted=False,
+            equipment=eq,
+            category='maintenance_due',
+            created_at__gte=recent_cutoff,
+        ).exists()
+        if not exists:
+            days_left = (eq.next_service_due - today).days
+            bld_name = eq.building.name if eq.building else 'Unassigned'
+            when_txt = 'Due today' if days_left == 0 else f"Due in {days_left} day{'s' if days_left != 1 else ''}"
+            _create_notification(
+                category='maintenance_due',
+                level='warning',
+                title=f"Maintenance Due Soon: {eq.equipment_name or eq.equipment_id}",
+                message=f"{bld_name} · {when_txt} ({eq.next_service_due.strftime('%d %b %Y')}).",
+                link_url=reverse('backend:equipment_detail', kwargs={'data_id': eq.id}),
+                equipment=eq,
+            )
+            created += 1
+
+    return created
+
+
+def _user_notifications_qs(user):
+    return Notification.objects.filter(deleted=False).filter(
+        Q(recipient__isnull=True) | Q(recipient=user)
+    )
+
+
+@login_required
+def notification_list(request):
+    if request.GET.get('sync') == '1':
+        added = _sync_equipment_due_notifications()
+        if added:
+            messages.success(request, f'Added {added} new equipment maintenance alert{"s" if added != 1 else ""}.')
+        else:
+            messages.info(request, 'All maintenance alerts are up to date.')
+        return redirect('backend:notification_list')
+
+    base_qs = _user_notifications_qs(request.user).select_related('actor', 'ticket', 'equipment', 'technician')
+    total_count = base_qs.count()
+    unread_count = base_qs.filter(is_read=False).count()
+
+    active_tab = (request.GET.get('tab') or 'all').strip()
+    if active_tab not in ('all', 'unread', 'tickets', 'alerts'):
+        active_tab = 'all'
+    category_filter = (request.GET.get('category') or '').strip()
+    search = (request.GET.get('search') or '').strip()
+
+    qs = base_qs
+    if active_tab == 'unread':
+        qs = qs.filter(is_read=False)
+    elif active_tab == 'tickets':
+        qs = qs.filter(category__in=[
+            'ticket_created', 'task_assigned', 'task_accepted', 'task_rejected',
+            'work_started', 'submitted_review', 'revision_requested', 'review_approved',
+        ])
+    elif active_tab == 'alerts':
+        qs = qs.filter(category__in=['maintenance_due', 'maintenance_overdue'])
+
+    if category_filter:
+        qs = qs.filter(category=category_filter)
+    if search:
+        qs = qs.filter(Q(title__icontains=search) | Q(message__icontains=search))
+
+    page_num = request.GET.get('page', 1)
+    data_list, paginator_list, last_page = paginate_data(request, page_num, qs)
+    per_page = request.GET.get('per_page', 10)
+
+    context = {
+        'data_list': data_list,
+        'paginator_list': paginator_list,
+        'last_page': last_page,
+        'per_page': per_page,
+        'total_count': total_count,
+        'unread_count': unread_count,
+        'active_tab': active_tab,
+        'category_filter': category_filter,
+        'search': search,
+        'category_choices': Notification.CATEGORY_CHOICES,
+    }
+    return render(request, 'notification/list.html', context)
+
+
+@login_required
+def notification_open(request, notif_id):
+    notif = get_object_or_404(_user_notifications_qs(request.user), pk=notif_id)
+    if not notif.is_read:
+        notif.is_read = True
+        notif.read_at = timezone.now()
+        notif.save(update_fields=['is_read', 'read_at'])
+    if notif.link_url and notif.link_url.startswith('/') and not notif.link_url.startswith('//'):
+        return redirect(notif.link_url)
+    return redirect('backend:notification_list')
+
+
+@login_required
+@require_GET
+def notification_feed(request):
+    qs = _user_notifications_qs(request.user)
+    unread_count = qs.filter(is_read=False).count()
+    items = []
+    for n in qs[:12]:
+        items.append({
+            'id': n.id,
+            'category': n.category,
+            'category_display': n.get_category_display(),
+            'level': n.level,
+            'title': n.title,
+            'message': n.message,
+            'is_read': n.is_read,
+            'open_url': reverse('backend:notification_open', kwargs={'notif_id': n.id}),
+            'created_at': timezone.localtime(n.created_at).strftime('%d %b %Y, %I:%M %p'),
+        })
+    return JsonResponse({'unread_count': unread_count, 'items': items})
+
+
+@login_required
+@require_POST
+def notification_mark_read(request, notif_id):
+    notif = get_object_or_404(_user_notifications_qs(request.user), pk=notif_id)
+    if not notif.is_read:
+        notif.is_read = True
+        notif.read_at = timezone.now()
+        notif.save(update_fields=['is_read', 'read_at'])
+    unread_count = _user_notifications_qs(request.user).filter(is_read=False).count()
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'success': True, 'unread_count': unread_count})
+    next_url = (request.POST.get('next') or '').strip()
+    if next_url.startswith('/') and not next_url.startswith('//'):
+        return redirect(next_url)
+    return redirect('backend:notification_list')
+
+
+@login_required
+@require_POST
+def notification_mark_all_read(request):
+    _user_notifications_qs(request.user).filter(is_read=False).update(
+        is_read=True, read_at=timezone.now()
+    )
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'success': True, 'unread_count': 0})
+    next_url = (request.POST.get('next') or '').strip()
+    if next_url.startswith('/') and not next_url.startswith('//'):
+        return redirect(next_url)
+    return redirect('backend:notification_list')
+
+
+@login_required
+@require_POST
+def notification_delete(request, notif_id):
+    notif = get_object_or_404(_user_notifications_qs(request.user), pk=notif_id)
+    notif.deleted = True
+    notif.save(update_fields=['deleted'])
+    unread_count = _user_notifications_qs(request.user).filter(is_read=False).count()
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'success': True, 'unread_count': unread_count})
+    next_url = (request.POST.get('next') or '').strip()
+    if next_url.startswith('/') and not next_url.startswith('//'):
+        return redirect(next_url)
+    return redirect('backend:notification_list')
+
 
 
 

@@ -496,12 +496,12 @@
                 <div class="figma-card-inner gap-4">
                     <!-- Donut Chart + Legend -->
                     <div class="flex flex-col sm:flex-row items-center gap-6">
-                        <!-- Dynamic SVG Segmented Donut (Figma: 148x148, corner radius 4.59px) -->
-                        <div class="relative w-[148px] h-[148px] shrink-0">
-                            <svg id="equipmentDonutSvg" viewBox="0 0 148 148" class="w-full h-full"></svg>
+                        <!-- Equipment Overview Donut Chart (same Chart.js doughnut as Overview page) -->
+                        <div class="relative w-[160px] h-[160px] shrink-0">
+                            <canvas id="equipmentDonutChart" width="160" height="160"></canvas>
                             <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                <span class="text-[24px] font-semibold text-[#2B2823] leading-none">{{ total_assets }}</span>
-                                <span class="text-[10px] font-medium text-[#9D9C9A] mt-1">Total Equipment</span>
+                                <span class="bld-mono text-[24px] font-medium text-[#2B2823] leading-none">{{ total_assets }}</span>
+                                <span class="text-[11px] font-medium text-[#8E8C89] mt-1">Total Equipment</span>
                             </div>
                         </div>
 
@@ -509,31 +509,31 @@
                         <div class="flex-1 w-full divide-y divide-[#F2F2F2]">
                             <div class="py-2 first:pt-0 flex items-center justify-between">
                                 <div class="flex items-center gap-2.5">
-                                    <span class="w-3.5 h-3.5 rounded-[4px] shrink-0" style="background-color: rgba(255, 107, 22, 0.40);"></span>
+                                    <span class="w-3 h-3 rounded-[3px] shrink-0" style="background-color: rgba(255, 107, 22, 0.4);"></span>
                                     <span class="text-[13px] font-medium text-[#716F6C]">Active</span>
                                 </div>
-                                <span class="text-[14px] font-semibold text-[#2B2823]">{{ active_count|stringformat:"02d" }}</span>
+                                <span class="bld-mono text-[14px] font-medium text-[#55534F]">{{ active_count|stringformat:"02d" }}</span>
                             </div>
                             <div class="py-2 flex items-center justify-between">
                                 <div class="flex items-center gap-2.5">
-                                    <span class="w-3.5 h-3.5 rounded-[4px] bg-[#FDE7B2] shrink-0"></span>
+                                    <span class="w-3 h-3 rounded-[3px] bg-[#FDEEC7] shrink-0"></span>
                                     <span class="text-[13px] font-medium text-[#716F6C]">Maintenance</span>
                                 </div>
-                                <span class="text-[14px] font-semibold text-[#2B2823]">{{ maintenance_count|stringformat:"02d" }}</span>
+                                <span class="bld-mono text-[14px] font-medium text-[#55534F]">{{ maintenance_count|stringformat:"02d" }}</span>
                             </div>
                             <div class="py-2 flex items-center justify-between">
                                 <div class="flex items-center gap-2.5">
-                                    <span class="w-3.5 h-3.5 rounded-[4px] bg-[#FDE3CF] shrink-0"></span>
+                                    <span class="w-3 h-3 rounded-[3px] bg-[#FFE4D3] shrink-0"></span>
                                     <span class="text-[13px] font-medium text-[#716F6C]">In Repair</span>
                                 </div>
-                                <span class="text-[14px] font-semibold text-[#2B2823]">{{ in_repair_count|stringformat:"02d" }}</span>
+                                <span class="bld-mono text-[14px] font-medium text-[#55534F]">{{ in_repair_count|stringformat:"02d" }}</span>
                             </div>
                             <div class="py-2 last:pb-0 flex items-center justify-between">
                                 <div class="flex items-center gap-2.5">
-                                    <span class="w-3.5 h-3.5 rounded-[4px] bg-[#D6D6D6] shrink-0"></span>
+                                    <span class="w-3 h-3 rounded-[3px] bg-[#DFDFDE] shrink-0"></span>
                                     <span class="text-[13px] font-medium text-[#716F6C]">Inactive</span>
                                 </div>
-                                <span class="text-[14px] font-semibold text-[#2B2823]">{{ inactive_count|stringformat:"02d" }}</span>
+                                <span class="bld-mono text-[14px] font-medium text-[#55534F]">{{ inactive_count|stringformat:"02d" }}</span>
                             </div>
                         </div>
                     </div>
@@ -775,68 +775,59 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <script>
     (function renderEquipmentDonut() {
-        const svg = document.getElementById('equipmentDonutSvg');
-        if (!svg) return;
+        const donutCanvas = document.getElementById('equipmentDonutChart');
+        if (!donutCanvas || typeof Chart === 'undefined') return;
 
-        const segments = [
-            { value: {{ active_count|default:0 }}, color: '#FFC4A2' },
-            { value: {{ maintenance_count|default:0 }}, color: '#FDE7B2' },
-            { value: {{ in_repair_count|default:0 }}, color: '#FDE3CF' },
-            { value: {{ inactive_count|default:0 }}, color: '#BDBDBD' },
+        const eqData = [
+            {{ active_count|default:0 }},
+            {{ maintenance_count|default:0 }},
+            {{ in_repair_count|default:0 }},
+            {{ inactive_count|default:0 }},
         ];
+        const eqTotal = eqData.reduce((a, b) => a + b, 0);
+        const nonZeroCount = eqData.filter(v => v > 0).length;
 
-        const cx = 74, cy = 74, rOuter = 69, rInner = 45, cornerStroke = 9;
-        const rMid = (rOuter + rInner) / 2;
-        const ringWidth = (rOuter - rInner) + cornerStroke;
-        const total = segments.reduce((sum, s) => sum + s.value, 0);
-
-        if (total === 0) {
-            svg.innerHTML = `<circle cx="${cx}" cy="${cy}" r="${rMid}" fill="none" stroke="#EAEAE8" stroke-width="${ringWidth}" />`;
-            return;
-        }
-
-        const nonZero = segments.filter(s => s.value > 0);
-        if (nonZero.length === 1) {
-            svg.innerHTML = `<circle cx="${cx}" cy="${cy}" r="${rMid}" fill="none" stroke="${nonZero[0].color}" stroke-width="${ringWidth}" />`;
-            return;
-        }
-
-        const gapDeg = 10;
-        const availableDeg = 360 - gapDeg * nonZero.length;
-
-        function polarToCartesian(r, deg) {
-            const rad = (deg - 90) * Math.PI / 180;
-            return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
-        }
-
-        function arcPath(startDeg, endDeg) {
-            const sweep = endDeg - startDeg;
-            const largeArc = sweep > 180 ? 1 : 0;
-            const p1 = polarToCartesian(rOuter, startDeg);
-            const p2 = polarToCartesian(rOuter, endDeg);
-            const p3 = polarToCartesian(rInner, endDeg);
-            const p4 = polarToCartesian(rInner, startDeg);
-            return [
-                `M ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}`,
-                `A ${rOuter} ${rOuter} 0 ${largeArc} 1 ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`,
-                `L ${p3.x.toFixed(2)} ${p3.y.toFixed(2)}`,
-                `A ${rInner} ${rInner} 0 ${largeArc} 0 ${p4.x.toFixed(2)} ${p4.y.toFixed(2)}`,
-                'Z'
-            ].join(' ');
-        }
-
-        let angle = -12;
-        let paths = '';
-        nonZero.forEach(seg => {
-            const span = (seg.value / total) * availableDeg;
-            const d = arcPath(angle, angle + span);
-            paths += `<path d="${d}" fill="${seg.color}" fill-rule="evenodd" stroke="${seg.color}" stroke-width="${cornerStroke}" stroke-linejoin="round" paint-order="stroke fill" />`;
-            angle += span + gapDeg;
+        new Chart(donutCanvas, {
+            type: 'doughnut',
+            data: {
+                labels: ['Active', 'Maintenance', 'In Repair', 'Inactive'],
+                datasets: [{
+                    data: eqTotal > 0 ? eqData : [1],
+                    backgroundColor: eqTotal > 0
+                        ? ['rgba(255, 107, 22, 0.4)', '#FDEEC7', '#FFE4D3', '#DFDFDE']
+                        : ['#EAEAE8'],
+                    borderWidth: nonZeroCount > 1 ? 4 : 0,
+                    borderColor: '#FFFFFF',
+                    borderRadius: nonZeroCount > 1 ? 3 : 0,
+                    hoverOffset: 3,
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                cutout: '62%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#2B2A29',
+                        titleFont: { family: 'Urbanist, sans-serif', weight: '600', size: 12 },
+                        bodyFont: { family: 'Geist Mono, monospace', size: 12 },
+                        padding: 10,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label(ctx) {
+                                if (eqTotal === 0) return 'No equipment registered';
+                                const pct = ((ctx.raw / eqTotal) * 100).toFixed(1);
+                                return ` ${ctx.label}: ${ctx.raw} (${pct}%)`;
+                            },
+                        },
+                    },
+                },
+            },
         });
-
-        svg.innerHTML = paths;
     })();
 
     // ─────────────────────────────────────────────────────────────────────────

@@ -1,0 +1,57 @@
+<!-- Success Modal (449px x 339px, Radius 13px, BG #F3F3F3) -->
+<div id="successModal" class="modal-backdrop hidden">
+    <div style="width: 100%; max-width: 449px; min-height: 339px; border-radius: 13px; background-color: #F3F3F3; border: 2px solid rgba(255, 255, 255, 0.2); box-shadow: 3px 9px 21px 0px rgba(48, 48, 48, 0.10), 14px 36px 38px 0px rgba(48, 48, 48, 0.09);"
+         class="relative p-6 sm:p-7 text-center flex flex-col justify-between animate-in fade-in zoom-in-95 duration-150">
+
+        <!-- Close X Button -->
+        <button type="button"
+                id="btnCloseSuccessModal"
+                class="absolute right-4 top-4 w-9 h-9 rounded-[10px] bg-white border border-[#EAEAEA] flex items-center justify-center text-[#716F6C] hover:text-[#2B2823] hover:bg-[#F7F7F6] transition-colors shadow-sm"
+                title="Close">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+
+        <!-- Center SVG Graphic -->
+        <div class="flex items-center justify-center pt-2">
+            <svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <foreignObject x="-4.3106" y="-4.3106" width="104.621" height="104.621"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(5.37px);clip-path:url(#bgblur_0_178_11882_clip_path);height:100%;width:100%"></div></foreignObject><path data-figma-bg-blur-radius="10.7413" d="M27.2154 12C40.077 4.57437 55.923 4.57437 68.7846 12V12C81.6462 19.4256 89.5692 33.1488 89.5692 48V48C89.5692 62.8512 81.6462 76.5744 68.7846 84V84C55.923 91.4256 40.077 91.4256 27.2154 84V84C14.3538 76.5744 6.43078 62.8512 6.43078 48V48C6.43078 33.1488 14.3538 19.4256 27.2154 12V12Z" fill="#11946F" fill-opacity="0.1"/>
+                <foreignObject x="4.00337" y="4.00337" width="87.9933" height="87.9933"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(5.37px);clip-path:url(#bgblur_1_178_11882_clip_path);height:100%;width:100%"></div></foreignObject><path data-figma-bg-blur-radius="10.7413" d="M31.3724 19.2001C41.6617 13.2596 54.3385 13.2596 64.6278 19.2001V19.2001C74.917 25.1406 81.2555 36.1191 81.2555 48.0001V48.0001C81.2555 59.8811 74.917 70.8596 64.6278 76.8001V76.8001C54.3385 82.7406 41.6617 82.7406 31.3724 76.8001V76.8001C21.0832 70.8596 14.7447 59.8811 14.7447 48.0001V48.0001C14.7447 36.1191 21.0832 25.1406 31.3724 19.2001V19.2001Z" fill="#11946F" fill-opacity="0.2"/>
+                <foreignObject x="11.6777" y="11.6777" width="72.6446" height="72.6446"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(5.37px);clip-path:url(#bgblur_2_178_11882_clip_path);height:100%;width:100%"></div></foreignObject><path data-figma-bg-blur-radius="10.7413" d="M35.2094 25.846C43.1242 21.2764 52.8756 21.2764 60.7904 25.846V25.846C68.7052 30.4157 73.5809 38.8607 73.5809 47.9999V47.9999C73.5809 57.1391 68.7052 65.5841 60.7904 70.1537V70.1537C52.8756 74.7234 43.1242 74.7234 35.2094 70.1537V70.1537C27.2946 65.5841 22.4188 57.1391 22.4188 47.9999V47.9999C22.4188 38.8607 27.2946 30.4157 35.2094 25.846V25.846Z" fill="#11946F"/>
+                <g clip-path="url(#clip3_178_11882)">
+                <path d="M60.6744 39.0531C59.8519 38.2294 58.5162 38.23 57.6926 39.0531L44.2723 52.4739L38.3076 46.5092C37.484 45.6856 36.1489 45.6856 35.3252 46.5092C34.5016 47.3328 34.5016 48.6679 35.3252 49.4915L42.7808 56.9471C43.1924 57.3587 43.732 57.565 44.2717 57.565C44.8114 57.565 45.3516 57.3592 45.7632 56.9471L60.6744 42.0354C61.498 41.2123 61.498 39.8766 60.6744 39.0531Z" fill="white"/>
+                </g>
+                <defs>
+                <clipPath id="bgblur_0_178_11882_clip_path" transform="translate(4.3106 4.3106)"><path d="M27.2154 12C40.077 4.57437 55.923 4.57437 68.7846 12V12C81.6462 19.4256 89.5692 33.1488 89.5692 48V48C89.5692 62.8512 81.6462 76.5744 68.7846 84V84C55.923 91.4256 40.077 91.4256 27.2154 84V84C14.3538 76.5744 6.43078 62.8512 6.43078 48V48C6.43078 33.1488 14.3538 19.4256 27.2154 12V12Z"/>
+                </clipPath><clipPath id="bgblur_1_178_11882_clip_path" transform="translate(-4.00337 -4.00337)"><path d="M31.3724 19.2001C41.6617 13.2596 54.3385 13.2596 64.6278 19.2001V19.2001C74.917 25.1406 81.2555 36.1191 81.2555 48.0001V48.0001C81.2555 59.8811 74.917 70.8596 64.6278 76.8001V76.8001C54.3385 82.7406 41.6617 82.7406 31.3724 76.8001V76.8001C21.0832 70.8596 14.7447 59.8811 14.7447 48.0001V48.0001C14.7447 36.1191 21.0832 25.1406 31.3724 19.2001V19.2001Z"/>
+                </clipPath><clipPath id="bgblur_2_178_11882_clip_path" transform="translate(-11.6777 -11.6777)"><path d="M35.2094 25.846C43.1242 21.2764 52.8756 21.2764 60.7904 25.846V25.846C68.7052 30.4157 73.5809 38.8607 73.5809 47.9999V47.9999C73.5809 57.1391 68.7052 65.5841 60.7904 70.1537V70.1537C52.8756 74.7234 43.1242 74.7234 35.2094 70.1537V70.1537C27.2946 65.5841 22.4188 57.1391 22.4188 47.9999V47.9999C22.4188 38.8607 27.2946 30.4157 35.2094 25.846V25.846Z"/>
+                </clipPath><clipPath id="clip3_178_11882">
+                <rect x="34.7075" y="34.7075" width="26.5846" height="26.5846" rx="13.2923" fill="white"/>
+                </clipPath>
+                </defs>
+            </svg>
+        </div>
+
+        <!-- Title & Subtitle -->
+        <div class="space-y-2 px-2">
+            <h3 class="text-[18px] font-bold text-[#2B2823] tracking-tight">Equipment registered successfully</h3>
+            <p id="successModalSubtitle" class="text-[13px] text-[#716F6C] font-normal leading-relaxed max-w-xs mx-auto">
+                Equipment is now in the equipment directory and in building's inventory.
+            </p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-center gap-3 pt-2">
+            <a id="btnViewDetails" href="{% url 'backend:equipment_list' %}"
+               class="inline-flex items-center justify-center bg-[#11946F] hover:bg-[#0E805F] text-white font-semibold text-[13.5px] px-5 py-2.5 rounded-[8px] transition-colors shadow-sm">
+                View Equipment Details
+            </a>
+            <button type="button" id="btnAddAnother"
+                    class="inline-flex items-center justify-center bg-white hover:bg-[#F7F7F6] text-[#2B2823] border border-[#EAEAEA] font-medium text-[13.5px] px-5 py-2.5 rounded-[8px] transition-colors">
+                Add Another
+            </button>
+        </div>
+    </div>
+</div>

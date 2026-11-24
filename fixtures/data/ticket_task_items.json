@@ -1,0 +1,1622 @@
+[
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 301,
+    "fields": {
+      "ticket": 301,
+      "title": "Inspect Compressor Unit",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 1,
+      "completed_at": "2026-11-22T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-22T09:00:00Z",
+      "updated_at": "2026-11-22T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 302,
+    "fields": {
+      "ticket": 301,
+      "title": "Service & test Condenser & Evaporator Coils",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 2,
+      "completed_at": "2026-11-22T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-22T09:00:00Z",
+      "updated_at": "2026-11-22T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 303,
+    "fields": {
+      "ticket": 301,
+      "title": "Verify safety & readings on Air Filter & Blower Fan",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 3,
+      "completed_at": "2026-11-22T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-22T09:00:00Z",
+      "updated_at": "2026-11-22T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 304,
+    "fields": {
+      "ticket": 302,
+      "title": "Inspect Diesel Engine & Fuel Injectors",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 1,
+      "completed_at": "2026-11-21T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-21T09:00:00Z",
+      "updated_at": "2026-11-21T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 305,
+    "fields": {
+      "ticket": 302,
+      "title": "Service & test Alternator & AVR Module",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 2,
+      "completed_at": "2026-11-21T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-21T09:00:00Z",
+      "updated_at": "2026-11-21T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 306,
+    "fields": {
+      "ticket": 302,
+      "title": "Verify safety & readings on Automatic Transfer Switch (ATS)",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 3,
+      "completed_at": "2026-11-21T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-21T09:00:00Z",
+      "updated_at": "2026-11-21T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 307,
+    "fields": {
+      "ticket": 303,
+      "title": "Inspect Compressor Unit",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 1,
+      "completed_at": "2026-11-20T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-20T09:00:00Z",
+      "updated_at": "2026-11-20T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 308,
+    "fields": {
+      "ticket": 303,
+      "title": "Service & test Condenser & Evaporator Coils",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 2,
+      "completed_at": "2026-11-20T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-20T09:00:00Z",
+      "updated_at": "2026-11-20T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 309,
+    "fields": {
+      "ticket": 303,
+      "title": "Verify safety & readings on Air Filter & Blower Fan",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 3,
+      "completed_at": "2026-11-20T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-20T09:00:00Z",
+      "updated_at": "2026-11-20T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 310,
+    "fields": {
+      "ticket": 304,
+      "title": "Inspect Diesel Engine & Fuel Injectors",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 1,
+      "completed_at": "2026-11-19T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-19T09:00:00Z",
+      "updated_at": "2026-11-19T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 311,
+    "fields": {
+      "ticket": 304,
+      "title": "Service & test Alternator & AVR Module",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 2,
+      "completed_at": "2026-11-19T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-19T09:00:00Z",
+      "updated_at": "2026-11-19T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 312,
+    "fields": {
+      "ticket": 304,
+      "title": "Verify safety & readings on Automatic Transfer Switch (ATS)",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 3,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-19T09:00:00Z",
+      "updated_at": "2026-11-19T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 313,
+    "fields": {
+      "ticket": 305,
+      "title": "Inspect Compressor Unit",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 1,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-18T09:00:00Z",
+      "updated_at": "2026-11-18T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 314,
+    "fields": {
+      "ticket": 305,
+      "title": "Service & test Condenser & Evaporator Coils",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 2,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-18T09:00:00Z",
+      "updated_at": "2026-11-18T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 315,
+    "fields": {
+      "ticket": 305,
+      "title": "Verify safety & readings on Air Filter & Blower Fan",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 3,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-18T09:00:00Z",
+      "updated_at": "2026-11-18T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 316,
+    "fields": {
+      "ticket": 306,
+      "title": "Inspect Compressor Unit",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 1,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-17T09:00:00Z",
+      "updated_at": "2026-11-17T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 317,
+    "fields": {
+      "ticket": 306,
+      "title": "Service & test Condenser & Evaporator Coils",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 2,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-17T09:00:00Z",
+      "updated_at": "2026-11-17T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 318,
+    "fields": {
+      "ticket": 306,
+      "title": "Verify safety & readings on Air Filter & Blower Fan",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 3,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-17T09:00:00Z",
+      "updated_at": "2026-11-17T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 319,
+    "fields": {
+      "ticket": 307,
+      "title": "Inspect Hoist Traction Motor",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 1,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-16T09:00:00Z",
+      "updated_at": "2026-11-16T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 320,
+    "fields": {
+      "ticket": 307,
+      "title": "Service & test Safety Brake & Governor",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 2,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-16T09:00:00Z",
+      "updated_at": "2026-11-16T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 321,
+    "fields": {
+      "ticket": 307,
+      "title": "Verify safety & readings on Door Operator & Sensor Curtain",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 3,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-16T09:00:00Z",
+      "updated_at": "2026-11-16T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 322,
+    "fields": {
+      "ticket": 308,
+      "title": "Inspect Addressable Fire Control Panel",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 1,
+      "completed_at": "2026-11-15T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-15T09:00:00Z",
+      "updated_at": "2026-11-15T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 323,
+    "fields": {
+      "ticket": 308,
+      "title": "Service & test Optical Smoke & Heat Detectors",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 2,
+      "completed_at": "2026-11-15T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-15T09:00:00Z",
+      "updated_at": "2026-11-15T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 324,
+    "fields": {
+      "ticket": 308,
+      "title": "Verify safety & readings on Backup Battery Bank",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 3,
+      "completed_at": "2026-11-15T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-15T09:00:00Z",
+      "updated_at": "2026-11-15T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 325,
+    "fields": {
+      "ticket": 309,
+      "title": "Inspect Compressor Unit",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 1,
+      "completed_at": "2026-11-14T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-14T09:00:00Z",
+      "updated_at": "2026-11-14T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 326,
+    "fields": {
+      "ticket": 309,
+      "title": "Service & test Condenser & Evaporator Coils",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 2,
+      "completed_at": "2026-11-14T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-14T09:00:00Z",
+      "updated_at": "2026-11-14T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 327,
+    "fields": {
+      "ticket": 309,
+      "title": "Verify safety & readings on Air Filter & Blower Fan",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 3,
+      "completed_at": "2026-11-14T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-14T09:00:00Z",
+      "updated_at": "2026-11-14T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 328,
+    "fields": {
+      "ticket": 310,
+      "title": "Inspect Diesel Engine & Fuel Injectors",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 1,
+      "completed_at": "2026-11-13T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-13T09:00:00Z",
+      "updated_at": "2026-11-13T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 329,
+    "fields": {
+      "ticket": 310,
+      "title": "Service & test Alternator & AVR Module",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 2,
+      "completed_at": "2026-11-13T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-13T09:00:00Z",
+      "updated_at": "2026-11-13T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 330,
+    "fields": {
+      "ticket": 310,
+      "title": "Verify safety & readings on Automatic Transfer Switch (ATS)",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 3,
+      "completed_at": "2026-11-13T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-13T09:00:00Z",
+      "updated_at": "2026-11-13T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 331,
+    "fields": {
+      "ticket": 311,
+      "title": "Inspect Compressor Unit",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 1,
+      "completed_at": "2026-11-12T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-12T09:00:00Z",
+      "updated_at": "2026-11-12T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 332,
+    "fields": {
+      "ticket": 311,
+      "title": "Service & test Condenser & Evaporator Coils",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 2,
+      "completed_at": "2026-11-12T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-12T09:00:00Z",
+      "updated_at": "2026-11-12T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 333,
+    "fields": {
+      "ticket": 311,
+      "title": "Verify safety & readings on Air Filter & Blower Fan",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 3,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-12T09:00:00Z",
+      "updated_at": "2026-11-12T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 334,
+    "fields": {
+      "ticket": 312,
+      "title": "Inspect Diesel Engine & Fuel Injectors",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 1,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-11T09:00:00Z",
+      "updated_at": "2026-11-11T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 335,
+    "fields": {
+      "ticket": 312,
+      "title": "Service & test Alternator & AVR Module",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 2,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-11T09:00:00Z",
+      "updated_at": "2026-11-11T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 336,
+    "fields": {
+      "ticket": 312,
+      "title": "Verify safety & readings on Automatic Transfer Switch (ATS)",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 3,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-11T09:00:00Z",
+      "updated_at": "2026-11-11T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 337,
+    "fields": {
+      "ticket": 313,
+      "title": "Inspect Main Power & Control Module",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 1,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-10T09:00:00Z",
+      "updated_at": "2026-11-10T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 338,
+    "fields": {
+      "ticket": 313,
+      "title": "Service & test Mechanical Drive Assembly",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 2,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-10T09:00:00Z",
+      "updated_at": "2026-11-10T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 339,
+    "fields": {
+      "ticket": 313,
+      "title": "Verify safety & readings on Safety Sensor & Relay Bank",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 3,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-10T09:00:00Z",
+      "updated_at": "2026-11-10T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 340,
+    "fields": {
+      "ticket": 314,
+      "title": "Inspect Main Power & Control Module",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 1,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-09T09:00:00Z",
+      "updated_at": "2026-11-09T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 341,
+    "fields": {
+      "ticket": 314,
+      "title": "Service & test Mechanical Drive Assembly",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 2,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-09T09:00:00Z",
+      "updated_at": "2026-11-09T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 342,
+    "fields": {
+      "ticket": 314,
+      "title": "Verify safety & readings on Safety Sensor & Relay Bank",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 3,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-09T09:00:00Z",
+      "updated_at": "2026-11-09T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 343,
+    "fields": {
+      "ticket": 315,
+      "title": "Inspect Main Power & Control Module",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 1,
+      "completed_at": "2026-11-08T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-08T09:00:00Z",
+      "updated_at": "2026-11-08T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 344,
+    "fields": {
+      "ticket": 315,
+      "title": "Service & test Mechanical Drive Assembly",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 2,
+      "completed_at": "2026-11-08T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-08T09:00:00Z",
+      "updated_at": "2026-11-08T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 345,
+    "fields": {
+      "ticket": 315,
+      "title": "Verify safety & readings on Safety Sensor & Relay Bank",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 3,
+      "completed_at": "2026-11-08T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-08T09:00:00Z",
+      "updated_at": "2026-11-08T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 346,
+    "fields": {
+      "ticket": 316,
+      "title": "Inspect IP Camera Optical Module",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 1,
+      "completed_at": "2026-11-07T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-07T09:00:00Z",
+      "updated_at": "2026-11-07T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 347,
+    "fields": {
+      "ticket": 316,
+      "title": "Service & test PoE Network Switch & Injector",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 2,
+      "completed_at": "2026-11-07T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-07T09:00:00Z",
+      "updated_at": "2026-11-07T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 348,
+    "fields": {
+      "ticket": 316,
+      "title": "Verify safety & readings on NVR Storage Array",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 3,
+      "completed_at": "2026-11-07T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-07T09:00:00Z",
+      "updated_at": "2026-11-07T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 349,
+    "fields": {
+      "ticket": 317,
+      "title": "Inspect Main Power & Control Module",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 1,
+      "completed_at": "2026-11-06T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-06T09:00:00Z",
+      "updated_at": "2026-11-06T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 350,
+    "fields": {
+      "ticket": 317,
+      "title": "Service & test Mechanical Drive Assembly",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 2,
+      "completed_at": "2026-11-06T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-06T09:00:00Z",
+      "updated_at": "2026-11-06T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 351,
+    "fields": {
+      "ticket": 317,
+      "title": "Verify safety & readings on Safety Sensor & Relay Bank",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 3,
+      "completed_at": "2026-11-06T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-06T09:00:00Z",
+      "updated_at": "2026-11-06T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 352,
+    "fields": {
+      "ticket": 318,
+      "title": "Inspect Main Power & Control Module",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 1,
+      "completed_at": "2026-11-05T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-05T09:00:00Z",
+      "updated_at": "2026-11-05T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 353,
+    "fields": {
+      "ticket": 318,
+      "title": "Service & test Mechanical Drive Assembly",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 2,
+      "completed_at": "2026-11-05T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-05T09:00:00Z",
+      "updated_at": "2026-11-05T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 354,
+    "fields": {
+      "ticket": 318,
+      "title": "Verify safety & readings on Safety Sensor & Relay Bank",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 3,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-05T09:00:00Z",
+      "updated_at": "2026-11-05T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 355,
+    "fields": {
+      "ticket": 319,
+      "title": "Inspect Main Power & Control Module",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 1,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-04T09:00:00Z",
+      "updated_at": "2026-11-04T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 356,
+    "fields": {
+      "ticket": 319,
+      "title": "Service & test Mechanical Drive Assembly",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 2,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-04T09:00:00Z",
+      "updated_at": "2026-11-04T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 357,
+    "fields": {
+      "ticket": 319,
+      "title": "Verify safety & readings on Safety Sensor & Relay Bank",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 3,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-04T09:00:00Z",
+      "updated_at": "2026-11-04T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 358,
+    "fields": {
+      "ticket": 320,
+      "title": "Inspect Main Power & Control Module",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 1,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-03T09:00:00Z",
+      "updated_at": "2026-11-03T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 359,
+    "fields": {
+      "ticket": 320,
+      "title": "Service & test Mechanical Drive Assembly",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 2,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-03T09:00:00Z",
+      "updated_at": "2026-11-03T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 360,
+    "fields": {
+      "ticket": 320,
+      "title": "Verify safety & readings on Safety Sensor & Relay Bank",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 3,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-03T09:00:00Z",
+      "updated_at": "2026-11-03T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 361,
+    "fields": {
+      "ticket": 321,
+      "title": "Inspect Main Power & Control Module",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 1,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-02T09:00:00Z",
+      "updated_at": "2026-11-02T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 362,
+    "fields": {
+      "ticket": 321,
+      "title": "Service & test Mechanical Drive Assembly",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 2,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-02T09:00:00Z",
+      "updated_at": "2026-11-02T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 363,
+    "fields": {
+      "ticket": 321,
+      "title": "Verify safety & readings on Safety Sensor & Relay Bank",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 3,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-02T09:00:00Z",
+      "updated_at": "2026-11-02T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 364,
+    "fields": {
+      "ticket": 322,
+      "title": "Inspect Main Power & Control Module",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 1,
+      "completed_at": "2026-11-01T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-01T09:00:00Z",
+      "updated_at": "2026-11-01T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 365,
+    "fields": {
+      "ticket": 322,
+      "title": "Service & test Mechanical Drive Assembly",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 2,
+      "completed_at": "2026-11-01T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-01T09:00:00Z",
+      "updated_at": "2026-11-01T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 366,
+    "fields": {
+      "ticket": 322,
+      "title": "Verify safety & readings on Safety Sensor & Relay Bank",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 3,
+      "completed_at": "2026-11-01T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-11-01T09:00:00Z",
+      "updated_at": "2026-11-01T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 367,
+    "fields": {
+      "ticket": 323,
+      "title": "Inspect Main Power & Control Module",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 1,
+      "completed_at": "2026-10-31T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-31T09:00:00Z",
+      "updated_at": "2026-10-31T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 368,
+    "fields": {
+      "ticket": 323,
+      "title": "Service & test Mechanical Drive Assembly",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 2,
+      "completed_at": "2026-10-31T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-31T09:00:00Z",
+      "updated_at": "2026-10-31T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 369,
+    "fields": {
+      "ticket": 323,
+      "title": "Verify safety & readings on Safety Sensor & Relay Bank",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 3,
+      "completed_at": "2026-10-31T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-31T09:00:00Z",
+      "updated_at": "2026-10-31T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 370,
+    "fields": {
+      "ticket": 324,
+      "title": "Inspect Main Power & Control Module",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 1,
+      "completed_at": "2026-10-30T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-30T09:00:00Z",
+      "updated_at": "2026-10-30T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 371,
+    "fields": {
+      "ticket": 324,
+      "title": "Service & test Mechanical Drive Assembly",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 2,
+      "completed_at": "2026-10-30T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-30T09:00:00Z",
+      "updated_at": "2026-10-30T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 372,
+    "fields": {
+      "ticket": 324,
+      "title": "Verify safety & readings on Safety Sensor & Relay Bank",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 3,
+      "completed_at": "2026-10-30T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-30T09:00:00Z",
+      "updated_at": "2026-10-30T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 373,
+    "fields": {
+      "ticket": 325,
+      "title": "Inspect Main Power & Control Module",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 1,
+      "completed_at": "2026-10-29T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-29T09:00:00Z",
+      "updated_at": "2026-10-29T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 374,
+    "fields": {
+      "ticket": 325,
+      "title": "Service & test Mechanical Drive Assembly",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 2,
+      "completed_at": "2026-10-29T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-29T09:00:00Z",
+      "updated_at": "2026-10-29T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 375,
+    "fields": {
+      "ticket": 325,
+      "title": "Verify safety & readings on Safety Sensor & Relay Bank",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 3,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-29T09:00:00Z",
+      "updated_at": "2026-10-29T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 376,
+    "fields": {
+      "ticket": 326,
+      "title": "Inspect Main Power & Control Module",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 1,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-28T09:00:00Z",
+      "updated_at": "2026-10-28T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 377,
+    "fields": {
+      "ticket": 326,
+      "title": "Service & test Mechanical Drive Assembly",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 2,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-28T09:00:00Z",
+      "updated_at": "2026-10-28T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 378,
+    "fields": {
+      "ticket": 326,
+      "title": "Verify safety & readings on Safety Sensor & Relay Bank",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 3,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-28T09:00:00Z",
+      "updated_at": "2026-10-28T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 379,
+    "fields": {
+      "ticket": 327,
+      "title": "Inspect Main Power & Control Module",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 1,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-27T09:00:00Z",
+      "updated_at": "2026-10-27T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 380,
+    "fields": {
+      "ticket": 327,
+      "title": "Service & test Mechanical Drive Assembly",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 2,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-27T09:00:00Z",
+      "updated_at": "2026-10-27T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 381,
+    "fields": {
+      "ticket": 327,
+      "title": "Verify safety & readings on Safety Sensor & Relay Bank",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 3,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-27T09:00:00Z",
+      "updated_at": "2026-10-27T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 382,
+    "fields": {
+      "ticket": 328,
+      "title": "Inspect Compressor Unit",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 1,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-26T09:00:00Z",
+      "updated_at": "2026-10-26T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 383,
+    "fields": {
+      "ticket": 328,
+      "title": "Service & test Condenser & Evaporator Coils",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 2,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-26T09:00:00Z",
+      "updated_at": "2026-10-26T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 384,
+    "fields": {
+      "ticket": 328,
+      "title": "Verify safety & readings on Air Filter & Blower Fan",
+      "is_completed": false,
+      "technician_feedback": "",
+      "order": 3,
+      "completed_at": null,
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-26T09:00:00Z",
+      "updated_at": "2026-10-26T09:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 385,
+    "fields": {
+      "ticket": 329,
+      "title": "Inspect Diesel Engine & Fuel Injectors",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 1,
+      "completed_at": "2026-10-25T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-25T09:00:00Z",
+      "updated_at": "2026-10-25T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 386,
+    "fields": {
+      "ticket": 329,
+      "title": "Service & test Alternator & AVR Module",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 2,
+      "completed_at": "2026-10-25T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-25T09:00:00Z",
+      "updated_at": "2026-10-25T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 387,
+    "fields": {
+      "ticket": 329,
+      "title": "Verify safety & readings on Automatic Transfer Switch (ATS)",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 3,
+      "completed_at": "2026-10-25T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-25T09:00:00Z",
+      "updated_at": "2026-10-25T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 388,
+    "fields": {
+      "ticket": 330,
+      "title": "Inspect Main Power & Control Module",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 1,
+      "completed_at": "2026-10-24T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-24T09:00:00Z",
+      "updated_at": "2026-10-24T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 389,
+    "fields": {
+      "ticket": 330,
+      "title": "Service & test Mechanical Drive Assembly",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 2,
+      "completed_at": "2026-10-24T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-24T09:00:00Z",
+      "updated_at": "2026-10-24T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.tickettaskitem",
+    "pk": 390,
+    "fields": {
+      "ticket": 330,
+      "title": "Verify safety & readings on Safety Sensor & Relay Bank",
+      "is_completed": true,
+      "technician_feedback": "Verified within normal operating limits.",
+      "order": 3,
+      "completed_at": "2026-10-24T15:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "created_at": "2026-10-24T09:00:00Z",
+      "updated_at": "2026-10-24T15:00:00Z",
+      "is_active": true,
+      "deleted": false
+    }
+  }
+]

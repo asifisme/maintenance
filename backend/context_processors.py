@@ -1,5 +1,6 @@
+from django.db.models import Q
 from backend.models import (
-    BackendMenu, UserMenuPermission, SiteSettings
+    BackendMenu, UserMenuPermission, SiteSettings, Notification
 )
 
 
@@ -118,6 +119,19 @@ def menu_items(request):
                 breadcrumb_menu.append(breadcrumb)
         breadcrumb_menu.reverse()
 
+    header_notifications = []
+    unread_notifications_count = 0
+    if request.user.is_authenticated:
+        notif_qs = Notification.objects.filter(
+            deleted=False
+        ).filter(
+            Q(recipient__isnull=True) | Q(recipient=request.user)
+        )
+        unread_notifications_count = notif_qs.filter(is_read=False).count()
+        header_notifications = list(
+            notif_qs.select_related('actor', 'ticket', 'equipment', 'technician')[:12]
+        )
+
     return {
         'dashboard_active': dashboard_active,
         "breadcrumb_menu": breadcrumb_menu,
@@ -125,6 +139,8 @@ def menu_items(request):
         'sidebar_main_menus': sidebar_main_menus,
         'user_management_menu': user_management_menu,
         'search_menu_list': search_menu_list,
+        'header_notifications': header_notifications,
+        'unread_notifications_count': unread_notifications_count,
     }
 
 

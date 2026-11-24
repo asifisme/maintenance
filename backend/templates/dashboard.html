@@ -210,32 +210,7 @@
         box-sizing: border-box;
     }
 
-    /* Filter Bar Selects — override base.html white select rule cleanly */
-    .ov-filter-select {
-        background-color: #EAEAE8 !important;
-        border: 1px solid #E2E2E0 !important;
-        border-radius: 8px !important;
-        height: 34px;
-        padding: 0 28px 0 11px !important;
-        font-size: 12.5px;
-        font-weight: 500;
-        color: #555452;
-        outline: none !important;
-        box-shadow: none !important;
-        cursor: pointer;
-        appearance: none;
-        -webkit-appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23716F6C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 9px center;
-        transition: background-color 150ms ease, border-color 150ms ease;
-    }
-    .ov-filter-select:hover,
-    .ov-filter-select:focus {
-        background-color: #E3E3E1 !important;
-        border-color: #CFCED0 !important;
-        color: #2B2A29;
-    }
+
 
     /* Segmented range toggle (30 Days | 7 Days | 90 Days) */
     .ov-seg-btn {
@@ -313,48 +288,7 @@
         </div>
 
         <!-- Right: Notification Bell Popover -->
-        <div class="relative">
-            <button id="ovNotifBtn"
-                    type="button"
-                    aria-label="Notifications"
-                    aria-expanded="false"
-                    class="w-9 h-9 rounded-[9px] bg-white border border-[#E5E5E3] hover:bg-[#FAFAFA] flex items-center justify-center text-[#4A4947] shadow-[0_1px_2px_rgba(0,0,0,0.03)] relative transition-colors">
-                <svg class="w-[17px] h-[17px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
-                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-                </svg>
-                {% if critical_requests_count > 0 or overdue_count > 0 %}
-                    <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#FF6B16] ring-2 ring-white"></span>
-                {% endif %}
-            </button>
-
-            <div id="ovNotifMenu"
-                 class="hidden absolute right-0 mt-2 w-80 rounded-[12px] bg-white border border-[#E5E5E3] shadow-xl z-50 overflow-hidden">
-                <div class="px-4 py-3 border-b border-[#EFEFED] flex items-center justify-between">
-                    <span class="text-[13px] font-semibold text-[#2B2A29]">Notifications</span>
-                    <span class="ov-count-badge">{{ critical_requests_count|add:overdue_count }}</span>
-                </div>
-                <div class="max-h-72 overflow-y-auto divide-y divide-[#F2F2F0]">
-                    {% for req in critical_requests %}
-                        <a href="{{ req.detail_url }}" class="block px-4 py-3 hover:bg-[#FAFAFA] transition-colors">
-                            <p class="text-[12px] font-semibold text-[#FF0505]">{{ req.code }} · Critical</p>
-                            <p class="text-[12px] text-[#4A4947] truncate mt-0.5">{{ req.heading }}</p>
-                        </a>
-                    {% endfor %}
-                    {% for item in overdue_preview %}
-                        <a href="{{ item.detail_url }}" class="block px-4 py-3 hover:bg-[#FAFAFA] transition-colors">
-                            <p class="text-[12px] font-semibold text-[#2B2A29]">{{ item.title }} <span class="text-[#FF0505]">({{ item.days_overdue }}d overdue)</span></p>
-                            <p class="text-[11.5px] text-[#8E8C89] truncate mt-0.5">{{ item.building_name }}</p>
-                        </a>
-                    {% endfor %}
-                    {% if not critical_requests and not overdue_preview %}
-                        <div class="px-4 py-6 text-center text-[12.5px] text-[#8E8C89]">
-                            All caught up — no urgent notifications.
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
+        {% include 'includes/notification_bell.html' %}
     </div>
 </header>
 {% endblock %}
@@ -388,29 +322,143 @@
             <span class="px-2.5 text-[11.5px] text-[#8E8C89] font-normal hidden sm:inline">{{ prev_range_label }}</span>
         </div>
 
-        <!-- Division Select -->
-        <select name="division" id="ovDivisionSelect" class="ov-filter-select" aria-label="Filter by division">
-            <option value="">All Divisions</option>
-            {% for div in divisions %}
-                <option value="{{ div.id }}" {% if selected_division == div.id|stringformat:"s" %}selected{% endif %}>{{ div.name }}</option>
-            {% endfor %}
-        </select>
+        <!-- Division Custom Dropdown (Frame 2147259697 & Frame 2147259513) -->
+        <div class="ov-dropdown-wrapper" id="ovDivisionWrapper">
+            <button type="button"
+                    id="ovDivisionTrigger"
+                    class="ov-dropdown-trigger"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                    aria-label="Filter by division">
+                <span class="ov-dropdown-label truncate max-w-[140px]">
+                    {% if selected_division %}
+                        {% for div in divisions %}{% if selected_division == div.id|stringformat:"s" %}{{ div.name }}{% endif %}{% endfor %}
+                    {% else %}
+                        All Divisions
+                    {% endif %}
+                </span>
+                <svg class="ov-dropdown-chevron w-3 h-3 text-[#716F6C] shrink-0 pointer-events-none transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+                </svg>
+            </button>
+            <input type="hidden" name="division" id="ovDivisionSelect" value="{{ selected_division }}">
 
-        <!-- Subdivision Select -->
-        <select name="subdivision" id="ovSubdivisionSelect" class="ov-filter-select" aria-label="Filter by subdivision">
-            <option value="">All Subdivisions</option>
-            {% for sub in subdivisions %}
-                <option value="{{ sub.id }}" {% if selected_subdivision == sub.id|stringformat:"s" %}selected{% endif %}>{{ sub.name }}</option>
-            {% endfor %}
-        </select>
+            <div class="ov-dropdown-menu hidden" role="listbox">
+                <div class="w-full">
+                    <input type="text"
+                           class="ov-dropdown-search"
+                           placeholder="Search division"
+                           autocomplete="off">
+                </div>
+                <div class="ov-dropdown-options-list">
+                    <div class="ov-dropdown-item {% if not selected_division %}is-selected{% endif %}"
+                         data-value=""
+                         data-label="All Divisions">
+                        <span>All Divisions</span>
+                    </div>
+                    {% for div in divisions %}
+                    <div class="ov-dropdown-item {% if selected_division == div.id|stringformat:'s' %}is-selected{% endif %}"
+                         data-value="{{ div.id }}"
+                         data-label="{{ div.name }}">
+                        <span class="truncate">{{ div.name }}</span>
+                    </div>
+                    {% endfor %}
+                    <div class="ov-dropdown-empty hidden">No division found</div>
+                </div>
+            </div>
+        </div>
 
-        <!-- Section Select -->
-        <select name="section" id="ovSectionSelect" class="ov-filter-select" aria-label="Filter by section">
-            <option value="">All Sections</option>
-            {% for sec in sections %}
-                <option value="{{ sec.id }}" {% if selected_section == sec.id|stringformat:"s" %}selected{% endif %}>{{ sec.name }}</option>
-            {% endfor %}
-        </select>
+        <!-- Subdivision Custom Dropdown (Frame 2147259697 & Frame 2147259513) -->
+        <div class="ov-dropdown-wrapper" id="ovSubdivisionWrapper">
+            <button type="button"
+                    id="ovSubdivisionTrigger"
+                    class="ov-dropdown-trigger"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                    aria-label="Filter by subdivision">
+                <span class="ov-dropdown-label truncate max-w-[140px]">
+                    {% if selected_subdivision %}
+                        {% for sub in subdivisions %}{% if selected_subdivision == sub.id|stringformat:"s" %}{{ sub.name }}{% endif %}{% endfor %}
+                    {% else %}
+                        All Subdivisions
+                    {% endif %}
+                </span>
+                <svg class="ov-dropdown-chevron w-3 h-3 text-[#716F6C] shrink-0 pointer-events-none transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+                </svg>
+            </button>
+            <input type="hidden" name="subdivision" id="ovSubdivisionSelect" value="{{ selected_subdivision }}">
+
+            <div class="ov-dropdown-menu hidden" role="listbox">
+                <div class="w-full">
+                    <input type="text"
+                           class="ov-dropdown-search"
+                           placeholder="Search subdivision"
+                           autocomplete="off">
+                </div>
+                <div class="ov-dropdown-options-list">
+                    <div class="ov-dropdown-item {% if not selected_subdivision %}is-selected{% endif %}"
+                         data-value=""
+                         data-label="All Subdivisions">
+                        <span>All Subdivisions</span>
+                    </div>
+                    {% for sub in subdivisions %}
+                    <div class="ov-dropdown-item {% if selected_subdivision == sub.id|stringformat:'s' %}is-selected{% endif %}"
+                         data-value="{{ sub.id }}"
+                         data-label="{{ sub.name }}">
+                        <span class="truncate">{{ sub.name }}</span>
+                    </div>
+                    {% endfor %}
+                    <div class="ov-dropdown-empty hidden">No subdivision found</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Custom Dropdown (Frame 2147259697 & Frame 2147259513) -->
+        <div class="ov-dropdown-wrapper" id="ovSectionWrapper">
+            <button type="button"
+                    id="ovSectionTrigger"
+                    class="ov-dropdown-trigger"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                    aria-label="Filter by section">
+                <span class="ov-dropdown-label truncate max-w-[140px]">
+                    {% if selected_section %}
+                        {% for sec in sections %}{% if selected_section == sec.id|stringformat:"s" %}{{ sec.name }}{% endif %}{% endfor %}
+                    {% else %}
+                        All Sections
+                    {% endif %}
+                </span>
+                <svg class="ov-dropdown-chevron w-3 h-3 text-[#716F6C] shrink-0 pointer-events-none transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+                </svg>
+            </button>
+            <input type="hidden" name="section" id="ovSectionSelect" value="{{ selected_section }}">
+
+            <div class="ov-dropdown-menu hidden" role="listbox">
+                <div class="w-full">
+                    <input type="text"
+                           class="ov-dropdown-search"
+                           placeholder="Search section"
+                           autocomplete="off">
+                </div>
+                <div class="ov-dropdown-options-list">
+                    <div class="ov-dropdown-item {% if not selected_section %}is-selected{% endif %}"
+                         data-value=""
+                         data-label="All Sections">
+                        <span>All Sections</span>
+                    </div>
+                    {% for sec in sections %}
+                    <div class="ov-dropdown-item {% if selected_section == sec.id|stringformat:'s' %}is-selected{% endif %}"
+                         data-value="{{ sec.id }}"
+                         data-label="{{ sec.name }}">
+                        <span class="truncate">{{ sec.name }}</span>
+                    </div>
+                    {% endfor %}
+                    <div class="ov-dropdown-empty hidden">No section found</div>
+                </div>
+            </div>
+        </div>
 
         <!-- Reset Button -->
         <a href="{% url 'backend:dash_board' %}"
@@ -999,24 +1047,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // ── Filter Bar Auto-submit & Date Range Picker ──
-    const filterForm = document.getElementById('overviewFilterForm');
-    const divSel = document.getElementById('ovDivisionSelect');
-    const subSel = document.getElementById('ovSubdivisionSelect');
-    const secSel = document.getElementById('ovSectionSelect');
 
-    divSel?.addEventListener('change', () => {
-        if (subSel) subSel.value = '';
-        if (secSel) secSel.value = '';
-        filterForm?.submit();
-    });
-    subSel?.addEventListener('change', () => {
-        if (secSel) secSel.value = '';
-        filterForm?.submit();
-    });
-    secSel?.addEventListener('change', () => {
-        filterForm?.submit();
-    });
 
     const dateBtn = document.getElementById('ovDateRangeBtn');
     const fpHost = document.getElementById('ovFlatpickrHost');

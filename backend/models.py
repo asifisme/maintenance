@@ -884,3 +884,63 @@ class CriticalAlert(models.Model):
     def __str__(self):
         return f"[{self.severity.upper()}] {self.title}"
 
+
+class Notification(models.Model):
+    CATEGORY_CHOICES = [
+        ("ticket_created", "New Ticket"),
+        ("task_assigned", "Task Assigned"),
+        ("task_accepted", "Task Accepted"),
+        ("task_rejected", "Assignment Declined"),
+        ("work_started", "Work Started"),
+        ("submitted_review", "Submitted for Review"),
+        ("revision_requested", "Revision Requested"),
+        ("review_approved", "Approved & Archived"),
+        ("maintenance_due", "Maintenance Due"),
+        ("maintenance_overdue", "Maintenance Overdue"),
+        ("system", "System"),
+    ]
+
+    LEVEL_CHOICES = [
+        ("info", "Info"),
+        ("success", "Success"),
+        ("warning", "Warning"),
+        ("critical", "Critical"),
+    ]
+
+    recipient = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="notifications",
+        help_text="Null means visible to all staff/admins.",
+    )
+    actor = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="sent_notifications",
+    )
+    category = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default="system", db_index=True)
+    level = models.CharField(max_length=15, choices=LEVEL_CHOICES, default="info", db_index=True)
+    title = models.CharField(max_length=255)
+    message = models.TextField(blank=True)
+    link_url = models.CharField(max_length=500, blank=True)
+
+    ticket = models.ForeignKey("backend.Ticket", on_delete=models.CASCADE, null=True, blank=True, related_name="notifications")
+    equipment = models.ForeignKey("backend.Equipment", on_delete=models.CASCADE, null=True, blank=True, related_name="notifications")
+    technician = models.ForeignKey("backend.Technician", on_delete=models.SET_NULL, null=True, blank=True, related_name="notifications")
+
+    is_read = models.BooleanField(default=False, db_index=True)
+    read_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    deleted = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["-created_at", "-id"]
+
+    def __str__(self):
+        return f"[{self.category}] {self.title}"
+
+

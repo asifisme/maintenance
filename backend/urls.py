@@ -120,4 +120,12 @@ urlpatterns = [
     path('ticket/detail/<int:data_id>/', views.ticket_detail, name='ticket_detail'),
     path('ticket/update/<int:data_id>/', views.ticket_update, name='ticket_update'),
     path('ticket/status/<int:data_id>/', views.ticket_status, name='ticket_status'),
+
+    # Notifications
+    path('notifications/', views.notification_list, name='notification_list'),
+    path('notifications/open/<int:notif_id>/', views.notification_open, name='notification_open'),
+    path('api/notifications/feed/', views.notification_feed, name='notification_feed'),
+    path('api/notifications/mark-read/<int:notif_id>/', views.notification_mark_read, name='notification_mark_read'),
+    path('api/notifications/mark-all-read/', views.notification_mark_all_read, name='notification_mark_all_read'),
+    path('api/notifications/delete/<int:notif_id>/', views.notification_delete, name='notification_delete'),
 ]

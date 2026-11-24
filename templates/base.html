@@ -44,7 +44,7 @@
             }
         };
         </script>
-        <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+        <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Urbanist:wght@400;500;600;700&display=swap"
               rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
               rel="stylesheet">
@@ -244,18 +244,7 @@
                     </div>
 
                     <!-- Right: Notification Bell Popover (No search, no profile) -->
-                    <div class="relative">
-                        <button id="baseNotifBtn"
-                                type="button"
-                                aria-label="Notifications"
-                                class="w-9 h-9 rounded-[8px] bg-white border border-[#EAEAE9] flex items-center justify-center text-[#5C5B59] hover:bg-[#F7F7F6] transition-colors relative shadow-[0_1px_2px_rgba(0,0,0,0.03)] shrink-0">
-                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-                            </svg>
-                            <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#FF0505]"></span>
-                        </button>
-                    </div>
+                    {% include 'includes/notification_bell.html' %}
                 </div>
             </header>
             {% endblock %}
@@ -415,6 +404,170 @@
             -moz-text-fill-color: inherit;
             caret-color: inherit;
         }
+
+        /* ══════════════════════════════════════════════════════════════
+           Figma Searchable Filter Dropdowns (Global System)
+           Frame 2147259697 & Frame 2147259513
+           ══════════════════════════════════════════════════════════════ */
+        .ov-dropdown-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .ov-dropdown-trigger {
+            height: 34px;
+            border-radius: 8px;
+            background-color: #EAEAE8;
+            border: 1px solid #E2E2E0;
+            padding: 0 12px;
+            font-family: 'Urbanist', Inter, system-ui, sans-serif;
+            font-size: 12.5px;
+            font-weight: 500;
+            color: #555452;
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            cursor: pointer;
+            box-sizing: border-box;
+            transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
+            white-space: nowrap;
+            outline: none;
+        }
+        .ov-dropdown-trigger:hover {
+            background-color: #E3E3E1;
+            border-color: #D5D5D3;
+            color: #2B2A29;
+        }
+        .ov-dropdown-trigger.is-active {
+            background-color: #FFFFFF !important;
+            border: 2px solid #0B7A44 !important;
+            color: #2B2823 !important;
+            box-shadow: 0 0 0 1px rgba(11, 122, 68, 0.12) !important;
+        }
+        .ov-dropdown-trigger.is-active .ov-dropdown-chevron {
+            color: #2B2823;
+            transform: rotate(180deg);
+        }
+
+        /* Menu Outer Tray (Frame 2147259697: Fixed 219px, Radius 12px, Border 2px #EDEDED, BG #F9F9F9, Padding 4px, Gap 4px) */
+        .ov-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            z-index: 50;
+            width: 219px;
+            border-radius: 12px;
+            border: 2px solid #EDEDED;
+            background-color: #F9F9F9;
+            padding: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            box-shadow: 0px 5px 12px 0px rgba(176, 176, 176, 0.17), 0px 21px 21px 0px rgba(176, 176, 176, 0.14);
+            box-sizing: border-box;
+        }
+        .ov-dropdown-menu.hidden {
+            display: none !important;
+        }
+
+        /* Right-alignment modifier / Section dropdown default */
+        .ov-dropdown-menu.ov-dropdown-menu-right,
+        #ovSectionWrapper .ov-dropdown-menu {
+            left: auto;
+            right: 0;
+        }
+
+        /* Search Input (Frame 2147259513: Fill 207px x Hug 31px, Radius 8px, Border 0.5px rgba(240,240,240,0.6), BG #FFFFFF) */
+        .ov-dropdown-search {
+            width: 100%;
+            height: 31px;
+            border-radius: 8px;
+            border: 0.5px solid rgba(240, 240, 240, 0.6);
+            background-color: #FFFFFF;
+            padding: 6px 8px 6px 12px;
+            box-shadow: 0px 0px 6px 0px rgba(135, 135, 135, 0.02), 0px 1px 2px 0px rgba(135, 135, 135, 0.09);
+            font-family: 'Urbanist', Inter, system-ui, sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            color: #2B2823;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .ov-dropdown-search::placeholder {
+            color: #8E8C89;
+        }
+        .ov-dropdown-search:focus {
+            border-color: #0B7A44;
+            box-shadow: 0 0 0 1px rgba(11, 122, 68, 0.15);
+        }
+
+        /* Inner Options Container (Frame 2147207632: Fill 207px x Hug 252px, Radius 8px, BG #FFFFFF, Padding 4px) */
+        .ov-dropdown-options-list {
+            width: 100%;
+            max-height: 252px;
+            overflow-y: auto;
+            border-radius: 8px;
+            background-color: #FFFFFF;
+            padding: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            box-sizing: border-box;
+        }
+        .ov-dropdown-options-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .ov-dropdown-options-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .ov-dropdown-options-list::-webkit-scrollbar-thumb {
+            background: #E2E2E0;
+            border-radius: 4px;
+        }
+        .ov-dropdown-options-list::-webkit-scrollbar-thumb:hover {
+            background: #C4C4C2;
+        }
+
+        /* Option Item (Frame 2147259513: Fill 187px x Fixed 34px, Radius 8px, Padding 0 12px, Hover/Selected #F7F7F7) */
+        .ov-dropdown-item {
+            width: 100%;
+            height: 34px;
+            min-height: 34px;
+            border-radius: 8px;
+            padding: 0 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: transparent;
+            font-family: 'Urbanist', Inter, system-ui, sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: #2B2823;
+            cursor: pointer;
+            transition: background-color 120ms ease;
+            box-sizing: border-box;
+            user-select: none;
+        }
+        .ov-dropdown-item:hover {
+            background-color: #F7F7F7;
+        }
+        .ov-dropdown-item.is-selected {
+            background-color: #F7F7F7;
+            font-weight: 600;
+        }
+        .ov-dropdown-item.hidden {
+            display: none !important;
+        }
+        .ov-dropdown-empty {
+            padding: 10px 12px;
+            text-align: center;
+            font-family: 'Urbanist', Inter, system-ui, sans-serif;
+            font-size: 12.5px;
+            color: #8E8C89;
+        }
+        .ov-dropdown-empty.hidden {
+            display: none !important;
+        }
         </style>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -492,6 +645,239 @@
                     $('[data-menu-btn]').attr('aria-expanded', 'false');
                 }
             });
+        </script>
+
+        <!-- ══════════════════════════════════════════════════════════════
+             Global Figma Searchable Filter Dropdown Controller
+             ══════════════════════════════════════════════════════════════ -->
+        <script>
+        (function() {
+            function closeAllCustomDropdowns() {
+                document.querySelectorAll('.ov-dropdown-wrapper').forEach(wrapper => {
+                    const trigger = wrapper.querySelector('.ov-dropdown-trigger');
+                    const menu = wrapper.querySelector('.ov-dropdown-menu');
+                    const searchInput = wrapper.querySelector('.ov-dropdown-search');
+                    trigger?.classList.remove('is-active');
+                    trigger?.setAttribute('aria-expanded', 'false');
+                    menu?.classList.add('hidden');
+                    if (menu && wrapper.id !== 'ovSectionWrapper' && !menu.classList.contains('ov-dropdown-menu-right')) {
+                        menu.style.left = '';
+                        menu.style.right = '';
+                    }
+                    if (searchInput) searchInput.value = '';
+                    wrapper.querySelectorAll('.ov-dropdown-item').forEach(item => item.classList.remove('hidden'));
+                    wrapper.querySelector('.ov-dropdown-empty')?.classList.add('hidden');
+                });
+            }
+
+            function initCustomDropdowns() {
+                // 1. Auto-enhance filter selects across all list pages
+                const filterSelects = document.querySelectorAll(
+                    'select[data-searchable], select.searchable-dropdown, select[class*="-filter-select"], select.filter-select-pill'
+                );
+
+                filterSelects.forEach(select => {
+                    if (select.dataset.dropdownInitialized) return;
+                    // Skip modal selects or selects explicitly opted out
+                    if (select.closest('.modal, [class*="modal"], [data-no-searchable]')) return;
+                    if (select.classList.contains('sub-modal-select') || 
+                        select.classList.contains('sec-modal-select') || 
+                        select.classList.contains('div-modal-select')) return;
+
+                    select.dataset.dropdownInitialized = 'true';
+                    select.style.display = 'none';
+
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'ov-dropdown-wrapper';
+                    if (select.id) wrapper.dataset.forSelect = select.id;
+                    if (select.name) wrapper.dataset.forName = select.name;
+
+                    // Current selected text
+                    const selectedOpt = select.options[select.selectedIndex] || select.options[0];
+                    const firstOpt = select.options[0];
+                    const rawPlaceholder = select.getAttribute('data-placeholder') || (firstOpt ? firstOpt.text : 'Select');
+                    const cleanPlaceholder = rawPlaceholder.replace(/^All\s+/i, '').trim();
+                    const searchPlaceholder = select.getAttribute('data-search-placeholder') ||
+                        ('Search ' + (cleanPlaceholder ? cleanPlaceholder.toLowerCase() : 'options'));
+
+                    // Trigger button
+                    const trigger = document.createElement('button');
+                    trigger.type = 'button';
+                    trigger.className = 'ov-dropdown-trigger';
+                    trigger.setAttribute('aria-haspopup', 'listbox');
+                    trigger.setAttribute('aria-expanded', 'false');
+                    if (select.getAttribute('aria-label')) {
+                        trigger.setAttribute('aria-label', select.getAttribute('aria-label'));
+                    }
+                    trigger.innerHTML = `
+                        <span class="ov-dropdown-label truncate max-w-[140px]">${selectedOpt ? selectedOpt.text : rawPlaceholder}</span>
+                        <svg class="ov-dropdown-chevron w-3 h-3 text-[#716F6C] shrink-0 pointer-events-none transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+                        </svg>
+                    `;
+                    wrapper.appendChild(trigger);
+
+                    // Menu tray
+                    const menu = document.createElement('div');
+                    menu.className = 'ov-dropdown-menu hidden';
+                    menu.setAttribute('role', 'listbox');
+
+                    // Search container
+                    const searchContainer = document.createElement('div');
+                    searchContainer.className = 'w-full';
+                    const searchInput = document.createElement('input');
+                    searchInput.type = 'text';
+                    searchInput.className = 'ov-dropdown-search';
+                    searchInput.placeholder = searchPlaceholder;
+                    searchInput.autocomplete = 'off';
+                    searchContainer.appendChild(searchInput);
+                    menu.appendChild(searchContainer);
+
+                    // Options list
+                    const listContainer = document.createElement('div');
+                    listContainer.className = 'ov-dropdown-options-list';
+
+                    Array.from(select.options).forEach((opt, idx) => {
+                        const item = document.createElement('div');
+                        const isSel = opt.selected || (!select.value && idx === 0);
+                        item.className = 'ov-dropdown-item' + (isSel ? ' is-selected' : '');
+                        item.dataset.value = opt.value;
+                        item.dataset.label = opt.text;
+                        item.innerHTML = `<span class="truncate">${opt.text}</span>`;
+                        listContainer.appendChild(item);
+                    });
+
+                    const emptyEl = document.createElement('div');
+                    emptyEl.className = 'ov-dropdown-empty hidden';
+                    emptyEl.textContent = 'No ' + (cleanPlaceholder ? cleanPlaceholder.toLowerCase() : 'options') + ' found';
+                    listContainer.appendChild(emptyEl);
+
+                    menu.appendChild(listContainer);
+                    wrapper.appendChild(menu);
+
+                    select.parentNode.insertBefore(wrapper, select.nextSibling);
+                });
+
+                // 2. Bind listeners for all .ov-dropdown-wrapper
+                document.querySelectorAll('.ov-dropdown-wrapper').forEach(wrapper => {
+                    if (wrapper.dataset.eventsBound) return;
+                    wrapper.dataset.eventsBound = 'true';
+
+                    const trigger = wrapper.querySelector('.ov-dropdown-trigger');
+                    const menu = wrapper.querySelector('.ov-dropdown-menu');
+                    const searchInput = wrapper.querySelector('.ov-dropdown-search');
+                    const hiddenInput = wrapper.querySelector('input[type="hidden"]');
+                    const labelEl = wrapper.querySelector('.ov-dropdown-label');
+                    const emptyEl = wrapper.querySelector('.ov-dropdown-empty');
+
+                    const prevSibling = wrapper.previousElementSibling;
+                    const associatedSelect = (prevSibling && prevSibling.tagName === 'SELECT') ? prevSibling : null;
+
+                    // Toggle dropdown open/close
+                    trigger?.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const isOpen = menu && !menu.classList.contains('hidden');
+                        closeAllCustomDropdowns();
+                        if (!isOpen && menu) {
+                            menu.classList.remove('hidden');
+                            trigger.classList.add('is-active');
+                            trigger.setAttribute('aria-expanded', 'true');
+
+                            // Viewport boundary check to prevent overflow
+                            const rect = menu.getBoundingClientRect();
+                            if (rect.right > (window.innerWidth - 12)) {
+                                menu.style.left = 'auto';
+                                menu.style.right = '0';
+                            }
+
+                            if (searchInput) {
+                                searchInput.value = '';
+                                wrapper.querySelectorAll('.ov-dropdown-item').forEach(it => it.classList.remove('hidden'));
+                                emptyEl?.classList.add('hidden');
+                                setTimeout(() => searchInput.focus(), 50);
+                            }
+                        }
+                    });
+
+                    // Search filtering
+                    searchInput?.addEventListener('input', (e) => {
+                        const q = e.target.value.toLowerCase().trim();
+                        let visibleCount = 0;
+                        const items = wrapper.querySelectorAll('.ov-dropdown-item');
+                        items.forEach(item => {
+                            const text = (item.dataset.label || '').toLowerCase();
+                            if (!q || text.includes(q)) {
+                                item.classList.remove('hidden');
+                                visibleCount++;
+                            } else {
+                                item.classList.add('hidden');
+                            }
+                        });
+                        if (emptyEl) {
+                            if (visibleCount === 0) emptyEl.classList.remove('hidden');
+                            else emptyEl.classList.add('hidden');
+                        }
+                    });
+
+                    menu?.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                    });
+
+                    // Option click handling
+                    wrapper.querySelectorAll('.ov-dropdown-item').forEach(item => {
+                        item.addEventListener('click', () => {
+                            const val = item.dataset.value || '';
+                            const label = item.dataset.label || '';
+
+                            if (labelEl) labelEl.textContent = label;
+                            wrapper.querySelectorAll('.ov-dropdown-item').forEach(it => it.classList.remove('is-selected'));
+                            item.classList.add('is-selected');
+
+                            closeAllCustomDropdowns();
+
+                            if (hiddenInput) {
+                                hiddenInput.value = val;
+                                // Overview dashboard cascading
+                                if (hiddenInput.id === 'ovDivisionSelect') {
+                                    const subInput = document.getElementById('ovSubdivisionSelect');
+                                    const secInput = document.getElementById('ovSectionSelect');
+                                    if (subInput) subInput.value = '';
+                                    if (secInput) secInput.value = '';
+                                } else if (hiddenInput.id === 'ovSubdivisionSelect') {
+                                    const secInput = document.getElementById('ovSectionSelect');
+                                    if (secInput) secInput.value = '';
+                                }
+                                const form = hiddenInput.closest('form');
+                                form?.submit();
+                            } else if (associatedSelect) {
+                                associatedSelect.value = val;
+                                associatedSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                                if (associatedSelect.form) {
+                                    associatedSelect.form.submit();
+                                }
+                            }
+                        });
+                    });
+                });
+            }
+
+            // Expose globally
+            window.initCustomDropdowns = initCustomDropdowns;
+            window.closeAllCustomDropdowns = closeAllCustomDropdowns;
+
+            // Global outside click and escape listeners
+            document.addEventListener('click', () => closeAllCustomDropdowns());
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeAllCustomDropdowns();
+            });
+
+            // Auto-run on DOM ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initCustomDropdowns);
+            } else {
+                initCustomDropdowns();
+            }
+        })();
         </script>
         <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
         <script src="{% static 'js/backend_menu_search.js' %}"></script>
