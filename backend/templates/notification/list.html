@@ -79,11 +79,19 @@
 
     .tab-pill-group {
         display: inline-flex;
+        flex-wrap: nowrap;
         align-items: center;
         gap: 4px;
         padding: 3px;
         border-radius: 10px;
         background-color: #EAEAE8;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .tab-pill-group::-webkit-scrollbar {
+        display: none;
     }
     .tab-pill {
         display: inline-flex;
@@ -94,6 +102,8 @@
         font-size: 13px;
         font-weight: 600;
         color: #5C5B59;
+        white-space: nowrap;
+        flex-shrink: 0;
         transition: all 150ms ease;
     }
     .tab-pill:hover { color: #2B2823; }
@@ -166,8 +176,8 @@
     <!-- Main Notifications Tray -->
     <div class="ntf-tray">
         <!-- Header: Tabs & Category Filter -->
-        <div class="px-2.5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
-            <div class="tab-pill-group flex-wrap">
+        <div class="px-2.5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 min-w-0">
+            <div class="tab-pill-group">
                 <a href="{% url 'backend:notification_list' %}?tab=all"
                    class="tab-pill {% if active_tab == 'all' %}active{% endif %}">
                     <span>All</span>

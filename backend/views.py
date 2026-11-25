@@ -394,28 +394,56 @@ class UserListView(ListView):
             return render(request, "403.html", status=403)
         return super().dispatch(request, *args, **kwargs)
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        username = self.request.GET.get('username')
-        is_active = self.request.GET.get('is_active')
+    def get_paginate_by(self, queryset):
+        try:
+            per_page = int(self.request.GET.get('per_page', self.paginate_by))
+            if per_page > 0:
+                return per_page
+        except (ValueError, TypeError):
+            pass
+        return self.paginate_by
 
+    def get_queryset(self):
+        queryset = super().get_queryset().prefetch_related('groups')
+        search = (self.request.GET.get('search') or '').strip()
+        username = (self.request.GET.get('username') or '').strip()
+        is_active = (self.request.GET.get('is_active') or '').strip()
+        created_from = (self.request.GET.get('created_from') or '').strip()
+        created_to = (self.request.GET.get('created_to') or '').strip()
+
+        if search:
+            queryset = queryset.filter(
+                Q(username__icontains=search) |
+                Q(first_name__icontains=search) |
+                Q(last_name__icontains=search) |
+                Q(email__icontains=search)
+            )
         if username:
             queryset = queryset.filter(username__icontains=username)
-        if is_active in ['0', '1']:  # stricter check
-            queryset = queryset.filter(is_active=is_active)
+        if is_active in ['0', '1']:
+            queryset = queryset.filter(is_active=(is_active == '1'))
+        if created_from:
+            queryset = queryset.filter(date_joined__date__gte=created_from)
+        if created_to:
+            queryset = queryset.filter(date_joined__date__lte=created_to)
 
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['username'] = self.request.GET.get('username', '')
-        context['is_active'] = self.request.GET.get('is_active', '')
+        context['search'] = (self.request.GET.get('search') or '').strip()
+        context['username'] = (self.request.GET.get('username') or '').strip()
+        context['is_active'] = (self.request.GET.get('is_active') or '').strip()
+        context['per_page'] = self.get_paginate_by(self.object_list)
+        context['filtered_total_count'] = (
+            context['paginator'].count if context.get('paginator') else self.object_list.count()
+        )
 
         get_params = self.request.GET.copy()
         get_params.pop('page', None)
         context['query_params'] = get_params.urlencode()
 
-        context['filter_user'] = User.objects.all()
+        context['filter_user'] = User.objects.all().order_by('first_name', 'username')
         return context
 
 
@@ -3900,7 +3928,7 @@ def equipment_detail(request, data_id):
 
     # Active tab & filters
     active_tab = (request.GET.get('tab') or 'history').strip()
-    if active_tab not in ('history', 'tickets', 'components'):
+    if active_tab not in ('history', 'tickets'):
         active_tab = 'history'
 
     selected_type = (request.GET.get('record_type') or '').strip()
@@ -5591,16 +5619,16 @@ def maintenance_detail(request, data_id):
 
     # Query all maintenance records for that equipment (all times history)
     if equipment:
-        records = MaintenanceRecord.objects.filter(equipment=equipment, deleted=False).select_related(
+        records_qs = MaintenanceRecord.objects.filter(equipment=equipment, deleted=False).select_related(
             'equipment', 'equipment__building', 'equipment__equipment_type',
-            'technician', 'assigned_to', 'ticket'
-        ).order_by('-maintenance_date', '-created_at')
+            'technician', 'assigned_to', 'ticket', 'maintenance'
+        ).prefetch_related('components').order_by('-maintenance_date', '-created_at')
     else:
-        records = session_records
+        records_qs = session_records.prefetch_related('components')
 
     # If technician and no general permission, only show records assigned to them
     if technician and not has_general_permission:
-        records = records.filter(assigned_to=technician)
+        records_qs = records_qs.filter(assigned_to=technician)
 
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -5617,6 +5645,34 @@ def maintenance_detail(request, data_id):
                 messages.success(request, 'Maintenance record deleted successfully.')
             return redirect('backend:maintenance_detail', data_id=obj.id)
 
+    all_records_list = list(records_qs)
+    total_records_count = len(all_records_list)
+    session_records_count = sum(1 for r in all_records_list if r.maintenance_id == obj.id)
+    completed_records_count = sum(1 for r in all_records_list if r.maintainance_status == 'completed')
+    total_cost = sum((r.cost or 0) for r in all_records_list)
+    total_hours = sum((r.duration_hours or 0) for r in all_records_list)
+
+    selected_type = (request.GET.get('record_type') or '').strip()
+    selected_status = (request.GET.get('status') or '').strip()
+
+    filtered_qs = records_qs
+    if selected_type:
+        filtered_qs = filtered_qs.filter(record_type=selected_type)
+    if selected_status:
+        filtered_qs = filtered_qs.filter(maintainance_status=selected_status)
+
+    filtered_total_count = filtered_qs.count()
+
+    try:
+        per_page = int(request.GET.get('per_page', 10))
+        if per_page <= 0:
+            per_page = 10
+    except (ValueError, TypeError):
+        per_page = 10
+
+    paginator = Paginator(filtered_qs, per_page)
+    page_obj = paginator.get_page(request.GET.get('page', 1))
+
     qr_base64 = None
     if obj.qr_code:
         try:
@@ -5630,9 +5686,20 @@ def maintenance_detail(request, data_id):
 
     context = {
         'obj': obj,
-        'records': records,
+        'equipment': equipment,
+        'records': page_obj,
+        'page_obj': page_obj,
+        'per_page': per_page,
         'session_date': session_date,
         'qr_base64': qr_base64,
+        'total_records_count': total_records_count,
+        'session_records_count': session_records_count,
+        'completed_records_count': completed_records_count,
+        'filtered_total_count': filtered_total_count,
+        'total_cost': total_cost,
+        'total_hours': total_hours,
+        'selected_type': selected_type,
+        'selected_status': selected_status,
         'record_type_choices': MaintenanceRecord.RECORD_TYPE_CHOICES,
         'status_choices': MaintenanceRecord.MAINTAIANCE_STATUS_CHOICES,
     }

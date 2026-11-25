@@ -1,210 +1,641 @@
 {% extends 'base.html' %}
-{% block title %}Maintenance Session Details{% endblock %}
-{% block breadcrumb %}
-    <svg class="w-4 h-4 text-gray-400"
-         fill="none"
-         stroke="currentColor"
-         viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-    </svg>
-    <a href="{% url 'backend:maintenance' %}"
-       class="hover:text-[var(--primary-color)] transition-colors">Maintenance Sessions</a>
-    <svg class="w-4 h-4 text-gray-400"
-         fill="none"
-         stroke="currentColor"
-         viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-    </svg>
-    <span class="font-medium text-[var(--primary-color)]">{{ obj.maintenance_serial }}</span>
+{% load static %}
+
+{% block page_title %}{{ obj.maintenance_serial }} — Maintenance Details{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    body,
+    #mainContentWrapper {
+        background-color: #F2F2F2 !important;
+        font-family: 'Urbanist', Inter, system-ui, ui-sans-serif, sans-serif;
+    }
+
+    .mnt-mono {
+        font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        letter-spacing: -0.02em;
+    }
+
+    .figma-card-outer {
+        background-color: #F9F9F9;
+        border-radius: 12px;
+        padding: 16px 6px 6px 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        box-sizing: border-box;
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .figma-card-inner {
+        background-color: #FFFFFF;
+        border-radius: 6px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        box-sizing: border-box;
+    }
+
+    .detail-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px 0;
+        border-bottom: 1px solid #F2F2F2;
+    }
+    .detail-row:first-child {
+        padding-top: 2px;
+    }
+    .detail-row:last-child {
+        border-bottom: none;
+        padding-bottom: 2px;
+    }
+    .detail-label {
+        width: 126px;
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: flex-start;
+        gap: 7px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #9D9C9A;
+        line-height: 1.35;
+    }
+    .detail-label svg {
+        width: 15px;
+        height: 15px;
+        flex-shrink: 0;
+        margin-top: 1px;
+        color: #B4B3B1;
+    }
+    .detail-value {
+        flex: 1;
+        min-width: 0;
+        font-size: 13.5px;
+        font-weight: 500;
+        color: #2B2823;
+        line-height: 1.4;
+        word-break: break-word;
+    }
+
+    .filter-select-pill {
+        height: 34px;
+        padding: 0 28px 0 11px;
+        border-radius: 8px;
+        background-color: #EAEAE8;
+        border: 1px solid #E2E2E0;
+        font-size: 12.5px;
+        font-weight: 500;
+        color: #555452;
+        cursor: pointer;
+        outline: none;
+    }
+
+    .mnt-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+    .mnt-table thead tr {
+        background-color: #F7F7F7;
+    }
+    .mnt-table thead th {
+        padding: 11px 14px;
+        text-align: left;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #2B2823;
+        white-space: nowrap;
+    }
+    .mnt-table thead th:first-child {
+        border-radius: 6px 0 0 6px;
+    }
+    .mnt-table thead th:last-child {
+        border-radius: 0 6px 6px 0;
+        text-align: right;
+    }
+    .mnt-table tbody tr {
+        border-bottom: 1px solid #F2F2F2;
+        background-color: #FFFFFF;
+    }
+    .mnt-table tbody tr:nth-child(even) {
+        background-color: #FAFAFA;
+    }
+    .mnt-table tbody tr:last-child {
+        border-bottom: none;
+    }
+    .mnt-table tbody td {
+        padding: 13px 14px;
+        color: #5C5B59;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+    .mnt-table tbody td:last-child {
+        text-align: right;
+    }
+
+    @media (max-width: 639px) {
+        .mnt-filter-form {
+            width: 100%;
+        }
+        .mnt-filter-form .ov-dropdown-wrapper {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+        .mnt-filter-form .ov-dropdown-trigger {
+            width: 100%;
+            padding: 0 10px;
+        }
+        .mnt-filter-form .ov-dropdown-label {
+            max-width: none;
+        }
+        .mnt-filter-reset {
+            flex: 1 1 auto;
+            justify-content: center;
+        }
+    }
+</style>
 {% endblock %}
-{% block content %}
-    <div class="space-y-6">
-        <!-- Session Summary Card -->
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div class="flex flex-col sm:flex-row sm:items-center gap-6">
-                {% if qr_base64 %}
-                    <div class="flex-shrink-0 flex items-center justify-center p-1.5 bg-white border border-gray-200 rounded-xl shadow-sm">
-                        <img src="data:image/png;base64,{{ qr_base64 }}"
-                             alt="QR Code"
-                             class="w-20 h-20">
-                    </div>
+
+{% block breadcrumb %}
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <a href="{% url 'backend:maintenance' %}" class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#5C5B59] font-medium hover:bg-[#E0E0DF] transition-colors shrink-0">
+        Maintenance Schedule
+    </a>
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <span class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#2B2823] font-medium shrink-0">
+        {{ obj.maintenance_serial }}
+    </span>
+{% endblock %}
+
+{% block main_class %}w-full px-[10px] pt-2 pb-10 flex-1{% endblock %}
+
+{% block page_header %}
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3.5 pb-4">
+    <div class="flex items-start gap-2.5 min-w-0 flex-1">
+        <a href="{% url 'backend:maintenance' %}"
+           class="mt-0.5 w-9 h-9 rounded-[8px] bg-white border border-[#EAEAE9] flex items-center justify-center text-[#5C5B59] hover:text-[#2B2823] hover:bg-[#F7F7F6] transition-colors shrink-0"
+           title="Back to Maintenance Schedule">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 18l-6-6 6-6" />
+            </svg>
+        </a>
+        <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-2 flex-wrap">
+                <h1 id="page_title" class="mnt-mono text-[20px] sm:text-[24px] font-medium text-[#2B2823] leading-tight">
+                    {{ obj.maintenance_serial }}
+                </h1>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#EFEFEF] text-[#4A4947] whitespace-nowrap">
+                    Maintenance Session
+                </span>
+                {% if obj.is_active %}
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#E7F6EC] text-[#0B7A44] border border-[#CEEAD6] whitespace-nowrap">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#0B7A44]"></span>Active
+                    </span>
+                {% else %}
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#FCE8E6] text-[#C5221F] border border-[#FAD2CF] whitespace-nowrap">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#C5221F]"></span>Inactive
+                    </span>
                 {% endif %}
-                <div class="space-y-1.5">
-                    <div class="flex items-center gap-3">
-                        <span class="px-2.5 py-0.5 bg-indigo-50 text-indigo-700 font-semibold rounded-full text-[10px] uppercase tracking-wider">Maintenance Session</span>
-                        <h2 class="text-xl font-bold text-gray-900">{{ obj.maintenance_serial }}</h2>
+            </div>
+            <p class="text-[12.5px] sm:text-[13px] text-[#716F6C] mt-1">
+                {% if obj.building %}<strong class="font-medium text-[#2B2823]">{{ obj.building.name }}</strong>{% endif %}
+                {% if session_date %} &bull; Scheduled / Logged {{ session_date|date:"d F Y" }}{% endif %}
+            </p>
+        </div>
+    </div>
+
+    <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
+        {% if equipment %}
+            <a href="{% url 'backend:equipment_detail' equipment.id %}"
+               class="flex-1 sm:flex-none inline-flex items-center justify-center h-[38px] px-3.5 sm:px-4 rounded-[8px] bg-white border border-[#EAEAE9] text-[12.5px] sm:text-[13px] font-medium text-[#2B2823] hover:bg-[#F7F7F6] shadow-[0_1px_2px_rgba(0,0,0,0.03)] whitespace-nowrap transition-colors">
+                Equipment Profile
+            </a>
+        {% elif obj.building %}
+            <a href="{% url 'backend:building_details' obj.building.id %}"
+               class="flex-1 sm:flex-none inline-flex items-center justify-center h-[38px] px-3.5 sm:px-4 rounded-[8px] bg-white border border-[#EAEAE9] text-[12.5px] sm:text-[13px] font-medium text-[#2B2823] hover:bg-[#F7F7F6] shadow-[0_1px_2px_rgba(0,0,0,0.03)] whitespace-nowrap transition-colors">
+                Building Details
+            </a>
+        {% endif %}
+        <a href="{% url 'backend:maintenance_update' obj.id %}"
+           class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 h-[38px] px-3.5 sm:px-4 rounded-[8px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[12.5px] sm:text-[13px] font-semibold shadow-[0_1px_2px_rgba(11,122,68,0.2)] whitespace-nowrap transition-colors">
+            <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            <span>Edit Session</span>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-[10px]">
+
+    <!-- TOP ROW: Session Information (Left) + QR & Session Summary (Right) -->
+    <div class="grid grid-cols-1 lg:grid-cols-[1.25fr_1fr] gap-[10px] items-stretch">
+
+        <!-- LEFT CARD: Session Information -->
+        <div class="figma-card-outer h-full">
+            <div class="px-2.5 flex items-center justify-between gap-2">
+                <h2 class="text-[16px] font-semibold text-[#2B2823] tracking-tight">Session Information</h2>
+                <span class="mnt-mono text-[12px] font-medium text-[#716F6C]">Session #{{ obj.id }}</span>
+            </div>
+
+            <div class="figma-card-inner flex-1">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-7">
+                    <!-- Column 1 -->
+                    <div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                </svg>
+                                <span>Session Serial :</span>
+                            </span>
+                            <span class="detail-value mnt-mono font-semibold text-[#2B2823]">
+                                {{ obj.maintenance_serial }}
+                            </span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                    <path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"></path>
+                                </svg>
+                                <span>Building :</span>
+                            </span>
+                            <span class="detail-value">
+                                {% if obj.building %}
+                                    <a href="{% url 'backend:building_details' obj.building.id %}" class="underline underline-offset-2 decoration-[#2B2823]/30 hover:text-[#0B7A44] transition-colors">
+                                        {{ obj.building.name }}
+                                    </a>
+                                {% else %}—{% endif %}
+                            </span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                                </svg>
+                                <span>Equipment :</span>
+                            </span>
+                            <span class="detail-value">
+                                {% if equipment %}
+                                    <a href="{% url 'backend:equipment_detail' equipment.id %}" class="underline underline-offset-2 decoration-[#2B2823]/30 hover:text-[#0B7A44] transition-colors">
+                                        {{ equipment.equipment_name|default:equipment.equipment_id }}
+                                    </a>
+                                    <div class="text-[11.5px] text-[#8E8C89] mt-0.5">
+                                        <span class="mnt-mono">{{ equipment.equipment_id }}</span>
+                                        {% if equipment.equipment_type %} &bull; {{ equipment.equipment_type.name }}{% endif %}
+                                    </div>
+                                {% else %}—{% endif %}
+                            </span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                <span>Session Date :</span>
+                            </span>
+                            <span class="detail-value">
+                                {{ session_date|date:"d F Y"|default:"Not logged yet" }}
+                            </span>
+                        </div>
                     </div>
-                    <p class="text-xs text-gray-500">QR Code Value: <span class="font-mono text-gray-700 font-semibold select-all">{{ obj.qr_code|default:"None" }}</span></p>
-                    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-400">
-                        <span>Building: <strong class="text-gray-700">{{ obj.building.name }}</strong></span>
-                        <span>•</span>
-                        <span>Created by: <strong class="text-gray-700">
-                            {% if obj.created_by %}
-                                {{ obj.created_by.get_full_name|default:obj.created_by.username }}
-                            {% else %}
-                                System
-                            {% endif %}
-                        </strong></span>
-                        <span>•</span>
-                        <span>Created at: <strong class="text-gray-700">{{ obj.created_at|date:"d-b-Y H:i:s" }}</strong></span>
-                        <span>•</span>
-                        <span>Maintenance Date: <strong class="text-gray-700">{{ session_date|date:"d-b-Y"|default:"None" }}</strong></span>
-                        <span>•</span>
-                        <span>Status:
-                            {% if obj.is_active %}
-                                <span class="text-green-600 font-semibold">Active</span>
-                            {% else %}
-                                <span class="text-red-600 font-semibold">Inactive</span>
-                            {% endif %}
-                        </span>
+
+                    <!-- Column 2 -->
+                    <div class="border-t border-[#F2F2F2] md:border-t-0 pt-2 md:pt-0">
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                <span>Created By :</span>
+                            </span>
+                            <span class="detail-value">
+                                {% if obj.created_by %}
+                                    {{ obj.created_by.get_full_name|default:obj.created_by.username }}
+                                {% else %}
+                                    System
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                                <span>Created At :</span>
+                            </span>
+                            <span class="detail-value">
+                                {{ obj.created_at|date:"d M Y, g:i A" }}
+                            </span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                    <rect x="3" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="14" width="7" height="7"></rect>
+                                    <rect x="3" y="14" width="7" height="7"></rect>
+                                </svg>
+                                <span>QR Token :</span>
+                            </span>
+                            <span class="detail-value mnt-mono text-[12px] text-[#4A4947] select-all">
+                                {{ obj.qr_code|default:"None" }}
+                            </span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                                <span>Status :</span>
+                            </span>
+                            <span class="detail-value">
+                                {% if obj.is_active %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#E7F6EC] text-[#0B7A44]">Active</span>
+                                {% else %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#FCE8E6] text-[#C5221F]">Inactive</span>
+                                {% endif %}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Records Table (Full Width) -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-white">
-                <div class="flex items-center gap-2.5">
-                    <h3 class="text-base font-bold text-gray-900">Equipment Records</h3>
-                    <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">{{ records|length }}</span>
-                </div>
+        <!-- RIGHT CARD: Session Overview & QR -->
+        <div class="figma-card-outer h-full">
+            <div class="px-2.5 flex items-center justify-between gap-2">
+                <h2 class="text-[16px] font-semibold text-[#2B2823] tracking-tight">Session Overview &amp; QR</h2>
+                {% if obj.qr_code %}
+                    <a href="{% url 'backend:maintanaince_scan' obj.qr_code %}"
+                       class="text-[12.5px] font-semibold text-[#0B7A44] hover:underline whitespace-nowrap">
+                        Open Scan View &rsaquo;
+                    </a>
+                {% endif %}
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left border-collapse">
-                    <thead class="bg-gray-50/80 border-b border-gray-200">
-                        <tr class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                            <th class="px-5 py-3.5 whitespace-nowrap min-w-[180px]">Equipment</th>
-                            <th class="px-4 py-3.5 whitespace-nowrap min-w-[130px]">Type & Date</th>
-                            <th class="px-4 py-3.5 whitespace-nowrap min-w-[140px]">Technician</th>
-                            <th class="px-4 py-3.5 min-w-[180px] max-w-xs">Work Summary</th>
-                            <th class="px-4 py-3.5 whitespace-nowrap text-center min-w-[110px]">Checklist</th>
-                            <th class="px-4 py-3.5 whitespace-nowrap text-right min-w-[110px]">Cost & Duration</th>
-                            <th class="px-5 py-3.5 whitespace-nowrap text-center min-w-[110px]">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        {% for rec in records %}
-                            <tr class="hover:bg-blue-50/20 {% if rec.maintenance == obj %}bg-blue-50/10{% endif %} transition-colors group">
-                                <!-- Equipment -->
-                                <td class="px-5 py-4 align-middle">
-                                    <div class="flex items-center flex-wrap gap-2">
-                                        <a href="{% url 'backend:maintenance_record_detail' rec.id %}"
-                                           class="font-bold text-gray-900 group-hover:text-blue-600 transition-colors whitespace-nowrap text-sm">
-                                            {{ rec.equipment.equipment_id }}
-                                        </a>
-                                        {% if rec.maintenance == obj %}
-                                            <span class="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-semibold text-blue-700 border border-blue-200 whitespace-nowrap">This Session</span>
-                                        {% endif %}
-                                    </div>
-                                    <div class="text-xs text-gray-500 mt-0.5 whitespace-nowrap font-medium flex items-center gap-1.5">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
-                                        <span>{{ rec.equipment.equipment_type.name }}</span>
-                                    </div>
-                                </td>
-                                <!-- Type & Date -->
-                                <td class="px-4 py-4 align-middle whitespace-nowrap">
-                                    <div>
-                                        {% if rec.record_type == 'routine' %}
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">Routine</span>
-                                        {% elif rec.record_type == 'emergency' %}
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200">Emergency</span>
-                                        {% elif rec.record_type == 'repair' %}
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">Repair</span>
-                                        {% elif rec.record_type == 'inspection' %}
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-purple-50 text-purple-700 border border-purple-200">Inspection</span>
-                                        {% else %}
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-gray-50 text-gray-700 border border-gray-200">{{ rec.record_type|title }}</span>
-                                        {% endif %}
-                                        <div class="text-xs text-gray-500 mt-1 flex items-center gap-1 font-medium">
-                                            <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                            <span>{{ rec.maintenance_date|date:"d-M-Y" }}</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <!-- Technician -->
-                                <td class="px-4 py-4 align-middle whitespace-nowrap">
-                                    <div class="flex items-center gap-2">
-                                        <div class="w-7 h-7 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 text-xs font-bold flex-shrink-0">
-                                            {% if rec.assigned_to %}
-                                                {{ rec.assigned_to.display_name|slice:":1"|upper }}
-                                            {% elif rec.technician %}
-                                                {{ rec.technician.first_name|default:rec.technician.username|slice:":1"|upper }}
-                                            {% else %}
-                                                —
-                                            {% endif %}
-                                        </div>
-                                        <div>
-                                            <div class="text-xs font-semibold text-gray-800">
-                                                {% if rec.assigned_to %}
-                                                    {{ rec.assigned_to.display_name }}
-                                                {% elif rec.technician %}
-                                                    {{ rec.technician.get_full_name|default:rec.technician.username }}
-                                                {% else %}
-                                                    <span class="text-gray-400 italic font-normal">Unassigned</span>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <!-- Work Summary -->
-                                <td class="px-4 py-4 align-middle">
-                                    <div class="text-xs text-gray-600 max-w-xs truncate" title="{{ rec.work_description }}">
-                                        {% if rec.work_description %}
-                                            {{ rec.work_description|truncatewords:8 }}
-                                        {% else %}
-                                            <span class="text-gray-400 italic">No description</span>
-                                        {% endif %}
-                                    </div>
-                                </td>
-                                <!-- Checklist Summary -->
-                                <td class="px-4 py-4 align-middle text-center whitespace-nowrap">
-                                    {% if rec.components.exists %}
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
-                                            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                                            </svg>
-                                            <span>{{ rec.components.count }} Items</span>
-                                        </span>
-                                    {% else %}
-                                        <span class="text-xs text-gray-400 italic">—</span>
-                                    {% endif %}
-                                </td>
-                                <!-- Cost & Duration -->
-                                <td class="px-4 py-4 text-right align-middle whitespace-nowrap">
-                                    <div class="font-bold text-gray-900 text-sm">
-                                        ${{ rec.cost|default:"0.00" }}
-                                    </div>
-                                    <div class="text-xs text-gray-500 font-medium mt-0.5 flex items-center justify-end gap-1">
-                                        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                        <span>{{ rec.duration_hours|default:"0.0" }} Hrs</span>
-                                    </div>
-                                </td>
-                                <!-- Action -->
-                                <td class="px-5 py-4 text-center align-middle whitespace-nowrap">
-                                    <a href="{% url 'backend:maintenance_record_detail' rec.id %}"
-                                       class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#EEF3FF] hover:bg-blue-100 text-[#2252EC] font-semibold text-xs rounded-lg transition-colors shadow-xs">
-                                        <span>View Details</span>
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                                        </svg>
-                                    </a>
-                                </td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="7" class="px-6 py-8 text-center text-gray-400">No records found for this equipment.</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+
+            <div class="figma-card-inner flex-1 justify-between gap-4">
+                <!-- QR Code Box -->
+                <div class="rounded-[8px] bg-[#F8F8F7] border border-[#EFEFED] p-3.5 flex items-center gap-4">
+                    {% if qr_base64 %}
+                        <div class="p-1.5 rounded-[8px] bg-white border border-[#EAEAE8] shrink-0">
+                            <img src="data:image/png;base64,{{ qr_base64 }}"
+                                 alt="Session QR Code"
+                                 class="w-[74px] h-[74px] block">
+                        </div>
+                    {% else %}
+                        <div class="w-[86px] h-[86px] rounded-[8px] bg-white border border-[#EAEAE8] flex items-center justify-center text-[#9D9C9A] shrink-0">
+                            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                                <rect x="3" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="14" width="7" height="7"></rect>
+                                <rect x="3" y="14" width="7" height="7"></rect>
+                            </svg>
+                        </div>
+                    {% endif %}
+                    <div class="min-w-0">
+                        <div class="text-[13.5px] font-semibold text-[#2B2823]">QR Access Verification</div>
+                        <p class="text-[12px] text-[#716F6C] mt-0.5 leading-relaxed">
+                            Technicians scan this session QR code on-site to verify and record scheduled maintenance work.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 2x2 Summary KPI Grid -->
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div class="rounded-[8px] bg-[#F8F8F7] px-3.5 py-3">
+                        <div class="text-[11.5px] font-medium text-[#9D9C9A]">This Session Logs</div>
+                        <div class="mnt-mono text-[18px] font-semibold text-[#2B2823] mt-0.5">{{ session_records_count|stringformat:"02d" }}</div>
+                    </div>
+                    <div class="rounded-[8px] bg-[#F8F8F7] px-3.5 py-3">
+                        <div class="text-[11.5px] font-medium text-[#9D9C9A]">Equipment History</div>
+                        <div class="mnt-mono text-[18px] font-semibold text-[#2B2823] mt-0.5">
+                            {{ total_records_count|stringformat:"02d" }}
+                            <span class="text-[11px] font-sans font-medium text-[#0B7A44]">({{ completed_records_count }} done)</span>
+                        </div>
+                    </div>
+                    <div class="rounded-[8px] bg-[#F8F8F7] px-3.5 py-3">
+                        <div class="text-[11.5px] font-medium text-[#9D9C9A]">Total Logged Cost</div>
+                        <div class="mnt-mono text-[18px] font-semibold text-[#2B2823] mt-0.5">${{ total_cost|floatformat:2 }}</div>
+                    </div>
+                    <div class="rounded-[8px] bg-[#F8F8F7] px-3.5 py-3">
+                        <div class="text-[11.5px] font-medium text-[#9D9C9A]">Total Hours</div>
+                        <div class="mnt-mono text-[18px] font-semibold text-[#2B2823] mt-0.5">{{ total_hours|floatformat:1 }}h</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-{% endblock %}
-{% block extra_js %}
+
+    <!-- BOTTOM FULL-WIDTH CARD: Equipment Maintenance Records -->
+    <div id="mntRecordsSection" class="figma-card-outer !gap-4">
+        <div class="px-2.5 flex flex-wrap items-center justify-between gap-3 min-w-0">
+            <div class="flex items-center gap-2">
+                <h2 class="text-[16px] font-semibold text-[#2B2823] tracking-tight">Equipment Records</h2>
+                <span class="inline-flex items-center justify-center min-w-[24px] h-[22px] px-2 rounded-full bg-[#EAEAE8] text-[#4A4947] text-[12px] font-semibold leading-none">
+                    {{ filtered_total_count }}
+                </span>
+            </div>
+
+            <!-- Contextual Filters -->
+            <form method="get" action="{% url 'backend:maintenance_detail' obj.id %}#mntRecordsSection" class="mnt-filter-form flex flex-wrap items-center gap-2">
+                {% if per_page != 10 %}
+                    <input type="hidden" name="per_page" value="{{ per_page }}">
+                {% endif %}
+                <select name="record_type" onchange="this.form.submit()" class="filter-select-pill" aria-label="Filter by type">
+                    <option value="">All Types</option>
+                    {% for val, label in record_type_choices %}
+                        <option value="{{ val }}" {% if selected_type == val %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                <select name="status" onchange="this.form.submit()" class="filter-select-pill" aria-label="Filter by status">
+                    <option value="">All Statuses</option>
+                    {% for val, label in status_choices %}
+                        <option value="{{ val }}" {% if selected_status == val %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                <a href="{% url 'backend:maintenance_detail' obj.id %}#mntRecordsSection"
+                   class="mnt-filter-reset inline-flex items-center gap-1.5 h-[34px] px-3 rounded-[8px] bg-white border border-[#EAEAE9] text-[12.5px] font-medium text-[#2B2823] hover:bg-[#F7F7F6] transition-colors">
+                    <span>Reset</span>
+                    <svg class="w-3.5 h-3.5 text-[#5C5B59]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                        <path d="M3 3v5h5" />
+                    </svg>
+                </a>
+            </form>
+        </div>
+
+        <div class="bg-white rounded-[6px] p-[14px] overflow-x-auto custom-scrollbar">
+            <table class="mnt-table min-w-[960px]">
+                <thead>
+                    <tr>
+                        <th>Equipment</th>
+                        <th>Type</th>
+                        <th>Service Date</th>
+                        <th>Technician</th>
+                        <th>Work Summary</th>
+                        <th>Checklist</th>
+                        <th>Cost / Hrs</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rec in records %}
+                        <tr>
+                            <!-- Equipment -->
+                            <td>
+                                <div class="flex items-center gap-2">
+                                    <a href="{% url 'backend:maintenance_record_detail' rec.id %}"
+                                       class="mnt-mono font-semibold text-[#2B2823] underline underline-offset-2 decoration-[#2B2823]/30 hover:text-[#0B7A44] transition-colors">
+                                        {{ rec.equipment.equipment_id|default:"-" }}
+                                    </a>
+                                    {% if rec.maintenance_id == obj.id %}
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-semibold bg-[#E7F6EC] text-[#0B7A44] border border-[#CEEAD6]">
+                                            This Session
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                {% if rec.equipment and rec.equipment.equipment_type %}
+                                    <div class="text-[11.5px] text-[#8E8C89] mt-0.5">{{ rec.equipment.equipment_type.name }}</div>
+                                {% endif %}
+                            </td>
+
+                            <!-- Record Type -->
+                            <td>
+                                {% if rec.record_type == 'routine' %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#EFF6FF] text-[#1D4ED8]">Routine</span>
+                                {% elif rec.record_type == 'emergency' %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#FCE8E6] text-[#C5221F]">Emergency</span>
+                                {% elif rec.record_type == 'repair' %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#FEF3E6] text-[#C86E12]">Repair</span>
+                                {% elif rec.record_type == 'inspection' %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#F3E8FF] text-[#6B21A8]">Inspection</span>
+                                {% else %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#EFEFEF] text-[#4A4947]">{{ rec.record_type|title }}</span>
+                                {% endif %}
+                            </td>
+
+                            <!-- Date -->
+                            <td class="text-[#5C5B59]">
+                                {{ rec.maintenance_date|date:"d M Y"|default:"-" }}
+                            </td>
+
+                            <!-- Technician -->
+                            <td>
+                                {% if rec.assigned_to %}
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-6 h-6 rounded-full bg-[#E7F6EC] text-[#0B7A44] text-[11px] font-semibold flex items-center justify-center shrink-0">
+                                            {{ rec.assigned_to.display_name|slice:":1"|upper }}
+                                        </span>
+                                        <a href="{% url 'backend:technician_details' rec.assigned_to.id %}"
+                                           class="font-medium text-[#2B2823] hover:text-[#0B7A44] hover:underline">
+                                            {{ rec.assigned_to.display_name }}
+                                        </a>
+                                    </div>
+                                {% elif rec.technician %}
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-6 h-6 rounded-full bg-[#EFEFEF] text-[#4A4947] text-[11px] font-semibold flex items-center justify-center shrink-0">
+                                            {{ rec.technician.first_name|default:rec.technician.username|slice:":1"|upper }}
+                                        </span>
+                                        <span class="font-medium text-[#2B2823]">
+                                            {{ rec.technician.get_full_name|default:rec.technician.username }}
+                                        </span>
+                                    </div>
+                                {% else %}
+                                    <span class="text-[#9D9C9A] italic">Unassigned</span>
+                                {% endif %}
+                            </td>
+
+                            <!-- Work Summary -->
+                            <td class="!whitespace-normal max-w-[260px]">
+                                {% if rec.work_description %}
+                                    <div class="text-[13px] text-[#2B2823] line-clamp-2" title="{{ rec.work_description }}">
+                                        {{ rec.work_description }}
+                                    </div>
+                                {% else %}
+                                    <span class="text-[#9D9C9A] italic">No description</span>
+                                {% endif %}
+                            </td>
+
+                            <!-- Checklist -->
+                            <td>
+                                {% with comp_count=rec.components.all|length %}
+                                    {% if comp_count > 0 %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#F5F5F4] text-[#4A4947] border border-[#E5E5E3]">
+                                            {{ comp_count }} Item{{ comp_count|pluralize }}
+                                        </span>
+                                    {% else %}
+                                        <span class="text-[#9D9C9A]">—</span>
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+
+                            <!-- Cost / Duration -->
+                            <td class="text-[#2B2823] font-medium">
+                                ${{ rec.cost|default:"0.00" }}
+                                <span class="text-[11.5px] font-normal text-[#8E8C89]"> / {{ rec.duration_hours|default:"0.0" }}h</span>
+                            </td>
+
+                            <!-- Status -->
+                            <td>
+                                {% if rec.maintainance_status == 'completed' %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#E7F6EC] text-[#0B7A44]">Completed</span>
+                                {% elif rec.maintainance_status == 'in_progress' %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#FEF3C7] text-[#B45309]">In Progress</span>
+                                {% else %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#EFEFEF] text-[#5C5B59]">{{ rec.get_maintainance_status_display|default:"Pending" }}</span>
+                                {% endif %}
+                            </td>
+
+                            <!-- Action -->
+                            <td>
+                                <a href="{% url 'backend:maintenance_record_detail' rec.id %}"
+                                   class="inline-flex items-center px-3 py-1 rounded-[6px] bg-[#F5F5F4] hover:bg-[#E7F6EC] text-[12px] font-semibold text-[#2B2823] hover:text-[#0B7A44] transition-colors">
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="9" class="py-12 text-center text-[#9E9D9B]">
+                                <p class="text-[13.5px] font-medium text-[#4A4947]">No maintenance records found</p>
+                                <p class="text-[12.5px] text-[#8E8C89] mt-0.5">Try clearing filters or log a maintenance record for this session.</p>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if page_obj %}
+            {% include 'includes/pagination.html' with data_list=page_obj %}
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

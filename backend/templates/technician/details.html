@@ -127,6 +127,38 @@
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
     }
 
+    @media (max-width: 639px) {
+        #techTasksSection .tab-pill-group {
+            display: flex;
+            width: 100%;
+        }
+        #techTasksSection .tab-pill {
+            flex: 1 1 0%;
+            justify-content: center;
+            padding: 6px 8px;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        .tech-filter-form {
+            width: 100%;
+        }
+        .tech-filter-form .ov-dropdown-wrapper {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+        .tech-filter-form .ov-dropdown-trigger {
+            width: 100%;
+            padding: 0 10px;
+        }
+        .tech-filter-form .ov-dropdown-label {
+            max-width: none;
+        }
+        .tech-filter-reset {
+            flex: 1 1 auto;
+            justify-content: center;
+        }
+    }
+
     .svc-table {
         width: 100%;
         border-collapse: collapse;
@@ -429,20 +461,20 @@
                     <a href="#techTasksSection" class="text-[12.5px] font-semibold text-[#0B7A44] hover:underline">View Tasks ›</a>
                 </div>
                 <div class="bg-white rounded-[6px] px-4 py-[18px] flex-1 flex flex-col justify-center gap-2.5">
-                    <div class="flex items-center justify-between gap-3 flex-wrap px-1">
-                        <a href="{% url 'backend:technician_details' tech.id %}?tab=tasks#techTasksSection" class="inline-flex items-center gap-2 hover:opacity-80 transition">
+                    <div class="grid grid-cols-2 gap-x-4 gap-y-3 sm:flex sm:items-center sm:justify-between sm:flex-wrap px-1">
+                        <a href="{% url 'backend:technician_details' tech.id %}?tab=tasks#techTasksSection" class="flex items-center justify-between sm:inline-flex sm:justify-start gap-2 hover:opacity-80 transition">
                             <span class="text-[13px] font-medium text-[#2B2823] underline underline-offset-4 decoration-[#2B2823]/40">Assigned</span>
                             <span class="inline-flex items-center justify-center min-w-[26px] h-[24px] px-2 rounded-full bg-[#EFEFEF] text-[12.5px] font-semibold text-[#2B2823]">{{ total_tickets }}</span>
                         </a>
-                        <a href="{% url 'backend:technician_details' tech.id %}?tab=tasks&acceptance=pending#techTasksSection" class="inline-flex items-center gap-2 hover:opacity-80 transition">
+                        <a href="{% url 'backend:technician_details' tech.id %}?tab=tasks&acceptance=pending#techTasksSection" class="flex items-center justify-between sm:inline-flex sm:justify-start gap-2 hover:opacity-80 transition">
                             <span class="text-[13px] font-medium text-[#2B2823] underline underline-offset-4 decoration-[#2B2823]/40">Pending Accept</span>
                             <span class="inline-flex items-center justify-center min-w-[26px] h-[24px] px-2 rounded-full bg-[#FEF3C7] text-[12.5px] font-semibold text-[#B45309]">{{ pending_acceptance_count }}</span>
                         </a>
-                        <a href="{% url 'backend:technician_details' tech.id %}?tab=tasks&stage=in_progress#techTasksSection" class="inline-flex items-center gap-2 hover:opacity-80 transition">
+                        <a href="{% url 'backend:technician_details' tech.id %}?tab=tasks&stage=in_progress#techTasksSection" class="flex items-center justify-between sm:inline-flex sm:justify-start gap-2 hover:opacity-80 transition">
                             <span class="text-[13px] font-medium text-[#2B2823] underline underline-offset-4 decoration-[#2B2823]/40">Active</span>
                             <span class="inline-flex items-center justify-center min-w-[26px] h-[24px] px-2 rounded-full bg-[#E0F2FE] text-[12.5px] font-semibold text-[#0369A1]">{{ active_work_count }}</span>
                         </a>
-                        <a href="{% url 'backend:technician_details' tech.id %}?tab=tasks&stage=completed#techTasksSection" class="inline-flex items-center gap-2 hover:opacity-80 transition">
+                        <a href="{% url 'backend:technician_details' tech.id %}?tab=tasks&stage=completed#techTasksSection" class="flex items-center justify-between sm:inline-flex sm:justify-start gap-2 hover:opacity-80 transition">
                             <span class="text-[13px] font-medium text-[#2B2823] underline underline-offset-4 decoration-[#2B2823]/40">Completed</span>
                             <span class="inline-flex items-center justify-center min-w-[26px] h-[24px] px-2 rounded-full bg-[#E7F6EC] text-[12.5px] font-semibold text-[#0B7A44]">{{ resolved_tickets }}</span>
                         </a>
@@ -454,7 +486,7 @@
 
     <!-- BOTTOM CARD: Assigned Tasks (Default) & Service History (Tab) -->
     <div id="techTasksSection" class="figma-card-outer !gap-4">
-        <div class="px-2.5 flex flex-wrap items-center justify-between gap-3">
+        <div class="px-2.5 flex flex-wrap items-center justify-between gap-3 min-w-0">
             <!-- Tab Switcher -->
             <div class="tab-pill-group">
                 <a href="{% url 'backend:technician_details' tech.id %}?tab=tasks#techTasksSection"
@@ -475,7 +507,7 @@
 
             <!-- Contextual Filters -->
             {% if active_tab == 'tasks' %}
-                <form method="get" action="{% url 'backend:technician_details' tech.id %}#techTasksSection" class="flex flex-wrap items-center gap-2">
+                <form method="get" action="{% url 'backend:technician_details' tech.id %}#techTasksSection" class="tech-filter-form flex flex-wrap items-center gap-2">
                     <input type="hidden" name="tab" value="tasks">
                     <input type="hidden" name="per_page" value="{{ per_page }}">
                     <select name="acceptance" onchange="this.form.submit()" class="filter-select-pill">
@@ -491,12 +523,12 @@
                         {% endfor %}
                     </select>
                     <a href="{% url 'backend:technician_details' tech.id %}?tab=tasks#techTasksSection"
-                       class="inline-flex items-center gap-1.5 h-[34px] px-3 rounded-[8px] bg-white border border-[#EAEAE9] text-[13px] font-medium text-[#5C5B59] hover:text-[#2B2823] hover:bg-[#F7F7F6] transition-colors">
+                       class="tech-filter-reset inline-flex items-center gap-1.5 h-[34px] px-3 rounded-[8px] bg-white border border-[#EAEAE9] text-[13px] font-medium text-[#5C5B59] hover:text-[#2B2823] hover:bg-[#F7F7F6] transition-colors">
                         <span>Reset</span>
                     </a>
                 </form>
             {% else %}
-                <form method="get" action="{% url 'backend:technician_details' tech.id %}#techTasksSection" class="flex flex-wrap items-center gap-2">
+                <form method="get" action="{% url 'backend:technician_details' tech.id %}#techTasksSection" class="tech-filter-form flex flex-wrap items-center gap-2">
                     <input type="hidden" name="tab" value="history">
                     <input type="hidden" name="per_page" value="{{ per_page }}">
                     <select name="type" onchange="this.form.submit()" class="filter-select-pill">
@@ -512,7 +544,7 @@
                         {% endfor %}
                     </select>
                     <a href="{% url 'backend:technician_details' tech.id %}?tab=history#techTasksSection"
-                       class="inline-flex items-center gap-1.5 h-[34px] px-3 rounded-[8px] bg-white border border-[#EAEAE9] text-[13px] font-medium text-[#5C5B59] hover:text-[#2B2823] hover:bg-[#F7F7F6] transition-colors">
+                       class="tech-filter-reset inline-flex items-center gap-1.5 h-[34px] px-3 rounded-[8px] bg-white border border-[#EAEAE9] text-[13px] font-medium text-[#5C5B59] hover:text-[#2B2823] hover:bg-[#F7F7F6] transition-colors">
                         <span>Reset</span>
                     </a>
                 </form>

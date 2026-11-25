@@ -1,204 +1,411 @@
 {% extends 'base.html' %}
-{% block title %}<span class="hidden">{{ action }} User</span>{% endblock %}
-{% block header_actions %}
-    <!-- Filter (match previous design: white button) -->
-    <button type="button"
-            data-modal-target="crud-modal"
-            data-modal-toggle="crud-modal"
-            class="inline-flex cursor-pointer items-center gap-2 h-11 px-3 rounded-md ring-1 ring-[var(--border-color)] bg-[var(--white-color)]">
-        <svg xmlns="http://www.w3.org/2000/svg"
-             width="15"
-             height="15"
-             viewBox="0 0 15 15"
-             fill="none">
-            <path d="M9.14689 14.5H5.85278C5.68963 14.4979 5.53377 14.4321 5.41839 14.3167C5.30302 14.2014 5.23726 14.0455 5.23513 13.8824V7.5L0.829247 1.48C0.759611 1.38947 0.717206 1.28097 0.706997 1.16721C0.696787 1.05345 0.719196 0.939133 0.7716 0.837647C0.824099 0.736453 0.90324 0.651519 1.00048 0.592014C1.09772 0.532509 1.20937 0.500693 1.32337 0.5H13.6763C13.7903 0.500693 13.902 0.532509 13.9992 0.592014C14.0964 0.651519 14.1756 0.736453 14.2281 0.837647C14.2805 0.939133 14.3029 1.05345 14.2927 1.16721C14.2825 1.28097 14.2401 1.38947 14.1704 1.48L9.76454 7.5V13.8824C9.76241 14.0455 9.69665 14.2014 9.58128 14.3167C9.46591 14.4321 9.31004 14.4979 9.14689 14.5ZM6.47042 13.2647H8.52925V7.29412C8.5286 7.16289 8.5721 7.03527 8.65278 6.93177L12.441 1.73529H2.55866L6.36337 6.93177C6.44404 7.03527 6.48755 7.16289 6.4869 7.29412L6.47042 13.2647Z" fill="#6B7280" />
-        </svg>
-        <span class="hidden md:block">Filter</span>
-    </button>
-    <!-- Add New User -->
+{% load static %}
+
+{% block page_title %}User Management{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    /* Design Tokens — Exact Match with Equipment / Technicians / Building Pages */
+    body,
+    #mainContentWrapper {
+        background-color: #F2F2F2 !important;
+        font-family: 'Urbanist', Inter, system-ui, ui-sans-serif, sans-serif;
+    }
+
+    .usr-mono {
+        font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        letter-spacing: -0.02em;
+    }
+
+    /* Search input box */
+    .usr-search-box {
+        width: 100%;
+        max-width: 320px;
+        height: 38px;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        border-radius: 8px;
+        padding: 0 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+    .usr-search-box:focus-within {
+        border-color: #CFCED0;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+    .usr-search-input {
+        border: 0 !important;
+        outline: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13px;
+        color: #2B2823;
+        width: 100%;
+    }
+    .usr-search-input::placeholder {
+        color: #9D9C9A;
+    }
+
+    /* Table Outer Tray: Fill w-full, radius 12px, padding 16px 6px 6px 6px, gap 16px, bg #F9F9F9 */
+    .usr-table-tray {
+        background-color: #F9F9F9;
+        border-radius: 12px;
+        padding: 16px 6px 6px 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        box-sizing: border-box;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    /* Table Inner Container: Fill w-full, radius 6px, padding 14px, bg #FFFFFF */
+    .usr-table-inner {
+        background-color: #FFFFFF;
+        border-radius: 6px;
+        padding: 14px;
+        box-sizing: border-box;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    /* Filter Select Pill (auto-enhanced by global initCustomDropdowns) */
+    .usr-filter-select {
+        background-color: #EAEAE8 !important;
+        border: 1px solid #E2E2E0 !important;
+        border-radius: 8px !important;
+        height: 34px;
+        padding: 0 28px 0 11px !important;
+        font-size: 12.5px;
+        font-weight: 500;
+        color: #555452;
+        outline: none !important;
+        cursor: pointer;
+    }
+
+    /* Reset button */
+    .usr-btn-reset {
+        height: 34px;
+        padding: 0 12px;
+        border-radius: 8px;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        font-size: 12.5px;
+        font-weight: 500;
+        color: #2B2823;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: background-color 150ms ease, border-color 150ms ease;
+    }
+    .usr-btn-reset:hover {
+        background-color: #F7F7F6;
+        border-color: #D8D7D5;
+    }
+
+    /* Primary Forest Green Button (+ Add User) */
+    .usr-btn-primary {
+        background-color: #0B7A44;
+        color: #FFFFFF;
+        border-radius: 8px;
+        padding: 9px 18px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 1px 3px rgba(11, 122, 68, 0.25);
+        transition: background-color 150ms ease;
+        white-space: nowrap;
+    }
+    .usr-btn-primary:hover {
+        background-color: #08683A;
+    }
+
+    /* Table Styles */
+    .usr-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+    .usr-table thead tr {
+        background-color: #F6F6F6;
+    }
+    .usr-table th {
+        padding: 12px 14px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        color: #2B2823;
+        white-space: nowrap;
+    }
+    .usr-table td {
+        padding: 13px 14px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13px;
+        color: #2B2823;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    /* Action 3-dots circular button */
+    .usr-action-circle-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 9999px;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #5C5B59;
+        cursor: pointer;
+        transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+    }
+    .usr-action-circle-btn:hover {
+        background-color: #F7F7F6;
+        border-color: #D8D7D5;
+        color: #2B2823;
+    }
+</style>
 {% endblock %}
-{% block modals %}
-    <div class="flex relative items-center justify-between">
-        <div class="mt-4 flex items-center justify-end gap-3">
-            <!-- Filter Modal -->
-            <div id="crud-modal"
-                 tabindex="-1"
-                 aria-hidden="true"
-                 class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex items-center justify-center xl:-top-[15%] xl:right-[20%]">
-                <div class="relative p-4 w-full max-w-md max-h-full">
-                    <!-- dialog (match previous: white bg) -->
-                    <div class="mx-auto w-[92%] sm:w-[100%] xl:w-[760px] relative top-16 rounded-xl bg-[var(--white-color)] ring-1 ring-[var(--border-color)] shadow-xl">
-                        <form method="get" id="filterForm">
-                            <!-- header -->
-                            <div class="flex items-center justify-between px-5 pt-5">
-                                <h3 id="filterTitle"
-                                    class="text-lg text-[var(--primary-color)] font-semibold">Filter</h3>
-                                <button type="button"
-                                        class="bg-transparent hover:bg-[var(--bg-color)] rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
-                                        data-modal-toggle="crud-modal">
-                                    <svg class="w-3 h-3"
-                                         aria-hidden="true"
-                                         xmlns="http://www.w3.org/2000/svg"
-                                         fill="none"
-                                         viewBox="0 0 14 14">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                                    </svg>
-                                    <span class="sr-only">Close modal</span>
-                                </button>
-                            </div>
-                            <!-- body (same fields/logic, design only) -->
-                            <div class="px-5 pb-5 pt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="text-sm mb-1 block">Users</label>
-                                    <select name="username"
-                                            class="select2-items w-full"
-                                            data-placeholder="All Users"
-                                            style="width:100%">
-                                        <option></option>
-                                        {% for fuser in filter_user %}
-                                            <option value="{{ fuser.username }}"
-                                                    {% if request.GET.username and fuser.username == request.GET.username %}selected{% endif %}>
-                                                {{ fuser.get_name }} ({{ fuser.username }})
-                                            </option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="text-sm mb-1 block">Status</label>
-                                    <select name="is_active"
-                                            class="select2-items w-full"
-                                            data-placeholder="Active"
-                                            style="width:100%">
-                                        <option></option>
-                                        <option value="1" {% if request.GET.is_active == '1' %}selected{% endif %}>Active</option>
-                                        <option value="0" {% if request.GET.is_active == '0' %}selected{% endif %}>Inactive</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="text-sm mb-1 block">Date</label>
-                                    <div class="relative">
-                                        <input type="date"
-                                               name="created_from"
-                                               value="{{ request.GET.created_from }}"
-                                               class="h-11 w-full rounded-md text-[var(--text-color)] bg-[var(--white-color)] pl-3 pr-3 text-sm ring-1 ring-[var(--border-color)] focus:outline-none" />
-                                    </div>
-                                </div>
-                                <div class="md:mt-[22px]">
-                                    <div class="relative">
-                                        <input type="date"
-                                               name="created_to"
-                                               value="{{ request.GET.created_to }}"
-                                               class="h-11 w-full rounded-md text-[var(--text-color)] bg-[var(--white-color)] pl-3 pr-3 text-sm ring-1 ring-[var(--border-color)] focus:outline-none" />
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- footer buttons -->
-                            <div class="px-5 pb-5 flex items-center justify-end gap-2">
-                                <a href="{% url 'backend:user_list' %}"
-                                   class="h-10 px-4 py-2 rounded-md ring-1 ring-[var(--border-color)] bg-[var(--white-color)]">Reset</a>
-                                <button type="submit"
-                                        class="h-10 px-5 rounded-md bg-[var(--primary-color)] text-[var(--button-text-color)] inline-flex items-center gap-2">
-                                    <span>Filter</span>
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+
+{% block breadcrumb %}
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <span class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#2B2823] font-medium shrink-0">
+        User Management
+    </span>
+{% endblock %}
+
+{% block main_class %}w-full px-[15px] py-4 flex-1{% endblock %}
+
+{% block page_header %}
+<div class="w-full pt-1 pb-4">
+    <!-- Page Title, Primary Action & Search (Mobile: Search left + Add right; Desktop: Title + Add, Search below) -->
+    <div class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2.5 gap-y-3 sm:gap-y-4">
+        <div class="col-span-2 sm:col-span-1 sm:order-1">
+            <h1 id="page_title" class="usr-mono text-[24px] font-medium text-[#2B2823] leading-tight">User Management</h1>
+        </div>
+        <div class="order-3 sm:order-2 justify-self-end">
+            <a href="{% url 'backend:user_add' %}" class="usr-btn-primary !h-[38px] !px-3 sm:!px-[18px] !text-[13px] sm:!text-[14px]">
+                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 5v14M5 12h14" />
+                </svg>
+                <span>Add User</span>
+            </a>
+        </div>
+        <div class="order-2 sm:order-3 sm:col-span-2 pt-0 sm:pt-1">
+            <form method="get" action="{% url 'backend:user_list' %}" id="userSearchForm" class="usr-search-box">
+                <svg class="w-4 h-4 text-[#9D9C9A] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="M21 21l-4.35-4.35" />
+                </svg>
+                <input type="text"
+                       name="search"
+                       value="{{ search }}"
+                       placeholder="Search by name, username, or email"
+                       class="usr-search-input">
+                {% if username %}<input type="hidden" name="username" value="{{ username }}">{% endif %}
+                {% if is_active %}<input type="hidden" name="is_active" value="{{ is_active }}">{% endif %}
+                {% if per_page != 10 %}<input type="hidden" name="per_page" value="{{ per_page }}">{% endif %}
+            </form>
         </div>
     </div>
+</div>
 {% endblock %}
+
 {% block content %}
-    <section class="text-[var(--text-color)] min-h-screen px-1">
-        <!-- Date range banner (match previous: white bg) -->
-        {% comment %} <div class="mt-4 rounded-md ring-1 ring-[var(--border-color)] bg-[var(--white-color)] px-4 py-3 text-sm font-bold">
-    {% if request.GET.created_from or request.GET.created_to %}
-      {{ request.GET.created_from|default:"Start" }} – {{ request.GET.created_to|default:"End" }}
-    {% else %}
-    {% endif %}
-        </div> {% endcomment %}
-        <!-- Table card (match previous: white bg + header var + no extra rounding) -->
-        <div class="relative mt-2 transition-shadow ring-1 ring-[var(--border-color)] bg-[var(--white-color)]">
-            <div class="overflow-x-auto w-full custom-scrollbar"
-                 style="-webkit-overflow-scrolling: touch">
-                <table class="w-full min-w-[900px] text-sm table-auto">
-                    <colgroup>
-                        <col class="w-[100px]">
-                        <col class="w-[180px]">
-                        <col class="w-[260px]">
-                        <col class="w-[160px]">
-                        <col class="w-[120px]">
-                        <col class="w-[100px]">
-                    </colgroup>
-                    <thead class="bg-[var(--table-header)] border-b border-[var(--border-color)]">
-                        <tr class="text-left">
-                            <th class="px-4 py-3 font-bold whitespace-nowrap">Profile</th>
-                            <th class="px-4 py-3 font-bold whitespace-nowrap">
-                                <span class="inline-flex items-center gap-1">Username</span>
-                            </th>
-                            <th class="px-4 py-3 font-bold whitespace-nowrap">Email</th>
-                            <th class="px-4 py-3 font-bold whitespace-nowrap">
-                                <span class="inline-flex items-center gap-1">Date Created</span>
-                            </th>
-                            <th class="px-4 py-3 font-bold whitespace-nowrap">Status</th>
-                            <th class="px-4 py-3 font-bold text-right pr-2 whitespace-nowrap">Action</th>
+<div class="w-full space-y-4 pb-10">
+
+    <!-- ════════════════════════ Table Outer Tray (Figma Matching) ════════════════════════ -->
+    <div class="usr-table-tray">
+        <!-- Tray Header: Title + Badge + Filter Selects + Reset -->
+        <div class="px-2.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div class="flex items-center gap-2">
+                <h2 class="text-[16.5px] font-semibold text-[#2B2823] tracking-[-0.01em]">Total Users</h2>
+                <span class="inline-flex items-center justify-center min-w-[24px] h-[22px] px-2 rounded-full bg-[#EAEAE8] text-[#4A4947] text-[12px] font-semibold leading-none">
+                    {{ filtered_total_count }}
+                </span>
+            </div>
+
+            <!-- Filters Form -->
+            <form method="get" action="{% url 'backend:user_list' %}" id="userFilterForm" class="flex flex-wrap items-center gap-2">
+                {% if search %}
+                    <input type="hidden" name="search" value="{{ search }}">
+                {% endif %}
+                {% if per_page != 10 %}
+                    <input type="hidden" name="per_page" value="{{ per_page }}">
+                {% endif %}
+
+                <!-- All Users -->
+                <select name="username" onchange="this.form.submit()" class="usr-filter-select" aria-label="Filter by user">
+                    <option value="">All Users</option>
+                    {% for fuser in filter_user %}
+                        <option value="{{ fuser.username }}" {% if username == fuser.username %}selected{% endif %}>
+                            {{ fuser.get_name }} ({{ fuser.username }})
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <!-- All Statuses -->
+                <select name="is_active" onchange="this.form.submit()" class="usr-filter-select" aria-label="Filter by status">
+                    <option value="">All Statuses</option>
+                    <option value="1" {% if is_active == '1' %}selected{% endif %}>Active</option>
+                    <option value="0" {% if is_active == '0' %}selected{% endif %}>Inactive</option>
+                </select>
+
+                <!-- Reset Button -->
+                <a href="{% url 'backend:user_list' %}" class="usr-btn-reset" title="Reset Filters">
+                    <span>Reset</span>
+                    <svg class="w-3.5 h-3.5 text-[#5C5B59]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                        <path d="M3 3v5h5" />
+                    </svg>
+                </a>
+            </form>
+        </div>
+
+        <!-- Table Inner Container -->
+        <div class="usr-table-inner overflow-hidden">
+            <div class="w-full overflow-x-auto custom-scrollbar">
+                <table class="usr-table min-w-[920px]">
+                    <thead>
+                        <tr>
+                            <th class="rounded-l-[4px]">User</th>
+                            <th>Username</th>
+                            <th>Email Address</th>
+                            <th>Role</th>
+                            <th>Date Joined</th>
+                            <th>Status</th>
+                            <th class="text-center rounded-r-[4px]">Action</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-[var(--border-color)]">
+                    <tbody class="divide-y divide-[#F2F2F0]">
                         {% for data in user_list %}
-                            <tr class="hover:bg-[var(--bg-color)]/50 transition-colors">
-                                <td class="px-4 py-3">
-                                    <div class="flex items-center gap-3">
+                            <tr class="hover:bg-[#FAFAFA] transition-colors">
+                                <!-- Profile + Name -->
+                                <td>
+                                    <div class="flex items-center gap-2.5">
                                         {% if data.get_profile_photo_url %}
                                             <img src="{{ data.get_profile_photo_url }}"
-                                                 class="h-9 w-9 rounded-full ring-1 ring-[var(--border-color)] object-cover"
+                                                 class="w-8 h-8 rounded-full border border-[#E7E7E5] object-cover shrink-0"
                                                  alt="{{ data.username }}">
                                         {% else %}
-                                            <div class="h-9 w-9 rounded-full ring-1 ring-[var(--border-color)] bg-[var(--primary-color)] flex items-center justify-center text-white font-bold text-sm uppercase">
-                                                {{ data.username|slice:":1" }}
+                                            <div class="w-8 h-8 rounded-full bg-[#E7F6EC] border border-[#CEEAD6] flex items-center justify-center text-[#0B7A44] font-semibold text-[12px] uppercase shrink-0">
+                                                {{ data.first_name|default:data.username|slice:":1" }}
                                             </div>
                                         {% endif %}
                                         <div class="flex flex-col">
-                                            <span class="font-medium text-[var(--text-color)]">{{ data.first_name|default:data.username }}</span>
-                                            {% if data.last_name %}<span class="text-xs text-[var(--text-light-color)]">{{ data.last_name }}</span>{% endif %}
+                                            <span class="font-medium text-[#2B2823] text-[13.5px]">
+                                                {% if data.first_name or data.last_name %}
+                                                    {{ data.first_name }} {{ data.last_name }}
+                                                {% else %}
+                                                    {{ data.username }}
+                                                {% endif %}
+                                            </span>
+                                            <span class="text-[11.5px] text-[#9D9C9A]">@{{ data.username }}</span>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-4 py-3 whitespace-nowrap font-medium text-[var(--text-color)]">{{ data.username|default:"" }}</td>
-                                <td class="px-4 py-3">
-                                    <span class="block truncate">{{ data.email|default:"" }}</span>
+
+                                <!-- Username -->
+                                <td class="usr-mono text-[#5C5B59] text-[12.5px]">
+                                    {{ data.username|default:"-" }}
                                 </td>
-                                <td class="px-4 py-3 whitespace-nowrap">{{ data.date_joined|date:"d-M-Y" }}</td>
-                                <td class="px-4 py-3 whitespace-nowrap">
-                                    {% if data.is_active %}
-                                        <span class="inline-flex h-6 items-center rounded-full px-2 text-xs bg-green-100 text-green-800">Active</span>
+
+                                <!-- Email -->
+                                <td class="text-[#716F6C] text-[13px]">
+                                    {{ data.email|default:"-" }}
+                                </td>
+
+                                <!-- Role / Groups -->
+                                <td>
+                                    {% if data.is_superuser %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#F3E8FF] text-[#6B21A8] border border-[#E9D5FF]">
+                                            Superuser
+                                        </span>
+                                    {% elif data.groups.all %}
+                                        {% for grp in data.groups.all %}
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11.5px] font-medium bg-[#F5F5F4] text-[#4A4947] border border-[#E5E5E3] mr-1">
+                                                {{ grp.name }}
+                                            </span>
+                                        {% endfor %}
+                                    {% elif data.is_staff %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#EFF6FF] text-[#1D4ED8] border border-[#DBEAFE]">
+                                            Staff
+                                        </span>
                                     {% else %}
-                                        <span class="inline-flex h-6 items-center rounded-full px-2 text-xs bg-red-100 text-red-800">Inactive</span>
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11.5px] font-medium bg-[#F5F5F4] text-[#716F6C] border border-[#E5E5E3]">
+                                            User
+                                        </span>
                                     {% endif %}
                                 </td>
-                                <!-- Action dropdown (match previous: white dropdown + divider) -->
-                                <td class="px-4 py-3 text-right">
-                                    <div class="inline-block relative" data-menu-wrap>
+
+                                <!-- Date Joined -->
+                                <td class="text-[#716F6C] text-[13px]">
+                                    {{ data.date_joined|date:"d F Y" }}
+                                </td>
+
+                                <!-- Status Badge -->
+                                <td>
+                                    {% if data.is_active %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#E6F4EA] text-[#137333] border border-[#CEEAD6]">
+                                            Active
+                                        </span>
+                                    {% else %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#FCE8E6] text-[#C5221F] border border-[#FAD2CF]">
+                                            Inactive
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Action (3-Dots Circle Button with Popup Dropdown) -->
+                                <td class="text-center">
+                                    <div class="relative inline-block text-left" data-menu-wrap>
                                         <button type="button"
-                                                class="h-8 w-8 rounded-md cursor-pointer hover:bg-[var(--bg-color)]"
                                                 data-menu-btn
-                                                aria-haspopup="true"
-                                                aria-expanded="false">⋯</button>
-                                        <div class="hidden absolute right-0 top-full mt-1 w-44 z-[999] rounded-md bg-[var(--white-color)] ring-1 ring-[var(--border-color)] shadow-lg"
-                                             data-menu
-                                             role="menu">
+                                                class="usr-action-circle-btn"
+                                                aria-label="Actions"
+                                                aria-expanded="false">
+                                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                                                <circle cx="12" cy="5" r="1.75" />
+                                                <circle cx="12" cy="12" r="1.75" />
+                                                <circle cx="12" cy="19" r="1.75" />
+                                            </svg>
+                                        </button>
+                                        <div data-menu class="hidden py-1.5 w-44 text-left rounded-lg bg-white shadow-xl border border-[#EAEAE9] z-50" role="menu">
+                                            <!-- User Permission -->
                                             <a href="{% url 'backend:user_permission' data.id %}"
-                                               class="block px-3 py-2 text-sm text-left flex items-center gap-2 justify-start"
-                                               role="menuitem"
-                                               onclick="this.closest('[data-menu]').classList.add('hidden'); this.closest('[data-menu-wrap]').querySelector('[data-menu-btn]').setAttribute('aria-expanded','false');">
-                                                User Permission
+                                               class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-[#2B2823] hover:bg-[#F7F7F6] transition-colors"
+                                               role="menuitem">
+                                                <svg class="w-4 h-4 text-[#716F6C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                                </svg>
+                                                <span>User Permission</span>
                                             </a>
-                                            <div class="border-t border-[var(--border-color)]"></div>
+
+                                            <div class="my-1 border-t border-[#F2F2F0]"></div>
+
+                                            <!-- Reset Password -->
                                             <a href="{% url 'backend:reset_password' data.id %}"
-                                               class="block px-3 py-2 text-sm text-left flex items-center gap-2 justify-start"
-                                               role="menuitem"
-                                               onclick="this.closest('[data-menu]').classList.add('hidden'); this.closest('[data-menu-wrap]').querySelector('[data-menu-btn]').setAttribute('aria-expanded','false');">
-                                                Reset Password
+                                               class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-[#2B2823] hover:bg-[#F7F7F6] transition-colors"
+                                               role="menuitem">
+                                                <svg class="w-4 h-4 text-[#716F6C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                                </svg>
+                                                <span>Reset Password</span>
                                             </a>
                                         </div>
                                     </div>
@@ -206,40 +413,25 @@
                             </tr>
                         {% empty %}
                             <tr>
-                                <td colspan="8"
-                                    class="px-4 py-6 text-center text-[var(--text-light-color)]">No Data found.</td>
+                                <td colspan="7" class="py-12 text-center text-[#9E9D9B]">
+                                    <div class="flex flex-col items-center justify-center gap-2">
+                                        <svg class="w-8 h-8 text-[#C7C6C4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="9" cy="7" r="4"></circle>
+                                        </svg>
+                                        <p class="text-[13.5px] font-medium text-[#4A4947]">No users found</p>
+                                        <p class="text-[12.5px] text-[#8E8C89]">Try clearing filters or search criteria.</p>
+                                    </div>
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
-            <!-- pagination -->
-            <div class="w-full p-4 border-t border-[var(--border-color)]">
-                {% include 'includes/pagination.html' with page_obj=page_obj %}
-            </div>
         </div>
-    </section>
-{% endblock %}
-{% block extra_js %}
-    <script>
-  $(document).ready(function () {
-    $('.select2-items').select2();
-  });
 
-  // close on outside click
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('[data-menu-wrap]')) {
-      document.querySelectorAll('[data-menu]').forEach(m => m.classList.add('hidden'));
-      document.querySelectorAll('[data-menu-btn]').forEach(b => b.setAttribute('aria-expanded','false'));
-    }
-  });
-
-  // close on Esc
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      document.querySelectorAll('[data-menu]').forEach(m => m.classList.add('hidden'));
-      document.querySelectorAll('[data-menu-btn]').forEach(b => b.setAttribute('aria-expanded','false'));
-    }
-  });
-    </script>
+        <!-- ════════════════════════ Pagination Bar ════════════════════════ -->
+        {% include 'includes/pagination.html' with data_list=page_obj %}
+    </div>
+</div>
 {% endblock %}

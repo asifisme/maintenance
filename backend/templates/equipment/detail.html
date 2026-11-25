@@ -25,6 +25,8 @@
         flex-direction: column;
         gap: 12px;
         box-sizing: border-box;
+        min-width: 0;
+        max-width: 100%;
     }
 
     .figma-card-inner {
@@ -97,11 +99,19 @@
 
     .tab-pill-group {
         display: inline-flex;
+        flex-wrap: nowrap;
         align-items: center;
         gap: 4px;
         padding: 3px;
         border-radius: 10px;
         background-color: #EAEAE8;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .tab-pill-group::-webkit-scrollbar {
+        display: none;
     }
     .tab-pill {
         display: inline-flex;
@@ -112,6 +122,8 @@
         font-size: 13.5px;
         font-weight: 600;
         color: #5C5B59;
+        white-space: nowrap;
+        flex-shrink: 0;
         transition: all 150ms ease;
     }
     .tab-pill:hover { color: #2B2823; }
@@ -603,11 +615,11 @@
         </div>
     </div>
 
-    <!-- BOTTOM FULL-WIDTH CARD: Service History Logs | Tickets & Requests | Components -->
+    <!-- BOTTOM FULL-WIDTH CARD: Service History Logs | Tickets & Requests -->
     <div id="eqLogsSection" class="figma-card-outer !gap-4">
-        <div class="px-2.5 flex flex-wrap items-center justify-between gap-3">
+        <div class="px-2.5 flex flex-wrap items-center justify-between gap-3 min-w-0">
             <!-- Tabs -->
-            <div class="tab-pill-group flex-wrap">
+            <div class="tab-pill-group">
                 <a href="{% url 'backend:equipment_detail' obj.id %}?tab=history#eqLogsSection"
                    class="tab-pill {% if active_tab == 'history' %}active{% endif %}">
                     <span>Service History Log</span>
@@ -620,13 +632,6 @@
                     <span>Tickets &amp; Requests</span>
                     <span class="inline-flex items-center justify-center min-w-[22px] h-[20px] px-1.5 rounded-full text-[11.5px] font-semibold {% if active_tab == 'tickets' %}bg-[#E7F6EC] text-[#0B7A44]{% else %}bg-[#DFDFDD] text-[#5C5B59]{% endif %}">
                         {{ total_tickets }}
-                    </span>
-                </a>
-                <a href="{% url 'backend:equipment_detail' obj.id %}?tab=components#eqLogsSection"
-                   class="tab-pill {% if active_tab == 'components' %}active{% endif %}">
-                    <span>Components</span>
-                    <span class="inline-flex items-center justify-center min-w-[22px] h-[20px] px-1.5 rounded-full text-[11.5px] font-semibold {% if active_tab == 'components' %}bg-[#E7F6EC] text-[#0B7A44]{% else %}bg-[#DFDFDD] text-[#5C5B59]{% endif %}">
-                        {{ total_components }}
                     </span>
                 </a>
             </div>
@@ -852,48 +857,6 @@
                         {% endfor %}
                     </tbody>
                 </table>
-
-            {% else %}
-                <!-- COMPONENTS & PRESETS TAB -->
-                <div class="space-y-4">
-                    {% if components %}
-                        <div>
-                            <div class="text-[12px] font-semibold text-[#9D9C9A] uppercase tracking-wider mb-2.5">Equipment Components ({{ components|length }})</div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                {% for comp in components %}
-                                    <div class="rounded-[10px] border border-[#EAEAE8] bg-[#FAFAFA] p-3.5">
-                                        <div class="flex items-center gap-2">
-                                            <span class="w-2 h-2 rounded-full bg-[#0B7A44] shrink-0"></span>
-                                            <h4 class="text-[13.5px] font-semibold text-[#2B2823]">{{ comp.name }}</h4>
-                                        </div>
-                                        <p class="text-[12.5px] text-[#716F6C] mt-1 pl-4">
-                                            {{ comp.description|default:"No description provided." }}
-                                        </p>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    {% endif %}
-
-                    {% if component_presets %}
-                        <div>
-                            <div class="text-[12px] font-semibold text-[#9D9C9A] uppercase tracking-wider mb-2.5">Assigned Component Presets ({{ component_presets|length }})</div>
-                            <div class="flex flex-wrap gap-2">
-                                {% for preset in component_presets %}
-                                    <span class="inline-flex items-center px-3 py-1.5 rounded-full text-[12.5px] font-semibold bg-[#EAF7EE] text-[#0B7A44] border border-[#CEEAD6]">
-                                        {{ preset.name }}
-                                    </span>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    {% endif %}
-
-                    {% if not components and not component_presets %}
-                        <div class="py-10 text-center text-[#716F6C] text-[13px]">
-                            No components or presets are configured for this equipment yet.
-                        </div>
-                    {% endif %}
-                </div>
             {% endif %}
         </div>
     </div>

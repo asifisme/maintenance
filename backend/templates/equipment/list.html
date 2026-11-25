@@ -62,6 +62,8 @@
         gap: 16px;
         box-sizing: border-box;
         width: 100%;
+        min-width: 0;
+        max-width: 100%;
     }
 
     /* Table Inner Container: Fill w-full, radius 6px, padding 14px, gap 10px, bg #FFFFFF */
@@ -71,6 +73,8 @@
         padding: 14px;
         box-sizing: border-box;
         width: 100%;
+        min-width: 0;
+        max-width: 100%;
     }
 
     /* Filter Select Pill */
@@ -162,6 +166,7 @@
         font-size: 13px;
         color: #2B2823;
         vertical-align: middle;
+        white-space: nowrap;
     }
 
     /* Action 3-dots circular button */
@@ -199,18 +204,34 @@
 
 {% block page_header %}
 <div class="w-full pt-1 pb-4">
-    <!-- Page Title & Primary Action -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
+    <!-- Page Title, Primary Action & Search (Mobile: Search left + Add right; Desktop: Title + Add, Search below) -->
+    <div class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2.5 gap-y-3 sm:gap-y-4">
+        <div class="col-span-2 sm:col-span-1 sm:order-1">
             <h1 class="eq-mono text-[24px] font-medium text-[#2B2823] leading-tight">Equipment</h1>
         </div>
-        <div>
-            <a href="{% url 'backend:equipment_add' %}" class="eq-btn-primary">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="order-3 sm:order-2 justify-self-end">
+            <a href="{% url 'backend:equipment_add' %}" class="eq-btn-primary !h-[38px] !px-3 sm:!px-[18px] !text-[13px] sm:!text-[14px]">
+                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 5v14M5 12h14" />
                 </svg>
                 <span>Add Equipment</span>
             </a>
+        </div>
+        <div class="order-2 sm:order-3 sm:col-span-2 pt-0 sm:pt-1">
+            <form method="get" action="{% url 'backend:equipment_list' %}" id="equipmentSearchForm" class="eq-search-box">
+                <svg class="w-4 h-4 text-[#9D9C9A] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="M21 21l-4.35-4.35" />
+                </svg>
+                <input type="text"
+                       name="search"
+                       value="{{ search }}"
+                       placeholder="Search by ID, brand, or building name"
+                       class="eq-search-input">
+                {% if type_id %}<input type="hidden" name="type_id" value="{{ type_id }}">{% endif %}
+                {% if status %}<input type="hidden" name="status" value="{{ status }}">{% endif %}
+                {% if per_page != 10 %}<input type="hidden" name="per_page" value="{{ per_page }}">{% endif %}
+            </form>
         </div>
     </div>
 </div>
@@ -219,25 +240,7 @@
 {% block content %}
 <div class="w-full space-y-4 pb-10">
 
-    <!-- ════════════════════════ ROW 1: Search Input ════════════════════════ -->
-    <div class="pt-1">
-        <form method="get" action="{% url 'backend:equipment_list' %}" id="equipmentSearchForm" class="eq-search-box">
-            <svg class="w-4 h-4 text-[#9D9C9A] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8" />
-                <path d="M21 21l-4.35-4.35" />
-            </svg>
-            <input type="text"
-                   name="search"
-                   value="{{ search }}"
-                   placeholder="Search by ID, brand, or building name"
-                   class="eq-search-input">
-            {% if type_id %}<input type="hidden" name="type_id" value="{{ type_id }}">{% endif %}
-            {% if status %}<input type="hidden" name="status" value="{{ status }}">{% endif %}
-            {% if per_page != 10 %}<input type="hidden" name="per_page" value="{{ per_page }}">{% endif %}
-        </form>
-    </div>
-
-    <!-- ════════════════════════ ROW 2: Table Outer Tray (Technicians Pattern) ════════════════════════ -->
+    <!-- ════════════════════════ Table Outer Tray (Technicians Pattern) ════════════════════════ -->
     <div class="eq-table-tray">
         <!-- Tray Header: Title + Counter Badge + Filter Selects + Reset -->
         <div class="px-2.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
@@ -286,8 +289,8 @@
 
         <!-- Table Inner Container -->
         <div class="eq-table-inner overflow-hidden">
-            <div class="overflow-x-auto custom-scrollbar">
-                <table class="eq-table min-w-[960px]">
+            <div class="w-full overflow-x-auto custom-scrollbar" style="-webkit-overflow-scrolling: touch;">
+                <table class="eq-table w-full min-w-[1050px]">
                     <thead>
                         <tr>
                             <th class="rounded-l-[4px]">Equipment</th>

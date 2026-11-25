@@ -65,6 +65,22 @@
         color: #9D9C9A;
     }
 
+    @media (max-width: 639px) {
+        .bld-kpi-card {
+            min-height: 104px;
+            height: auto;
+            padding: 14px;
+            gap: 10px;
+        }
+        .bld-kpi-num {
+            font-size: 20px;
+        }
+        .bld-kpi-label {
+            font-size: 13px;
+            line-height: 1.25;
+        }
+    }
+
     /* Search input box */
     .bld-search-box {
         width: 100%;
@@ -313,14 +329,14 @@
 {% block page_header %}
 <div class="w-full pt-1 pb-4">
     <!-- Page Title & Primary Action -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-            <h1 class="bld-mono text-[24px] font-medium text-[#2B2823] leading-tight">Building Management</h1>
-            <p class="text-[14px] text-[#716F6C] mt-1">Manage government buildings and their equipment from one place.</p>
+    <div class="flex items-start sm:items-center justify-between gap-3 sm:gap-4">
+        <div class="min-w-0 flex-1">
+            <h1 class="bld-mono text-[20px] sm:text-[24px] font-medium text-[#2B2823] leading-tight">Building Management</h1>
+            <p class="text-[13px] sm:text-[14px] text-[#716F6C] mt-1">Manage government buildings and their equipment from one place.</p>
         </div>
-        <div>
-            <a href="{% url 'backend:building_add' %}" class="bld-btn-primary">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="shrink-0">
+            <a href="{% url 'backend:building_add' %}" class="bld-btn-primary !px-3 sm:!px-[18px] !py-2 sm:!py-[9px] !text-[13px] sm:!text-[14px]">
+                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 5v14M5 12h14" />
                 </svg>
                 <span>Add Buildings</span>
@@ -334,7 +350,7 @@
 <div class="w-full space-y-4 pb-10">
 
     <!-- ════════════════════════ ROW 1: 4 Top KPI Stat Cards (Frame 2147207683) ════════════════════════ -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
         <!-- Card 1: Total Buildings -->
         <div class="bld-kpi-card">
             <div class="flex items-center justify-between">

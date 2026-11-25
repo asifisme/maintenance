@@ -61,19 +61,32 @@
         }
         body {
             font-family: Inter, system-ui, ui-sans-serif;
-            overflow-x: hidden;
+            overflow-x: clip;
+        }
+
+        /* Single-row horizontally scrollable breadcrumb across all viewports */
+        nav[aria-label="Breadcrumb"] {
+            flex-wrap: nowrap !important;
+            overflow-x: auto;
+            white-space: nowrap;
+            min-width: 0;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+        nav[aria-label="Breadcrumb"]::-webkit-scrollbar {
+            display: none;
         }
 
         /* Responsive Breadcrumb and Table fixes */
         @media (max-width: 640px) {
             .lg\:pl-72 {
-                overflow-x: hidden;
+                overflow-x: clip;
                 -webkit-overflow-scrolling: touch;
             }
             
             nav[aria-label="Breadcrumb"] {
                 font-size: 0.75rem !important; /* text-xs */
-                gap: 0.25rem !important;
+                gap: 0.35rem !important;
             }
             nav[aria-label="Breadcrumb"] svg {
                 width: 0.875rem !important;
@@ -85,6 +98,18 @@
                 -webkit-box-orient: vertical;
                 overflow: hidden;
                 max-width: 120px;
+            }
+        }
+
+        /* Mobile Page Title Standardization & Hide Breadcrumbs in Mobile Navbar (< 640px) */
+        @media (max-width: 639px) {
+            header nav[aria-label="Breadcrumb"] {
+                display: none !important;
+            }
+            main h1[class*="-mono"],
+            main h1#page_title {
+                font-size: 20px !important;
+                line-height: 1.25 !important;
             }
         }
 
@@ -101,6 +126,28 @@
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
+        }
+
+        /* Global Mobile Table Non-Compression: Keep Desktop Layout, Enable Left-Right Scroll */
+        main,
+        #mainContentWrapper,
+        [class*="-table-tray"],
+        [class*="-table-inner"],
+        .ov-card,
+        .ov-inner-card,
+        .listing-box {
+            min-width: 0;
+            max-width: 100%;
+        }
+        .overflow-x-auto {
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch;
+        }
+        .overflow-x-auto > table {
+            width: 100%;
+        }
+        :where(.overflow-x-auto > table th, .overflow-x-auto > table td) {
+            white-space: nowrap;
         }
 
         /* Select2 with Tailwind CSS */
@@ -198,18 +245,18 @@
             {% block top_header %}
             <!-- header: Exact match with Figma Mockup (Breadcrumbs on Left, Notification Bell on Right, No Search, No Profile Icon) -->
             <header class="sticky top-0 z-30 bg-[#F2F2F2]/95 backdrop-blur-sm">
-                <div class="w-full px-[15px] lg:pl-8 h-14 flex items-center justify-between gap-3">
+                <div class="w-full px-[15px] lg:pl-8 h-14 flex items-center justify-between gap-2.5 min-w-0">
                     <!-- Left: Mobile Hamburger + Breadcrumb Navigation -->
-                    <div class="flex items-center gap-2.5">
+                    <div class="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1">
                         <button id="btnOpen"
                                 type="button"
                                 aria-label="Open navigation"
-                                class="lg:hidden -ml-1 p-2 rounded-lg bg-white border border-[#EAEAE9] text-[#4A4947] hover:bg-[#F5F5F4] transition-colors">
+                                class="lg:hidden -ml-1 p-2 rounded-lg bg-white border border-[#EAEAE9] text-[#4A4947] hover:bg-[#F5F5F4] transition-colors shrink-0">
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                                 <path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16" />
                             </svg>
                         </button>
-                        <nav class="flex items-center gap-2 text-[12.5px] flex-wrap" aria-label="Breadcrumb">
+                        <nav class="hidden sm:flex items-center gap-2 text-[12.5px] flex-nowrap overflow-x-auto min-w-0 whitespace-nowrap" aria-label="Breadcrumb">
                             <a href="{% url 'backend:dash_board' %}" class="w-8 h-8 rounded-[8px] bg-white border border-[#EAEAE9] flex items-center justify-center text-[#5C5B59] hover:bg-[#F7F7F6] transition-colors shrink-0" title="Home">
                                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M3 10.5L12 3l9 7.5" />
@@ -325,6 +372,11 @@
         if (pageTitle) {
             document.title = pageTitle.textContent.trim() + ' - {{ site_setting.site_title|default:"" }}';
         }
+        document.querySelectorAll('nav[aria-label="Breadcrumb"]').forEach(nav => {
+            if (nav.scrollWidth > nav.clientWidth) {
+                nav.scrollLeft = nav.scrollWidth;
+            }
+        });
         </script>
         <!-- Loading State -->
         <script>
@@ -783,11 +835,19 @@
                             trigger.classList.add('is-active');
                             trigger.setAttribute('aria-expanded', 'true');
 
-                            // Viewport boundary check to prevent overflow
-                            const rect = menu.getBoundingClientRect();
+                            // Viewport boundary check (right AND left) to prevent overflow on mobile & desktop
+                            menu.style.left = '';
+                            menu.style.right = '';
+                            let rect = menu.getBoundingClientRect();
                             if (rect.right > (window.innerWidth - 12)) {
                                 menu.style.left = 'auto';
                                 menu.style.right = '0';
+                                rect = menu.getBoundingClientRect();
+                            }
+                            if (rect.left < 12) {
+                                const wrapRect = wrapper.getBoundingClientRect();
+                                menu.style.right = 'auto';
+                                menu.style.left = (12 - wrapRect.left) + 'px';
                             }
 
                             if (searchInput) {

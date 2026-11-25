@@ -92,6 +92,8 @@
         display: inline-flex;
         align-items: center;
         gap: 3px;
+        white-space: nowrap;
+        flex-shrink: 0;
         transition: color 150ms ease;
     }
     .ov-link-orange:hover {
@@ -255,6 +257,32 @@
         width: 1px;
         background-color: #E5E5E3;
     }
+
+    /* Mobile-only layout polish (< 640px) — keeps desktop pixel-identical */
+    @media (max-width: 639px) {
+        #overviewFilterForm .ov-dropdown-wrapper,
+        #overviewFilterForm .ov-dropdown-trigger {
+            width: 100%;
+        }
+        #overviewFilterForm .ov-dropdown-label {
+            max-width: none;
+        }
+        .ov-overdue-item {
+            height: auto;
+            padding-top: 12px;
+            padding-bottom: 12px;
+        }
+        .ov-action-card {
+            min-height: 0;
+            gap: 14px;
+        }
+        .ov-btn-action {
+            width: 100%;
+        }
+        .ov-card-title {
+            font-size: 15.5px;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -300,26 +328,27 @@
 <div class="w-full flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3 mb-5">
     <h1 id="page_title" class="ov-mono text-[22px] font-medium text-[#2B2A29] leading-tight">Overview</h1>
 
-    <form id="overviewFilterForm" method="get" action="{% url 'backend:dash_board' %}" class="flex flex-wrap items-center gap-2">
+    <form id="overviewFilterForm" method="get" action="{% url 'backend:dash_board' %}" class="grid grid-cols-2 sm:flex sm:flex-wrap sm:items-center gap-2 w-full xl:w-auto">
         <input type="hidden" id="ovStartDate" name="start_date" value="{{ start_date_str }}">
         <input type="hidden" id="ovEndDate" name="end_date" value="{{ end_date_str }}">
 
-        <!-- Date Range Compound Pill -->
-        <div class="inline-flex items-center rounded-[8px] bg-[#EAEAE8] border border-[#E2E2E0] p-0.5 h-[34px]">
+        <!-- Date Range Button -->
+        <div class="relative inline-flex items-center w-full sm:w-auto">
             <button type="button"
                     id="ovDateRangeBtn"
-                    class="inline-flex items-center gap-1.5 h-[28px] px-2.5 rounded-[6px] bg-white text-[#2B2A29] text-[12px] font-medium shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:bg-[#FAFAFA] transition-colors">
-                <svg class="w-3.5 h-3.5 text-[#5C5B59]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="4" width="18" height="18" rx="2" />
-                    <path d="M16 2v4M8 2v4M3 10h18" />
-                </svg>
-                <span id="ovDateRangeText">{{ date_range_label }}</span>
-                <svg class="w-3 h-3 text-[#8E8C89]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    class="inline-flex items-center justify-between sm:justify-start gap-1.5 w-full sm:w-auto h-[34px] px-3 rounded-[8px] bg-white border border-[#EAEAE9] text-[#2B2A29] text-[12.5px] font-medium shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:bg-[#FAFAFA] hover:border-[#D8D7D5] transition-colors whitespace-nowrap">
+                <span class="inline-flex items-center gap-1.5 min-w-0">
+                    <svg class="w-3.5 h-3.5 text-[#5C5B59] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" />
+                        <path d="M16 2v4M8 2v4M3 10h18" />
+                    </svg>
+                    <span id="ovDateRangeText" class="truncate">{{ date_range_label }}</span>
+                </span>
+                <svg class="w-3 h-3 text-[#8E8C89] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
                 </svg>
             </button>
             <input type="text" id="ovFlatpickrHost" class="sr-only" tabindex="-1" aria-hidden="true">
-            <span class="px-2.5 text-[11.5px] text-[#8E8C89] font-normal hidden sm:inline">{{ prev_range_label }}</span>
         </div>
 
         <!-- Division Custom Dropdown (Frame 2147259697 & Frame 2147259513) -->
@@ -462,7 +491,7 @@
 
         <!-- Reset Button -->
         <a href="{% url 'backend:dash_board' %}"
-           class="ov-btn-white h-[34px] px-3 text-[12.5px]">
+           class="ov-btn-white col-span-2 sm:col-span-1 w-full sm:w-auto h-[34px] px-3 text-[12.5px]">
             <span>Reset</span>
             <svg class="w-3.5 h-3.5 text-[#5C5B59]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
@@ -484,7 +513,7 @@
             <div class="ov-card-header">
                 <h2 class="ov-card-title">Building Operations Overview</h2>
             </div>
-            <div class="ov-inner-card py-[24px] flex flex-col justify-between gap-[10px] min-h-[306px]">
+            <div class="ov-inner-card py-[24px] flex flex-col justify-between gap-[10px] min-h-0 lg:min-h-[306px]">
                 <!-- Total Buildings -->
                 <div class="px-[18px] pb-3 border-b border-[#EFEFED] flex items-center justify-between gap-3">
                     <div>
@@ -548,9 +577,9 @@
                 </a>
             </div>
 
-            <div class="ov-inner-card py-[8px] px-[6px] flex flex-col gap-[10px] flex-1 min-h-[305px]">
+            <div class="ov-inner-card py-[8px] px-[6px] flex flex-col gap-[10px] flex-1 min-h-0 lg:min-h-[305px]">
                 {% for ticket in unassigned_tickets %}
-                    <div class="rounded-[6px] bg-white border border-[#F2F2F2] py-[11px] px-[14px] flex items-center justify-between gap-4 hover:border-[#E5E5E3] transition-colors flex-1 min-h-[89px]">
+                    <div class="rounded-[6px] bg-white border border-[#F2F2F2] py-[11px] px-[14px] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4 hover:border-[#E5E5E3] transition-colors flex-1 min-h-[89px]">
                         <div class="flex items-center gap-3.5 min-w-0">
                             <div class="w-10 h-10 rounded-[8px] bg-[#FFF8F4] border border-[#FFD6BE] flex items-center justify-center text-[#55534F] shrink-0">
                                 <svg class="w-[18px] h-[18px]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -572,7 +601,7 @@
                             </div>
                         </div>
 
-                        <div class="flex flex-col items-end gap-2 shrink-0">
+                        <div class="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-2 w-full sm:w-auto pl-[54px] sm:pl-0 shrink-0">
                             {% if ticket.priority == 'critical' %}
                                 <span class="px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#FEE2E2] text-[#D9383A]">Critical</span>
                             {% elif ticket.priority == 'high' %}
@@ -616,7 +645,7 @@
                 </div>
 
                 <!-- Frame 2147207632: 679px x 244px, Radius 6px, BG #FFFFFF, Padding 8px -->
-                <div class="ov-inner-card p-[8px] flex flex-col md:flex-row items-stretch justify-between h-auto md:h-[244px] box-border">
+                <div class="ov-inner-card p-[8px] flex flex-col md:flex-row items-stretch justify-between gap-3 md:gap-0 h-auto md:h-[244px] box-border">
                     <!-- Left Metrics & Segmented Completion Rate Meter (Width 246px) -->
                     <div class="w-full md:w-[246px] shrink-0 flex flex-col justify-between py-1.5 px-3 box-border">
                         <div class="space-y-3.5">
@@ -683,9 +712,9 @@
                 </div>
 
                 <!-- Frame 2147207632: 679px x 299px, Radius 6px, Padding 8px, Gap 10px, BG #FFFFFF -->
-                <div class="ov-inner-card p-[8px] divide-y divide-[#F2F2F2] flex flex-col justify-between min-h-[299px] box-border">
+                <div class="ov-inner-card p-[8px] divide-y divide-[#F2F2F2] flex flex-col justify-between min-h-0 lg:min-h-[299px] box-border">
                     {% for req in critical_requests %}
-                        <div class="px-3.5 py-3 flex items-center justify-between gap-4">
+                        <div class="px-3.5 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">
                             <div class="min-w-0">
                                 <p class="text-[14px] font-semibold leading-none tracking-normal text-[#FF0505] truncate">{{ req.code }}</p>
                                 <p class="text-[14px] font-medium leading-none tracking-normal text-[#9D9C9A] truncate mt-2">{{ req.heading }}</p>
@@ -693,7 +722,7 @@
                                     {{ req.subtitle|truncatechars:55 }}{% if req.time_obj %} · {{ req.time_obj|timesince|truncatewords:2 }} ago{% endif %}
                                 </p>
                             </div>
-                            <div class="flex flex-col items-end gap-2 shrink-0">
+                            <div class="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-2 w-full sm:w-auto shrink-0">
                                 <span class="px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#FEE2E2] text-[#D9383A]">Critical</span>
                                 <a href="{{ req.detail_url }}" class="ov-btn-white">Review Request</a>
                             </div>
@@ -720,7 +749,7 @@
                     </a>
                 </div>
 
-                <div class="ov-inner-card p-[8px] flex flex-col gap-[10px] min-h-[291px]">
+                <div class="ov-inner-card p-[8px] flex flex-col gap-[10px] min-h-0 lg:min-h-[291px]">
                     {% for item in overdue_preview %}
                         <a href="{{ item.detail_url }}" class="ov-overdue-item group">
                             <div class="min-w-0">
@@ -760,7 +789,7 @@
                     </a>
                 </div>
 
-                <div class="ov-inner-card p-5 flex flex-col justify-between h-[526px]">
+                <div class="ov-inner-card p-5 flex flex-col justify-between gap-4 lg:gap-0 h-auto lg:h-[526px]">
                     <!-- Donut Chart Container (225px x 225px) -->
                     <div class="relative w-[225px] h-[225px] mx-auto shrink-0">
                         <canvas id="equipmentDonutChart" width="225" height="225"></canvas>
@@ -821,8 +850,8 @@
                     </a>
                 </div>
 
-                <div class="ov-inner-card p-[8px] flex flex-col flex-1 min-h-[380px] box-border">
-                    <div class="grid grid-cols-2 gap-[8px] flex-1">
+                <div class="ov-inner-card p-[8px] flex flex-col flex-1 min-h-0 lg:min-h-[380px] box-border">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-[8px] flex-1">
                         <!-- Building -->
                         <div class="ov-action-card">
                             <div>
@@ -974,11 +1003,11 @@
             </a>
         </div>
 
-        <div class="ov-inner-card p-6">
+        <div class="ov-inner-card p-3.5 sm:p-6">
             {% if recent_activities %}
-                <div class="space-y-6">
+                <div class="space-y-5 sm:space-y-6">
                     {% for act in recent_activities %}
-                        <div class="ov-timeline-item flex items-start gap-4">
+                        <div class="ov-timeline-item flex items-start gap-3 sm:gap-4">
                             <!-- Timeline Circle Node (36px x 36px, bg #EFEFED, wrench icon stroke #5C5B59) -->
                             <div class="w-9 h-9 rounded-full bg-[#EFEFED] flex items-center justify-center text-[#5C5B59] shrink-0 relative z-10">
                                 <svg class="w-[16px] h-[16px]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -1000,7 +1029,7 @@
                                 </div>
 
                                 <!-- Inner Callout Card with Orange Left Accent Bar (bg #F8F8F7, border #F0F0EE) -->
-                                <div class="mt-2.5 rounded-[10px] bg-[#F8F8F7] border border-[#F0F0EE] px-4 py-3.5">
+                                <div class="mt-2.5 rounded-[10px] bg-[#F8F8F7] border border-[#F0F0EE] px-3 py-2.5 sm:px-4 sm:py-3.5">
                                     <div class="border-l-2 border-[#FF6B16] pl-3">
                                         <p class="text-[10.5px] font-semibold uppercase tracking-wide text-[#5C5B59]">{{ act.badge_label }}</p>
                                         <p class="text-[13px] text-[#555452] mt-1 leading-relaxed">{{ act.description }}</p>
@@ -1049,6 +1078,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
+    const filterForm = document.getElementById('overviewFilterForm');
     const dateBtn = document.getElementById('ovDateRangeBtn');
     const fpHost = document.getElementById('ovFlatpickrHost');
     const startInput = document.getElementById('ovStartDate');
