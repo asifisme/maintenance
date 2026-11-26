@@ -111,7 +111,7 @@ class BackendMenu(models.Model):
     module_name = models.CharField(max_length=100, db_index=True)
     menu_name = models.CharField(max_length=100, db_index=True)
     menu_url = models.CharField(max_length=250, blank=True, null=True)
-    menu_icon = models.CharField(max_length=250, blank=True, null=True)
+    menu_icon = models.TextField(blank=True, null=True)
     menu_description = models.TextField(blank=True, null=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='children', blank=True, null=True)
     is_main_menu = models.BooleanField(default=False)
