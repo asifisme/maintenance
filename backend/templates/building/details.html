@@ -1,322 +1,1100 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block page_title %}{{ building.name }}{% endblock %}
-{% block breadcrumb %}
-    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-    </svg>
-    <a href="{% url 'backend:building_list' %}"
-       class="hover:text-[var(--primary-color)] transition-colors">Building Management</a>
-    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-    </svg>
-    <span class="font-medium text-[var(--primary-color)]">{{ building.name }}</span>
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    body,
+    #mainContentWrapper {
+        background-color: #F2F2F2 !important;
+        font-family: 'Urbanist', Inter, system-ui, ui-sans-serif, sans-serif;
+    }
+
+    .bld-mono {
+        font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        letter-spacing: -0.02em;
+    }
+
+    /* Figma Outer Card: BG #F9F9F9, Radius 12px, Pad 16px 6px 6px 6px, Gap 12px */
+    .figma-card-outer {
+        background-color: #F9F9F9;
+        border-radius: 12px;
+        padding: 16px 6px 6px 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        box-sizing: border-box;
+    }
+
+    /* Figma Inner Card: BG #FFFFFF, Radius 6px, Pad 16px, Gap 10px */
+    .figma-card-inner {
+        background-color: #FFFFFF;
+        border-radius: 6px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        box-sizing: border-box;
+    }
+
+    .detail-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 11px 0;
+        border-bottom: 1px solid #F2F2F2;
+    }
+    .detail-row:first-child {
+        padding-top: 2px;
+    }
+    .detail-row:last-child {
+        border-bottom: none;
+        padding-bottom: 2px;
+    }
+    .detail-label {
+        width: 118px;
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: flex-start;
+        gap: 7px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #9D9C9A;
+        line-height: 1.35;
+    }
+    .detail-label svg {
+        width: 15px;
+        height: 15px;
+        flex-shrink: 0;
+        margin-top: 1px;
+        color: #B4B3B1;
+    }
+    .detail-value {
+        flex: 1;
+        min-width: 0;
+        font-size: 13.5px;
+        font-weight: 500;
+        color: #2B2823;
+        line-height: 1.4;
+        word-break: break-word;
+    }
+
+    /* Filter select pills matching Service History / Figma */
+    .filter-select-pill {
+        height: 34px;
+        padding: 0 28px 0 12px;
+        border-radius: 8px;
+        background-color: #EAEAE8 !important;
+        border: 1px solid transparent;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        color: #5C5B59;
+        outline: none;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23716F6C' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 9px center;
+        background-size: 13px;
+        transition: background-color 150ms ease, border-color 150ms ease;
+    }
+    .filter-select-pill:hover {
+        background-color: #E2E2E0 !important;
+    }
+    .filter-select-pill:focus {
+        border-color: #0B7A44;
+    }
+
+    /* Table styling matching Figma */
+    .eq-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+    .eq-table thead tr {
+        background-color: #F7F7F7;
+    }
+    .eq-table thead th {
+        padding: 11px 14px;
+        text-align: left;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #2B2823;
+        white-space: nowrap;
+    }
+    .eq-table thead th:first-child {
+        border-radius: 6px 0 0 6px;
+    }
+    .eq-table thead th:last-child {
+        border-radius: 0 6px 6px 0;
+        text-align: center;
+    }
+    .eq-table tbody tr {
+        border-bottom: 1px solid #F2F2F2;
+        background-color: #FFFFFF;
+        transition: background-color 120ms ease;
+    }
+    .eq-table tbody tr:nth-child(even) {
+        background-color: #FAFAFA;
+    }
+    .eq-table tbody tr:last-child {
+        border-bottom: none;
+    }
+    .eq-table tbody tr:hover {
+        background-color: #F4F4F3;
+    }
+    .eq-table tbody td {
+        padding: 13px 14px;
+        color: #5C5B59;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+    .eq-table tbody td:last-child {
+        text-align: center;
+    }
+
+    /* Shared Add Equipment Modal form controls (same as building/add.html) */
+    .form-label {
+        display: block;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.2;
+        color: #716F6C;
+        margin-bottom: 6px;
+    }
+    .form-input-field,
+    .form-select-field {
+        width: 100%;
+        height: 41px;
+        background-color: #FFFFFF !important;
+        border: 0.5px solid rgba(240, 240, 240, 0.9);
+        border-radius: 13px;
+        padding: 0 12px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: #2B2823;
+        box-shadow: 0px 0px 6px 0px rgba(135, 135, 135, 0.02), 0px 1px 2px 0px rgba(135, 135, 135, 0.09);
+        outline: none;
+        box-sizing: border-box;
+    }
+    .form-select-field {
+        padding-right: 32px;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23716F6C' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 14px;
+    }
+    .form-input-field:focus,
+    .form-select-field:focus {
+        border-color: #0B7A44;
+        box-shadow: 0 0 0 3px rgba(11, 122, 68, 0.1);
+    }
+    .input-clear-btn {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        color: #9D9C9A;
+        background: transparent;
+        border: none;
+        padding: 0 !important;
+        cursor: pointer;
+        z-index: 10;
+    }
+    .input-clear-btn.hidden {
+        display: none !important;
+    }
+    .input-clear-btn svg {
+        width: 13px;
+        height: 13px;
+    }
+    .btn-forest {
+        background-color: #0B7A44;
+        color: #FFFFFF;
+        border-radius: 8px;
+        padding: 9px 22px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13.5px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        border: none;
+        cursor: pointer;
+        transition: background-color 150ms ease;
+    }
+    .btn-forest:hover {
+        background-color: #08683A;
+    }
+    .btn-secondary {
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAEA;
+        color: #2B2823;
+        border-radius: 8px;
+        padding: 9px 20px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13.5px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+        transition: background-color 150ms ease;
+    }
+    .btn-secondary:hover {
+        background-color: #F7F7F6;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+</style>
 {% endblock %}
-{% block back_button %}
-    <a href="{% url 'backend:building_list' %}"
-       class="text-gray-700 hover:text-gray-900 transition-colors mr-2">
-        <svg width="24"
-             height="24"
-             viewBox="0 0 24 24"
-             fill="none"
-             stroke="currentColor"
-             stroke-width="2.5"
-             stroke-linecap="round"
-             stroke-linejoin="round">
-            <path d="M15 18l-6-6 6-6" />
-        </svg>
+
+{% block breadcrumb %}
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <a href="{% url 'backend:building_list' %}" class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#5C5B59] font-medium hover:bg-[#E0E0DF] transition-colors shrink-0">
+        Buildings
     </a>
 {% endblock %}
-{% block title %}
-    <div class="flex items-center gap-3">
-        <span class="text-xl md:text-2xl font-extrabold text-gray-900">{{ building.name }}</span>
-        {% if building.status == 'Active' %}
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#E6F4EA] text-[#137333] border border-[#CEEAD6]">Active</span>
-        {% elif building.status == 'Inactive' %}
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#F1F3F4] text-[#3C4043] border border-[#DADCE0]">Inactive</span>
-        {% elif building.status == 'Under Maintenance' %}
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#FEF7E0] text-[#B06000] border border-[#FEEFC3]">Maintenance</span>
-        {% else %}
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#FCE8E6] text-[#C5221F] border border-[#FAD2CF]">{{ building.status }}</span>
-        {% endif %}
-    </div>
-{% endblock %}
-{% block subtitle %}
-    <p class="text-xs font-semibold tracking-wider text-gray-400 mt-1 uppercase">
-        {{ building.building_id|default:"-" }} &mdash; {{ building.surname|default:"-" }}
-    </p>
-{% endblock %}
-{% block header_actions %}
-    <div class="flex items-center gap-2">
+
+{% block main_class %}w-full px-[10px] pt-2 pb-10 flex-1{% endblock %}
+
+{% block page_header %}
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-5">
+    <h1 id="page_title" class="bld-mono text-[20px] sm:text-[24px] font-medium text-[#2B2823] leading-tight">
+        {{ building.name }}
+    </h1>
+    <div class="flex items-center gap-2.5 shrink-0">
         <a href="{% url 'backend:building_update' building.id %}"
-           class="bg-white hover:bg-gray-50 border border-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg text-sm shadow-sm transition duration-200">
+           class="inline-flex items-center justify-center px-4 py-2 rounded-[8px] bg-white border border-[#EAEAE9] text-[13.5px] font-medium text-[#2B2823] hover:bg-[#F7F7F6] shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-colors">
             Edit Building
         </a>
+        <button type="button"
+                onclick="openEquipmentModal()"
+                class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-[8px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[13.5px] font-semibold shadow-[0_1px_2px_rgba(11,122,68,0.2)] transition-colors cursor-pointer">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" />
+            </svg>
+            <span>Add Equipment</span>
+        </button>
     </div>
+</div>
 {% endblock %}
+
 {% block content %}
-    <section class="min-h-screen font-sans bg-[var(--bg-color)]">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Left Column: Building Information & Quick Actions -->
-            <div class="space-y-6">
-                <!-- Building Information Card -->
-                <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
-                    <h3 class="text-base font-bold text-gray-800 mb-6 border-b border-gray-50 pb-3">Building Information</h3>
-                    <div class="space-y-5">
-                        <div>
-                            <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Building ID</div>
-                            <div class="text-sm font-semibold text-gray-700 mt-1">{{ building.building_id|default:"-" }}</div>
-                        </div>
-                        <div>
-                            <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Surname</div>
-                            <div class="text-sm font-semibold text-gray-700 mt-1">{{ building.surname|default:"-" }}</div>
-                        </div>
-                        <div>
-                            <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Division</div>
-                            <div class="text-sm font-semibold text-gray-700 mt-1">{{ building.division.name|default:"-" }}</div>
-                        </div>
-                        <div>
-                            <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Subdivision</div>
-                            <div class="text-sm font-semibold text-gray-700 mt-1">{{ building.subdivision.name|default:"-" }}</div>
-                        </div>
-                        <div>
-                            <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Section</div>
-                            <div class="text-sm font-semibold text-gray-700 mt-1">{{ building.section.name|default:"-" }}</div>
-                        </div>
-                        <div>
-                            <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Address</div>
-                            <div class="text-sm font-semibold text-gray-700 mt-1 flex items-start gap-1.5">
-                                <svg class="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="2"
-                                     viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+<div class="space-y-[10px]">
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- TOP ROW: Building Details (Left) + Equipment Overview & Maint (Right) -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <div class="grid grid-cols-1 lg:grid-cols-[1.13fr_1fr] gap-[10px] items-stretch">
+
+        <!-- LEFT CARD: Building Details -->
+        <div class="figma-card-outer h-full">
+            <div class="px-2.5 flex items-center justify-between">
+                <h2 class="text-[16px] font-semibold text-[#2B2823] tracking-tight">Building Details</h2>
+                <a href="{% url 'backend:building_update' building.id %}"
+                   title="Edit Building"
+                   class="w-7 h-7 rounded-[6px] flex items-center justify-center text-[#5C5B59] hover:text-[#0B7A44] hover:bg-white transition-colors">
+                    <svg class="w-[17px] h-[17px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                </a>
+            </div>
+
+            <div class="figma-card-inner flex-1">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-7">
+                    <!-- Column 1 -->
+                    <div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4M9 9v.01M9 12v.01M9 15v.01M9 18v.01" />
                                 </svg>
-                                <span>{{ building.address|default:"-" }}</span>
-                            </div>
+                                <span>Name :</span>
+                            </span>
+                            <span class="detail-value">{{ building.name }}</span>
                         </div>
-                        <div>
-                            <div class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Coordinates</div>
-                            <div class="text-sm font-semibold text-gray-700 mt-1">
-                                {% if building.latitude and building.longitude %}
-                                    {{ building.latitude }}, {{ building.longitude }}
+
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="16" rx="2" />
+                                    <path d="M7 10h2v4H7zM12 10h3a2 2 0 0 1 0 4h-3v-4z" />
+                                </svg>
+                                <span>Building ID :</span>
+                            </span>
+                            <span class="detail-value">{{ building.building_id|default:"-" }}</span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="9" />
+                                    <path d="M9 12l2 2 4-4" />
+                                </svg>
+                                <span>Status :</span>
+                            </span>
+                            <span class="detail-value">
+                                {% if building.status == 'Active' %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#E7F6EC] text-[#0B7A44]">Active</span>
+                                {% elif building.status == 'Inactive' %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#EFEFEF] text-[#5C5B59]">Inactive</span>
+                                {% elif building.status == 'Under Maintenance' %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#FEF3C7] text-[#B45309]">Maintenance</span>
+                                {% else %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#FEE2E2] text-[#D93025]">{{ building.status }}</span>
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                    <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                                    <polyline points="2 12 12 17 22 12" />
+                                    <polyline points="2 17 12 22 22 17" />
+                                </svg>
+                                <span>Site Name :</span>
+                            </span>
+                            <span class="detail-value">{{ building.surname|default:"-" }}</span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                                    <line x1="16" y1="2" x2="16" y2="6" />
+                                    <line x1="8" y1="2" x2="8" y2="6" />
+                                    <line x1="3" y1="10" x2="21" y2="10" />
+                                </svg>
+                                <span>Establishment Date :</span>
+                            </span>
+                            <span class="detail-value">
+                                {% if building.year_of_establishment %}
+                                    {{ building.year_of_establishment|date:"d F Y" }}
                                 {% else %}
                                     -
                                 {% endif %}
-                            </div>
+                            </span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                    <circle cx="12" cy="10" r="3" />
+                                </svg>
+                                <span>Physical Address :</span>
+                            </span>
+                            <span class="detail-value">{{ building.address|default:"-" }}</span>
                         </div>
                     </div>
-                </div>
-                <!-- Quick Actions Card -->
-                <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
-                    <h3 class="text-base font-bold text-gray-800 mb-4 pb-3 border-b border-gray-50">Quick Actions</h3>
-                    <div class="space-y-3">
-                        <!-- Add New Equipment -->
-                        <a href="{% url 'backend:equipment_add' %}?building={{ building.id }}"
-                           class="flex items-center justify-between p-3.5 rounded-lg bg-[#EEF3FF] hover:bg-blue-100/70 text-[#2252EC] font-semibold text-xs transition-colors">
-                            <span>Add New Equipment</span>
-                            <svg class="w-4 h-4"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 stroke-width="2.5"
-                                 viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                            </svg>
-                        </a>
-                        <!-- Create Support Ticket -->
-                        <a href="{% url 'backend:ticket_add' %}?building={{ building.id }}"
-                           class="flex items-center justify-between p-3.5 rounded-lg bg-[#F3F4F6] hover:bg-gray-200/70 text-[#374151] font-semibold text-xs transition-colors">
-                            <span>Create Support Ticket</span>
-                            <svg class="w-4 h-4"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 stroke-width="2.5"
-                                 viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <!-- Right Column: Metrics & Equipment Inventory -->
-            <div class="lg:col-span-2 space-y-6">
-                <!-- Metrics Row -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <!-- Total Assets -->
-                    <div class="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
-                        <div class="w-10 h-10 rounded-lg bg-[#EEF2FF] flex items-center justify-center mb-4">
-                            <svg class="w-5 h-5 text-[#3B5998]"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 stroke-width="2"
-                                 viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                            </svg>
+
+                    <!-- Column 2 -->
+                    <div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                                    <line x1="12" y1="3" x2="12" y2="21" />
+                                    <line x1="3" y1="12" x2="21" y2="12" />
+                                </svg>
+                                <span>Division :</span>
+                            </span>
+                            <span class="detail-value">{{ building.division.name|default:"-" }}</span>
                         </div>
-                        <div class="text-2xl font-extrabold text-gray-900">{{ total_assets }}</div>
-                        <div class="text-[9px] font-bold text-gray-400 tracking-wider uppercase mt-1">Total Assets</div>
-                    </div>
-                    <!-- Lifts -->
-                    <div class="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
-                        <div class="w-10 h-10 rounded-lg bg-[#FFF7ED] flex items-center justify-center mb-4">
-                            <svg class="w-5 h-5 text-[#EA580C]"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 stroke-width="2.5"
-                                 viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                            </svg>
+
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="16" rx="2" />
+                                    <line x1="3" y1="10" x2="21" y2="10" />
+                                </svg>
+                                <span>Subdivision :</span>
+                            </span>
+                            <span class="detail-value">{{ building.subdivision.name|default:"-" }}</span>
                         </div>
-                        <div class="text-2xl font-extrabold text-gray-900">{{ lifts_count }}</div>
-                        <div class="text-[9px] font-bold text-gray-400 tracking-wider uppercase mt-1">Lifts</div>
-                    </div>
-                    <!-- AC Units -->
-                    <div class="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
-                        <div class="w-10 h-10 rounded-lg bg-[#ECFDF5] flex items-center justify-center mb-4">
-                            <svg class="w-5 h-5 text-[#059669]"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 stroke-width="2"
-                                 viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4M20 16H4M20 8H4M10 4h4v16h-4z" class="hidden" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18M6 8h12M8 16h8" />
-                            </svg>
+
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="16" rx="2" />
+                                    <line x1="3" y1="12" x2="21" y2="12" />
+                                </svg>
+                                <span>Section :</span>
+                            </span>
+                            <span class="detail-value">{{ building.section.name|default:"-" }}</span>
                         </div>
-                        <div class="text-2xl font-extrabold text-gray-900">{{ ac_count }}</div>
-                        <div class="text-[9px] font-bold text-gray-400 tracking-wider uppercase mt-1">AC Units</div>
-                    </div>
-                    <!-- Sub-stations -->
-                    <div class="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
-                        <div class="w-10 h-10 rounded-lg bg-[#FEF08A]/30 flex items-center justify-center mb-4">
-                            <svg class="w-5 h-5 text-[#CA8A04]"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 stroke-width="2"
-                                 viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
+
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="9" />
+                                    <line x1="3" y1="12" x2="21" y2="12" />
+                                    <line x1="4.5" y1="8" x2="19.5" y2="8" />
+                                    <line x1="4.5" y1="16" x2="19.5" y2="16" />
+                                </svg>
+                                <span>Latitude :</span>
+                            </span>
+                            <span class="detail-value">{{ building.latitude|default:"-" }}</span>
                         </div>
-                        <div class="text-2xl font-extrabold text-gray-900">{{ substations_count }}</div>
-                        <div class="text-[9px] font-bold text-gray-400 tracking-wider uppercase mt-1">Sub-Stations</div>
-                    </div>
-                </div>
-                <!-- Equipment Inventory Table Card -->
-                <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-                    <!-- Card Header -->
-                    <div class="px-6 py-5 border-b border-gray-50 flex items-center justify-between">
-                        <h3 class="text-base font-bold text-gray-800">Equipment Inventory</h3>
-                        <span class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">{{ total_assets }} Total</span>
-                    </div>
-                    <!-- Table -->
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm text-left whitespace-nowrap">
-                            <thead class="text-[10px] font-bold text-gray-400 tracking-wider uppercase bg-[#F9FAFB] border-b border-gray-100">
-                                <tr>
-                                    <th class="px-6 py-4">ID</th>
-                                    <th class="px-6 py-4">Type</th>
-                                    <th class="px-6 py-4">Brand</th>
-                                    <th class="px-6 py-4">Status</th>
-                                    <th class="px-6 py-4">Location</th>
-                                    <th class="px-6 py-4 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-150">
-                                {% for eq in equipment_list %}
-                                    <tr class="hover:bg-gray-50/40 transition-colors">
-                                        <td class="px-6 py-4 font-semibold text-gray-900">
-                                            <a href="{% url 'backend:equipment_detail' eq.id %}" class="hover:text-blue-600 transition-colors">
-                                                {{ eq.equipment_id|default:"-" }}
-                                            </a>
-                                        </td>
-                                        <td class="px-6 py-4 text-gray-700 text-sm">
-                                            {% if eq.equipment_type %}
-                                                <a href="{% url 'backend:equipment_type_update' eq.equipment_type.id %}" class="hover:text-blue-600 transition-colors">
-                                                    {{ eq.equipment_type.name }}
-                                                </a>
-                                            {% else %}
-                                                <span class="text-gray-400">-</span>
-                                            {% endif %}
-                                        </td>
-                                        <td class="px-6 py-4 text-gray-600 text-sm">{{ eq.brand|default:"-" }}</td>
-                                        <td class="px-6 py-4">
-                                            {% if eq.status == 'active' %}
-                                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#E6F4EA] text-[#137333] border border-[#CEEAD6]">
-                                                    Operational
-                                                </span>
-                                            {% elif eq.status == 'under_maintenance' %}
-                                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#FEF7E0] text-[#B06000] border border-[#FEEFC3]">
-                                                    Maintenance
-                                                </span>
-                                            {% elif eq.status == 'in_repair' %}
-                                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#FFF7ED] text-[#C2410C] border border-[#FFEDD5]">
-                                                    In Repair
-                                                </span>
-                                            {% elif eq.status == 'inactive' %}
-                                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#F1F3F4] text-[#3C4043] border border-[#DADCE0]">
-                                                    Inactive
-                                                </span>
-                                            {% else %}
-                                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#FCE8E6] text-[#C5221F] border border-[#FAD2CF]">
-                                                    {{ eq.get_status_display }}
-                                                </span>
-                                            {% endif %}
-                                        </td>
-                                        <td class="px-6 py-4 text-gray-600 text-sm">{{ eq.floor_location|default:"-" }}</td>
-                                        <td class="px-6 py-4 text-right">
-                                            <div class="inline-block" data-menu-wrap>
-                                                <button type="button"
-                                                        data-menu-btn
-                                                        class="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors">
-                                                    <svg width="18"
-                                                         height="18"
-                                                         viewBox="0 0 24 24"
-                                                         fill="none"
-                                                         stroke="currentColor"
-                                                         stroke-width="2.5">
-                                                        <circle cx="12" cy="5" r="1.5" /><circle cx="12" cy="12" r="1.5" /><circle cx="12" cy="19" r="1.5" />
-                                                    </svg>
-                                                </button>
-                                                <!-- Actions Menu (uses base.html positioning script) -->
-                                                <div data-menu class="hidden py-1 w-36" role="menu">
-                                                    <a href="{% url 'backend:equipment_update' eq.id %}"
-                                                        class="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
-                                                        role="menuitem">Edit Equipment</a>
-                                                    <a href="{% url 'backend:ticket_add' %}?equipment={{ eq.id }}"
-                                                        class="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
-                                                        role="menuitem">Log Maintenance</a>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% empty %}
-                                    <tr>
-                                        <td colspan="6" class="px-6 py-12 text-center text-gray-500">
-                                            <div class="flex flex-col items-center">
-                                                <svg class="w-10 h-10 text-gray-300 mb-2.5"
-                                                     fill="none"
-                                                     stroke="currentColor"
-                                                     viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z">
-                                                    </path>
-                                                </svg>
-                                                <span class="text-xs text-gray-400">No equipment found for this building.</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="9" />
+                                    <ellipse cx="12" cy="12" rx="4" ry="9" />
+                                    <line x1="12" y1="3" x2="12" y2="21" />
+                                </svg>
+                                <span>Longitude :</span>
+                            </span>
+                            <span class="detail-value">{{ building.longitude|default:"-" }}</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+
+        <!-- RIGHT COLUMN: Equipment Overview + Maintenance Status -->
+        <div class="flex flex-col gap-[10px]">
+            <!-- Equipment Overview Card -->
+            <div class="figma-card-outer">
+                <div class="px-2.5 flex items-center justify-between">
+                    <h2 class="text-[16px] font-semibold text-[#2B2823] tracking-tight">Equipment Overview</h2>
+                    <a href="#totalEquipmentsSection"
+                       class="inline-flex items-center gap-0.5 text-[13px] font-semibold text-[#0B7A44] hover:underline">
+                        <span>View All</span>
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                </div>
+
+                <div class="figma-card-inner gap-4">
+                    <!-- Donut Chart + Legend -->
+                    <div class="flex flex-col sm:flex-row items-center gap-6">
+                        <!-- Equipment Overview Donut Chart (same Chart.js doughnut as Overview page) -->
+                        <div class="relative w-[160px] h-[160px] shrink-0">
+                            <canvas id="equipmentDonutChart" width="160" height="160"></canvas>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                <span class="bld-mono text-[24px] font-medium text-[#2B2823] leading-none">{{ total_assets }}</span>
+                                <span class="text-[11px] font-medium text-[#8E8C89] mt-1">Total Equipment</span>
+                            </div>
+                        </div>
+
+                        <!-- Legend Rows -->
+                        <div class="flex-1 w-full divide-y divide-[#F2F2F2]">
+                            <div class="py-2 first:pt-0 flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-3 h-3 rounded-[3px] shrink-0" style="background-color: rgba(255, 107, 22, 0.4);"></span>
+                                    <span class="text-[13px] font-medium text-[#716F6C]">Active</span>
+                                </div>
+                                <span class="bld-mono text-[14px] font-medium text-[#55534F]">{{ active_count|stringformat:"02d" }}</span>
+                            </div>
+                            <div class="py-2 flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-3 h-3 rounded-[3px] bg-[#FDEEC7] shrink-0"></span>
+                                    <span class="text-[13px] font-medium text-[#716F6C]">Maintenance</span>
+                                </div>
+                                <span class="bld-mono text-[14px] font-medium text-[#55534F]">{{ maintenance_count|stringformat:"02d" }}</span>
+                            </div>
+                            <div class="py-2 flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-3 h-3 rounded-[3px] bg-[#FFE4D3] shrink-0"></span>
+                                    <span class="text-[13px] font-medium text-[#716F6C]">In Repair</span>
+                                </div>
+                                <span class="bld-mono text-[14px] font-medium text-[#55534F]">{{ in_repair_count|stringformat:"02d" }}</span>
+                            </div>
+                            <div class="py-2 last:pb-0 flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-3 h-3 rounded-[3px] bg-[#DFDFDE] shrink-0"></span>
+                                    <span class="text-[13px] font-medium text-[#716F6C]">Inactive</span>
+                                </div>
+                                <span class="bld-mono text-[14px] font-medium text-[#55534F]">{{ inactive_count|stringformat:"02d" }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Metric Row -->
+                    <div class="grid grid-cols-2 pt-2 border-t border-[#F2F2F2]">
+                        <div class="pr-4 border-r border-[#F0F0F0]">
+                            <div class="text-[12px] font-medium text-[#9D9C9A]">Total Equipment</div>
+                            <div class="text-[16px] font-semibold text-[#2B2823] mt-0.5">{{ total_assets }}</div>
+                        </div>
+                        <div class="pl-5">
+                            <div class="text-[12px] font-medium text-[#9D9C9A]">Equipment Types</div>
+                            <div class="text-[16px] font-semibold text-[#2B2823] mt-0.5">{{ equipment_types_count }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Maintenance Status Card (Figma: Outer 16/6/6/6 gap 12px, Inner 18/16 gap 10px) -->
+            <div class="figma-card-outer flex-1">
+                <div class="px-2.5 flex items-center justify-between">
+                    <h2 class="text-[16px] font-semibold text-[#2B2823] tracking-tight">Maintenance Status</h2>
+                </div>
+
+                <div class="bg-white rounded-[6px] px-4 py-[18px] flex-1 flex flex-col justify-center gap-2.5">
+                    <div class="flex items-center justify-between gap-4 flex-wrap px-1">
+                        <a href="?maint=scheduled#totalEquipmentsSection"
+                           class="inline-flex items-center gap-2 group">
+                            <span class="text-[13.5px] font-medium text-[#2B2823] underline underline-offset-4 decoration-[#2B2823]/40 group-hover:text-[#0B7A44] group-hover:decoration-[#0B7A44] transition-colors">Scheduled</span>
+                            <span class="inline-flex items-center justify-center min-w-[26px] h-[24px] px-2 rounded-full bg-[#EFEFEF] text-[12.5px] font-semibold text-[#2B2823]">{{ scheduled_count }}</span>
+                        </a>
+
+                        <a href="?maint=overdue#totalEquipmentsSection"
+                           class="inline-flex items-center gap-2 group">
+                            <span class="text-[13.5px] font-medium text-[#2B2823] underline underline-offset-4 decoration-[#2B2823]/40 group-hover:text-[#0B7A44] group-hover:decoration-[#0B7A44] transition-colors">Overdue</span>
+                            <span class="inline-flex items-center justify-center min-w-[26px] h-[24px] px-2 rounded-full bg-[#EFEFEF] text-[12.5px] font-semibold text-[#2B2823]">{{ overdue_count }}</span>
+                        </a>
+
+                        <a href="?maint=due_soon#totalEquipmentsSection"
+                           class="inline-flex items-center gap-2 group">
+                            <span class="text-[13.5px] font-medium text-[#2B2823] underline underline-offset-4 decoration-[#2B2823]/40 group-hover:text-[#D93025] group-hover:decoration-[#D93025] transition-colors">Due soon</span>
+                            <span class="inline-flex items-center justify-center min-w-[26px] h-[24px] px-2 rounded-full bg-[#FEE2E2] text-[12.5px] font-semibold text-[#D93025]">{{ due_soon_count }}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- BOTTOM CARD: Total Equipments Table (Figma: Outer gap 16px, Inner pad 14px) -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <div id="totalEquipmentsSection" class="figma-card-outer !gap-4">
+        <!-- Header & Filters -->
+        <div class="px-2.5 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-2">
+                <h2 class="text-[16px] font-semibold text-[#2B2823] tracking-tight">Total Equipments</h2>
+                <span class="inline-flex items-center justify-center min-w-[28px] h-[24px] px-2 rounded-full bg-[#EAEAE8] text-[12.5px] font-semibold text-[#2B2823]">
+                    {{ filtered_count }}
+                </span>
+            </div>
+
+            <form method="get" id="equipmentFilterForm" class="flex flex-wrap items-center gap-2">
+                <input type="hidden" name="per_page" value="{{ per_page }}">
+                {% if selected_maint %}
+                    <input type="hidden" name="maint" value="{{ selected_maint }}">
+                {% endif %}
+                <select name="type" onchange="this.form.submit()" class="filter-select-pill">
+                    <option value="">All Types</option>
+                    {% for t in filter_types %}
+                        <option value="{{ t.id }}" {% if selected_type == t.id|stringformat:"s" %}selected{% endif %}>{{ t.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <select name="brand" onchange="this.form.submit()" class="filter-select-pill">
+                    <option value="">All Brands</option>
+                    {% for b in filter_brands %}
+                        <option value="{{ b }}" {% if selected_brand == b %}selected{% endif %}>{{ b }}</option>
+                    {% endfor %}
+                </select>
+
+                <select name="status" onchange="this.form.submit()" class="filter-select-pill">
+                    <option value="">All Statuses</option>
+                    {% for val, label in status_choices %}
+                        <option value="{{ val }}" {% if selected_status == val %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+
+                <a href="{% url 'backend:building_details' building.id %}"
+                   class="inline-flex items-center gap-1.5 h-[34px] px-3 rounded-[8px] bg-white border border-[#EAEAE9] text-[13px] font-medium text-[#5C5B59] hover:text-[#2B2823] hover:bg-[#F7F7F6] transition-colors">
+                    <span>Reset</span>
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+                        <path d="M21 3v5h-5" />
+                    </svg>
+                </a>
+            </form>
+        </div>
+
+        <!-- Inner White Table Card (Figma: Radius 6px, Padding 14px) -->
+        <div class="bg-white rounded-[6px] p-[14px] overflow-x-auto custom-scrollbar">
+            <table class="eq-table min-w-[980px]">
+                <thead>
+                    <tr>
+                        <th>Equipment ID</th>
+                        <th>Equipment Name</th>
+                        <th>Equipment Type</th>
+                        <th>Brand</th>
+                        <th>Floor / Room</th>
+                        <th>Status</th>
+                        <th>Installation..</th>
+                        <th>Next Maint..</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for eq in equipment_list %}
+                        <tr>
+                            <td class="bld-mono font-medium text-[#2B2823]">
+                                {{ eq.equipment_id|default:"-" }}
+                            </td>
+                            <td>
+                                <a href="{% url 'backend:equipment_detail' eq.id %}"
+                                   class="font-medium text-[#2B2823] underline underline-offset-2 decoration-[#2B2823]/40 hover:text-[#0B7A44] hover:decoration-[#0B7A44] transition-colors">
+                                    {{ eq.equipment_name|default:eq.equipment_type.name|default:"-" }}
+                                </a>
+                            </td>
+                            <td>
+                                {% if eq.equipment_type %}
+                                    {{ eq.equipment_type.name }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>{{ eq.brand|default:"-" }}</td>
+                            <td>
+                                {% if eq.floor_location and eq.room_location %}
+                                    {{ eq.floor_location }} · {{ eq.room_location }}
+                                {% elif eq.floor_location %}
+                                    {{ eq.floor_location }}
+                                {% elif eq.room_location %}
+                                    {{ eq.room_location }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if eq.status == 'active' %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#E7F6EC] text-[#0B7A44]">Active</span>
+                                {% elif eq.status == 'under_maintenance' %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#FEF3C7] text-[#B45309]">Maintenance</span>
+                                {% elif eq.status == 'in_repair' %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#FFEDD5] text-[#C2410C]">In Repair</span>
+                                {% elif eq.status == 'inactive' %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#EFEFEF] text-[#5C5B59]">Inactive</span>
+                                {% else %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#FEE2E2] text-[#D93025]">{{ eq.get_status_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if eq.installment_date %}
+                                    {{ eq.installment_date|date:"d M Y" }}
+                                {% elif eq.purchase_date %}
+                                    {{ eq.purchase_date|date:"d M Y" }}
+                                {% elif eq.installation_year %}
+                                    {{ eq.installation_year }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if eq.next_service_due %}
+                                    {% if eq.next_service_due < today %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#FEE2E2] text-[#D93025]">Overdue</span>
+                                    {% else %}
+                                        {{ eq.next_service_due|date:"d M Y" }}
+                                    {% endif %}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="inline-block" data-menu-wrap>
+                                    <button type="button"
+                                            data-menu-btn
+                                            aria-label="Actions"
+                                            class="w-7 h-7 rounded-[7px] bg-white border border-[#EAEAE9] inline-flex items-center justify-center text-[#5C5B59] hover:text-[#2B2823] hover:bg-[#F5F5F4] transition-colors">
+                                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                            <circle cx="12" cy="5.5" r="1.5" />
+                                            <circle cx="12" cy="12" r="1.5" />
+                                            <circle cx="12" cy="18.5" r="1.5" />
+                                        </svg>
+                                    </button>
+                                    <div data-menu class="hidden py-1.5 w-40 text-left" role="menu">
+                                        <a href="{% url 'backend:equipment_detail' eq.id %}"
+                                           class="block px-3.5 py-2 text-[12.5px] font-medium text-[#2B2823] hover:bg-[#F5F5F4]"
+                                           role="menuitem">View Details</a>
+                                        <a href="{% url 'backend:equipment_update' eq.id %}"
+                                           class="block px-3.5 py-2 text-[12.5px] font-medium text-[#2B2823] hover:bg-[#F5F5F4]"
+                                           role="menuitem">Edit Equipment</a>
+                                        <a href="{% url 'backend:equipment_qr' eq.id %}"
+                                           class="block px-3.5 py-2 text-[12.5px] font-medium text-[#2B2823] hover:bg-[#F5F5F4]"
+                                           role="menuitem">QR Code</a>
+                                        <a href="{% url 'backend:ticket_add' %}?equipment={{ eq.id }}&building={{ building.id }}"
+                                           class="block px-3.5 py-2 text-[12.5px] font-medium text-[#0B7A44] hover:bg-[#E7F6EC]"
+                                           role="menuitem">Create Ticket</a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="9" class="py-12 text-center">
+                                <p class="text-[13.5px] font-medium text-[#716F6C]">No equipment found for this building.</p>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- PAGINATION BAR (Shared includes/pagination.html, 100% same as /equipment/) -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    {% include 'includes/pagination.html' with data_list=page_obj %}
+</div>
+
+<!-- Hidden Form for Assigning Selected Equipments to this Building -->
+<form id="assignEquipmentsForm" method="post" action="{% url 'backend:building_details' building.id %}" class="hidden">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="assign_equipments">
+    <input type="hidden" name="equipment_ids" id="assignEquipmentIdsInput" value="">
+    <input type="hidden" name="equipments_payload" id="assignEquipmentsPayloadInput" value="[]">
+</form>
+
+<!-- Shared Add Equipment Popup Modal (Unassigned Only) -->
+{% include 'building/includes_add/equipment_modal.html' %}
 {% endblock %}
+
 {% block extra_js %}
-    <script>
-$(document).ready(function () {
-$('.select2-items').select2();
-});
-    </script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script>
+    (function renderEquipmentDonut() {
+        const donutCanvas = document.getElementById('equipmentDonutChart');
+        if (!donutCanvas || typeof Chart === 'undefined') return;
+
+        const eqData = [
+            {{ active_count|default:0 }},
+            {{ maintenance_count|default:0 }},
+            {{ in_repair_count|default:0 }},
+            {{ inactive_count|default:0 }},
+        ];
+        const eqTotal = eqData.reduce((a, b) => a + b, 0);
+        const nonZeroCount = eqData.filter(v => v > 0).length;
+
+        new Chart(donutCanvas, {
+            type: 'doughnut',
+            data: {
+                labels: ['Active', 'Maintenance', 'In Repair', 'Inactive'],
+                datasets: [{
+                    data: eqTotal > 0 ? eqData : [1],
+                    backgroundColor: eqTotal > 0
+                        ? ['rgba(255, 107, 22, 0.4)', '#FDEEC7', '#FFE4D3', '#DFDFDE']
+                        : ['#EAEAE8'],
+                    borderWidth: nonZeroCount > 1 ? 4 : 0,
+                    borderColor: '#FFFFFF',
+                    borderRadius: nonZeroCount > 1 ? 3 : 0,
+                    hoverOffset: 3,
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                cutout: '62%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#2B2A29',
+                        titleFont: { family: 'Urbanist, sans-serif', weight: '600', size: 12 },
+                        bodyFont: { family: 'Geist Mono, monospace', size: 12 },
+                        padding: 10,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label(ctx) {
+                                if (eqTotal === 0) return 'No equipment registered';
+                                const pct = ((ctx.raw / eqTotal) * 100).toFixed(1);
+                                return ` ${ctx.label}: ${ctx.raw} (${pct}%)`;
+                            },
+                        },
+                    },
+                },
+            },
+        });
+    })();
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // ADD EQUIPMENT POPUP MODAL (UNASSIGNED ONLY, SAME AS BUILDING ADD)
+    // ─────────────────────────────────────────────────────────────────────────
+    const DIRECTORY_EQUIPMENTS = {{ directory_equipments_json|default:'[]'|safe }};
+    const CURRENT_BUILDING_NAME = "{{ building.name|escapejs }}";
+    let modalSelectedEquipments = new Map();
+
+    function openEquipmentModal() {
+        modalSelectedEquipments.clear();
+        $('#modalBuildingNameDisplay').text(CURRENT_BUILDING_NAME);
+        $('#modalDirectorySearchInput').val('');
+        $('#btnModalSearchClear').addClass('hidden');
+        $('#modalDirectoryTypeFilter').val('');
+
+        renderDirectoryList();
+        updateModalFooterCount();
+
+        $('#addEquipmentModal').removeClass('hidden');
+        $('body').addClass('overflow-hidden');
+        setTimeout(() => $('#modalDirectorySearchInput').focus(), 50);
+    }
+
+    function closeEquipmentModal() {
+        $('#addEquipmentModal').addClass('hidden');
+        $('body').removeClass('overflow-hidden');
+    }
+
+    $(document).on('keydown', function(e) {
+        if (e.key === 'Escape' && !$('#addEquipmentModal').hasClass('hidden')) {
+            closeEquipmentModal();
+        }
+    });
+
+    function clearModalSearch() {
+        $('#modalDirectorySearchInput').val('').focus();
+        $('#btnModalSearchClear').addClass('hidden');
+        renderDirectoryList();
+    }
+
+    $(document).on('input', '#modalDirectorySearchInput', function() {
+        const val = $(this).val();
+        $('#btnModalSearchClear').toggleClass('hidden', !val);
+        renderDirectoryList();
+    });
+
+    $(document).on('change', '#modalDirectoryTypeFilter', function() {
+        renderDirectoryList();
+    });
+
+    function renderDirectoryList() {
+        const q = ($('#modalDirectorySearchInput').val() || '').toLowerCase().trim();
+        const selectedType = $('#modalDirectoryTypeFilter').val();
+
+        const filtered = DIRECTORY_EQUIPMENTS.filter(eq => {
+            if (!eq.is_unassigned) return false;
+            if (selectedType && String(eq.equipment_type_id) !== String(selectedType)) return false;
+            if (q) {
+                const hay = [
+                    eq.equipment_id, eq.equipment_name, eq.brand,
+                    eq.model_number, eq.serial_number, eq.equipment_type_name
+                ].join(' ').toLowerCase();
+                if (!hay.includes(q)) return false;
+            }
+            return true;
+        });
+
+        const $container = $('#modalDirectoryListContainer');
+        if (filtered.length === 0) {
+            $container.html(`
+                <div class="bg-white rounded-[10px] border border-[#EAEAE9] py-8 px-4 text-center">
+                    <p class="text-[13.5px] font-semibold text-[#2B2823] mb-1">No unassigned equipment found</p>
+                    <p class="text-[12px] text-[#716F6C]">Try adjusting your search or equipment type filter.</p>
+                </div>
+            `);
+            updateModalFooterCount();
+            return;
+        }
+
+        let html = '';
+        filtered.forEach(eq => {
+            const key = String(eq.id);
+            const isSelected = modalSelectedEquipments.has(key);
+            const selData = isSelected ? modalSelectedEquipments.get(key) : eq;
+            const cardBorderClass = isSelected ? 'border-[#0B7A44] bg-[#F7FBF8]' : 'border-[#EAEAE9] bg-white';
+            const checkBgClass = isSelected ? 'bg-[#0B7A44] border-[#0B7A44]' : 'bg-white border-[#D0D0CE]';
+            const checkIcon = isSelected ? `<svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>` : '';
+
+            const safeFloor = (selData.floor_location || '').replace(/"/g, '&quot;');
+            const safeRoom = (selData.room_location || '').replace(/"/g, '&quot;');
+            const safeInstDate = selData.installment_date || '';
+            const safeInstNotes = (selData.installation_notes || '').replace(/</g, '&lt;');
+            const safeDays = selData.maintenance_period_days || 90;
+            const safeUnit = selData.frequency_unit || 'Days';
+            const safeLast = selData.last_maintenance_date || '';
+            const safeNext = selData.next_service_due || '';
+            const safeMaintNotes = (selData.maintenance_notes || '').replace(/</g, '&lt;');
+            const safeBld = CURRENT_BUILDING_NAME.replace(/"/g, '&quot;');
+
+            const expandedPanel = isSelected ? `
+                <div class="mt-3 pt-3 border-t border-[#DCEFE2] space-y-3 cursor-default" onclick="event.stopPropagation()">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="form-label !text-[12.5px] !mb-1">Building <span class="text-[#D93025]">*</span></label>
+                            <input type="text" value="${safeBld}" readonly class="form-input-field !h-[38px] !text-[13px] !bg-[#F5F5F4] text-[#5C5B59] cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="form-label !text-[12.5px] !mb-1">Floor</label>
+                            <input type="text" value="${safeFloor}" placeholder="e.g. Ground Floor, 3"
+                                   oninput="updateSelectedEqField('${key}', 'floor_location', this.value)"
+                                   class="form-input-field !h-[38px] !text-[13px]">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="form-label !text-[12.5px] !mb-1">Room / Location</label>
+                            <input type="text" value="${safeRoom}" placeholder="e.g. Room 502"
+                                   oninput="updateSelectedEqField('${key}', 'room_location', this.value)"
+                                   class="form-input-field !h-[38px] !text-[13px]">
+                        </div>
+                        <div>
+                            <label class="form-label !text-[12.5px] !mb-1">Installation Date <span class="text-[#D93025]">*</span></label>
+                            <input type="date" value="${safeInstDate}"
+                                   onchange="updateSelectedEqField('${key}', 'installment_date', this.value)"
+                                   class="form-input-field !h-[38px] !text-[13px]">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="form-label !text-[12.5px] !mb-1">Installation Notes</label>
+                        <textarea rows="2" placeholder="Optional notes"
+                                  oninput="updateSelectedEqField('${key}', 'installation_notes', this.value)"
+                                  class="w-full bg-white border border-[#EAEAE9] rounded-[11px] px-3 py-2 text-[13px] text-[#2B2823] outline-none focus:border-[#0B7A44] resize-none">${safeInstNotes}</textarea>
+                    </div>
+
+                    <div class="pt-2 border-t border-[#E6EFE9] space-y-3">
+                        <div class="text-[13px] font-bold text-[#2B2823]">Maintenance Scheduling</div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="form-label !text-[12.5px] !mb-1">Maintenance Every <span class="text-[#D93025]">*</span></label>
+                                <input type="number" min="1" value="${safeDays}"
+                                       oninput="updateSelectedEqField('${key}', 'maintenance_period_days', this.value, true)"
+                                       class="form-input-field !h-[38px] !text-[13px]">
+                            </div>
+                            <div>
+                                <label class="form-label !text-[12.5px] !mb-1">Frequency Unit <span class="text-[#D93025]">*</span></label>
+                                <select onchange="updateSelectedEqField('${key}', 'frequency_unit', this.value, true)"
+                                        class="form-select-field !h-[38px] !text-[13px]">
+                                    <option value="Days" ${safeUnit === 'Days' ? 'selected' : ''}>Days</option>
+                                    <option value="Months" ${safeUnit === 'Months' ? 'selected' : ''}>Months</option>
+                                    <option value="Years" ${safeUnit === 'Years' ? 'selected' : ''}>Years</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="form-label !text-[12.5px] !mb-1">Last Services Date</label>
+                                <input type="date" value="${safeLast}"
+                                       onchange="updateSelectedEqField('${key}', 'last_maintenance_date', this.value, true)"
+                                       class="form-input-field !h-[38px] !text-[13px]">
+                                <p class="text-[11px] text-[#969491] mt-1">Optional for newly installed equipment.</p>
+                            </div>
+                            <div>
+                                <label class="form-label !text-[12.5px] !mb-1">Next Service Due</label>
+                                <input type="date" id="modalNextDue_${key}" value="${safeNext}"
+                                       onchange="updateSelectedEqField('${key}', 'next_service_due', this.value)"
+                                       class="form-input-field !h-[38px] !text-[13px]">
+                                <p class="text-[11px] text-[#969491] mt-1">Auto-calculated from last service date, or set manually.</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="form-label !text-[12.5px] !mb-1">Maintenance Notes</label>
+                            <textarea rows="2" placeholder="Optional notes"
+                                      oninput="updateSelectedEqField('${key}', 'maintenance_notes', this.value)"
+                                      class="w-full bg-white border border-[#EAEAE9] rounded-[11px] px-3 py-2 text-[13px] text-[#2B2823] outline-none focus:border-[#0B7A44] resize-none">${safeMaintNotes}</textarea>
+                        </div>
+                    </div>
+                </div>
+            ` : '';
+
+            html += `
+                <div class="equipment-directory-card p-3 rounded-[10px] border ${cardBorderClass} shadow-[0_1px_2px_rgba(0,0,0,0.02)] hover:border-[#0B7A44] transition-all">
+                    <div class="cursor-pointer select-none flex items-start gap-3" onclick="toggleDirectoryEquipment('${key}')">
+                        <div class="w-5 h-5 rounded-[5px] border ${checkBgClass} flex items-center justify-center shrink-0 mt-0.5 transition-colors">
+                            ${checkIcon}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-2 flex-wrap">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="bld-mono font-bold text-[13px] text-[#2B2823]">${eq.equipment_id}</span>
+                                    <span class="font-semibold text-[13px] text-[#2B2823] truncate max-w-[180px]">${eq.equipment_name || ''}</span>
+                                    <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#F0F0F0] text-[#5C5B59]">${eq.equipment_type_name}</span>
+                                </div>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#E7F6EC] text-[#0B7A44]">Unassigned</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-[12px] text-[#716F6C] mt-1 flex-wrap">
+                                ${eq.brand ? `<span>Brand: <strong class="text-[#4A4947] font-medium">${eq.brand}</strong></span>` : ''}
+                                ${eq.model_number ? `<span>Model: <strong class="text-[#4A4947] font-medium">${eq.model_number}</strong></span>` : ''}
+                                ${selData.floor_location ? `<span class="inline-flex items-center gap-1 text-[#0B7A44]">📍 ${selData.floor_location}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    ${expandedPanel}
+                </div>
+            `;
+        });
+
+        $container.html(html);
+        updateModalFooterCount();
+    }
+
+    function updateSelectedEqField(key, field, value, recalcNextDue = false) {
+        const item = modalSelectedEquipments.get(key);
+        if (!item) return;
+        item[field] = value;
+
+        if (recalcNextDue && item.last_maintenance_date) {
+            const parts = item.last_maintenance_date.split('-');
+            if (parts.length === 3) {
+                const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+                const period = parseInt(item.maintenance_period_days) || 90;
+                const unit = item.frequency_unit || 'Days';
+                if (unit === 'Months') {
+                    d.setMonth(d.getMonth() + period);
+                } else if (unit === 'Years') {
+                    d.setFullYear(d.getFullYear() + period);
+                } else {
+                    d.setDate(d.getDate() + period);
+                }
+                const yyyy = d.getFullYear();
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const dd = String(d.getDate()).padStart(2, '0');
+                const computed = `${yyyy}-${mm}-${dd}`;
+                item.next_service_due = computed;
+                const nextEl = document.getElementById(`modalNextDue_${key}`);
+                if (nextEl) nextEl.value = computed;
+            }
+        }
+    }
+
+    function toggleDirectoryEquipment(key) {
+        if (modalSelectedEquipments.has(key)) {
+            modalSelectedEquipments.delete(key);
+        } else {
+            const item = DIRECTORY_EQUIPMENTS.find(eq => String(eq.id) === key);
+            if (item) modalSelectedEquipments.set(key, Object.assign({}, item));
+        }
+        renderDirectoryList();
+    }
+
+    function updateModalFooterCount() {
+        $('#btnModalApplyCountBadge').text(modalSelectedEquipments.size);
+    }
+
+    function applyModalSelection() {
+        const items = Array.from(modalSelectedEquipments.values());
+        if (items.length === 0) {
+            closeEquipmentModal();
+            return;
+        }
+        $('#assignEquipmentIdsInput').val(items.map(i => i.id).join(','));
+        $('#assignEquipmentsPayloadInput').val(JSON.stringify(items));
+        document.getElementById('assignEquipmentsForm').submit();
+    }
+</script>
 {% endblock %}

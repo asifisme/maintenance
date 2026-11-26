@@ -1,0 +1,291 @@
+<!-- Shared Topbar Notification Bell & Popover -->
+<div id="globalNotifWrap" class="relative" data-mark-all-url="{% url 'backend:notification_mark_all_read' %}">
+    <button id="globalNotifBtn"
+            type="button"
+            aria-label="Notifications"
+            aria-expanded="false"
+            class="w-9 h-9 rounded-[8px] bg-white border border-[#EAEAE9] flex items-center justify-center text-[#5C5B59] hover:bg-[#F7F7F6] hover:text-[#2B2823] transition-colors relative shadow-[0_1px_2px_rgba(0,0,0,0.03)] shrink-0 cursor-pointer">
+        <svg class="w-[17px] h-[17px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+        </svg>
+        <span id="globalNotifDot"
+              class="{% if not unread_notifications_count %}hidden {% endif %}absolute -top-1 -right-1 min-w-[17px] h-[17px] px-1 rounded-full bg-[#FF0505] text-white text-[10px] font-bold leading-none flex items-center justify-center ring-2 ring-[#F2F2F2]">
+            {% if unread_notifications_count > 9 %}9+{% else %}{{ unread_notifications_count|default:0 }}{% endif %}
+        </span>
+    </button>
+
+    <!-- Notification Dropdown Popover -->
+    <div id="globalNotifMenu"
+         class="hidden absolute right-0 mt-2 w-[330px] sm:w-[390px] rounded-[12px] bg-white border border-[#E5E5E3] shadow-[0_14px_34px_rgba(0,0,0,0.12)] z-50 overflow-hidden"
+         style="font-family: 'Urbanist', Inter, system-ui, sans-serif;">
+        <!-- Header -->
+        <div class="px-4 py-3 bg-[#F9F9F9] border-b border-[#EFEFED] flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+                <span class="text-[14.5px] font-semibold text-[#2B2823]">Notifications</span>
+                <span id="globalNotifCountPill"
+                      class="{% if not unread_notifications_count %}hidden {% endif %}inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#FFE0E0] text-[#D93025]">
+                    {{ unread_notifications_count|default:0 }} Unread
+                </span>
+            </div>
+            <button type="button"
+                    id="globalNotifMarkAllBtn"
+                    class="{% if not unread_notifications_count %}hidden {% endif %}text-[12px] font-semibold text-[#0B7A44] hover:underline cursor-pointer">
+                Mark all read
+            </button>
+        </div>
+
+        <!-- Quick Tabs -->
+        <div class="px-3 py-2 bg-white border-b border-[#F2F2F0] flex items-center gap-1.5">
+            <button type="button"
+                    data-notif-tab="all"
+                    class="notif-tab-btn px-2.5 py-1 rounded-[6px] text-[12px] font-semibold bg-[#2B2823] text-white cursor-pointer transition-colors">
+                All
+            </button>
+            <button type="button"
+                    data-notif-tab="unread"
+                    class="notif-tab-btn px-2.5 py-1 rounded-[6px] text-[12px] font-semibold bg-[#F3F3F2] text-[#5C5B59] hover:text-[#2B2823] cursor-pointer transition-colors">
+                Unread
+            </button>
+        </div>
+
+        <!-- Notification Items List -->
+        <div id="globalNotifList" class="max-h-[360px] overflow-y-auto divide-y divide-[#F2F2F0]">
+            {% for n in header_notifications %}
+                <div class="notif-item-row group relative flex items-start gap-3 px-3.5 py-3 transition-colors {% if not n.is_read %}bg-[#F4FBF6] hover:bg-[#EBF7EF]{% else %}bg-white hover:bg-[#FAFAFA]{% endif %}"
+                     data-notif-id="{{ n.id }}"
+                     data-is-read="{% if n.is_read %}1{% else %}0{% endif %}">
+                    <!-- Category Icon -->
+                    <div class="w-8 h-8 rounded-[8px] flex items-center justify-center shrink-0 mt-0.5
+                        {% if n.level == 'critical' or n.category == 'revision_requested' or n.category == 'maintenance_overdue' %}bg-[#FCE8E6] text-[#C5221F]
+                        {% elif n.level == 'success' or n.category == 'review_approved' %}bg-[#E7F6EC] text-[#0B7A44]
+                        {% elif n.category == 'submitted_review' %}bg-[#EEF2FF] text-[#4338CA]
+                        {% elif n.level == 'warning' or n.category == 'work_started' or n.category == 'maintenance_due' %}bg-[#FEF3C7] text-[#B45309]
+                        {% elif n.category == 'task_assigned' %}bg-[#F3E8FD] text-[#7C3AED]
+                        {% else %}bg-[#E8F0FE] text-[#1A73E8]{% endif %}">
+                        {% if n.category == 'review_approved' %}
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        {% elif n.category == 'revision_requested' or n.category == 'maintenance_overdue' or n.category == 'task_rejected' %}
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        {% elif n.category == 'submitted_review' %}
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><polyline points="9 15 11 17 15 13"></polyline></svg>
+                        {% elif n.category == 'task_assigned' or n.category == 'task_accepted' %}
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>
+                        {% elif n.category == 'work_started' or n.category == 'maintenance_due' %}
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        {% else %}
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                        {% endif %}
+                    </div>
+
+                    <!-- Content Link -->
+                    <a href="{% url 'backend:notification_open' n.id %}" class="flex-1 min-w-0">
+                        <div class="flex items-start justify-between gap-2">
+                            <p class="text-[13px] leading-snug {% if not n.is_read %}font-semibold text-[#2B2823]{% else %}font-medium text-[#4A4947]{% endif %}">
+                                {{ n.title }}
+                            </p>
+                            {% if not n.is_read %}
+                                <span class="notif-unread-dot w-2 h-2 rounded-full bg-[#0B7A44] shrink-0 mt-1.5"></span>
+                            {% endif %}
+                        </div>
+                        {% if n.message %}
+                            <p class="text-[12px] text-[#716F6C] mt-0.5 line-clamp-2 leading-snug">{{ n.message }}</p>
+                        {% endif %}
+                        <div class="flex items-center gap-2 mt-1 text-[11px] text-[#9D9C9A]">
+                            <span>{{ n.get_category_display }}</span>
+                            <span>&bull;</span>
+                            <span>{{ n.created_at|timesince }} ago</span>
+                        </div>
+                    </a>
+
+                    <!-- Quick Mark Read Button -->
+                    {% if not n.is_read %}
+                        <button type="button"
+                                title="Mark as read"
+                                data-mark-read-url="{% url 'backend:notification_mark_read' n.id %}"
+                                class="notif-quick-read opacity-0 group-hover:opacity-100 w-6 h-6 rounded-full bg-white border border-[#DCEFE2] text-[#0B7A44] hover:bg-[#0B7A44] hover:text-white flex items-center justify-center shrink-0 transition-all cursor-pointer mt-0.5">
+                            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </button>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <div class="px-5 py-9 text-center">
+                    <div class="w-10 h-10 rounded-full bg-[#F3F3F2] text-[#9D9C9A] flex items-center justify-center mx-auto mb-2">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                    </div>
+                    <p class="text-[13px] font-semibold text-[#2B2823]">All caught up!</p>
+                    <p class="text-[12px] text-[#8E8C89] mt-0.5">No notifications right now.</p>
+                </div>
+            {% endfor %}
+            <div id="globalNotifEmptyUnread" class="hidden px-5 py-8 text-center">
+                <p class="text-[13px] font-semibold text-[#2B2823]">No unread notifications</p>
+                <p class="text-[12px] text-[#8E8C89] mt-0.5">Switch to "All" to view past alerts.</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="px-4 py-2.5 bg-[#F9F9F9] border-t border-[#EFEFED] flex items-center justify-between">
+            <a href="{% url 'backend:notification_list' %}"
+               class="w-full text-center text-[12.5px] font-semibold text-[#0B7A44] hover:underline flex items-center justify-center gap-1">
+                <span>View all notifications</span>
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 5l7 7-7 7"></path></svg>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+(function initGlobalNotificationBell() {
+    if (window.__globalNotifInit) return;
+    window.__globalNotifInit = true;
+
+    const wrap = document.getElementById('globalNotifWrap');
+    const btn = document.getElementById('globalNotifBtn');
+    const menu = document.getElementById('globalNotifMenu');
+    if (!wrap || !btn || !menu) return;
+
+    function getCsrfToken() {
+        const match = document.cookie.match(/(?:^|;\s*)csrftoken=([^;]+)/);
+        return match ? decodeURIComponent(match[1]) : '';
+    }
+
+    function updateUnreadBadges(count) {
+        const dot = document.getElementById('globalNotifDot');
+        const pill = document.getElementById('globalNotifCountPill');
+        const markAllBtn = document.getElementById('globalNotifMarkAllBtn');
+        const n = Math.max(0, Number(count) || 0);
+        if (dot) {
+            if (n > 0) {
+                dot.textContent = n > 9 ? '9+' : String(n);
+                dot.classList.remove('hidden');
+            } else {
+                dot.classList.add('hidden');
+            }
+        }
+        if (pill) {
+            if (n > 0) {
+                pill.textContent = n + ' Unread';
+                pill.classList.remove('hidden');
+            } else {
+                pill.classList.add('hidden');
+            }
+        }
+        if (markAllBtn) {
+            markAllBtn.classList.toggle('hidden', n === 0);
+        }
+    }
+
+    let currentTab = 'all';
+    function applyNotifTab(tab) {
+        currentTab = tab;
+        const rows = menu.querySelectorAll('.notif-item-row');
+        let visibleCount = 0;
+        rows.forEach(function(row) {
+            const isRead = row.dataset.isRead === '1';
+            const show = (tab === 'all') || !isRead;
+            row.classList.toggle('hidden', !show);
+            if (show) visibleCount += 1;
+        });
+        const emptyUnread = document.getElementById('globalNotifEmptyUnread');
+        if (emptyUnread) {
+            emptyUnread.classList.toggle('hidden', !(tab === 'unread' && visibleCount === 0 && rows.length > 0));
+        }
+        menu.querySelectorAll('.notif-tab-btn').forEach(function(tBtn) {
+            const active = tBtn.dataset.notifTab === tab;
+            tBtn.className = active
+                ? 'notif-tab-btn px-2.5 py-1 rounded-[6px] text-[12px] font-semibold bg-[#2B2823] text-white cursor-pointer transition-colors'
+                : 'notif-tab-btn px-2.5 py-1 rounded-[6px] text-[12px] font-semibold bg-[#F3F3F2] text-[#5C5B59] hover:text-[#2B2823] cursor-pointer transition-colors';
+        });
+    }
+
+    btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isOpen = !menu.classList.contains('hidden');
+        menu.classList.toggle('hidden', isOpen);
+        btn.setAttribute('aria-expanded', String(!isOpen));
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!wrap.contains(e.target)) {
+            menu.classList.add('hidden');
+            btn.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            menu.classList.add('hidden');
+            btn.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    menu.querySelectorAll('.notif-tab-btn').forEach(function(tBtn) {
+        tBtn.addEventListener('click', function() {
+            applyNotifTab(this.dataset.notifTab || 'all');
+        });
+    });
+
+    // Quick Mark Single Notification Read
+    menu.querySelectorAll('.notif-quick-read').forEach(function(qBtn) {
+        qBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const url = this.dataset.markReadUrl;
+            const row = this.closest('.notif-item-row');
+            if (!url || !row) return;
+            fetch(url, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': getCsrfToken(), 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data && data.success) {
+                    row.dataset.isRead = '1';
+                    row.classList.remove('bg-[#F4FBF6]', 'hover:bg-[#EBF7EF]');
+                    row.classList.add('bg-white', 'hover:bg-[#FAFAFA]');
+                    const dot = row.querySelector('.notif-unread-dot');
+                    if (dot) dot.remove();
+                    qBtn.remove();
+                    updateUnreadBadges(data.unread_count);
+                    applyNotifTab(currentTab);
+                }
+            })
+            .catch(function() {});
+        });
+    });
+
+    // Mark All Read
+    const markAllBtn = document.getElementById('globalNotifMarkAllBtn');
+    if (markAllBtn) {
+        markAllBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const url = wrap.dataset.markAllUrl;
+            if (!url) return;
+            fetch(url, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': getCsrfToken(), 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data && data.success) {
+                    menu.querySelectorAll('.notif-item-row').forEach(function(row) {
+                        row.dataset.isRead = '1';
+                        row.classList.remove('bg-[#F4FBF6]', 'hover:bg-[#EBF7EF]');
+                        row.classList.add('bg-white', 'hover:bg-[#FAFAFA]');
+                        const dot = row.querySelector('.notif-unread-dot');
+                        if (dot) dot.remove();
+                        const qb = row.querySelector('.notif-quick-read');
+                        if (qb) qb.remove();
+                    });
+                    updateUnreadBadges(0);
+                    applyNotifTab(currentTab);
+                }
+            })
+            .catch(function() {});
+        });
+    }
+})();
+</script>

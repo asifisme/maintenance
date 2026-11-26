@@ -1,962 +1,4802 @@
 [
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 1,
-        "fields": {
-            "equipment": 1,
-            "name": "Stage 1 Drive Assembly (EQ-MHT-CHIL-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Carrier 19XR-400T.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 2,
-        "fields": {
-            "equipment": 1,
-            "name": "Primary Sensor & Control Harness (EQ-MHT-CHIL-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Carrier 19XR-400T.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 3,
-        "fields": {
-            "equipment": 2,
-            "name": "Stage 1 Drive Assembly (EQ-MHT-ELV-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Otis SkyRise PM-60.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 4,
-        "fields": {
-            "equipment": 2,
-            "name": "Primary Sensor & Control Harness (EQ-MHT-ELV-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Otis SkyRise PM-60.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 5,
-        "fields": {
-            "equipment": 3,
-            "name": "Stage 1 Drive Assembly (EQ-MHT-ELV-02)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Otis SkyRise PM-60.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 6,
-        "fields": {
-            "equipment": 3,
-            "name": "Primary Sensor & Control Harness (EQ-MHT-ELV-02)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Otis SkyRise PM-60.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 7,
-        "fields": {
-            "equipment": 4,
-            "name": "Stage 1 Drive Assembly (EQ-MHT-GEN-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Caterpillar CAT-3516B-HD.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 8,
-        "fields": {
-            "equipment": 4,
-            "name": "Primary Sensor & Control Harness (EQ-MHT-GEN-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Caterpillar CAT-3516B-HD.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 9,
-        "fields": {
-            "equipment": 5,
-            "name": "Stage 1 Drive Assembly (EQ-MHT-AHU-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Trane ClimateChanger CSAA-050.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 10,
-        "fields": {
-            "equipment": 5,
-            "name": "Primary Sensor & Control Harness (EQ-MHT-AHU-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Trane ClimateChanger CSAA-050.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 11,
-        "fields": {
-            "equipment": 6,
-            "name": "Stage 1 Drive Assembly (EQ-SJP-GEN-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Cummins QSK60-G9.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 12,
-        "fields": {
-            "equipment": 6,
-            "name": "Primary Sensor & Control Harness (EQ-SJP-GEN-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Cummins QSK60-G9.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 13,
-        "fields": {
-            "equipment": 7,
-            "name": "Stage 1 Drive Assembly (EQ-SJP-AHU-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Daikin Vision VSA-40.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 14,
-        "fields": {
-            "equipment": 7,
-            "name": "Primary Sensor & Control Harness (EQ-SJP-AHU-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Daikin Vision VSA-40.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 15,
-        "fields": {
-            "equipment": 8,
-            "name": "Stage 1 Drive Assembly (EQ-SJP-ELV-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Schindler Schindler 7000.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 16,
-        "fields": {
-            "equipment": 8,
-            "name": "Primary Sensor & Control Harness (EQ-SJP-ELV-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Schindler Schindler 7000.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 17,
-        "fields": {
-            "equipment": 9,
-            "name": "Stage 1 Drive Assembly (EQ-SJP-CHIL-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for York YK MaxE 500-Ton.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 18,
-        "fields": {
-            "equipment": 9,
-            "name": "Primary Sensor & Control Harness (EQ-SJP-CHIL-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for York YK MaxE 500-Ton.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 19,
-        "fields": {
-            "equipment": 10,
-            "name": "Stage 1 Drive Assembly (EQ-ATH-UPS-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Vertiv Liebert EXL S1 800kVA.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 20,
-        "fields": {
-            "equipment": 10,
-            "name": "Primary Sensor & Control Harness (EQ-ATH-UPS-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Vertiv Liebert EXL S1 800kVA.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 21,
-        "fields": {
-            "equipment": 11,
-            "name": "Stage 1 Drive Assembly (EQ-ATH-UPS-02)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Vertiv Liebert EXL S1 800kVA.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 22,
-        "fields": {
-            "equipment": 11,
-            "name": "Primary Sensor & Control Harness (EQ-ATH-UPS-02)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Vertiv Liebert EXL S1 800kVA.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 23,
-        "fields": {
-            "equipment": 12,
-            "name": "Stage 1 Drive Assembly (EQ-ATH-FIRE-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Siemens Sinorix FM-200 Matrix.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 24,
-        "fields": {
-            "equipment": 12,
-            "name": "Primary Sensor & Control Harness (EQ-ATH-FIRE-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Siemens Sinorix FM-200 Matrix.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 25,
-        "fields": {
-            "equipment": 13,
-            "name": "Stage 1 Drive Assembly (EQ-ATH-GEN-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Caterpillar CAT-3516C 2000kW.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 26,
-        "fields": {
-            "equipment": 13,
-            "name": "Primary Sensor & Control Harness (EQ-ATH-GEN-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Caterpillar CAT-3516C 2000kW.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 27,
-        "fields": {
-            "equipment": 14,
-            "name": "Stage 1 Drive Assembly (EQ-VAM-CHIL-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Trane CenTraVac CVHE-500.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 28,
-        "fields": {
-            "equipment": 14,
-            "name": "Primary Sensor & Control Harness (EQ-VAM-CHIL-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Trane CenTraVac CVHE-500.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 29,
-        "fields": {
-            "equipment": 15,
-            "name": "Stage 1 Drive Assembly (EQ-VAM-DDC-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Siemens Desigo PXC4.E16.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 30,
-        "fields": {
-            "equipment": 15,
-            "name": "Primary Sensor & Control Harness (EQ-VAM-DDC-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Siemens Desigo PXC4.E16.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 31,
-        "fields": {
-            "equipment": 16,
-            "name": "Stage 1 Drive Assembly (EQ-CIR-AHU-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Carrier Aero 39M Custom Air Handler.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 32,
-        "fields": {
-            "equipment": 16,
-            "name": "Primary Sensor & Control Harness (EQ-CIR-AHU-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Carrier Aero 39M Custom Air Handler.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 33,
-        "fields": {
-            "equipment": 17,
-            "name": "Stage 1 Drive Assembly (EQ-CIR-BOIL-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Cleaver-Brooks CB-700-150-150#.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 34,
-        "fields": {
-            "equipment": 17,
-            "name": "Primary Sensor & Control Harness (EQ-CIR-BOIL-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Cleaver-Brooks CB-700-150-150#.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 35,
-        "fields": {
-            "equipment": 18,
-            "name": "Stage 1 Drive Assembly (EQ-PGL-GEN-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Kohler KD1000 Tier 4 Final.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 36,
-        "fields": {
-            "equipment": 18,
-            "name": "Primary Sensor & Control Harness (EQ-PGL-GEN-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Kohler KD1000 Tier 4 Final.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 37,
-        "fields": {
-            "equipment": 19,
-            "name": "Stage 1 Drive Assembly (EQ-PGL-FIRE-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Kidde Fire Novec 1230 Engineered System.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 38,
-        "fields": {
-            "equipment": 19,
-            "name": "Primary Sensor & Control Harness (EQ-PGL-FIRE-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Kidde Fire Novec 1230 Engineered System.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 39,
-        "fields": {
-            "equipment": 20,
-            "name": "Stage 1 Drive Assembly (EQ-HRC-CHIL-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Daikin Magnitude WME-500.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 40,
-        "fields": {
-            "equipment": 20,
-            "name": "Primary Sensor & Control Harness (EQ-HRC-CHIL-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Daikin Magnitude WME-500.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 41,
-        "fields": {
-            "equipment": 21,
-            "name": "Stage 1 Drive Assembly (EQ-HRC-ELV-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for KONE MonoSpace 700.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 42,
-        "fields": {
-            "equipment": 21,
-            "name": "Primary Sensor & Control Harness (EQ-HRC-ELV-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for KONE MonoSpace 700.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 43,
-        "fields": {
-            "equipment": 22,
-            "name": "Stage 1 Drive Assembly (EQ-SES-SOL-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for SMA Solar Sunny Central 2500-EV.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 44,
-        "fields": {
-            "equipment": 22,
-            "name": "Primary Sensor & Control Harness (EQ-SES-SOL-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for SMA Solar Sunny Central 2500-EV.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 45,
-        "fields": {
-            "equipment": 23,
-            "name": "Stage 1 Drive Assembly (EQ-SES-SOL-02)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for SMA Solar Sunny Central 2500-EV.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 46,
-        "fields": {
-            "equipment": 23,
-            "name": "Primary Sensor & Control Harness (EQ-SES-SOL-02)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for SMA Solar Sunny Central 2500-EV.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 47,
-        "fields": {
-            "equipment": 24,
-            "name": "Stage 1 Drive Assembly (EQ-SCF-ELV-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Otis SkyRise High-Speed Traction.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 48,
-        "fields": {
-            "equipment": 24,
-            "name": "Primary Sensor & Control Harness (EQ-SCF-ELV-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Otis SkyRise High-Speed Traction.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 49,
-        "fields": {
-            "equipment": 25,
-            "name": "Stage 1 Drive Assembly (EQ-SCF-CHIL-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for York YMC2 Magnetic Chiller 400T.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 50,
-        "fields": {
-            "equipment": 25,
-            "name": "Primary Sensor & Control Harness (EQ-SCF-CHIL-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for York YMC2 Magnetic Chiller 400T.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 51,
-        "fields": {
-            "equipment": 26,
-            "name": "Stage 1 Drive Assembly (EQ-OCD-AMM-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Vilter / Emerson Single Screw VSS-601.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 52,
-        "fields": {
-            "equipment": 26,
-            "name": "Primary Sensor & Control Harness (EQ-OCD-AMM-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Vilter / Emerson Single Screw VSS-601.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 53,
-        "fields": {
-            "equipment": 27,
-            "name": "Stage 1 Drive Assembly (EQ-OCD-AMM-02)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Vilter / Emerson Single Screw VSS-601.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 54,
-        "fields": {
-            "equipment": 27,
-            "name": "Primary Sensor & Control Harness (EQ-OCD-AMM-02)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Vilter / Emerson Single Screw VSS-601.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 55,
-        "fields": {
-            "equipment": 28,
-            "name": "Stage 1 Drive Assembly (EQ-CEP-DDC-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Honeywell WEBs-N4 JACE 8000.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 56,
-        "fields": {
-            "equipment": 28,
-            "name": "Primary Sensor & Control Harness (EQ-CEP-DDC-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Honeywell WEBs-N4 JACE 8000.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 57,
-        "fields": {
-            "equipment": 29,
-            "name": "Stage 1 Drive Assembly (EQ-BHE-AHU-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Carrier WeatherMaker 48TC.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 58,
-        "fields": {
-            "equipment": 29,
-            "name": "Primary Sensor & Control Harness (EQ-BHE-AHU-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Carrier WeatherMaker 48TC.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 59,
-        "fields": {
-            "equipment": 30,
-            "name": "Stage 1 Drive Assembly (EQ-MHS-BOIL-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Cleaver-Brooks ClearFire-C CFC-700.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 60,
-        "fields": {
-            "equipment": 30,
-            "name": "Primary Sensor & Control Harness (EQ-MHS-BOIL-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Cleaver-Brooks ClearFire-C CFC-700.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 61,
-        "fields": {
-            "equipment": 31,
-            "name": "Stage 1 Drive Assembly (EQ-CPS-BOIL-99)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Babcock & Wilcox FM-9 Industrial Watertube.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 62,
-        "fields": {
-            "equipment": 31,
-            "name": "Primary Sensor & Control Harness (EQ-CPS-BOIL-99)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Babcock & Wilcox FM-9 Industrial Watertube.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 63,
-        "fields": {
-            "equipment": 32,
-            "name": "Stage 1 Drive Assembly (EQ-AMO-GEN-01)",
-            "description": "Main motorized drive mechanism and rotational shaft bearings for Caterpillar CAT-3412 DITA.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponents",
-        "pk": 64,
-        "fields": {
-            "equipment": 32,
-            "name": "Primary Sensor & Control Harness (EQ-AMO-GEN-01)",
-            "description": "Instrumentation sensor bundle and telemetry communication harness for Caterpillar CAT-3412 DITA.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-02-20T08:00:00Z",
-            "updated_at": "2026-02-20T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 301,
+    "fields": {
+      "equipment": 1,
+      "name": "Compressor Unit",
+      "description": "Primary scroll/screw refrigerant compressor",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
     }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 302,
+    "fields": {
+      "equipment": 1,
+      "name": "Condenser & Evaporator Coils",
+      "description": "Heat exchange coil assembly and fins",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 303,
+    "fields": {
+      "equipment": 1,
+      "name": "Air Filter & Blower Fan",
+      "description": "HEPA intake filter bank and centrifugal blower",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 304,
+    "fields": {
+      "equipment": 1,
+      "name": "Thermostat & Control PCB",
+      "description": "Digital BMS temperature controller and relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 305,
+    "fields": {
+      "equipment": 2,
+      "name": "Hoist Traction Motor",
+      "description": "Main variable-frequency traction machine",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 306,
+    "fields": {
+      "equipment": 2,
+      "name": "Safety Brake & Governor",
+      "description": "Overspeed governor and dual electromagnetic brakes",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 307,
+    "fields": {
+      "equipment": 2,
+      "name": "Door Operator & Sensor Curtain",
+      "description": "Infrared light curtain and door drive belt",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 308,
+    "fields": {
+      "equipment": 2,
+      "name": "Car Operating Panel & Intercom",
+      "description": "Floor selector PCB and emergency call unit",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 309,
+    "fields": {
+      "equipment": 3,
+      "name": "Diesel Engine & Fuel Injectors",
+      "description": "High-pressure common rail fuel injection assembly",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 310,
+    "fields": {
+      "equipment": 3,
+      "name": "Alternator & AVR Module",
+      "description": "Brushless synchronous alternator and voltage regulator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 311,
+    "fields": {
+      "equipment": 3,
+      "name": "Automatic Transfer Switch (ATS)",
+      "description": "Mains-to-generator automatic changeover contactor",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 312,
+    "fields": {
+      "equipment": 3,
+      "name": "Cooling Radiator & Starter Battery",
+      "description": "Coolant circuit, fan belt, and 24V cranking bank",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 313,
+    "fields": {
+      "equipment": 4,
+      "name": "Addressable Fire Control Panel",
+      "description": "Main FACP loop controller and annunciator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 314,
+    "fields": {
+      "equipment": 4,
+      "name": "Optical Smoke & Heat Detectors",
+      "description": "Ceiling-mounted addressable detection loop",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 315,
+    "fields": {
+      "equipment": 4,
+      "name": "Backup Battery Bank",
+      "description": "Dual 12V sealed lead-acid standby batteries",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 316,
+    "fields": {
+      "equipment": 4,
+      "name": "Alarm Sounders & Strobe Loop",
+      "description": "Audible sirens and visual strobe beacons",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 317,
+    "fields": {
+      "equipment": 5,
+      "name": "Compressor Unit",
+      "description": "Primary scroll/screw refrigerant compressor",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 318,
+    "fields": {
+      "equipment": 5,
+      "name": "Condenser & Evaporator Coils",
+      "description": "Heat exchange coil assembly and fins",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 319,
+    "fields": {
+      "equipment": 5,
+      "name": "Air Filter & Blower Fan",
+      "description": "HEPA intake filter bank and centrifugal blower",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 320,
+    "fields": {
+      "equipment": 5,
+      "name": "Thermostat & Control PCB",
+      "description": "Digital BMS temperature controller and relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 321,
+    "fields": {
+      "equipment": 6,
+      "name": "Hoist Traction Motor",
+      "description": "Main variable-frequency traction machine",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 322,
+    "fields": {
+      "equipment": 6,
+      "name": "Safety Brake & Governor",
+      "description": "Overspeed governor and dual electromagnetic brakes",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 323,
+    "fields": {
+      "equipment": 6,
+      "name": "Door Operator & Sensor Curtain",
+      "description": "Infrared light curtain and door drive belt",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 324,
+    "fields": {
+      "equipment": 6,
+      "name": "Car Operating Panel & Intercom",
+      "description": "Floor selector PCB and emergency call unit",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 325,
+    "fields": {
+      "equipment": 7,
+      "name": "Diesel Engine & Fuel Injectors",
+      "description": "High-pressure common rail fuel injection assembly",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 326,
+    "fields": {
+      "equipment": 7,
+      "name": "Alternator & AVR Module",
+      "description": "Brushless synchronous alternator and voltage regulator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 327,
+    "fields": {
+      "equipment": 7,
+      "name": "Automatic Transfer Switch (ATS)",
+      "description": "Mains-to-generator automatic changeover contactor",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 328,
+    "fields": {
+      "equipment": 7,
+      "name": "Cooling Radiator & Starter Battery",
+      "description": "Coolant circuit, fan belt, and 24V cranking bank",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 329,
+    "fields": {
+      "equipment": 8,
+      "name": "Addressable Fire Control Panel",
+      "description": "Main FACP loop controller and annunciator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 330,
+    "fields": {
+      "equipment": 8,
+      "name": "Optical Smoke & Heat Detectors",
+      "description": "Ceiling-mounted addressable detection loop",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 331,
+    "fields": {
+      "equipment": 8,
+      "name": "Backup Battery Bank",
+      "description": "Dual 12V sealed lead-acid standby batteries",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 332,
+    "fields": {
+      "equipment": 8,
+      "name": "Alarm Sounders & Strobe Loop",
+      "description": "Audible sirens and visual strobe beacons",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 333,
+    "fields": {
+      "equipment": 101,
+      "name": "Compressor Unit",
+      "description": "Primary scroll/screw refrigerant compressor",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 334,
+    "fields": {
+      "equipment": 101,
+      "name": "Condenser & Evaporator Coils",
+      "description": "Heat exchange coil assembly and fins",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 335,
+    "fields": {
+      "equipment": 101,
+      "name": "Air Filter & Blower Fan",
+      "description": "HEPA intake filter bank and centrifugal blower",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 336,
+    "fields": {
+      "equipment": 101,
+      "name": "Thermostat & Control PCB",
+      "description": "Digital BMS temperature controller and relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 337,
+    "fields": {
+      "equipment": 102,
+      "name": "Compressor Unit",
+      "description": "Primary scroll/screw refrigerant compressor",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 338,
+    "fields": {
+      "equipment": 102,
+      "name": "Condenser & Evaporator Coils",
+      "description": "Heat exchange coil assembly and fins",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 339,
+    "fields": {
+      "equipment": 102,
+      "name": "Air Filter & Blower Fan",
+      "description": "HEPA intake filter bank and centrifugal blower",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 340,
+    "fields": {
+      "equipment": 102,
+      "name": "Thermostat & Control PCB",
+      "description": "Digital BMS temperature controller and relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 341,
+    "fields": {
+      "equipment": 103,
+      "name": "Compressor Unit",
+      "description": "Primary scroll/screw refrigerant compressor",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 342,
+    "fields": {
+      "equipment": 103,
+      "name": "Condenser & Evaporator Coils",
+      "description": "Heat exchange coil assembly and fins",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 343,
+    "fields": {
+      "equipment": 103,
+      "name": "Air Filter & Blower Fan",
+      "description": "HEPA intake filter bank and centrifugal blower",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 344,
+    "fields": {
+      "equipment": 103,
+      "name": "Thermostat & Control PCB",
+      "description": "Digital BMS temperature controller and relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 345,
+    "fields": {
+      "equipment": 104,
+      "name": "Hoist Traction Motor",
+      "description": "Main variable-frequency traction machine",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 346,
+    "fields": {
+      "equipment": 104,
+      "name": "Safety Brake & Governor",
+      "description": "Overspeed governor and dual electromagnetic brakes",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 347,
+    "fields": {
+      "equipment": 104,
+      "name": "Door Operator & Sensor Curtain",
+      "description": "Infrared light curtain and door drive belt",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 348,
+    "fields": {
+      "equipment": 104,
+      "name": "Car Operating Panel & Intercom",
+      "description": "Floor selector PCB and emergency call unit",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 349,
+    "fields": {
+      "equipment": 105,
+      "name": "Hoist Traction Motor",
+      "description": "Main variable-frequency traction machine",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 350,
+    "fields": {
+      "equipment": 105,
+      "name": "Safety Brake & Governor",
+      "description": "Overspeed governor and dual electromagnetic brakes",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 351,
+    "fields": {
+      "equipment": 105,
+      "name": "Door Operator & Sensor Curtain",
+      "description": "Infrared light curtain and door drive belt",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 352,
+    "fields": {
+      "equipment": 105,
+      "name": "Car Operating Panel & Intercom",
+      "description": "Floor selector PCB and emergency call unit",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 353,
+    "fields": {
+      "equipment": 106,
+      "name": "Diesel Engine & Fuel Injectors",
+      "description": "High-pressure common rail fuel injection assembly",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 354,
+    "fields": {
+      "equipment": 106,
+      "name": "Alternator & AVR Module",
+      "description": "Brushless synchronous alternator and voltage regulator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 355,
+    "fields": {
+      "equipment": 106,
+      "name": "Automatic Transfer Switch (ATS)",
+      "description": "Mains-to-generator automatic changeover contactor",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 356,
+    "fields": {
+      "equipment": 106,
+      "name": "Cooling Radiator & Starter Battery",
+      "description": "Coolant circuit, fan belt, and 24V cranking bank",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 357,
+    "fields": {
+      "equipment": 107,
+      "name": "Addressable Fire Control Panel",
+      "description": "Main FACP loop controller and annunciator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 358,
+    "fields": {
+      "equipment": 107,
+      "name": "Optical Smoke & Heat Detectors",
+      "description": "Ceiling-mounted addressable detection loop",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 359,
+    "fields": {
+      "equipment": 107,
+      "name": "Backup Battery Bank",
+      "description": "Dual 12V sealed lead-acid standby batteries",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 360,
+    "fields": {
+      "equipment": 107,
+      "name": "Alarm Sounders & Strobe Loop",
+      "description": "Audible sirens and visual strobe beacons",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 361,
+    "fields": {
+      "equipment": 108,
+      "name": "Addressable Fire Control Panel",
+      "description": "Main FACP loop controller and annunciator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 362,
+    "fields": {
+      "equipment": 108,
+      "name": "Optical Smoke & Heat Detectors",
+      "description": "Ceiling-mounted addressable detection loop",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 363,
+    "fields": {
+      "equipment": 108,
+      "name": "Backup Battery Bank",
+      "description": "Dual 12V sealed lead-acid standby batteries",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 364,
+    "fields": {
+      "equipment": 108,
+      "name": "Alarm Sounders & Strobe Loop",
+      "description": "Audible sirens and visual strobe beacons",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 365,
+    "fields": {
+      "equipment": 109,
+      "name": "Compressor Unit",
+      "description": "Primary scroll/screw refrigerant compressor",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 366,
+    "fields": {
+      "equipment": 109,
+      "name": "Condenser & Evaporator Coils",
+      "description": "Heat exchange coil assembly and fins",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 367,
+    "fields": {
+      "equipment": 109,
+      "name": "Air Filter & Blower Fan",
+      "description": "HEPA intake filter bank and centrifugal blower",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 368,
+    "fields": {
+      "equipment": 109,
+      "name": "Thermostat & Control PCB",
+      "description": "Digital BMS temperature controller and relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 369,
+    "fields": {
+      "equipment": 110,
+      "name": "Compressor Unit",
+      "description": "Primary scroll/screw refrigerant compressor",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 370,
+    "fields": {
+      "equipment": 110,
+      "name": "Condenser & Evaporator Coils",
+      "description": "Heat exchange coil assembly and fins",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 371,
+    "fields": {
+      "equipment": 110,
+      "name": "Air Filter & Blower Fan",
+      "description": "HEPA intake filter bank and centrifugal blower",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 372,
+    "fields": {
+      "equipment": 110,
+      "name": "Thermostat & Control PCB",
+      "description": "Digital BMS temperature controller and relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 373,
+    "fields": {
+      "equipment": 111,
+      "name": "Diesel Engine & Fuel Injectors",
+      "description": "High-pressure common rail fuel injection assembly",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 374,
+    "fields": {
+      "equipment": 111,
+      "name": "Alternator & AVR Module",
+      "description": "Brushless synchronous alternator and voltage regulator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 375,
+    "fields": {
+      "equipment": 111,
+      "name": "Automatic Transfer Switch (ATS)",
+      "description": "Mains-to-generator automatic changeover contactor",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 376,
+    "fields": {
+      "equipment": 111,
+      "name": "Cooling Radiator & Starter Battery",
+      "description": "Coolant circuit, fan belt, and 24V cranking bank",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 377,
+    "fields": {
+      "equipment": 112,
+      "name": "Compressor Unit",
+      "description": "Primary scroll/screw refrigerant compressor",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 378,
+    "fields": {
+      "equipment": 112,
+      "name": "Condenser & Evaporator Coils",
+      "description": "Heat exchange coil assembly and fins",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 379,
+    "fields": {
+      "equipment": 112,
+      "name": "Air Filter & Blower Fan",
+      "description": "HEPA intake filter bank and centrifugal blower",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 380,
+    "fields": {
+      "equipment": 112,
+      "name": "Thermostat & Control PCB",
+      "description": "Digital BMS temperature controller and relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 381,
+    "fields": {
+      "equipment": 201,
+      "name": "Compressor Unit",
+      "description": "Primary scroll/screw refrigerant compressor",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 382,
+    "fields": {
+      "equipment": 201,
+      "name": "Condenser & Evaporator Coils",
+      "description": "Heat exchange coil assembly and fins",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 383,
+    "fields": {
+      "equipment": 201,
+      "name": "Air Filter & Blower Fan",
+      "description": "HEPA intake filter bank and centrifugal blower",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 384,
+    "fields": {
+      "equipment": 201,
+      "name": "Thermostat & Control PCB",
+      "description": "Digital BMS temperature controller and relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 385,
+    "fields": {
+      "equipment": 202,
+      "name": "Hoist Traction Motor",
+      "description": "Main variable-frequency traction machine",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 386,
+    "fields": {
+      "equipment": 202,
+      "name": "Safety Brake & Governor",
+      "description": "Overspeed governor and dual electromagnetic brakes",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 387,
+    "fields": {
+      "equipment": 202,
+      "name": "Door Operator & Sensor Curtain",
+      "description": "Infrared light curtain and door drive belt",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 388,
+    "fields": {
+      "equipment": 202,
+      "name": "Car Operating Panel & Intercom",
+      "description": "Floor selector PCB and emergency call unit",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 389,
+    "fields": {
+      "equipment": 203,
+      "name": "Diesel Engine & Fuel Injectors",
+      "description": "High-pressure common rail fuel injection assembly",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 390,
+    "fields": {
+      "equipment": 203,
+      "name": "Alternator & AVR Module",
+      "description": "Brushless synchronous alternator and voltage regulator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 391,
+    "fields": {
+      "equipment": 203,
+      "name": "Automatic Transfer Switch (ATS)",
+      "description": "Mains-to-generator automatic changeover contactor",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 392,
+    "fields": {
+      "equipment": 203,
+      "name": "Cooling Radiator & Starter Battery",
+      "description": "Coolant circuit, fan belt, and 24V cranking bank",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 393,
+    "fields": {
+      "equipment": 204,
+      "name": "Addressable Fire Control Panel",
+      "description": "Main FACP loop controller and annunciator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 394,
+    "fields": {
+      "equipment": 204,
+      "name": "Optical Smoke & Heat Detectors",
+      "description": "Ceiling-mounted addressable detection loop",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 395,
+    "fields": {
+      "equipment": 204,
+      "name": "Backup Battery Bank",
+      "description": "Dual 12V sealed lead-acid standby batteries",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 396,
+    "fields": {
+      "equipment": 204,
+      "name": "Alarm Sounders & Strobe Loop",
+      "description": "Audible sirens and visual strobe beacons",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 397,
+    "fields": {
+      "equipment": 205,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 398,
+    "fields": {
+      "equipment": 205,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 399,
+    "fields": {
+      "equipment": 205,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 400,
+    "fields": {
+      "equipment": 205,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 401,
+    "fields": {
+      "equipment": 206,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 402,
+    "fields": {
+      "equipment": 206,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 403,
+    "fields": {
+      "equipment": 206,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 404,
+    "fields": {
+      "equipment": 206,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 405,
+    "fields": {
+      "equipment": 207,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 406,
+    "fields": {
+      "equipment": 207,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 407,
+    "fields": {
+      "equipment": 207,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 408,
+    "fields": {
+      "equipment": 207,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 409,
+    "fields": {
+      "equipment": 208,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 410,
+    "fields": {
+      "equipment": 208,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 411,
+    "fields": {
+      "equipment": 208,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 412,
+    "fields": {
+      "equipment": 208,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 413,
+    "fields": {
+      "equipment": 209,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 414,
+    "fields": {
+      "equipment": 209,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 415,
+    "fields": {
+      "equipment": 209,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 416,
+    "fields": {
+      "equipment": 209,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 417,
+    "fields": {
+      "equipment": 210,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 418,
+    "fields": {
+      "equipment": 210,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 419,
+    "fields": {
+      "equipment": 210,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 420,
+    "fields": {
+      "equipment": 210,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 421,
+    "fields": {
+      "equipment": 211,
+      "name": "IP Camera Optical Module",
+      "description": "4K IR night-vision lens and image sensor",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 422,
+    "fields": {
+      "equipment": 211,
+      "name": "PoE Network Switch & Injector",
+      "description": "Power-over-Ethernet uplink and surge protector",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 423,
+    "fields": {
+      "equipment": 211,
+      "name": "NVR Storage Array",
+      "description": "RAID-5 surveillance hard drive bay",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 424,
+    "fields": {
+      "equipment": 211,
+      "name": "Weatherproof Housing & Mount",
+      "description": "IP67 sealed enclosure and bracket",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 425,
+    "fields": {
+      "equipment": 212,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 426,
+    "fields": {
+      "equipment": 212,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 427,
+    "fields": {
+      "equipment": 212,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 428,
+    "fields": {
+      "equipment": 212,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 429,
+    "fields": {
+      "equipment": 213,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 430,
+    "fields": {
+      "equipment": 213,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 431,
+    "fields": {
+      "equipment": 213,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 432,
+    "fields": {
+      "equipment": 213,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 433,
+    "fields": {
+      "equipment": 214,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 434,
+    "fields": {
+      "equipment": 214,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 435,
+    "fields": {
+      "equipment": 214,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 436,
+    "fields": {
+      "equipment": 214,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 437,
+    "fields": {
+      "equipment": 215,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 438,
+    "fields": {
+      "equipment": 215,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 439,
+    "fields": {
+      "equipment": 215,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 440,
+    "fields": {
+      "equipment": 215,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 441,
+    "fields": {
+      "equipment": 216,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 442,
+    "fields": {
+      "equipment": 216,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 443,
+    "fields": {
+      "equipment": 216,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 444,
+    "fields": {
+      "equipment": 216,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 445,
+    "fields": {
+      "equipment": 217,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 446,
+    "fields": {
+      "equipment": 217,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 447,
+    "fields": {
+      "equipment": 217,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 448,
+    "fields": {
+      "equipment": 217,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 449,
+    "fields": {
+      "equipment": 218,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 450,
+    "fields": {
+      "equipment": 218,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 451,
+    "fields": {
+      "equipment": 218,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 452,
+    "fields": {
+      "equipment": 218,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 453,
+    "fields": {
+      "equipment": 219,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 454,
+    "fields": {
+      "equipment": 219,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 455,
+    "fields": {
+      "equipment": 219,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 456,
+    "fields": {
+      "equipment": 219,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 457,
+    "fields": {
+      "equipment": 220,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 458,
+    "fields": {
+      "equipment": 220,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 459,
+    "fields": {
+      "equipment": 220,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 460,
+    "fields": {
+      "equipment": 220,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 461,
+    "fields": {
+      "equipment": 221,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 462,
+    "fields": {
+      "equipment": 221,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 463,
+    "fields": {
+      "equipment": 221,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 464,
+    "fields": {
+      "equipment": 221,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 465,
+    "fields": {
+      "equipment": 222,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 466,
+    "fields": {
+      "equipment": 222,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 467,
+    "fields": {
+      "equipment": 222,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 468,
+    "fields": {
+      "equipment": 222,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 469,
+    "fields": {
+      "equipment": 223,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 470,
+    "fields": {
+      "equipment": 223,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 471,
+    "fields": {
+      "equipment": 223,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 472,
+    "fields": {
+      "equipment": 223,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 473,
+    "fields": {
+      "equipment": 224,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 474,
+    "fields": {
+      "equipment": 224,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 475,
+    "fields": {
+      "equipment": 224,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 476,
+    "fields": {
+      "equipment": 224,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 477,
+    "fields": {
+      "equipment": 225,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 478,
+    "fields": {
+      "equipment": 225,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 479,
+    "fields": {
+      "equipment": 225,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 480,
+    "fields": {
+      "equipment": 225,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 481,
+    "fields": {
+      "equipment": 226,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 482,
+    "fields": {
+      "equipment": 226,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 483,
+    "fields": {
+      "equipment": 226,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 484,
+    "fields": {
+      "equipment": 226,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 485,
+    "fields": {
+      "equipment": 227,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 486,
+    "fields": {
+      "equipment": 227,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 487,
+    "fields": {
+      "equipment": 227,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 488,
+    "fields": {
+      "equipment": 227,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 489,
+    "fields": {
+      "equipment": 228,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 490,
+    "fields": {
+      "equipment": 228,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 491,
+    "fields": {
+      "equipment": 228,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 492,
+    "fields": {
+      "equipment": 228,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 493,
+    "fields": {
+      "equipment": 229,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 494,
+    "fields": {
+      "equipment": 229,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 495,
+    "fields": {
+      "equipment": 229,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 496,
+    "fields": {
+      "equipment": 229,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 497,
+    "fields": {
+      "equipment": 230,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 498,
+    "fields": {
+      "equipment": 230,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 499,
+    "fields": {
+      "equipment": 230,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 500,
+    "fields": {
+      "equipment": 230,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 501,
+    "fields": {
+      "equipment": 231,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 502,
+    "fields": {
+      "equipment": 231,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 503,
+    "fields": {
+      "equipment": 231,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 504,
+    "fields": {
+      "equipment": 231,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 505,
+    "fields": {
+      "equipment": 232,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 506,
+    "fields": {
+      "equipment": 232,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 507,
+    "fields": {
+      "equipment": 232,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 508,
+    "fields": {
+      "equipment": 232,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 509,
+    "fields": {
+      "equipment": 233,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 510,
+    "fields": {
+      "equipment": 233,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 511,
+    "fields": {
+      "equipment": 233,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 512,
+    "fields": {
+      "equipment": 233,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 513,
+    "fields": {
+      "equipment": 234,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 514,
+    "fields": {
+      "equipment": 234,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 515,
+    "fields": {
+      "equipment": 234,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 516,
+    "fields": {
+      "equipment": 234,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 517,
+    "fields": {
+      "equipment": 235,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 518,
+    "fields": {
+      "equipment": 235,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 519,
+    "fields": {
+      "equipment": 235,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 520,
+    "fields": {
+      "equipment": 235,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 521,
+    "fields": {
+      "equipment": 236,
+      "name": "Compressor Unit",
+      "description": "Primary scroll/screw refrigerant compressor",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 522,
+    "fields": {
+      "equipment": 236,
+      "name": "Condenser & Evaporator Coils",
+      "description": "Heat exchange coil assembly and fins",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 523,
+    "fields": {
+      "equipment": 236,
+      "name": "Air Filter & Blower Fan",
+      "description": "HEPA intake filter bank and centrifugal blower",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 524,
+    "fields": {
+      "equipment": 236,
+      "name": "Thermostat & Control PCB",
+      "description": "Digital BMS temperature controller and relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 525,
+    "fields": {
+      "equipment": 237,
+      "name": "Hoist Traction Motor",
+      "description": "Main variable-frequency traction machine",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 526,
+    "fields": {
+      "equipment": 237,
+      "name": "Safety Brake & Governor",
+      "description": "Overspeed governor and dual electromagnetic brakes",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 527,
+    "fields": {
+      "equipment": 237,
+      "name": "Door Operator & Sensor Curtain",
+      "description": "Infrared light curtain and door drive belt",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 528,
+    "fields": {
+      "equipment": 237,
+      "name": "Car Operating Panel & Intercom",
+      "description": "Floor selector PCB and emergency call unit",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 529,
+    "fields": {
+      "equipment": 238,
+      "name": "Diesel Engine & Fuel Injectors",
+      "description": "High-pressure common rail fuel injection assembly",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 530,
+    "fields": {
+      "equipment": 238,
+      "name": "Alternator & AVR Module",
+      "description": "Brushless synchronous alternator and voltage regulator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 531,
+    "fields": {
+      "equipment": 238,
+      "name": "Automatic Transfer Switch (ATS)",
+      "description": "Mains-to-generator automatic changeover contactor",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 532,
+    "fields": {
+      "equipment": 238,
+      "name": "Cooling Radiator & Starter Battery",
+      "description": "Coolant circuit, fan belt, and 24V cranking bank",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 533,
+    "fields": {
+      "equipment": 239,
+      "name": "Addressable Fire Control Panel",
+      "description": "Main FACP loop controller and annunciator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 534,
+    "fields": {
+      "equipment": 239,
+      "name": "Optical Smoke & Heat Detectors",
+      "description": "Ceiling-mounted addressable detection loop",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 535,
+    "fields": {
+      "equipment": 239,
+      "name": "Backup Battery Bank",
+      "description": "Dual 12V sealed lead-acid standby batteries",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 536,
+    "fields": {
+      "equipment": 239,
+      "name": "Alarm Sounders & Strobe Loop",
+      "description": "Audible sirens and visual strobe beacons",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 537,
+    "fields": {
+      "equipment": 240,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 538,
+    "fields": {
+      "equipment": 240,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 539,
+    "fields": {
+      "equipment": 240,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 540,
+    "fields": {
+      "equipment": 240,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 541,
+    "fields": {
+      "equipment": 301,
+      "name": "Compressor Unit",
+      "description": "Primary scroll/screw refrigerant compressor",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 542,
+    "fields": {
+      "equipment": 301,
+      "name": "Condenser & Evaporator Coils",
+      "description": "Heat exchange coil assembly and fins",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 543,
+    "fields": {
+      "equipment": 301,
+      "name": "Air Filter & Blower Fan",
+      "description": "HEPA intake filter bank and centrifugal blower",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 544,
+    "fields": {
+      "equipment": 301,
+      "name": "Thermostat & Control PCB",
+      "description": "Digital BMS temperature controller and relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 545,
+    "fields": {
+      "equipment": 302,
+      "name": "Hoist Traction Motor",
+      "description": "Main variable-frequency traction machine",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 546,
+    "fields": {
+      "equipment": 302,
+      "name": "Safety Brake & Governor",
+      "description": "Overspeed governor and dual electromagnetic brakes",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 547,
+    "fields": {
+      "equipment": 302,
+      "name": "Door Operator & Sensor Curtain",
+      "description": "Infrared light curtain and door drive belt",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 548,
+    "fields": {
+      "equipment": 302,
+      "name": "Car Operating Panel & Intercom",
+      "description": "Floor selector PCB and emergency call unit",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 549,
+    "fields": {
+      "equipment": 303,
+      "name": "Diesel Engine & Fuel Injectors",
+      "description": "High-pressure common rail fuel injection assembly",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 550,
+    "fields": {
+      "equipment": 303,
+      "name": "Alternator & AVR Module",
+      "description": "Brushless synchronous alternator and voltage regulator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 551,
+    "fields": {
+      "equipment": 303,
+      "name": "Automatic Transfer Switch (ATS)",
+      "description": "Mains-to-generator automatic changeover contactor",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 552,
+    "fields": {
+      "equipment": 303,
+      "name": "Cooling Radiator & Starter Battery",
+      "description": "Coolant circuit, fan belt, and 24V cranking bank",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 553,
+    "fields": {
+      "equipment": 304,
+      "name": "Addressable Fire Control Panel",
+      "description": "Main FACP loop controller and annunciator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 554,
+    "fields": {
+      "equipment": 304,
+      "name": "Optical Smoke & Heat Detectors",
+      "description": "Ceiling-mounted addressable detection loop",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 555,
+    "fields": {
+      "equipment": 304,
+      "name": "Backup Battery Bank",
+      "description": "Dual 12V sealed lead-acid standby batteries",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 556,
+    "fields": {
+      "equipment": 304,
+      "name": "Alarm Sounders & Strobe Loop",
+      "description": "Audible sirens and visual strobe beacons",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 557,
+    "fields": {
+      "equipment": 305,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 558,
+    "fields": {
+      "equipment": 305,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 559,
+    "fields": {
+      "equipment": 305,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 560,
+    "fields": {
+      "equipment": 305,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 561,
+    "fields": {
+      "equipment": 306,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 562,
+    "fields": {
+      "equipment": 306,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 563,
+    "fields": {
+      "equipment": 306,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 564,
+    "fields": {
+      "equipment": 306,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 565,
+    "fields": {
+      "equipment": 307,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 566,
+    "fields": {
+      "equipment": 307,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 567,
+    "fields": {
+      "equipment": 307,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 568,
+    "fields": {
+      "equipment": 307,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 569,
+    "fields": {
+      "equipment": 308,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 570,
+    "fields": {
+      "equipment": 308,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 571,
+    "fields": {
+      "equipment": 308,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 572,
+    "fields": {
+      "equipment": 308,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 573,
+    "fields": {
+      "equipment": 309,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 574,
+    "fields": {
+      "equipment": 309,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 575,
+    "fields": {
+      "equipment": 309,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 576,
+    "fields": {
+      "equipment": 309,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 577,
+    "fields": {
+      "equipment": 310,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 578,
+    "fields": {
+      "equipment": 310,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 579,
+    "fields": {
+      "equipment": 310,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 580,
+    "fields": {
+      "equipment": 310,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 581,
+    "fields": {
+      "equipment": 311,
+      "name": "IP Camera Optical Module",
+      "description": "4K IR night-vision lens and image sensor",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 582,
+    "fields": {
+      "equipment": 311,
+      "name": "PoE Network Switch & Injector",
+      "description": "Power-over-Ethernet uplink and surge protector",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 583,
+    "fields": {
+      "equipment": 311,
+      "name": "NVR Storage Array",
+      "description": "RAID-5 surveillance hard drive bay",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 584,
+    "fields": {
+      "equipment": 311,
+      "name": "Weatherproof Housing & Mount",
+      "description": "IP67 sealed enclosure and bracket",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 585,
+    "fields": {
+      "equipment": 312,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 586,
+    "fields": {
+      "equipment": 312,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 587,
+    "fields": {
+      "equipment": 312,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 588,
+    "fields": {
+      "equipment": 312,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 589,
+    "fields": {
+      "equipment": 313,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 590,
+    "fields": {
+      "equipment": 313,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 591,
+    "fields": {
+      "equipment": 313,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 592,
+    "fields": {
+      "equipment": 313,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 593,
+    "fields": {
+      "equipment": 314,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 594,
+    "fields": {
+      "equipment": 314,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 595,
+    "fields": {
+      "equipment": 314,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 596,
+    "fields": {
+      "equipment": 314,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 597,
+    "fields": {
+      "equipment": 315,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 598,
+    "fields": {
+      "equipment": 315,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 599,
+    "fields": {
+      "equipment": 315,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 600,
+    "fields": {
+      "equipment": 315,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 601,
+    "fields": {
+      "equipment": 316,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 602,
+    "fields": {
+      "equipment": 316,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 603,
+    "fields": {
+      "equipment": 316,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 604,
+    "fields": {
+      "equipment": 316,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 605,
+    "fields": {
+      "equipment": 317,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 606,
+    "fields": {
+      "equipment": 317,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 607,
+    "fields": {
+      "equipment": 317,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 608,
+    "fields": {
+      "equipment": 317,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 609,
+    "fields": {
+      "equipment": 318,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 610,
+    "fields": {
+      "equipment": 318,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 611,
+    "fields": {
+      "equipment": 318,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 612,
+    "fields": {
+      "equipment": 318,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 613,
+    "fields": {
+      "equipment": 319,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 614,
+    "fields": {
+      "equipment": 319,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 615,
+    "fields": {
+      "equipment": 319,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 616,
+    "fields": {
+      "equipment": 319,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 617,
+    "fields": {
+      "equipment": 320,
+      "name": "Main Power & Control Module",
+      "description": "Primary electrical input breaker and PLC",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 618,
+    "fields": {
+      "equipment": 320,
+      "name": "Mechanical Drive Assembly",
+      "description": "Bearings, couplings, and moving actuator",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 619,
+    "fields": {
+      "equipment": 320,
+      "name": "Safety Sensor & Relay Bank",
+      "description": "Thermal overload and trip protection relays",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "backend.equipmentcomponents",
+    "pk": 620,
+    "fields": {
+      "equipment": 320,
+      "name": "Enclosure & Cooling Fan",
+      "description": "Ventilation louvers and cabinet cooling fan",
+      "created_by": 1,
+      "updated_by": 1,
+      "is_active": true,
+      "deleted": false,
+      "created_at": "2026-01-15T09:00:00Z",
+      "updated_at": "2026-01-15T09:00:00Z"
+    }
+  }
 ]

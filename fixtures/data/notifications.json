@@ -1,0 +1,242 @@
+[
+  {
+    "model": "backend.notification",
+    "pk": 301,
+    "fields": {
+      "recipient": null,
+      "actor": 1,
+      "category": "review_approved",
+      "level": "success",
+      "title": "Ticket #301 Approved & Logged",
+      "message": "Headquarters Building · Main Office Chiller AC (High priority)",
+      "link_url": "/ticket/detail/301/",
+      "ticket": 301,
+      "equipment": 1,
+      "technician": 2,
+      "is_read": false,
+      "read_at": null,
+      "created_at": "2026-11-22T09:00:00Z",
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.notification",
+    "pk": 302,
+    "fields": {
+      "recipient": null,
+      "actor": 1,
+      "category": "review_approved",
+      "level": "success",
+      "title": "Ticket #302 Approved & Logged",
+      "message": "South Annex Building · Basement Diesel Generator (Medium priority)",
+      "link_url": "/ticket/detail/302/",
+      "ticket": 302,
+      "equipment": 3,
+      "technician": 3,
+      "is_read": false,
+      "read_at": null,
+      "created_at": "2026-11-21T09:00:00Z",
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.notification",
+    "pk": 303,
+    "fields": {
+      "recipient": null,
+      "actor": 1,
+      "category": "submitted_review",
+      "level": "warning",
+      "title": "Review Required — Ticket #303",
+      "message": "South Annex Building · Mezzanine Air Handler (Critical priority)",
+      "link_url": "/ticket/detail/303/#supervisorReviewSection",
+      "ticket": 303,
+      "equipment": 5,
+      "technician": 4,
+      "is_read": false,
+      "read_at": null,
+      "created_at": "2026-11-20T09:00:00Z",
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.notification",
+    "pk": 304,
+    "fields": {
+      "recipient": null,
+      "actor": 1,
+      "category": "work_started",
+      "level": "info",
+      "title": "Elena Rodriguez started Ticket #304",
+      "message": "Headquarters Building · Backup Power Generator 500kVA (Low priority)",
+      "link_url": "/ticket/detail/304/",
+      "ticket": 304,
+      "equipment": 7,
+      "technician": 5,
+      "is_read": false,
+      "read_at": null,
+      "created_at": "2026-11-19T09:00:00Z",
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.notification",
+    "pk": 305,
+    "fields": {
+      "recipient": null,
+      "actor": 1,
+      "category": "task_accepted",
+      "level": "info",
+      "title": "James O'Connor accepted Ticket #305",
+      "message": "Headquarters Building · Executive Floor VRF Unit (High priority)",
+      "link_url": "/ticket/detail/305/",
+      "ticket": 305,
+      "equipment": 101,
+      "technician": 6,
+      "is_read": false,
+      "read_at": null,
+      "created_at": "2026-11-18T09:00:00Z",
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.notification",
+    "pk": 306,
+    "fields": {
+      "recipient": null,
+      "actor": 1,
+      "category": "task_assigned",
+      "level": "info",
+      "title": "Ticket #306 assigned to Aisha Patel",
+      "message": "Headquarters Building · Server Room Precision AC (Medium priority)",
+      "link_url": "/technician/details/7/?tab=tasks",
+      "ticket": 306,
+      "equipment": 103,
+      "technician": 7,
+      "is_read": false,
+      "read_at": null,
+      "created_at": "2026-11-17T09:00:00Z",
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.notification",
+    "pk": 307,
+    "fields": {
+      "recipient": null,
+      "actor": 1,
+      "category": "ticket_created",
+      "level": "info",
+      "title": "New Ticket #307: Routine check on Service Cargo Elevator",
+      "message": "Headquarters Building · Service Cargo Elevator (High priority)",
+      "link_url": "/ticket/detail/307/",
+      "ticket": 307,
+      "equipment": 105,
+      "technician": null,
+      "is_read": true,
+      "read_at": "2026-11-16T17:00:00Z",
+      "created_at": "2026-11-16T09:00:00Z",
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.notification",
+    "pk": 308,
+    "fields": {
+      "recipient": null,
+      "actor": 1,
+      "category": "review_approved",
+      "level": "success",
+      "title": "Ticket #308 Approved & Logged",
+      "message": "Headquarters Building · Sprinkler Booster Pump (Medium priority)",
+      "link_url": "/ticket/detail/308/",
+      "ticket": 308,
+      "equipment": 107,
+      "technician": 9,
+      "is_read": true,
+      "read_at": "2026-11-15T17:00:00Z",
+      "created_at": "2026-11-15T09:00:00Z",
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.notification",
+    "pk": 309,
+    "fields": {
+      "recipient": null,
+      "actor": 1,
+      "category": "review_approved",
+      "level": "success",
+      "title": "Ticket #309 Approved & Logged",
+      "message": "Headquarters Building · Auditorium Ducted AC (Critical priority)",
+      "link_url": "/ticket/detail/309/",
+      "ticket": 309,
+      "equipment": 109,
+      "technician": 10,
+      "is_read": true,
+      "read_at": "2026-11-14T17:00:00Z",
+      "created_at": "2026-11-14T09:00:00Z",
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.notification",
+    "pk": 310,
+    "fields": {
+      "recipient": null,
+      "actor": 1,
+      "category": "submitted_review",
+      "level": "warning",
+      "title": "Review Required — Ticket #310",
+      "message": "Headquarters Building · Emergency Lighting UPS Pack (Low priority)",
+      "link_url": "/ticket/detail/310/#supervisorReviewSection",
+      "ticket": 310,
+      "equipment": 111,
+      "technician": 11,
+      "is_read": true,
+      "read_at": "2026-11-13T17:00:00Z",
+      "created_at": "2026-11-13T09:00:00Z",
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.notification",
+    "pk": 311,
+    "fields": {
+      "recipient": null,
+      "actor": 1,
+      "category": "work_started",
+      "level": "info",
+      "title": "Tariq Rahman started Ticket #311",
+      "message": "Central Administrative Building · Daikin HVAC Unit 01 (High priority)",
+      "link_url": "/ticket/detail/311/",
+      "ticket": 311,
+      "equipment": 201,
+      "technician": 201,
+      "is_read": true,
+      "read_at": "2026-11-12T17:00:00Z",
+      "created_at": "2026-11-12T09:00:00Z",
+      "deleted": false
+    }
+  },
+  {
+    "model": "backend.notification",
+    "pk": 312,
+    "fields": {
+      "recipient": null,
+      "actor": 1,
+      "category": "task_accepted",
+      "level": "info",
+      "title": "Nadia Islam accepted Ticket #312",
+      "message": "Public Works Directorate HQ · Carrier Generator Unit 03 (Medium priority)",
+      "link_url": "/ticket/detail/312/",
+      "ticket": 312,
+      "equipment": 203,
+      "technician": 202,
+      "is_read": true,
+      "read_at": "2026-11-11T17:00:00Z",
+      "created_at": "2026-11-11T09:00:00Z",
+      "deleted": false
+    }
+  }
+]

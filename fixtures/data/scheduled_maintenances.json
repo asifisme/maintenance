@@ -376,5 +376,533 @@
             "is_active": true,
             "deleted": false
         }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 201,
+        "fields": {
+            "equipment": 1,
+            "title": "Scheduled Monthly Service \u2014 EQ-HVAC-001",
+            "description": "Planned preventive maintenance for Main Office Chiller AC.",
+            "scheduled_date": "2026-11-13",
+            "recurrence": "monthly",
+            "status": "pending",
+            "estimated_cost": "200.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 202,
+        "fields": {
+            "equipment": 2,
+            "title": "Scheduled Quarterly Service \u2014 EQ-ELV-001",
+            "description": "Planned preventive maintenance for Lobby Passenger Elevator A.",
+            "scheduled_date": "2026-11-18",
+            "recurrence": "quarterly",
+            "status": "pending",
+            "estimated_cost": "250.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 203,
+        "fields": {
+            "equipment": 3,
+            "title": "Scheduled Semi Annual Service \u2014 EQ-GEN-001",
+            "description": "Planned preventive maintenance for Basement Diesel Generator.",
+            "scheduled_date": "2026-11-23",
+            "recurrence": "semi_annual",
+            "status": "in_progress",
+            "estimated_cost": "300.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 204,
+        "fields": {
+            "equipment": 4,
+            "title": "Scheduled Annual Service \u2014 EQ-FIRE-001",
+            "description": "Planned preventive maintenance for Central Fire Suppression Panel.",
+            "scheduled_date": "2026-11-28",
+            "recurrence": "annual",
+            "status": "completed",
+            "estimated_cost": "350.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 205,
+        "fields": {
+            "equipment": 5,
+            "title": "Scheduled Monthly Service \u2014 EQ-HVAC-002",
+            "description": "Planned preventive maintenance for Mezzanine Air Handler.",
+            "scheduled_date": "2026-12-03",
+            "recurrence": "monthly",
+            "status": "pending",
+            "estimated_cost": "400.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 206,
+        "fields": {
+            "equipment": 6,
+            "title": "Scheduled Quarterly Service \u2014 EQ-ELV-002",
+            "description": "Planned preventive maintenance for Tower A Service Lift.",
+            "scheduled_date": "2026-12-08",
+            "recurrence": "quarterly",
+            "status": "pending",
+            "estimated_cost": "450.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 207,
+        "fields": {
+            "equipment": 7,
+            "title": "Scheduled Semi Annual Service \u2014 EQ-GEN-002",
+            "description": "Planned preventive maintenance for Backup Power Generator 500kVA.",
+            "scheduled_date": "2026-12-13",
+            "recurrence": "semi_annual",
+            "status": "in_progress",
+            "estimated_cost": "500.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 208,
+        "fields": {
+            "equipment": 8,
+            "title": "Scheduled Annual Service \u2014 EQ-FIRE-002",
+            "description": "Planned preventive maintenance for Main Fire Alarm Control Unit.",
+            "scheduled_date": "2026-12-18",
+            "recurrence": "annual",
+            "status": "completed",
+            "estimated_cost": "550.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 209,
+        "fields": {
+            "equipment": 101,
+            "title": "Scheduled Monthly Service \u2014 EQ-HQ-005",
+            "description": "Planned preventive maintenance for Executive Floor VRF Unit.",
+            "scheduled_date": "2026-12-23",
+            "recurrence": "monthly",
+            "status": "pending",
+            "estimated_cost": "200.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 210,
+        "fields": {
+            "equipment": 102,
+            "title": "Scheduled Quarterly Service \u2014 EQ-HQ-006",
+            "description": "Planned preventive maintenance for Conference Hall Split AC.",
+            "scheduled_date": "2026-12-28",
+            "recurrence": "quarterly",
+            "status": "pending",
+            "estimated_cost": "250.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 211,
+        "fields": {
+            "equipment": 103,
+            "title": "Scheduled Semi Annual Service \u2014 EQ-HQ-007",
+            "description": "Planned preventive maintenance for Server Room Precision AC.",
+            "scheduled_date": "2027-01-02",
+            "recurrence": "semi_annual",
+            "status": "in_progress",
+            "estimated_cost": "300.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 212,
+        "fields": {
+            "equipment": 104,
+            "title": "Scheduled Annual Service \u2014 EQ-HQ-008",
+            "description": "Planned preventive maintenance for East Wing Passenger Lift B.",
+            "scheduled_date": "2027-01-07",
+            "recurrence": "annual",
+            "status": "completed",
+            "estimated_cost": "350.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 213,
+        "fields": {
+            "equipment": 105,
+            "title": "Scheduled Monthly Service \u2014 EQ-HQ-009",
+            "description": "Planned preventive maintenance for Service Cargo Elevator.",
+            "scheduled_date": "2027-01-12",
+            "recurrence": "monthly",
+            "status": "pending",
+            "estimated_cost": "400.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 214,
+        "fields": {
+            "equipment": 106,
+            "title": "Scheduled Quarterly Service \u2014 EQ-HQ-010",
+            "description": "Planned preventive maintenance for Standby Generator 250kVA.",
+            "scheduled_date": "2027-01-17",
+            "recurrence": "quarterly",
+            "status": "pending",
+            "estimated_cost": "450.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 215,
+        "fields": {
+            "equipment": 107,
+            "title": "Scheduled Semi Annual Service \u2014 EQ-HQ-011",
+            "description": "Planned preventive maintenance for Sprinkler Booster Pump.",
+            "scheduled_date": "2027-01-22",
+            "recurrence": "semi_annual",
+            "status": "in_progress",
+            "estimated_cost": "500.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 216,
+        "fields": {
+            "equipment": 108,
+            "title": "Scheduled Annual Service \u2014 EQ-HQ-012",
+            "description": "Planned preventive maintenance for North Wing Smoke Detector Hub.",
+            "scheduled_date": "2027-01-27",
+            "recurrence": "annual",
+            "status": "completed",
+            "estimated_cost": "550.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 217,
+        "fields": {
+            "equipment": 109,
+            "title": "Scheduled Monthly Service \u2014 EQ-HQ-013",
+            "description": "Planned preventive maintenance for Auditorium Ducted AC.",
+            "scheduled_date": "2027-02-01",
+            "recurrence": "monthly",
+            "status": "pending",
+            "estimated_cost": "200.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 218,
+        "fields": {
+            "equipment": 110,
+            "title": "Scheduled Quarterly Service \u2014 EQ-HQ-014",
+            "description": "Planned preventive maintenance for Auxiliary Cooling Tower.",
+            "scheduled_date": "2027-02-06",
+            "recurrence": "quarterly",
+            "status": "pending",
+            "estimated_cost": "250.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 219,
+        "fields": {
+            "equipment": 111,
+            "title": "Scheduled Semi Annual Service \u2014 EQ-HQ-015",
+            "description": "Planned preventive maintenance for Emergency Lighting UPS Pack.",
+            "scheduled_date": "2027-02-11",
+            "recurrence": "semi_annual",
+            "status": "in_progress",
+            "estimated_cost": "300.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 220,
+        "fields": {
+            "equipment": 112,
+            "title": "Scheduled Annual Service \u2014 EQ-HQ-016",
+            "description": "Planned preventive maintenance for Reception Cassette AC.",
+            "scheduled_date": "2027-02-16",
+            "recurrence": "annual",
+            "status": "completed",
+            "estimated_cost": "350.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 221,
+        "fields": {
+            "equipment": 201,
+            "title": "Scheduled Monthly Service \u2014 EQ-FX-001",
+            "description": "Planned preventive maintenance for Daikin HVAC Unit 01.",
+            "scheduled_date": "2027-02-21",
+            "recurrence": "monthly",
+            "status": "pending",
+            "estimated_cost": "400.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 222,
+        "fields": {
+            "equipment": 202,
+            "title": "Scheduled Quarterly Service \u2014 EQ-FX-002",
+            "description": "Planned preventive maintenance for Otis Elevator Unit 02.",
+            "scheduled_date": "2027-02-26",
+            "recurrence": "quarterly",
+            "status": "pending",
+            "estimated_cost": "450.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 223,
+        "fields": {
+            "equipment": 203,
+            "title": "Scheduled Semi Annual Service \u2014 EQ-FX-003",
+            "description": "Planned preventive maintenance for Carrier Generator Unit 03.",
+            "scheduled_date": "2027-03-03",
+            "recurrence": "semi_annual",
+            "status": "in_progress",
+            "estimated_cost": "500.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 224,
+        "fields": {
+            "equipment": 204,
+            "title": "Scheduled Annual Service \u2014 EQ-FX-004",
+            "description": "Planned preventive maintenance for Cummins Fire Safety Unit 04.",
+            "scheduled_date": "2027-03-08",
+            "recurrence": "annual",
+            "status": "completed",
+            "estimated_cost": "550.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 225,
+        "fields": {
+            "equipment": 205,
+            "title": "Scheduled Monthly Service \u2014 EQ-FX-005",
+            "description": "Planned preventive maintenance for Honeywell Chiller System Unit 05.",
+            "scheduled_date": "2027-03-13",
+            "recurrence": "monthly",
+            "status": "pending",
+            "estimated_cost": "200.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 226,
+        "fields": {
+            "equipment": 206,
+            "title": "Scheduled Quarterly Service \u2014 EQ-FX-006",
+            "description": "Planned preventive maintenance for Siemens Water Pump Unit 06.",
+            "scheduled_date": "2027-03-18",
+            "recurrence": "quarterly",
+            "status": "pending",
+            "estimated_cost": "250.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 227,
+        "fields": {
+            "equipment": 207,
+            "title": "Scheduled Semi Annual Service \u2014 EQ-FX-007",
+            "description": "Planned preventive maintenance for Mitsubishi Electrical Substation Unit 07.",
+            "scheduled_date": "2027-03-23",
+            "recurrence": "semi_annual",
+            "status": "in_progress",
+            "estimated_cost": "300.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 228,
+        "fields": {
+            "equipment": 208,
+            "title": "Scheduled Annual Service \u2014 EQ-FX-008",
+            "description": "Planned preventive maintenance for Schindler Power Transformer Unit 08.",
+            "scheduled_date": "2027-03-28",
+            "recurrence": "annual",
+            "status": "completed",
+            "estimated_cost": "350.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 229,
+        "fields": {
+            "equipment": 209,
+            "title": "Scheduled Monthly Service \u2014 EQ-FX-009",
+            "description": "Planned preventive maintenance for ABB UPS Battery Bank Unit 09.",
+            "scheduled_date": "2027-04-02",
+            "recurrence": "monthly",
+            "status": "pending",
+            "estimated_cost": "400.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 230,
+        "fields": {
+            "equipment": 210,
+            "title": "Scheduled Quarterly Service \u2014 EQ-FX-010",
+            "description": "Planned preventive maintenance for Schneider Solar PV Inverter Unit 10.",
+            "scheduled_date": "2027-04-07",
+            "recurrence": "quarterly",
+            "status": "pending",
+            "estimated_cost": "450.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 231,
+        "fields": {
+            "equipment": 211,
+            "title": "Scheduled Semi Annual Service \u2014 EQ-FX-011",
+            "description": "Planned preventive maintenance for Daikin CCTV Surveillance Unit 11.",
+            "scheduled_date": "2027-04-12",
+            "recurrence": "semi_annual",
+            "status": "in_progress",
+            "estimated_cost": "500.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 232,
+        "fields": {
+            "equipment": 212,
+            "title": "Scheduled Annual Service \u2014 EQ-FX-012",
+            "description": "Planned preventive maintenance for Otis Biometric Access Control Unit 12.",
+            "scheduled_date": "2027-04-17",
+            "recurrence": "annual",
+            "status": "completed",
+            "estimated_cost": "550.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.scheduledmaintenance",
+        "pk": 233,
+        "fields": {
+            "equipment": 213,
+            "title": "Scheduled Monthly Service \u2014 EQ-FX-013",
+            "description": "Planned preventive maintenance for Carrier Public Address System Unit 13.",
+            "scheduled_date": "2027-04-22",
+            "recurrence": "monthly",
+            "status": "pending",
+            "estimated_cost": "200.00",
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
     }
 ]

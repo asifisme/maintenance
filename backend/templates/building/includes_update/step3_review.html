@@ -1,0 +1,112 @@
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- STEP 3: Review & Save                                   -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="stepSection3" class="hidden space-y-4">
+    <!-- Card 1: Building Summary (Matches Figma Frame 2147207631 & Frame 2147207632) -->
+    <div class="bg-[#F9F9F9] rounded-[12px] p-[6px] pt-[10px] flex flex-col gap-[10px]">
+        <!-- Frame 2147207631 Header Row -->
+        <div class="flex items-center justify-between px-1.5">
+            <div class="flex items-center gap-2">
+                <h3 class="text-[14.5px] font-bold text-[#2B2823]">Building Summary</h3>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#E7F6EC] text-[#0B7A44]">
+                    {{ obj.status|default:'Active' }}
+                </span>
+            </div>
+            <button type="button"
+                    onclick="goToStep(1)"
+                    title="Edit building information"
+                    class="p-1 text-[#2B2823] hover:text-[#0B7A44] transition-colors rounded">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Frame 2147207632: Inner White Card (Radius 6px, Padding 12px, Gap 10px) -->
+        <div class="bg-white rounded-[6px] p-3 flex flex-col gap-2.5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-3.5 gap-x-5 text-[13px]">
+                <!-- Column 1 -->
+                <div>
+                    <span class="block text-[11px] font-semibold text-[#716F6C] uppercase tracking-wider mb-0.5">BUILDING ID</span>
+                    <span id="reviewBuildingId" class="bld-mono font-semibold text-[#2B2823]">{{ obj.building_id }}</span>
+                </div>
+                <div>
+                    <span class="block text-[11px] font-semibold text-[#716F6C] uppercase tracking-wider mb-0.5">BUILDING NAME</span>
+                    <span id="reviewBuildingName" class="font-semibold text-[#2B2823]">{{ obj.name }}</span>
+                </div>
+
+                <!-- Column 2 -->
+                <div>
+                    <span class="block text-[11px] font-semibold text-[#716F6C] uppercase tracking-wider mb-0.5">SITE NAME</span>
+                    <span id="reviewSiteName" class="font-medium text-[#2B2823]">{{ obj.surname|default:'----' }}</span>
+                </div>
+                <div>
+                    <span class="block text-[11px] font-semibold text-[#716F6C] uppercase tracking-wider mb-0.5">SUBDIVISION</span>
+                    <span id="reviewSubdivision" class="font-medium text-[#2B2823]">{{ obj.subdivision.name|default:'----' }}</span>
+                </div>
+
+                <!-- Column 3 -->
+                <div>
+                    <span class="block text-[11px] font-semibold text-[#716F6C] uppercase tracking-wider mb-0.5">SECTION</span>
+                    <span id="reviewSection" class="font-medium text-[#2B2823]">{{ obj.section.name|default:'----' }}</span>
+                </div>
+                <div>
+                    <span class="block text-[11px] font-semibold text-[#716F6C] uppercase tracking-wider mb-0.5">PHYSICAL ADDRESS</span>
+                    <span id="reviewAddress" class="text-[#2B2823] break-words leading-relaxed font-normal">{{ obj.address|default:'----' }}</span>
+                </div>
+
+                <!-- Column 4 -->
+                <div>
+                    <span class="block text-[11px] font-semibold text-[#716F6C] uppercase tracking-wider mb-0.5">LATITUDE</span>
+                    <span id="reviewLatitude" class="bld-mono text-[#5C5B59]">{{ obj.latitude|default:'----' }}</span>
+                </div>
+                <div>
+                    <span class="block text-[11px] font-semibold text-[#716F6C] uppercase tracking-wider mb-0.5">LONGITUDE</span>
+                    <span id="reviewLongitude" class="bld-mono text-[#5C5B59]">{{ obj.longitude|default:'---' }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 2: Equipment Summary (Matches Figma Frame 2147207631 styling, shown only if equipments exist) -->
+    <div id="equipmentSummaryCard" class="hidden bg-[#F9F9F9] rounded-[12px] p-[6px] pt-[10px] flex flex-col gap-[10px]">
+        <div class="flex items-center justify-between px-1.5">
+            <div class="flex items-center gap-2">
+                <h3 class="text-[14.5px] font-bold text-[#2B2823]">Equipment Summary</h3>
+                <span id="reviewEquipmentBadge" class="inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full bg-[#EAEAEA] text-[#716F6C] text-[11px] font-semibold">
+                    0
+                </span>
+            </div>
+            <button type="button"
+                    onclick="goToStep(2); openEquipmentModal();"
+                    title="Add equipment"
+                    class="p-1 text-[#2B2823] hover:text-[#0B7A44] transition-colors rounded">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12h14" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Inner White Card for Equipment List -->
+        <div class="bg-white rounded-[6px] p-3 flex flex-col gap-2.5">
+            <div id="reviewEquipmentListBox" class="space-y-2">
+                <!-- Populated with equipment overview -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 3 Footer Navigation -->
+    <div class="pt-4 border-t border-[#EAEAE9] flex items-center justify-between">
+        <button type="button"
+                onclick="goToStep(2)"
+                class="btn-secondary">
+            Back
+        </button>
+        <button type="submit"
+                id="btnSaveFinal"
+                class="btn-forest px-7">
+            Save Changes
+        </button>
+    </div>
+</div>

@@ -1,240 +1,658 @@
 {% extends 'base.html' %}
-{% block title %}<span class="hidden">{{ action }} Building</span>{% endblock %}
-{% block content %}
-    <section class="bg-[var(--bg-color)] min-h-screen p-4 md:p-2 font-sans">
-        <div class="max-w-7xl mx-auto">
-            <!-- Header -->
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <div>
-                    <h2 class="text-2xl font-extrabold text-gray-900">Buildings</h2>
-                    <p class="text-xs text-gray-400 mt-1">Manage and monitor building infrastructure hierarchy.</p>
-                </div>
-                <a href="{% url 'backend:building_add' %}"
-                   class="bg-[#3B5998] hover:bg-blue-800 text-white font-semibold py-2.5 px-4 rounded-lg flex items-center gap-2 transition duration-200 shadow-sm text-sm">
-                    <svg width="18"
-                         height="18"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="2"
-                         stroke-linecap="round">
-                        <path d="M12 5v14M5 12h14" />
+{% load static %}
+
+{% block title %}Building Management{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    /* Design Tokens — Exact Figma Specs */
+    body,
+    #mainContentWrapper {
+        background-color: #F2F2F2 !important;
+        font-family: 'Urbanist', Inter, system-ui, ui-sans-serif, sans-serif;
+    }
+
+    .bld-mono {
+        font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        letter-spacing: -0.02em;
+    }
+
+    /* Top KPI Stat Card (Frame 2147207680: Fixed 267px x Fill 120px, radius 10px, padding 20px, gap 10px, bg #EBEBEB) */
+    .bld-kpi-card {
+        background-color: #EBEBEB;
+        border-radius: 10px;
+        min-height: 120px;
+        height: 120px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-sizing: border-box;
+    }
+
+    /* Icon Box (Frame 2147207624: 36px x 36px, radius 5px, bg #F9F9F9) */
+    .bld-kpi-icon-box {
+        width: 36px;
+        height: 36px;
+        border-radius: 5px;
+        background-color: #F9F9F9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #55534F;
+        flex-shrink: 0;
+    }
+
+    /* Number: Geist Mono 500 24px -2% #55534F */
+    .bld-kpi-num {
+        font-family: 'Geist Mono', ui-monospace, monospace;
+        font-size: 24px;
+        font-weight: 500;
+        line-height: 1;
+        letter-spacing: -0.02em;
+        color: #55534F;
+        text-align: right;
+    }
+
+    /* Label: Urbanist 500 14px 100% 0% #9D9C9A */
+    .bld-kpi-label {
+        font-family: 'Urbanist', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1;
+        letter-spacing: 0;
+        color: #9D9C9A;
+    }
+
+    @media (max-width: 639px) {
+        .bld-kpi-card {
+            min-height: 104px;
+            height: auto;
+            padding: 14px;
+            gap: 10px;
+        }
+        .bld-kpi-num {
+            font-size: 20px;
+        }
+        .bld-kpi-label {
+            font-size: 13px;
+            line-height: 1.25;
+        }
+    }
+
+    /* Search input box */
+    .bld-search-box {
+        width: 100%;
+        max-width: 280px;
+        height: 38px;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        border-radius: 8px;
+        padding: 0 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+    .bld-search-box:focus-within {
+        border-color: #CFCED0;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+    .bld-search-input {
+        border: 0 !important;
+        outline: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13px;
+        color: #2B2823;
+        width: 100%;
+    }
+    .bld-search-input::placeholder {
+        color: #9D9C9A;
+    }
+
+    /* Table Outer Tray (Frame 2147207676: Fill 1104px x Hug 506px, radius 12px, padding 16px 6px 6px 6px, gap 16px, bg #F9F9F9) */
+    .bld-table-tray {
+        background-color: #F9F9F9;
+        border-radius: 12px;
+        padding: 16px 6px 6px 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    /* Table Inner Container (Frame 2147207632: Fill 1092px x Hug 435px, radius 6px, padding 14px, gap 10px, bg #FFFFFF) */
+    .bld-table-inner {
+        background-color: #FFFFFF;
+        border-radius: 6px;
+        padding: 14px;
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    /* Filter Select Pill */
+    .bld-filter-select {
+        background-color: #EAEAE8 !important;
+        border: 1px solid #E2E2E0 !important;
+        border-radius: 8px !important;
+        height: 34px;
+        padding: 0 28px 0 11px !important;
+        font-size: 12.5px;
+        font-weight: 500;
+        color: #555452;
+        outline: none !important;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23716F6C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 9px center;
+        transition: background-color 150ms ease, border-color 150ms ease;
+    }
+    .bld-filter-select:hover,
+    .bld-filter-select:focus {
+        background-color: #E3E3E1 !important;
+        border-color: #CFCED0 !important;
+        color: #2B2A29;
+    }
+
+    /* Reset button */
+    .bld-btn-reset {
+        height: 34px;
+        padding: 0 12px;
+        border-radius: 8px;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        font-size: 12.5px;
+        font-weight: 500;
+        color: #2B2823;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: background-color 150ms ease, border-color 150ms ease;
+    }
+    .bld-btn-reset:hover {
+        background-color: #F7F7F6;
+        border-color: #D8D7D5;
+    }
+
+    /* Primary Orange Button (+ Add Buildings) */
+    .bld-btn-primary {
+        background-color: #FF6B16;
+        color: #FFFFFF;
+        border-radius: 8px;
+        padding: 9px 18px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 1px 3px rgba(255, 107, 22, 0.25);
+        transition: background-color 150ms ease;
+        white-space: nowrap;
+    }
+    .bld-btn-primary:hover {
+        background-color: #E05508;
+    }
+
+    /* Table Styles */
+    .bld-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+    .bld-table thead tr {
+        background-color: #F6F6F6;
+    }
+    .bld-table th {
+        padding: 12px 14px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        color: #2B2823;
+    }
+    .bld-table td {
+        padding: 14px;
+        font-size: 13.5px;
+        vertical-align: middle;
+    }
+    .bld-link-underlined {
+        color: #2B2823;
+        font-weight: 600;
+        text-decoration: underline;
+        text-underline-offset: 4px;
+        text-decoration-color: #2B2823;
+        transition: color 150ms ease, text-decoration-color 150ms ease;
+    }
+    .bld-link-underlined:hover {
+        color: #FF6B16;
+        text-decoration-color: #FF6B16;
+    }
+
+    /* Action 3-dots circular button */
+    .bld-action-circle-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 9999px;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #5C5B59;
+        transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+    }
+    .bld-action-circle-btn:hover {
+        background-color: #F7F7F6;
+        border-color: #D8D7D5;
+        color: #2B2823;
+    }
+
+    /* Pagination pill buttons */
+    .bld-page-pill {
+        min-width: 28px;
+        height: 28px;
+        padding: 0 8px;
+        border-radius: 9999px;
+        font-size: 12px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 150ms ease, color 150ms ease;
+    }
+    .bld-page-pill.is-active {
+        background-color: #2B2823;
+        color: #FFFFFF;
+    }
+    .bld-page-pill:not(.is-active) {
+        background-color: #EAEAE8;
+        color: #5C5B59;
+    }
+    .bld-page-pill:not(.is-active):hover {
+        background-color: #DFDFDD;
+        color: #2B2823;
+    }
+</style>
+{% endblock %}
+
+{% block top_header %}
+<header class="sticky top-0 z-30 bg-[#F2F2F2]/95 backdrop-blur-sm">
+    <div class="w-full px-[15px] lg:pl-8 h-14 flex items-center justify-between gap-3">
+        <!-- Left: Mobile Hamburger + Breadcrumb Navigation -->
+        <div class="flex items-center gap-2.5">
+            <button id="btnOpen"
+                    type="button"
+                    aria-label="Open navigation"
+                    class="lg:hidden -ml-1 p-2 rounded-lg bg-white border border-[#EAEAE9] text-[#4A4947] hover:bg-[#F5F5F4] transition-colors">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+            <nav class="flex items-center gap-2 text-[12.5px]" aria-label="Breadcrumb">
+                <a href="{% url 'backend:dash_board' %}" class="w-8 h-8 rounded-[8px] bg-white border border-[#EAEAE9] flex items-center justify-center text-[#5C5B59] hover:bg-[#F7F7F6] transition-colors" title="Home">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 10.5L12 3l9 7.5" />
+                        <path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5" />
                     </svg>
-                    <span>Add Building</span>
                 </a>
-            </div>
-            <!-- Filter & Table Card -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-150 overflow-hidden">
-                <!-- Filters -->
-                <div class="p-4 border-b border-gray-100 bg-white">
-                    <form method="get"
-                          id="filter-form"
-                          class="flex flex-wrap items-center gap-3">
-                        <!-- Search input -->
-                        <div class="relative flex-1 min-w-[200px]">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="h-4 w-4 text-gray-400"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     viewBox="0 0 24 24">
-                                    <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
-                                    <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" />
-                                </svg>
-                            </div>
-                            <input type="text"
-                                   name="search"
-                                   value="{{ search }}"
-                                   placeholder="Search ID or Name.."
-                                   class="w-full pl-9 bg-[#F9FAFB] border border-[#E5E7EB] text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none">
-                        </div>
-                        <!-- Division Select -->
-                        <div class="w-full md:w-auto md:min-w-[150px]">
-                            <select name="division"
-                                    onchange="this.form.submit()"
-                                    class="w-full bg-[#F9FAFB] border border-[#E5E7EB] text-gray-700 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none">
-                                <option value="">All Divisions</option>
-                                {% for d in divisions %}
-                                    <option value="{{ d.id }}"
-                                            {% if selected_division == d.id|stringformat:"s" %}selected{% endif %}>{{ d.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <!-- Subdivision Select -->
-                        <div class="w-full md:w-auto md:min-w-[150px]">
-                            <select name="subdivision"
-                                    onchange="this.form.submit()"
-                                    class="w-full bg-[#F9FAFB] border border-[#E5E7EB] text-gray-700 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none">
-                                <option value="">All Subdivisions</option>
-                                {% for s in subdivisions %}
-                                    <option value="{{ s.id }}"
-                                            {% if selected_subdivision == s.id|stringformat:"s" %}selected{% endif %}>{{ s.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <!-- Section Select -->
-                        <div class="w-full md:w-auto md:min-w-[150px]">
-                            <select name="section"
-                                    onchange="this.form.submit()"
-                                    class="w-full bg-[#F9FAFB] border border-[#E5E7EB] text-gray-700 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none">
-                                <option value="">All Sections</option>
-                                {% for s in sections %}
-                                    <option value="{{ s.id }}"
-                                            {% if selected_section == s.id|stringformat:"s" %}selected{% endif %}>{{ s.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <!-- Status Select -->
-                        <div class="w-full md:w-auto md:min-w-[150px]">
-                            <select name="status"
-                                    onchange="this.form.submit()"
-                                    class="w-full bg-[#F9FAFB] border border-[#E5E7EB] text-gray-700 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none">
-                                <option value="">All Status</option>
-                                {% for sc in status_choices %}
-                                    <option value="{{ sc }}" {% if selected_status == sc %}selected{% endif %}>{{ sc }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <!-- Reset button -->
-                        {% if search or selected_division or selected_subdivision or selected_section or selected_status %}
-                            <a href="{% url 'backend:building_list' %}"
-                               class="h-9 w-9 flex items-center justify-center bg-white border border-[#E5E7EB] text-gray-400 hover:text-gray-600 rounded-lg transition-colors flex-shrink-0"
-                               title="Reset Filters">
-                                <svg class="w-4 h-4"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="2"
-                                     viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </a>
-                        {% endif %}
-                    </form>
+                <svg class="w-3.5 h-3.5 text-[#9E9D9B]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+                <a href="{% url 'backend:dash_board' %}" class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#5C5B59] font-medium hover:bg-[#E0E0DF] transition-colors">
+                    Dashboard
+                </a>
+                <svg class="w-3.5 h-3.5 text-[#9E9D9B]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+                <span class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#2B2823] font-medium">
+                    Buildings
+                </span>
+            </nav>
+        </div>
+
+        <!-- Right: Notification Bell Popover -->
+        {% include 'includes/notification_bell.html' %}
+    </div>
+</header>
+{% endblock %}
+
+{% block main_class %}w-full px-[15px] py-4 flex-1{% endblock %}
+
+{% block page_header %}
+<div class="w-full pt-1 pb-4">
+    <!-- Page Title & Primary Action -->
+    <div class="flex items-start sm:items-center justify-between gap-3 sm:gap-4">
+        <div class="min-w-0 flex-1">
+            <h1 class="bld-mono text-[20px] sm:text-[24px] font-medium text-[#2B2823] leading-tight">Building Management</h1>
+            <p class="text-[13px] sm:text-[14px] text-[#716F6C] mt-1">Manage government buildings and their equipment from one place.</p>
+        </div>
+        <div class="shrink-0">
+            <a href="{% url 'backend:building_add' %}" class="bld-btn-primary !px-3 sm:!px-[18px] !py-2 sm:!py-[9px] !text-[13px] sm:!text-[14px]">
+                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 5v14M5 12h14" />
+                </svg>
+                <span>Add Buildings</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="w-full space-y-4 pb-10">
+
+    <!-- ════════════════════════ ROW 1: 4 Top KPI Stat Cards (Frame 2147207683) ════════════════════════ -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
+        <!-- Card 1: Total Buildings -->
+        <div class="bld-kpi-card">
+            <div class="flex items-center justify-between">
+                <div class="bld-kpi-icon-box">
+                    <svg class="w-5 h-5 text-[#55534F]" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5.41795 4.07347L7.91795 3.06059C9.99309 2.21985 11.0307 1.79948 11.7653 2.29639C12.5 2.79329 12.5 3.91543 12.5 6.15969V17.9167H3.33334V7.17257C3.33334 6.08044 3.33334 5.53436 3.61828 5.11077C3.90321 4.68717 4.40812 4.4826 5.41795 4.07347Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12.5 7.08334H13.3333C14.9047 7.08334 15.6903 7.08334 16.1785 7.5715C16.6667 8.05965 16.6667 8.84534 16.6667 10.4167V17.9167H12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M1.66666 17.9167H18.3333" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
                 </div>
-                <!-- Table -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left whitespace-nowrap">
-                        <thead class="text-[10px] font-bold text-gray-400 tracking-wider uppercase bg-[#F9FAFB] border-b border-gray-100">
-                            <tr>
-                                <th class="px-6 py-4">Building Info</th>
-                                <th class="px-6 py-4">Section</th>
-                                <th class="px-6 py-4">Year of Establishment</th>
-                                <th class="px-6 py-4">Address</th>
-                                <th class="px-6 py-4">Status</th>
-                                <th class="px-6 py-4">Created</th>
-                                <th class="px-6 py-4 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-150">
-                            {% for data in data_list %}
-                                <tr class="hover:bg-gray-50/50 transition-colors">
-                                    <td class="px-6 py-4">
-                                        <a href="{% url 'backend:building_details' data.id %}">
-                                            <div class="font-bold text-gray-900 text-sm">{{ data.name|default:"-" }}</div>
-                                            <div class="text-[11px] text-gray-400 mt-0.5">
-                                                [{{ data.building_id|default:"-" }}]
-                                                &mdash; {{ data.surname|default:"-" }}
-                                            </div>
-                                        </a>
-                                        
-                                    </td>
-                                    <td class="px-6 py-4 text-gray-600 text-sm">{{ data.section.name|default:"-" }}</td>
-                                    <td class="px-6 py-4 text-gray-600 text-sm">{{ data.year_of_establishment|date:"d-b-y"|default:"-" }}</td>
-                                    <td class="px-6 py-4 text-gray-600 text-sm whitespace-normal max-w-xs">{{ data.address|default:"-" }}</td>
-                                    <td class="px-6 py-4">
-                                        {% if data.is_active %}
-                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#E6F4EA] text-[#137333] border border-[#CEEAD6]">
-                                                Active
-                                            </span>
-                                        {% else %}
-                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#F1F3F4] text-[#3C4043] border border-[#DADCE0]">
-                                                Inactive
-                                            </span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="px-6 py-4 text-gray-600 text-sm">{{ data.created_at|date:"Y-m-d" }}</td>
-                                    <td class="px-6 py-4 text-right">
-                                        <div class="inline-block" data-menu-wrap>
-                                            <button type="button"
-                                                    data-menu-btn
-                                                    class="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors">
-                                                <svg width="20"
-                                                     height="20"
-                                                     viewBox="0 0 24 24"
-                                                     fill="none"
-                                                     stroke="currentColor"
-                                                     stroke-width="2">
-                                                    <circle cx="12" cy="5" r="1.5" />
-                                                    <circle cx="12" cy="12" r="1.5" />
-                                                    <circle cx="12" cy="19" r="1.5" />
-                                                </svg>
-                                            </button>
-                                            <!-- Actions Menu (using position:fixed layout managed by base.html JS) -->
-                                            <div data-menu class="hidden py-1 w-36 text-left" role="menu">
-                                                <a href="{% url 'backend:building_details' data.id %}"
-                                                   class="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
-                                                   role="menuitem">View Details</a>
-                                                <a href="{% url 'backend:building_update' data.id %}"
-                                                   class="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
-                                                   role="menuitem">Edit Building</a>
-                                                <form action="{% url 'backend:building_status' data.id %}"
-                                                      method="post"
-                                                      class="block m-0">
-                                                    {% csrf_token %}
-                                                    <button type="submit"
-                                                            class="w-full text-left px-4 py-2 text-xs {% if data.is_active %}text-red-600 hover:bg-red-50{% else %}text-green-600 hover:bg-green-50{% endif %}"
-                                                            onclick="return confirm('Are you sure you want to change status?')">
-                                                        {% if data.is_active %}
-                                                            Inactive
-                                                        {% else %}
-                                                            Active
-                                                        {% endif %}
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% empty %}
-                                <tr>
-                                    <td colspan="6" class="px-6 py-12 text-center text-gray-500">
-                                        <div class="flex flex-col items-center">
-                                            <svg class="w-12 h-12 text-gray-300 mb-3"
-                                                 fill="none"
-                                                 stroke="currentColor"
-                                                 viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
-                                                </path>
+                <span class="bld-kpi-num">{{ total_buildings_kpi }}</span>
+            </div>
+            <p class="bld-kpi-label">Total Buildings</p>
+        </div>
+
+        <!-- Card 2: Active Buildings -->
+        <div class="bld-kpi-card">
+            <div class="flex items-center justify-between">
+                <div class="bld-kpi-icon-box">
+                    <svg class="w-5 h-5 text-[#55534F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                        <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                </div>
+                <span class="bld-kpi-num">{{ active_buildings_kpi }}</span>
+            </div>
+            <p class="bld-kpi-label">Active Buildings</p>
+        </div>
+
+        <!-- Card 3: Under Maintenance -->
+        <div class="bld-kpi-card">
+            <div class="flex items-center justify-between">
+                <div class="bld-kpi-icon-box">
+                    <svg class="w-5 h-5 text-[#55534F]" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12.4012 4.32161C11.2158 3.59532 8.17342 2.20119 5.43291 2.55703C7.09064 3.69869 7.96273 4.31274 10.3154 6.40738M15.6783 7.59867C16.4046 8.78401 17.7988 11.8264 17.4429 14.5669C16.3012 12.9092 15.6872 12.0371 13.5925 9.68443M8.72725 9.51518L2.85275 15.3896C2.37624 15.8661 2.3834 16.6458 2.86873 17.1312C3.35408 17.6165 4.1338 17.6237 4.61031 17.1472L10.4848 11.2727M9.98875 7.68794L12.3118 10.011C12.5698 10.269 12.9871 10.2699 13.2439 10.0132L16.122 7.13508C16.3788 6.87829 16.3778 6.461 16.1199 6.20304L13.7968 3.87994C13.5388 3.62199 13.1215 3.62104 12.8648 3.87783L9.98658 6.75591C9.72983 7.0127 9.73075 7.42999 9.98875 7.68794Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <span class="bld-kpi-num">{{ under_maintenance_kpi }}</span>
+            </div>
+            <p class="bld-kpi-label">Under Maintenance</p>
+        </div>
+
+        <!-- Card 4: Inactive Buildings -->
+        <div class="bld-kpi-card">
+            <div class="flex items-center justify-between">
+                <div class="bld-kpi-icon-box">
+                    <svg class="w-5 h-5 text-[#55534F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                </div>
+                <span class="bld-kpi-num">{{ inactive_buildings_kpi }}</span>
+            </div>
+            <p class="bld-kpi-label">Inactive Buildings</p>
+        </div>
+    </div>
+
+    <!-- ════════════════════════ ROW 2: Search Input ════════════════════════ -->
+    <div class="pt-1">
+        <form method="get" action="{% url 'backend:building_list' %}" id="buildingSearchForm" class="bld-search-box">
+            <svg class="w-4 h-4 text-[#9D9C9A] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <path d="M21 21l-4.35-4.35" />
+            </svg>
+            <input type="text"
+                   name="search"
+                   value="{{ search }}"
+                   placeholder="Search by building name or ID"
+                   class="bld-search-input">
+            {% if selected_division %}<input type="hidden" name="division" value="{{ selected_division }}">{% endif %}
+            {% if selected_subdivision %}<input type="hidden" name="subdivision" value="{{ selected_subdivision }}">{% endif %}
+            {% if selected_section %}<input type="hidden" name="section" value="{{ selected_section }}">{% endif %}
+            {% if selected_status %}<input type="hidden" name="status" value="{{ selected_status }}">{% endif %}
+            {% if per_page != 10 %}<input type="hidden" name="per_page" value="{{ per_page }}">{% endif %}
+        </form>
+    </div>
+
+    <!-- ════════════════════════ ROW 3: Table Outer Tray (Frame 2147207676) ════════════════════════ -->
+    <div class="bld-table-tray">
+        <!-- Tray Header: Title + Badge + Filter Selects + Reset -->
+        <div class="px-2.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div class="flex items-center gap-2">
+                <h2 class="text-[16.5px] font-semibold text-[#2B2823] tracking-[-0.01em]">Total Buildings</h2>
+                <span class="inline-flex items-center justify-center min-w-[22px] h-[20px] px-2 rounded-full bg-[#EAEAE8] text-[#4A4947] text-[11.5px] font-semibold leading-none">
+                    {{ filtered_total_count }}
+                </span>
+            </div>
+
+            <!-- Filters Form -->
+            <form method="get" action="{% url 'backend:building_list' %}" id="buildingFilterForm" class="flex flex-wrap items-center gap-2">
+                {% if search %}
+                    <input type="hidden" name="search" value="{{ search }}">
+                {% endif %}
+                {% if per_page != 10 %}
+                    <input type="hidden" name="per_page" value="{{ per_page }}">
+                {% endif %}
+
+                <!-- All Divisions -->
+                <select name="division" onchange="this.form.submit()" class="bld-filter-select" aria-label="Filter by division">
+                    <option value="">All Divisions</option>
+                    {% for div in divisions %}
+                        <option value="{{ div.id }}" {% if selected_division == div.id|stringformat:"s" %}selected{% endif %}>{{ div.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <!-- All Subdivisions -->
+                <select name="subdivision" onchange="this.form.submit()" class="bld-filter-select" aria-label="Filter by subdivision">
+                    <option value="">All Subdivisions</option>
+                    {% for sub in subdivisions %}
+                        <option value="{{ sub.id }}" {% if selected_subdivision == sub.id|stringformat:"s" %}selected{% endif %}>{{ sub.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <!-- All Sections -->
+                <select name="section" onchange="this.form.submit()" class="bld-filter-select" aria-label="Filter by section">
+                    <option value="">All Sections</option>
+                    {% for sec in sections %}
+                        <option value="{{ sec.id }}" {% if selected_section == sec.id|stringformat:"s" %}selected{% endif %}>{{ sec.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <!-- All Statuses -->
+                <select name="status" onchange="this.form.submit()" class="bld-filter-select" aria-label="Filter by status">
+                    <option value="">All Statuses</option>
+                    {% for st in status_choices %}
+                        <option value="{{ st }}" {% if selected_status == st %}selected{% endif %}>{{ st }}</option>
+                    {% endfor %}
+                </select>
+
+                <!-- Reset Button -->
+                <a href="{% url 'backend:building_list' %}" class="bld-btn-reset" title="Reset all filters">
+                    <span>Reset</span>
+                    <svg class="w-3.5 h-3.5 text-[#5C5B59]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
+                        <path d="M3 3v5h5" />
+                    </svg>
+                </a>
+            </form>
+        </div>
+
+        <!-- Table Inner Container (Frame 2147207632) -->
+        <div class="bld-table-inner overflow-hidden">
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="bld-table min-w-[960px]">
+                    <thead>
+                        <tr>
+                            <th class="rounded-l-[4px]">Building ID</th>
+                            <th>Building Name</th>
+                            <th>Section</th>
+                            <th>Establishment Date</th>
+                            <th>Physical Address</th>
+                            <th>Equipment</th>
+                            <th>Status</th>
+                            <th class="text-center rounded-r-[4px]">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#F2F2F0]">
+                        {% for data in data_list %}
+                            <tr class="hover:bg-[#FAFAFA] transition-colors">
+                                <!-- Building ID -->
+                                <td class="font-mono text-[#2B2823] text-[13px] font-medium">
+                                    {{ data.building_id|default:"-" }}
+                                </td>
+
+                                <!-- Building Name (Underlined Link) -->
+                                <td>
+                                    <a href="{% url 'backend:building_details' data.id %}" class="bld-link-underlined">
+                                        {{ data.name }}
+                                    </a>
+                                </td>
+
+                                <!-- Section -->
+                                <td class="text-[#716F6C]">
+                                    {{ data.section.name|default:"-" }}
+                                </td>
+
+                                <!-- Establishment Date -->
+                                <td class="text-[#716F6C] whitespace-nowrap">
+                                    {{ data.year_of_establishment|date:"d F Y"|default:"-" }}
+                                </td>
+
+                                <!-- Physical Address -->
+                                <td class="text-[#716F6C] max-w-[220px] truncate" title="{{ data.address }}">
+                                    {{ data.address|default:"-" }}
+                                </td>
+
+                                <!-- Equipment Count -->
+                                <td class="font-mono text-[#2B2823] font-medium">
+                                    {{ data.equipment_count|default:"0" }}
+                                </td>
+
+                                <!-- Status Badge -->
+                                <td>
+                                    {% if data.status == 'Overdue' %}
+                                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#FEECEC] text-[#D9383A]">
+                                            Overdue
+                                        </span>
+                                    {% elif data.status == 'Active' or data.is_active and not data.status %}
+                                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#E7F6EE] text-[#1E8E5A]">
+                                            Active
+                                        </span>
+                                    {% elif data.status == 'Under Maintenance' %}
+                                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#FEF3E6] text-[#C86E12]">
+                                            Under Maintenance
+                                        </span>
+                                    {% else %}
+                                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#EAEAE8] text-[#5C5B59]">
+                                            {{ data.status|default:"Inactive" }}
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Action (3-Dots Circle Button) -->
+                                <td class="text-center">
+                                    <div class="relative inline-block text-left" data-menu-wrap>
+                                        <button type="button"
+                                                data-menu-btn
+                                                class="bld-action-circle-btn"
+                                                aria-label="Actions">
+                                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                                                <circle cx="12" cy="5" r="1.75" />
+                                                <circle cx="12" cy="12" r="1.75" />
+                                                <circle cx="12" cy="19" r="1.75" />
                                             </svg>
-                                            <span class="text-sm">No buildings found.</span>
+                                        </button>
+                                        <div data-menu class="hidden py-1 w-36 text-left" role="menu">
+                                            <a href="{% url 'backend:building_details' data.id %}"
+                                               class="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
+                                               role="menuitem">View Details</a>
+                                            <a href="{% url 'backend:building_update' data.id %}"
+                                               class="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
+                                               role="menuitem">Edit Building</a>
+                                            <form action="{% url 'backend:building_status' data.id %}"
+                                                  method="post"
+                                                  class="block m-0">
+                                                {% csrf_token %}
+                                                <button type="submit"
+                                                        class="w-full text-left px-4 py-2 text-xs {% if data.is_active %}text-red-600 hover:bg-red-50{% else %}text-green-600 hover:bg-green-50{% endif %}"
+                                                        onclick="return confirm('Are you sure you want to change status?')">
+                                                    {% if data.is_active %}Inactive{% else %}Active{% endif %}
+                                                </button>
+                                            </form>
                                         </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <!-- Pagination -->
-                {% if data_list.has_other_pages %}
-                    <div class="p-4 border-t border-gray-100 flex items-center justify-between bg-white">
-                        <span class="text-sm text-gray-500">Page <span class="font-medium text-gray-900">{{ data_list.number
-                            }}</span> of <span class="font-medium text-gray-900">{{ last_page }}</span></span>
-                            <div class="flex gap-1">
-                                {% for i in paginator_list %}
-                                    <a href="?page={{ i }}{% if search %}&search={{ search }}{% endif %}{% if selected_division %}&division={{ selected_division }}{% endif %}{% if selected_subdivision %}&subdivision={{ selected_subdivision }}{% endif %}{% if selected_section %}&section={{ selected_section }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}"
-                                       class="w-8 h-8 flex items-center justify-center rounded-md text-sm {% if data_list.number == i %}bg-[#3B5998] text-white font-medium{% else %}text-gray-600 hover:bg-gray-100{% endif %} transition-colors">{{
-                                    i }}</a>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    {% endif %}
-                </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="8" class="py-12 px-4 text-center">
+                                    <div class="flex flex-col items-center justify-center">
+                                        <div class="w-12 h-12 rounded-full bg-[#F4F4F3] flex items-center justify-center text-[#9D9C9A] mb-3">
+                                            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                                <rect x="4" y="2" width="16" height="20" rx="2" />
+                                                <path d="M9 22v-4h6v4" />
+                                                <path d="M8 6h.01M16 6h.01M8 10h.01M16 10h.01M8 14h.01M16 14h.01" />
+                                            </svg>
+                                        </div>
+                                        <p class="text-[14.5px] font-semibold text-[#2B2823]">No buildings found</p>
+                                        <p class="text-[12.5px] text-[#8E8C89] mt-0.5 max-w-sm">
+                                            {% if search or selected_division or selected_subdivision or selected_section or selected_status %}
+                                                No results match your search or filter criteria. Try resetting the filters.
+                                            {% else %}
+                                                Get started by registering your first government building and its equipment.
+                                            {% endif %}
+                                        </p>
+                                        <div class="mt-4">
+                                            <a href="{% url 'backend:building_add' %}" class="bld-btn-primary text-[13px] py-2 px-3.5">
+                                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14" /></svg>
+                                                <span>Add Building</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-        </section>
-    {% endblock %}
-    {% block extra_js %}
-        <script>
-    $(document).ready(function () {
-        $('.select2-items').select2();
+        </div>
+    </div>
+
+    <!-- ════════════════════════ ROW 4: Bottom Pagination Bar ════════════════════════ -->
+    {% include 'includes/pagination.html' with data_list=data_list %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const notifBtn = document.getElementById('bldNotifBtn');
+        const notifMenu = document.getElementById('bldNotifMenu');
+        if (notifBtn && notifMenu) {
+            notifBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                notifMenu.classList.toggle('hidden');
+            });
+            document.addEventListener('click', (e) => {
+                if (!notifMenu.contains(e.target) && !notifBtn.contains(e.target)) {
+                    notifMenu.classList.add('hidden');
+                }
+            });
+        }
     });
-        </script>
-    {% endblock %}
+</script>
+{% endblock %}

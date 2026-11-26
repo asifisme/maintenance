@@ -1,271 +1,73 @@
 {% extends 'base.html' %}
-{% block title %}<span class="hidden">{{ action }} Building</span>{% endblock %}
+{% load static %}
+
+{% block title %}Add Building{% endblock %}
+
+{% block extra_head %}
+    {% include 'building/includes_add/styles.html' %}
+{% endblock %}
+
+{% block breadcrumb %}
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <a href="{% url 'backend:building_list' %}" class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#5C5B59] font-medium hover:bg-[#E0E0DF] transition-colors shrink-0">
+        Buildings
+    </a>
+{% endblock %}
+
+{% block main_class %}w-full px-[15px] py-4 flex-1{% endblock %}
+
+{% block page_header %}
+<div class="w-full pt-1 pb-4">
+    <h1 class="bld-mono text-[24px] font-medium text-[#2B2823] leading-tight">Building Management</h1>
+    <p class="text-[13.5px] text-[#716F6C] mt-1">Manage government buildings and their equipment from one place.</p>
+</div>
+{% endblock %}
+
 {% block content %}
-    <section class="bg-[var(--bg-color)] min-h-screen p-4 md:p-2 font-sans">
-        <div class="max-w-6xl mx-auto">
-            <!-- Header -->
-            <div class="flex items-center gap-4 mb-6">
-                <a href="{% url 'backend:building_list' %}"
-                   class="text-slate-600 hover:text-slate-950 transition-colors">
-                    <svg width="24"
-                         height="24"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="2.5"
-                         stroke-linecap="round"
-                         stroke-linejoin="round">
-                        <path d="M15 18l-6-6 6-6" />
-                    </svg>
-                </a>
-                <h2 class="text-2xl font-bold text-slate-800">{{ action }} Building</h2>
+<div class="w-full pb-16">
+    <!-- OUTER FRAME -->
+    <div class="wizard-outer-frame">
+        <!-- Header: Title inside outer frame -->
+        <div class="px-2 pt-0.5 flex items-center justify-between">
+            <h2 id="wizardStepTitle" class="text-[18px] font-bold text-[#2B2823] tracking-tight">
+                Add Building
+            </h2>
+        </div>
+
+        <!-- INNER FRAME -->
+        <div class="wizard-inner-frame">
+            <!-- STEP TABS BAR -->
+            <div class="step-tabs-container">
+                <button type="button" id="tabBtn1" onclick="validateAndGoToStep(1)" class="tab-pill-active">
+                    Building Information
+                </button>
+                <button type="button" id="tabBtn2" onclick="validateAndGoToStep(2)" class="tab-pill-inactive">
+                    Add Equipment
+                </button>
+                <button type="button" id="tabBtn3" onclick="validateAndGoToStep(3)" class="tab-pill-inactive">
+                    Review & Save
+                </button>
             </div>
-            <form method="post" class="space-y-6">
+
+            <!-- Main Form -->
+            <form method="post" id="addBuildingForm" action="{% url 'backend:building_add' %}" novalidate>
                 {% csrf_token %}
-                <!-- Basic Information Card -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Basic Information</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
-                                Building
-                                ID <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text"
-                                   name="building_id"
-                                   value="{{ obj.building_id|default:'' }}"
-                                   class="w-full bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition"
-                                   required
-                                   placeholder="e.g. DH-001-0042">
-                            <p class="text-xs text-slate-400 mt-1.5 italic">Locked after creation.</p>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
-                                Building
-                                Name <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text"
-                                   name="name"
-                                   value="{{ obj.name|default:'' }}"
-                                   class="w-full bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition"
-                                   required
-                                   placeholder="e.g. Headquarters">
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Surname</label>
-                            <input type="text"
-                                   name="surname"
-                                   value="{{ obj.surname|default:'' }}"
-                                   class="w-full bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition"
-                                   placeholder="e.g. Main HQ">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
-                                Year of Establishment
-                            </label>
-                            <input type="date"
-                                   name="year_of_establishment"
-                                   value="{{ obj.year_of_establishment|date:'Y-m-d' }}"
-                                   class="w-full bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition">
-                        </div>
-                    </div>
-                </div>
-                <!-- Location & Hierarchy Card -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Location & Hierarchy</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Division</label>
-                            <select name="division"
-                                    class="w-full select2-items bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition">
-                                <option value="">Select Division</option>
-                                {% for d in divisions %}
-                                    <option value="{{ d.id }}"
-                                            {% if obj.division_id == d.id %}selected{% endif %}>{{ d.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Subdivision</label>
-                            <select name="subdivision"
-                                    class="w-full select2-items bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition">
-                                <option value="">Select Subdivision</option>
-                                {% for s in subdivisions %}
-                                    <option value="{{ s.id }}"
-                                            {% if obj.subdivision_id == s.id %}selected{% endif %}>
-                                        {{ s.name }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
-                                Section
-                                <span class="text-red-500">*</span>
-                            </label>
-                            <select name="section"
-                                    class="w-full select2-items bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition"
-                                    required>
-                                <option value="">Select Section</option>
-                                {% for s in sections %}
-                                    <option value="{{ s.id }}" {% if obj.section_id == s.id %}selected{% endif %}>{{ s.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
-                            Physical
-                            Address <span class="text-red-500">*</span>
-                        </label>
-                        <textarea name="address"
-                                  rows="3"
-                                  class="w-full bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition resize-none"
-                                  required
-                                  placeholder="e.g. 123 Main Street, Sector 4">{{ obj.address|default:'' }}</textarea>
-                    </div>
-                </div>
-                <!-- Coordinate & Status Card -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Latitude</label>
-                            <input type="number"
-                                   step="any"
-                                   name="latitude"
-                                   value="{{ obj.latitude|default:'' }}"
-                                   class="w-full bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition"
-                                   placeholder="e.g. 23.8103">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Longitude</label>
-                            <input type="number"
-                                   step="any"
-                                   name="longitude"
-                                   value="{{ obj.longitude|default:'' }}"
-                                   class="w-full bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition"
-                                   placeholder="e.g. 90.4125">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Status</label>
-                            <select name="status"
-                                    class="w-full bg-[#f8fafc] border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-blue-500/20 focus:border-blue-500 block p-3 outline-none transition">
-                                <option value="Active" {% if obj.status == 'Active' %}selected{% endif %}>Active</option>
-                                <option value="Inactive" {% if obj.status == 'Inactive' %}selected{% endif %}>Inactive</option>
-                                <option value="Under Maintenance"
-                                        {% if obj.status == 'Under Maintenance' %}selected{% endif %}>Under Maintenance</option>
-                                <option value="Decommissioned"
-                                        {% if obj.status == 'Decommissioned' %}selected{% endif %}>
-                                    Decommissioned
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <!-- Form Actions -->
-                <div class="flex items-center justify-end gap-4 pt-4">
-                    <a href="{% url 'backend:building_list' %}"
-                       class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 font-semibold py-2.5 px-6 rounded-lg transition duration-200 text-sm">
-                        Cancel
-                     </a>
-                    <button type="submit"
-                            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg transition duration-200 text-sm">
-                        Save Building
-                    </button>
-                </div>
+                <!-- Hidden field for serialized equipment array -->
+                <input type="hidden" name="equipments_data" id="equipmentsDataJson" value="[]">
+
+                {% include 'building/includes_add/step1_building_info.html' %}
+                {% include 'building/includes_add/step2_equipment.html' %}
+                {% include 'building/includes_add/step3_review.html' %}
             </form>
         </div>
-    </section>
+    </div>
+</div>
+
+{% include 'building/includes_add/equipment_modal.html' %}
 {% endblock %}
+
 {% block extra_js %}
-    <script>
-    $(document).ready(function () {
-        $('.select2-items').select2({
-            width: '100%'
-        });
-
-        const divisionSelect = $('select[name="division"]');
-        const subdivisionSelect = $('select[name="subdivision"]');
-        const sectionSelect = $('select[name="section"]');
-
-        // Store initial selected values (for edit page / validation fail re-population)
-        const initialSubdivisionId = subdivisionSelect.val();
-        const initialSectionId = sectionSelect.val();
-
-        function updateSubdivisions(divisionId, callback) {
-            if (!divisionId) {
-                subdivisionSelect.html('<option value="">Select Subdivision</option>').val('').trigger('change');
-                sectionSelect.html('<option value="">Select Section</option>').val('').trigger('change');
-                if (callback) callback();
-                return;
-            }
-
-            $.ajax({
-                url: "{% url 'backend:get_division_subdivisions' %}",
-                data: { 'division_id': divisionId },
-                dataType: 'json',
-                success: function (data) {
-                    let options = '<option value="">Select Subdivision</option>';
-                    data.subdivisions.forEach(function (sub) {
-                        options += `<option value="${sub.id}">${sub.name}</option>`;
-                    });
-                    subdivisionSelect.html(options).trigger('change');
-                    if (callback) callback();
-                }
-            });
-        }
-
-        function updateSections(subdivisionId, callback) {
-            if (!subdivisionId) {
-                sectionSelect.html('<option value="">Select Section</option>').val('').trigger('change');
-                if (callback) callback();
-                return;
-            }
-
-            $.ajax({
-                url: "{% url 'backend:get_subdivision_sections' %}",
-                data: { 'subdivision_id': subdivisionId },
-                dataType: 'json',
-                success: function (data) {
-                    let options = '<option value="">Select Section</option>';
-                    data.sections.forEach(function (sec) {
-                        options += `<option value="${sec.id}">${sec.name}</option>`;
-                    });
-                    sectionSelect.html(options).trigger('change');
-                    if (callback) callback();
-                }
-            });
-        }
-
-        divisionSelect.on('change', function () {
-            const divisionId = $(this).val();
-            updateSubdivisions(divisionId);
-        });
-
-        subdivisionSelect.on('change', function () {
-            const subdivisionId = $(this).val();
-            updateSections(subdivisionId);
-        });
-
-        // Initial load check
-        const currentDivisionId = divisionSelect.val();
-        if (currentDivisionId) {
-            updateSubdivisions(currentDivisionId, function() {
-                if (initialSubdivisionId) {
-                    subdivisionSelect.val(initialSubdivisionId).trigger('change');
-                    updateSections(initialSubdivisionId, function() {
-                        if (initialSectionId) {
-                            sectionSelect.val(initialSectionId).trigger('change');
-                        }
-                    });
-                }
-            });
-        } else {
-            subdivisionSelect.html('<option value="">Select Subdivision</option>').trigger('change');
-            sectionSelect.html('<option value="">Select Section</option>').trigger('change');
-        }
-    });
-    </script>
+    {% include 'building/includes_add/scripts.html' %}
 {% endblock %}

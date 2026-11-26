@@ -168,5 +168,434 @@
             "expires_at": "2026-11-20T12:00:00Z",
             "metadata": {}
         }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 201,
+        "fields": {
+            "equipment": 1,
+            "building": 1,
+            "alert_type": "maint_overdue",
+            "severity": "high",
+            "title": "Maint Overdue \u2014 EQ-HVAC-001",
+            "description": "Automated alert triggered for Main Office Chiller AC (Roof).",
+            "is_acknowledged": true
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 202,
+        "fields": {
+            "equipment": 2,
+            "building": 1,
+            "alert_type": "equipment_failure",
+            "severity": "critical",
+            "title": "Equipment Failure \u2014 EQ-ELV-001",
+            "description": "Automated alert triggered for Lobby Passenger Elevator A (Lobby).",
+            "is_acknowledged": false
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 203,
+        "fields": {
+            "equipment": 3,
+            "building": 2,
+            "alert_type": "warranty_expiry",
+            "severity": "medium",
+            "title": "Warranty Expiry \u2014 EQ-GEN-001",
+            "description": "Automated alert triggered for Basement Diesel Generator (Basement).",
+            "is_acknowledged": false
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 204,
+        "fields": {
+            "equipment": 4,
+            "building": 3,
+            "alert_type": "safety_issue",
+            "severity": "high",
+            "title": "Safety Issue \u2014 EQ-FIRE-001",
+            "description": "Automated alert triggered for Central Fire Suppression Panel (All Floors).",
+            "is_acknowledged": true
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 205,
+        "fields": {
+            "equipment": 5,
+            "building": 2,
+            "alert_type": "maint_overdue",
+            "severity": "critical",
+            "title": "Maint Overdue \u2014 EQ-HVAC-002",
+            "description": "Automated alert triggered for Mezzanine Air Handler (Floor 4 Mezzanine).",
+            "is_acknowledged": false
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 206,
+        "fields": {
+            "equipment": 6,
+            "building": 3,
+            "alert_type": "equipment_failure",
+            "severity": "medium",
+            "title": "Equipment Failure \u2014 EQ-ELV-002",
+            "description": "Automated alert triggered for Tower A Service Lift (Tower A).",
+            "is_acknowledged": false
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 207,
+        "fields": {
+            "equipment": 7,
+            "building": 1,
+            "alert_type": "warranty_expiry",
+            "severity": "high",
+            "title": "Warranty Expiry \u2014 EQ-GEN-002",
+            "description": "Automated alert triggered for Backup Power Generator 500kVA (Basement).",
+            "is_acknowledged": true
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 208,
+        "fields": {
+            "equipment": 8,
+            "building": 1,
+            "alert_type": "safety_issue",
+            "severity": "critical",
+            "title": "Safety Issue \u2014 EQ-FIRE-002",
+            "description": "Automated alert triggered for Main Fire Alarm Control Unit (Basement).",
+            "is_acknowledged": false
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 209,
+        "fields": {
+            "equipment": 101,
+            "building": 1,
+            "alert_type": "maint_overdue",
+            "severity": "medium",
+            "title": "Maint Overdue \u2014 EQ-HQ-005",
+            "description": "Automated alert triggered for Executive Floor VRF Unit (Floor 5).",
+            "is_acknowledged": false
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 210,
+        "fields": {
+            "equipment": 102,
+            "building": 1,
+            "alert_type": "equipment_failure",
+            "severity": "high",
+            "title": "Equipment Failure \u2014 EQ-HQ-006",
+            "description": "Automated alert triggered for Conference Hall Split AC (Floor 3).",
+            "is_acknowledged": true
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 211,
+        "fields": {
+            "equipment": 103,
+            "building": 1,
+            "alert_type": "warranty_expiry",
+            "severity": "critical",
+            "title": "Warranty Expiry \u2014 EQ-HQ-007",
+            "description": "Automated alert triggered for Server Room Precision AC (Floor 2).",
+            "is_acknowledged": false
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 212,
+        "fields": {
+            "equipment": 104,
+            "building": 1,
+            "alert_type": "safety_issue",
+            "severity": "medium",
+            "title": "Safety Issue \u2014 EQ-HQ-008",
+            "description": "Automated alert triggered for East Wing Passenger Lift B (Ground Floor).",
+            "is_acknowledged": false
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 213,
+        "fields": {
+            "equipment": 105,
+            "building": 1,
+            "alert_type": "maint_overdue",
+            "severity": "high",
+            "title": "Maint Overdue \u2014 EQ-HQ-009",
+            "description": "Automated alert triggered for Service Cargo Elevator (Basement).",
+            "is_acknowledged": true
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 214,
+        "fields": {
+            "equipment": 106,
+            "building": 1,
+            "alert_type": "equipment_failure",
+            "severity": "critical",
+            "title": "Equipment Failure \u2014 EQ-HQ-010",
+            "description": "Automated alert triggered for Standby Generator 250kVA (Basement).",
+            "is_acknowledged": false
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 215,
+        "fields": {
+            "equipment": 107,
+            "building": 1,
+            "alert_type": "warranty_expiry",
+            "severity": "medium",
+            "title": "Warranty Expiry \u2014 EQ-HQ-011",
+            "description": "Automated alert triggered for Sprinkler Booster Pump (Basement).",
+            "is_acknowledged": false
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 216,
+        "fields": {
+            "equipment": 108,
+            "building": 1,
+            "alert_type": "safety_issue",
+            "severity": "high",
+            "title": "Safety Issue \u2014 EQ-HQ-012",
+            "description": "Automated alert triggered for North Wing Smoke Detector Hub (Floor 4).",
+            "is_acknowledged": true
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 217,
+        "fields": {
+            "equipment": 109,
+            "building": 1,
+            "alert_type": "maint_overdue",
+            "severity": "critical",
+            "title": "Maint Overdue \u2014 EQ-HQ-013",
+            "description": "Automated alert triggered for Auditorium Ducted AC (Floor 1).",
+            "is_acknowledged": false
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 218,
+        "fields": {
+            "equipment": 110,
+            "building": 1,
+            "alert_type": "equipment_failure",
+            "severity": "medium",
+            "title": "Equipment Failure \u2014 EQ-HQ-014",
+            "description": "Automated alert triggered for Auxiliary Cooling Tower (Roof).",
+            "is_acknowledged": false
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 219,
+        "fields": {
+            "equipment": 111,
+            "building": 1,
+            "alert_type": "warranty_expiry",
+            "severity": "high",
+            "title": "Warranty Expiry \u2014 EQ-HQ-015",
+            "description": "Automated alert triggered for Emergency Lighting UPS Pack (Floor 1).",
+            "is_acknowledged": true
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 220,
+        "fields": {
+            "equipment": 112,
+            "building": 1,
+            "alert_type": "safety_issue",
+            "severity": "critical",
+            "title": "Safety Issue \u2014 EQ-HQ-016",
+            "description": "Automated alert triggered for Reception Cassette AC (Ground Floor).",
+            "is_acknowledged": false
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 221,
+        "fields": {
+            "equipment": 201,
+            "building": 201,
+            "alert_type": "maint_overdue",
+            "severity": "medium",
+            "title": "Maint Overdue \u2014 EQ-FX-001",
+            "description": "Automated alert triggered for Daikin HVAC Unit 01 (Basement).",
+            "is_acknowledged": false
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 222,
+        "fields": {
+            "equipment": 202,
+            "building": 202,
+            "alert_type": "equipment_failure",
+            "severity": "high",
+            "title": "Equipment Failure \u2014 EQ-FX-002",
+            "description": "Automated alert triggered for Otis Elevator Unit 02 (Ground Floor).",
+            "is_acknowledged": true
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 223,
+        "fields": {
+            "equipment": 203,
+            "building": 203,
+            "alert_type": "warranty_expiry",
+            "severity": "critical",
+            "title": "Warranty Expiry \u2014 EQ-FX-003",
+            "description": "Automated alert triggered for Carrier Generator Unit 03 (Floor 1).",
+            "is_acknowledged": false
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 224,
+        "fields": {
+            "equipment": 204,
+            "building": 204,
+            "alert_type": "safety_issue",
+            "severity": "medium",
+            "title": "Safety Issue \u2014 EQ-FX-004",
+            "description": "Automated alert triggered for Cummins Fire Safety Unit 04 (Floor 2).",
+            "is_acknowledged": false
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 225,
+        "fields": {
+            "equipment": 205,
+            "building": 205,
+            "alert_type": "maint_overdue",
+            "severity": "high",
+            "title": "Maint Overdue \u2014 EQ-FX-005",
+            "description": "Automated alert triggered for Honeywell Chiller System Unit 05 (Floor 3).",
+            "is_acknowledged": true
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 226,
+        "fields": {
+            "equipment": 206,
+            "building": 206,
+            "alert_type": "equipment_failure",
+            "severity": "critical",
+            "title": "Equipment Failure \u2014 EQ-FX-006",
+            "description": "Automated alert triggered for Siemens Water Pump Unit 06 (Floor 4).",
+            "is_acknowledged": false
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 227,
+        "fields": {
+            "equipment": 207,
+            "building": 207,
+            "alert_type": "warranty_expiry",
+            "severity": "medium",
+            "title": "Warranty Expiry \u2014 EQ-FX-007",
+            "description": "Automated alert triggered for Mitsubishi Electrical Substation Unit 07 (Floor 5).",
+            "is_acknowledged": false
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 228,
+        "fields": {
+            "equipment": 208,
+            "building": 208,
+            "alert_type": "safety_issue",
+            "severity": "high",
+            "title": "Safety Issue \u2014 EQ-FX-008",
+            "description": "Automated alert triggered for Schindler Power Transformer Unit 08 (Roof).",
+            "is_acknowledged": true
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 229,
+        "fields": {
+            "equipment": 209,
+            "building": 209,
+            "alert_type": "maint_overdue",
+            "severity": "critical",
+            "title": "Maint Overdue \u2014 EQ-FX-009",
+            "description": "Automated alert triggered for ABB UPS Battery Bank Unit 09 (Basement).",
+            "is_acknowledged": false
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 230,
+        "fields": {
+            "equipment": 210,
+            "building": 210,
+            "alert_type": "equipment_failure",
+            "severity": "medium",
+            "title": "Equipment Failure \u2014 EQ-FX-010",
+            "description": "Automated alert triggered for Schneider Solar PV Inverter Unit 10 (Ground Floor).",
+            "is_acknowledged": false
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 231,
+        "fields": {
+            "equipment": 211,
+            "building": 211,
+            "alert_type": "warranty_expiry",
+            "severity": "high",
+            "title": "Warranty Expiry \u2014 EQ-FX-011",
+            "description": "Automated alert triggered for Daikin CCTV Surveillance Unit 11 (Floor 1).",
+            "is_acknowledged": true
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 232,
+        "fields": {
+            "equipment": 212,
+            "building": 212,
+            "alert_type": "safety_issue",
+            "severity": "critical",
+            "title": "Safety Issue \u2014 EQ-FX-012",
+            "description": "Automated alert triggered for Otis Biometric Access Control Unit 12 (Floor 2).",
+            "is_acknowledged": false
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 233,
+        "fields": {
+            "equipment": 213,
+            "building": 213,
+            "alert_type": "maint_overdue",
+            "severity": "medium",
+            "title": "Maint Overdue \u2014 EQ-FX-013",
+            "description": "Automated alert triggered for Carrier Public Address System Unit 13 (Floor 3).",
+            "is_acknowledged": false
+        }
     }
 ]

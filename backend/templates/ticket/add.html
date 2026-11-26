@@ -1,244 +1,705 @@
 {% extends 'base.html' %}
-{% block title %}<span class="hidden">{{ action }} Building</span>{% endblock %}
+{% load static %}
+
+{% block page_title %}{% if is_edit %}Edit Ticket #{{ obj.id }}{% else %}Create Ticket{% endif %}{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    body,
+    #mainContentWrapper {
+        background-color: #F2F2F2 !important;
+        font-family: 'Urbanist', Inter, system-ui, ui-sans-serif, sans-serif;
+    }
+
+    .tkt-mono {
+        font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        letter-spacing: -0.02em;
+    }
+
+    .wizard-outer-frame {
+        width: 100%;
+        max-width: 660px;
+        margin: 0 auto;
+        border-radius: 12px;
+        padding: 14px 6px 6px 6px;
+        background-color: #FFFFFF;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        box-sizing: border-box;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+
+    .wizard-inner-frame {
+        width: 100%;
+        border-radius: 6px;
+        padding: 16px 14px;
+        background-color: #F3F3F3;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        box-sizing: border-box;
+    }
+
+    .section-divider {
+        border-top: 1px solid #E6E6E4;
+        padding-top: 14px;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #2B2823;
+        margin-bottom: 6px;
+    }
+
+    .form-input-field,
+    .form-select-field,
+    .form-textarea-field {
+        width: 100%;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        border-radius: 10px;
+        padding: 10px 14px;
+        font-size: 13.5px;
+        color: #2B2823;
+        transition: all 0.15s ease;
+        outline: none;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    .form-select-field {
+        appearance: none;
+        -webkit-appearance: none;
+        padding-right: 36px;
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23716F6C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+    }
+
+    .form-input-field::placeholder,
+    .form-textarea-field::placeholder {
+        color: #BDBCBB;
+    }
+
+    .form-input-field:focus,
+    .form-select-field:focus,
+    .form-textarea-field:focus {
+        border-color: #0B7A44;
+        box-shadow: 0 0 0 3px rgba(11, 122, 68, 0.08);
+    }
+
+    /* Pill Radio Buttons (matching Equipment Status pills) */
+    .choice-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 7px 14px;
+        border-radius: 9999px;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        font-size: 13px;
+        font-weight: 500;
+        color: #4A4947;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        user-select: none;
+    }
+    .choice-pill:hover {
+        border-color: #CFCED0;
+        color: #2B2823;
+    }
+    .peer:checked + .choice-pill {
+        background-color: #2B2823;
+        border-color: #2B2823;
+        color: #FFFFFF;
+        font-weight: 600;
+        box-shadow: 0 1px 3px rgba(43, 40, 35, 0.18);
+    }
+
+    /* Priority specific checked colors */
+    .peer:checked + .priority-pill-low {
+        background-color: #4A4947;
+        border-color: #4A4947;
+        color: #FFFFFF;
+    }
+    .peer:checked + .priority-pill-medium {
+        background-color: #B07200;
+        border-color: #B07200;
+        color: #FFFFFF;
+    }
+    .peer:checked + .priority-pill-high {
+        background-color: #C86E12;
+        border-color: #C86E12;
+        color: #FFFFFF;
+    }
+    .peer:checked + .priority-pill-critical {
+        background-color: #D93025;
+        border-color: #D93025;
+        color: #FFFFFF;
+    }
+
+    .btn-forest {
+        background-color: #0B7A44;
+        color: #FFFFFF;
+        font-size: 13.5px;
+        font-weight: 600;
+        padding: 10px 22px;
+        border-radius: 9px;
+        transition: background-color 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 1px 3px rgba(11, 122, 68, 0.22);
+    }
+    .btn-forest:hover {
+        background-color: #08683A;
+    }
+
+    .btn-secondary {
+        background-color: #FFFFFF;
+        color: #2B2823;
+        border: 1px solid #E5E5E4;
+        font-size: 13.5px;
+        font-weight: 600;
+        padding: 10px 20px;
+        border-radius: 9px;
+        transition: background-color 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+    }
+    .btn-secondary:hover {
+        background-color: #F7F7F7;
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <a href="{% url 'backend:ticket_list' %}" class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#5C5B59] font-medium hover:bg-[#E0E0DF] transition-colors shrink-0">
+        Tickets
+    </a>
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <span class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#2B2823] font-medium shrink-0">
+        {% if is_edit %}Edit Ticket #{{ obj.id }}{% else %}Create Ticket{% endif %}
+    </span>
+{% endblock %}
+
+{% block main_class %}w-full px-[15px] py-4 flex-1{% endblock %}
+
+{% block page_header %}
+<div class="w-full pt-1 pb-4">
+    <h1 class="tkt-mono text-[24px] font-medium text-[#2B2823] leading-tight">
+        {% if is_edit %}Edit Ticket #{{ obj.id }}{% else %}Create Maintenance Ticket{% endif %}
+    </h1>
+    <p class="text-[13.5px] text-[#716F6C] mt-1">
+        {% if is_edit %}
+            Update equipment assignment, priority, or issue details for this maintenance request.
+        {% else %}
+            Log an urgent or scheduled maintenance request for building equipment.
+        {% endif %}
+    </p>
+</div>
+{% endblock %}
+
 {% block content %}
-    <div class="min-h-screen bg-[#F8FAFC] font-sans pb-12">
-        <!-- Header -->
-        <div class="bg-white border-b border-gray-100 px-6 py-4 flex items-center gap-3">
-            <a href="{% url 'backend:ticket_list' %}"
-               class="text-gray-800 hover:text-black transition">
-                <svg width="18"
-                     height="18"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2.5"
-                     stroke-linecap="round"
-                     stroke-linejoin="round">
-                    <path d="M15 18l-6-6 6-6" />
-                </svg>
-            </a>
-            <h2 class="text-lg font-bold text-gray-900">
-                {% if action == 'Update' %}
-                    Edit Ticket #{{ obj.id }}
-                {% else %}
-                    Create New Ticket
-                {% endif %}
+<div class="w-full pb-16">
+    <div class="wizard-outer-frame">
+        <!-- Card Header -->
+        <div class="px-2.5 pt-0.5 flex items-center justify-between gap-2">
+            <h2 class="text-[17px] font-bold text-[#2B2823] tracking-tight">
+                {% if is_edit %}Ticket Information{% else %}New Maintenance Request{% endif %}
             </h2>
+            {% if is_edit %}
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#EAEAE8] text-[#2B2823]">
+                    {{ obj.get_status_display }}
+                </span>
+            {% else %}
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#E7F6EC] text-[#0B7A44]">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#0B7A44]"></span>
+                    Instant Request
+                </span>
+            {% endif %}
         </div>
-        <!-- Main Form Area -->
-        <div class="max-w-6xl mx-auto mt-8 px-4">
-            <form method="post" enctype="multipart/form-data" class="space-y-6">
+
+        <!-- Inner Tray (#F3F3F3) -->
+        <div class="wizard-inner-frame">
+            <form method="POST"
+                  action="{% if is_edit %}{% url 'backend:ticket_update' obj.id %}{% else %}{% url 'backend:ticket_add' %}{% endif %}"
+                  class="space-y-4">
                 {% csrf_token %}
-                <!-- Hidden Fields required by backend -->
-                <input type="hidden" name="status" value="{{ obj.status|default:'open' }}">
-                <input type="hidden"
-                       name="issue_type"
-                       value="{{ obj.issue_type|default:'breakdown' }}">
-                <!-- SECTION 1: EQUIPMENT SELECTION -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8">
-                    <h3 class="text-[10px] font-bold text-blue-600 tracking-[0.15em] uppercase mb-6">Section 1: Equipment Selection</h3>
-                    <div class="mb-5">
-                        <label class="block text-xs font-bold text-gray-700 mb-2">Equipment <span class="text-red-500">*</span></label>
-                        <select name="equipment_id"
-                                id="equipment_select"
-                                class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-3 outline-none transition"
-                                required>
-                            <option value="">Select Equipment</option>
-                            {% for e in equipments %}
-                                <option value="{{ e.id }}"
-                                        {% if obj.equipment_id == e.id %}selected{% endif %}>{{ e.equipment_id }} — {{ e.equipment_type.name }}</option>
+                {% if not is_edit %}
+                    <input type="hidden" name="status" value="open">
+                {% endif %}
+
+                <!-- SECTION 1: BUILDING & EQUIPMENT -->
+                <div class="space-y-3.5">
+                    <div class="text-[13.5px] font-bold text-[#2B2823]">Asset &amp; Location</div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <!-- Building -->
+                        <div>
+                            <label for="building_select" class="form-label">
+                                Building <span class="text-[#D93025]">*</span>
+                            </label>
+                            <select name="building_id" id="building_select" class="form-select-field" required>
+                                <option value="">Select building...</option>
+                                {% for b in buildings %}
+                                    <option value="{{ b.id }}"
+                                            {% if obj and obj.building_id == b.id %}selected{% endif %}>
+                                        {{ b.name }}{% if b.building_id %} ({{ b.building_id }}){% endif %}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Equipment -->
+                        <div>
+                            <label for="equipment_select" class="form-label">
+                                Equipment <span class="text-[#D93025]">*</span>
+                            </label>
+                            <select name="equipment_id" id="equipment_select" class="form-select-field" required>
+                                <option value="">Select equipment...</option>
+                                {% for e in equipments %}
+                                    <option value="{{ e.id }}"
+                                            data-building-id="{{ e.building_id|default:'' }}"
+                                            data-building-name="{{ e.building.name|default:'Unassigned' }}"
+                                            data-eq-id="{{ e.equipment_id|default:e.id }}"
+                                            data-eq-name="{{ e.equipment_name|default:e.equipment_id }}"
+                                            data-type="{{ e.equipment_type.name|default:'Equipment' }}"
+                                            data-brand="{{ e.brand|default:'-' }}"
+                                            data-floor="{{ e.floor_location|default:'' }}"
+                                            data-room="{{ e.room_location|default:'' }}"
+                                            data-status="{{ e.get_status_display }}"
+                                            {% if obj and obj.equipment_id == e.id %}selected{% endif %}>
+                                        {{ e.equipment_name|default:e.equipment_id }} ({{ e.equipment_id }})
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Live Selected Equipment Preview Card -->
+                    <div id="selectedEquipmentPreview"
+                         class="{% if not prefilled_equipment %}hidden {% endif %}rounded-[10px] bg-white border border-[#E5E5E3] px-3.5 py-3 flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-9 h-9 rounded-[8px] bg-[#E7F6EC] text-[#0B7A44] flex items-center justify-center shrink-0">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                                </svg>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span id="prevEqName" class="text-[13.5px] font-semibold text-[#2B2823] truncate">
+                                        {% if prefilled_equipment %}{{ prefilled_equipment.equipment_name|default:prefilled_equipment.equipment_id }}{% endif %}
+                                    </span>
+                                    <span id="prevEqId" class="tkt-mono text-[11.5px] px-2 py-0.5 rounded-[5px] bg-[#F3F3F3] text-[#5C5B59]">
+                                        {% if prefilled_equipment %}{{ prefilled_equipment.equipment_id }}{% endif %}
+                                    </span>
+                                </div>
+                                <div id="prevEqMeta" class="text-[12px] text-[#716F6C] mt-0.5">
+                                    {% if prefilled_equipment %}
+                                        {{ prefilled_equipment.equipment_type.name|default:"Equipment" }}
+                                        {% if prefilled_equipment.brand %} &bull; {{ prefilled_equipment.brand }}{% endif %}
+                                        {% if prefilled_equipment.floor_location or prefilled_equipment.room_location %}
+                                            &bull; {{ prefilled_equipment.floor_location|default:"" }}{% if prefilled_equipment.floor_location and prefilled_equipment.room_location %} · {% endif %}{{ prefilled_equipment.room_location|default:"" }}
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <span id="prevEqStatus" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#E7F6EC] text-[#0B7A44] shrink-0">
+                            {% if prefilled_equipment %}{{ prefilled_equipment.get_status_display }}{% endif %}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: ISSUE DETAILS -->
+                <div class="section-divider space-y-4">
+                    <div class="text-[13.5px] font-bold text-[#2B2823]">Issue Details</div>
+
+                    <!-- Title -->
+                    <div>
+                        <label for="inputTicketTitle" class="form-label">
+                            Ticket Title <span class="text-[#D93025]">*</span>
+                        </label>
+                        <input type="text"
+                               id="inputTicketTitle"
+                               name="title"
+                               value="{{ obj.title|default:'' }}"
+                               placeholder="e.g. Chiller compressor fault or CCTV feed offline"
+                               class="form-input-field"
+                               required
+                               autofocus>
+                    </div>
+
+                    <!-- Issue Type Pills -->
+                    <div>
+                        <label class="form-label">Issue Type</label>
+                        <div class="flex flex-wrap gap-2">
+                            {% for key, label in issue_type_choices %}
+                                <label class="inline-block">
+                                    <input type="radio"
+                                           name="issue_type"
+                                           value="{{ key }}"
+                                           class="peer sr-only"
+                                           {% if obj and obj.issue_type == key %}checked{% elif not obj and key == 'breakdown' %}checked{% endif %}>
+                                    <span class="choice-pill">{{ label }}</span>
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Priority Pills -->
+                    <div>
+                        <label class="form-label">Priority Level</label>
+                        <div class="flex flex-wrap gap-2">
+                            {% for key, label in priority_choices %}
+                                <label class="inline-block">
+                                    <input type="radio"
+                                           name="priority"
+                                           value="{{ key }}"
+                                           class="peer sr-only"
+                                           {% if obj and obj.priority == key %}checked{% elif not obj and key == 'medium' %}checked{% endif %}>
+                                    <span class="choice-pill priority-pill-{{ key }}">{{ label }}</span>
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Target Due Date & Estimated Hours (1 row) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <div>
+                            <label for="inputDueDate" class="form-label">
+                                Target Due Date <span class="text-[#9D9C9A] font-normal">(Optional)</span>
+                            </label>
+                            <input type="date"
+                                   id="inputDueDate"
+                                   name="due_date"
+                                   value="{% if obj and obj.due_date %}{{ obj.due_date|date:'Y-m-d' }}{% endif %}"
+                                   class="form-input-field">
+                        </div>
+                        <div>
+                            <label for="inputEstHours" class="form-label">
+                                Estimated Hours <span class="text-[#9D9C9A] font-normal">(Optional)</span>
+                            </label>
+                            <input type="number"
+                                   id="inputEstHours"
+                                   name="estimated_hours"
+                                   step="0.5"
+                                   min="0"
+                                   value="{% if obj and obj.estimated_hours %}{{ obj.estimated_hours }}{% endif %}"
+                                   placeholder="e.g. 2.0"
+                                   class="form-input-field">
+                        </div>
+                    </div>
+
+                    {% if is_edit %}
+                    <!-- Status (Edit Mode Only) -->
+                    <div>
+                        <label for="inputTicketStatus" class="form-label">Ticket Status</label>
+                        <select id="inputTicketStatus" name="status" class="form-select-field">
+                            {% for key, label in status_choices %}
+                                <option value="{{ key }}" {% if obj.status == key %}selected{% endif %}>{{ label }}</option>
                             {% endfor %}
                         </select>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-700 mb-2">Location / Building <span class="text-red-500">*</span></label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="w-5 h-5 text-blue-500"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     viewBox="0 0 24 24"
-                                     stroke-width="2"
-                                     stroke-linecap="round"
-                                     stroke-linejoin="round">
-                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                    <circle cx="12" cy="10" r="3"></circle>
-                                </svg>
+                    {% endif %}
+
+                    <!-- Task Checklist (Multiple items the technician will tick off) -->
+                    <div class="pt-1">
+                        <div class="flex items-center justify-between gap-2 mb-2">
+                            <div>
+                                <label class="form-label !mb-0">
+                                    Task Checklist <span class="text-[#9D9C9A] font-normal">(What needs to be done)</span>
+                                </label>
+                                <p class="text-[12px] text-[#716F6C] mt-0.5">Add specific tasks for the technician to check off during maintenance.</p>
                             </div>
-                            <select name="building_id"
-                                    id="building_select"
-                                    class="w-full bg-[#EFF4FF] border border-[#DCE6F9] text-blue-900 font-semibold text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-3 pl-10 outline-none transition appearance-none"
-                                    required>
-                                <option value="">Select Building</option>
-                                {% for b in buildings %}
-                                    <option value="{{ b.id }}"
-                                            {% if obj.building_id == b.id %}selected{% endif %}>{{ b.name }} (Building ID: {{ b.id }})</option>
+                            <button type="button"
+                                    id="addChecklistItemBtn"
+                                    class="inline-flex items-center gap-1 px-3 py-1.5 rounded-[8px] bg-white border border-[#EAEAE9] hover:border-[#0B7A44] text-[12.5px] font-semibold text-[#0B7A44] shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-colors cursor-pointer shrink-0">
+                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                <span>Add Task</span>
+                            </button>
+                        </div>
+
+                        <div id="checklistItemsContainer" class="space-y-2">
+                            {% if existing_checklist %}
+                                {% for item in existing_checklist %}
+                                    <div class="checklist-row flex items-center gap-2">
+                                        <span class="checklist-num w-6 h-6 rounded-full bg-[#EAEAE8] text-[#4A4947] text-[11.5px] font-semibold flex items-center justify-center shrink-0">{{ forloop.counter }}</span>
+                                        <input type="hidden" name="checklist_item_ids" value="{{ item.id }}">
+                                        <input type="text"
+                                               name="checklist_items"
+                                               value="{{ item.title }}"
+                                               placeholder="e.g. Inspect power supply & clean filter"
+                                               class="form-input-field !py-2">
+                                        <button type="button"
+                                                onclick="removeChecklistRow(this)"
+                                                title="Remove task"
+                                                class="w-9 h-9 rounded-[9px] bg-white border border-[#EAEAE9] hover:border-[#FAD2CF] hover:bg-[#FDF2F2] text-[#8E8C89] hover:text-[#D93025] flex items-center justify-center shrink-0 transition-colors cursor-pointer">
+                                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                            </svg>
+                                        </button>
+                                    </div>
                                 {% endfor %}
-                            </select>
-                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                <svg class="w-4 h-4 text-blue-500"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     viewBox="0 0 24 24"
-                                     stroke-width="2"
-                                     stroke-linecap="round"
-                                     stroke-linejoin="round">
-                                    <path d="M6 9l6 6 6-6"></path>
-                                </svg>
-                            </div>
+                            {% else %}
+                                <div class="checklist-row flex items-center gap-2">
+                                    <span class="checklist-num w-6 h-6 rounded-full bg-[#EAEAE8] text-[#4A4947] text-[11.5px] font-semibold flex items-center justify-center shrink-0">1</span>
+                                    <input type="hidden" name="checklist_item_ids" value="">
+                                    <input type="text"
+                                           name="checklist_items"
+                                           placeholder="e.g. Inspect power supply & clean filter"
+                                           class="form-input-field !py-2">
+                                    <button type="button"
+                                            onclick="removeChecklistRow(this)"
+                                            title="Remove task"
+                                            class="w-9 h-9 rounded-[9px] bg-white border border-[#EAEAE9] hover:border-[#FAD2CF] hover:bg-[#FDF2F2] text-[#8E8C89] hover:text-[#D93025] flex items-center justify-center shrink-0 transition-colors cursor-pointer">
+                                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
-                </div>
-                <!-- SECTION 2: ISSUE DETAILS -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8">
-                    <h3 class="text-[10px] font-bold text-blue-600 tracking-[0.15em] uppercase mb-6">Section 2: Issue Details</h3>
-                    <div class="mb-6">
-                        <label class="block text-xs font-bold text-gray-700 mb-2">Title <span class="text-red-500">*</span></label>
-                        <input type="text"
-                               name="title"
-                               value="{{ obj.title|default:'' }}"
-                               class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-3 outline-none transition"
-                               placeholder="Short description of the issue"
-                               required>
-                    </div>
-                    <div class="mb-6">
-                        <label class="block text-xs font-bold text-gray-700 mb-2">Priority Level</label>
-                        <div class="flex border border-gray-200 rounded-lg overflow-hidden bg-white">
-                            <label class="flex-1 text-center cursor-pointer">
-                                <input type="radio"
-                                       name="priority"
-                                       value="medium"
-                                       class="peer sr-only"
-                                       {% if obj.priority == 'medium' or not obj %}checked{% endif %}>
-                                <div class="py-2.5 text-sm font-semibold text-gray-600 peer-checked:bg-[#3B5FE5] peer-checked:text-white transition">Normal</div>
-                            </label>
-                            <label class="flex-1 text-center cursor-pointer border-l border-gray-200">
-                                <input type="radio"
-                                       name="priority"
-                                       value="high"
-                                       class="peer sr-only"
-                                       {% if obj.priority == 'high' %}checked{% endif %}>
-                                <div class="py-2.5 text-sm font-semibold text-gray-600 peer-checked:bg-[#3B5FE5] peer-checked:text-white transition">High</div>
-                            </label>
-                            <label class="flex-1 text-center cursor-pointer border-l border-gray-200">
-                                <input type="radio"
-                                       name="priority"
-                                       value="critical"
-                                       class="peer sr-only"
-                                       {% if obj.priority == 'critical' %}checked{% endif %}>
-                                <div class="py-2.5 text-sm font-semibold text-gray-600 peer-checked:bg-[#3B5FE5] peer-checked:text-white transition">Critical</div>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="mb-6">
-                        <label class="block text-xs font-bold text-gray-700 mb-2">Description</label>
-                        <textarea name="issue_description"
-                                  rows="5"
-                                  class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-3 outline-none transition resize-none"
-                                  placeholder="Describe the problem in detail...">{{ obj.issue_description|default:'' }}</textarea>
-                    </div>
+
+                    <!-- Issue Description -->
                     <div>
-                        <label class="block text-xs font-bold text-gray-700 mb-2">Attachments</label>
-                        <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-200 border-dashed rounded-lg cursor-pointer bg-white hover:bg-gray-50 transition">
-                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                <svg class="w-6 h-6 text-gray-400 mb-2"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     viewBox="0 0 24 24"
-                                     stroke-width="2"
-                                     stroke-linecap="round"
-                                     stroke-linejoin="round">
-                                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-                                    <circle cx="12" cy="13" r="4"></circle>
-                                </svg>
-                                <p class="text-xs text-gray-400 font-semibold">Click to upload photos</p>
-                            </div>
-                            <input type="file" class="hidden" name="attachment" multiple>
+                        <label for="inputTicketDesc" class="form-label">
+                            Requested Work / Issue Description
                         </label>
+                        <textarea id="inputTicketDesc"
+                                  name="issue_description"
+                                  rows="4"
+                                  placeholder="Describe the issue observed and what maintenance or repair work is needed..."
+                                  class="form-textarea-field resize-none">{{ obj.issue_description|default:'' }}</textarea>
                     </div>
                 </div>
-                <!-- SECTION 3: VISIBILITY -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8">
-                    <h3 class="text-[10px] font-bold text-blue-600 tracking-[0.15em] uppercase mb-5">Section 3: Visibility</h3>
-                    <div class="flex gap-6 items-center">
-                        <label class="flex items-center gap-2 cursor-pointer group">
-                            <input type="radio"
-                                   name="visibility"
-                                   value="private"
-                                   class="w-4 h-4 text-[#3B5FE5] bg-gray-100 border-gray-300 focus:ring-[#3B5FE5]">
-                            <span class="text-sm text-gray-600 group-hover:text-gray-900 font-medium transition">Private</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer group">
-                            <input type="radio"
-                                   name="visibility"
-                                   value="internal"
-                                   class="w-4 h-4 text-[#3B5FE5] bg-gray-100 border-gray-300 focus:ring-[#3B5FE5]"
-                                   checked>
-                            <span class="text-sm text-gray-600 group-hover:text-gray-900 font-medium transition">Internal</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer group">
-                            <input type="radio"
-                                   name="visibility"
-                                   value="wide"
-                                   class="w-4 h-4 text-[#3B5FE5] bg-gray-100 border-gray-300 focus:ring-[#3B5FE5]">
-                            <span class="text-sm text-gray-600 group-hover:text-gray-900 font-medium transition">Wide</span>
-                        </label>
-                    </div>
-                </div>
+
                 <!-- Form Actions -->
-                <div class="flex flex-col sm:flex-row gap-4 pt-2">
-                    <a href="{% url 'backend:ticket_list' %}"
-                       class="flex-1 bg-white border border-gray-200 text-gray-700 font-bold py-3.5 px-4 rounded-xl hover:bg-gray-50 transition text-center text-sm shadow-sm">
+                <div class="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-[#E6E6E4]">
+                    <a href="{{ cancel_url }}" class="btn-secondary">
                         Cancel
                     </a>
-                    <button type="submit"
-                            class="flex-1 bg-[#3B5FE5] hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl transition text-center text-sm flex items-center justify-center gap-2 shadow-sm">
-                        {% if action == 'Update' %}
-                            Save Changes
-                        {% else %}
-                            Submit Ticket
+                    <div class="flex items-center gap-2.5">
+                        {% if is_edit %}
+                            <button type="button"
+                                    onclick="if(confirm('Are you sure you want to {% if obj.is_active %}deactivate{% else %}activate{% endif %} this ticket?')) { document.getElementById('status-form').submit(); }"
+                                    class="px-3.5 py-2.5 rounded-[9px] bg-white border {% if obj.is_active %}border-[#FAD2CF] text-[#D93025] hover:bg-[#FCE8E6]{% else %}border-[#CEEAD6] text-[#0B7A44] hover:bg-[#E7F6EC]{% endif %} text-[13px] font-semibold transition-colors cursor-pointer">
+                                {% if obj.is_active %}Deactivate{% else %}Activate{% endif %}
+                            </button>
                         {% endif %}
-                        <svg width="16"
-                             height="16"
-                             viewBox="0 0 24 24"
-                             fill="none"
-                             stroke="currentColor"
-                             stroke-width="2.5"
-                             stroke-linecap="round"
-                             stroke-linejoin="round">
-                            <path d="M5 12h14m-7-7l7 7-7 7" />
-                        </svg>
-                    </button>
-                </div>
-                {% if action == 'Update' %}
-                    <div class="text-center pt-4">
-                        <button type="button"
-                                onclick="if(confirm('Are you sure you want to change status?')) { document.getElementById('status-form').submit(); }"
-                                class="{% if obj.is_active %}text-red-500 hover:text-red-700{% else %}text-green-500 hover:text-green-700{% endif %} font-semibold py-2 px-4 transition duration-200 text-sm">
-                            {% if obj.is_active %}
-                                Make Inactive
-                            {% else %}
-                                Make Active
-                            {% endif %}
+                        <button type="submit" class="btn-forest">
+                            <span>{% if is_edit %}Save Changes{% else %}Create Ticket{% endif %}</span>
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14m-7-7l7 7-7 7" />
+                            </svg>
                         </button>
                     </div>
-                {% endif %}
+                </div>
             </form>
-            {% if action == 'Update' %}
-                <form id="status-form"
-                      action="{% url 'backend:ticket_status' obj.id %}"
-                      method="post"
-                      style="display: none">
+
+            {% if is_edit %}
+                <form id="status-form" action="{% url 'backend:ticket_status' obj.id %}" method="post" class="hidden">
                     {% csrf_token %}
                 </form>
             {% endif %}
         </div>
     </div>
+</div>
 {% endblock %}
+
 {% block extra_js %}
-    <script>
-  $(document).ready(function () {
-    $('.select2-items').select2();
-  });   
-    </script>
+<script>
+(function initTicketForm() {
+    const buildingSelect = document.getElementById('building_select');
+    const equipmentSelect = document.getElementById('equipment_select');
+    const previewCard = document.getElementById('selectedEquipmentPreview');
+    const prevName = document.getElementById('prevEqName');
+    const prevId = document.getElementById('prevEqId');
+    const prevMeta = document.getElementById('prevEqMeta');
+    const prevStatus = document.getElementById('prevEqStatus');
+
+    if (!buildingSelect || !equipmentSelect) return;
+
+    // Cache original equipment options for smart building filtering
+    const allEquipmentOptions = Array.from(equipmentSelect.options).slice(1).map(function(opt) {
+        return {
+            value: opt.value,
+            text: opt.textContent,
+            buildingId: opt.dataset.buildingId || '',
+            buildingName: opt.dataset.buildingName || '',
+            eqId: opt.dataset.eqId || '',
+            eqName: opt.dataset.eqName || '',
+            type: opt.dataset.type || '',
+            brand: opt.dataset.brand || '',
+            floor: opt.dataset.floor || '',
+            room: opt.dataset.room || '',
+            status: opt.dataset.status || ''
+        };
+    });
+
+    function updatePreview() {
+        const selectedOpt = equipmentSelect.options[equipmentSelect.selectedIndex];
+        if (!selectedOpt || !selectedOpt.value) {
+            if (previewCard) previewCard.classList.add('hidden');
+            return;
+        }
+        const ds = selectedOpt.dataset;
+        if (prevName) prevName.textContent = ds.eqName || selectedOpt.textContent;
+        if (prevId) prevId.textContent = ds.eqId || '';
+        const metaParts = [];
+        if (ds.type) metaParts.push(ds.type);
+        if (ds.brand && ds.brand !== '-') metaParts.push(ds.brand);
+        const loc = [ds.floor, ds.room].filter(Boolean).join(' · ');
+        if (loc) metaParts.push(loc);
+        if (prevMeta) prevMeta.textContent = metaParts.join(' • ');
+        if (prevStatus) prevStatus.textContent = ds.status || 'Active';
+        if (previewCard) previewCard.classList.remove('hidden');
+    }
+
+    function filterEquipmentByBuilding(keepCurrentValue) {
+        const selectedBld = buildingSelect.value;
+        const currentEqVal = keepCurrentValue ? equipmentSelect.value : '';
+
+        equipmentSelect.innerHTML = '';
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = selectedBld ? 'Select equipment in this building...' : 'Select equipment...';
+        equipmentSelect.appendChild(placeholder);
+
+        const filtered = selectedBld
+            ? allEquipmentOptions.filter(function(item) {
+                return item.buildingId === selectedBld || item.value === currentEqVal;
+              })
+            : allEquipmentOptions;
+
+        filtered.forEach(function(item) {
+            const opt = document.createElement('option');
+            opt.value = item.value;
+            opt.textContent = item.text;
+            opt.dataset.buildingId = item.buildingId;
+            opt.dataset.buildingName = item.buildingName;
+            opt.dataset.eqId = item.eqId;
+            opt.dataset.eqName = item.eqName;
+            opt.dataset.type = item.type;
+            opt.dataset.brand = item.brand;
+            opt.dataset.floor = item.floor;
+            opt.dataset.room = item.room;
+            opt.dataset.status = item.status;
+            if (item.value === currentEqVal) opt.selected = true;
+            equipmentSelect.appendChild(opt);
+        });
+
+        updatePreview();
+    }
+
+    // When equipment changes, sync building automatically and refresh preview
+    equipmentSelect.addEventListener('change', function() {
+        const selectedOpt = this.options[this.selectedIndex];
+        if (selectedOpt && selectedOpt.dataset.buildingId && buildingSelect.value !== selectedOpt.dataset.buildingId) {
+            buildingSelect.value = selectedOpt.dataset.buildingId;
+        }
+        updatePreview();
+    });
+
+    // When building changes, filter equipment list smoothly
+    buildingSelect.addEventListener('change', function() {
+        const currentOpt = equipmentSelect.options[equipmentSelect.selectedIndex];
+        const belongsToNewBld = currentOpt && currentOpt.dataset.buildingId === buildingSelect.value;
+        filterEquipmentByBuilding(Boolean(belongsToNewBld));
+    });
+
+    // Initial pass: filter to pre-selected building while keeping pre-selected equipment
+    if (buildingSelect.value) {
+        filterEquipmentByBuilding(true);
+    } else {
+        updatePreview();
+    }
+})();
+
+// Dynamic Task Checklist Builder
+(function initChecklistBuilder() {
+    const container = document.getElementById('checklistItemsContainer');
+    const addBtn = document.getElementById('addChecklistItemBtn');
+    if (!container || !addBtn) return;
+
+    function renumberRows() {
+        const nums = container.querySelectorAll('.checklist-num');
+        nums.forEach(function(el, idx) {
+            el.textContent = String(idx + 1);
+        });
+    }
+
+    function createRow(focusInput) {
+        const row = document.createElement('div');
+        row.className = 'checklist-row flex items-center gap-2';
+        row.innerHTML =
+            '<span class="checklist-num w-6 h-6 rounded-full bg-[#EAEAE8] text-[#4A4947] text-[11.5px] font-semibold flex items-center justify-center shrink-0"></span>' +
+            '<input type="hidden" name="checklist_item_ids" value="">' +
+            '<input type="text" name="checklist_items" placeholder="Enter next task to perform..." class="form-input-field !py-2">' +
+            '<button type="button" onclick="removeChecklistRow(this)" title="Remove task" class="w-9 h-9 rounded-[9px] bg-white border border-[#EAEAE9] hover:border-[#FAD2CF] hover:bg-[#FDF2F2] text-[#8E8C89] hover:text-[#D93025] flex items-center justify-center shrink-0 transition-colors cursor-pointer">' +
+                '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>' +
+            '</button>';
+        container.appendChild(row);
+        renumberRows();
+        const input = row.querySelector('input[name="checklist_items"]');
+        if (input) {
+            bindEnterShortcut(input);
+            if (focusInput) input.focus();
+        }
+    }
+
+    function bindEnterShortcut(input) {
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                createRow(true);
+            }
+        });
+    }
+
+    window.removeChecklistRow = function(btn) {
+        const rows = container.querySelectorAll('.checklist-row');
+        const row = btn.closest('.checklist-row');
+        if (!row) return;
+        if (rows.length <= 1) {
+            const inp = row.querySelector('input[name="checklist_items"]');
+            const idInp = row.querySelector('input[name="checklist_item_ids"]');
+            if (inp) inp.value = '';
+            if (idInp) idInp.value = '';
+            if (inp) inp.focus();
+            return;
+        }
+        row.remove();
+        renumberRows();
+    };
+
+    container.querySelectorAll('input[name="checklist_items"]').forEach(bindEnterShortcut);
+    addBtn.addEventListener('click', function() {
+        createRow(true);
+    });
+})();
+</script>
 {% endblock %}

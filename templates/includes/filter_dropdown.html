@@ -1,0 +1,43 @@
+{% comment %}
+    Figma Searchable Filter Dropdown Component (Frame 2147259697 & Frame 2147259513)
+    
+    Usage:
+    {% include 'includes/filter_dropdown.html' with name="division" id="ovDivisionSelect" selected_value=selected_division default_label="All Divisions" search_placeholder="Search division" options=divisions value_attr="id" label_attr="name" %}
+{% endcomment %}
+<div class="ov-dropdown-wrapper {{ wrapper_class }}" {% if wrapper_id %}id="{{ wrapper_id }}"{% endif %}>
+    <button type="button"
+            class="ov-dropdown-trigger"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+            aria-label="{{ aria_label|default:default_label|default:'Filter' }}">
+        <span class="ov-dropdown-label truncate max-w-[140px]">{{ selected_label|default:default_label|default:'All' }}</span>
+        <svg class="ov-dropdown-chevron w-3 h-3 text-[#716F6C] shrink-0 pointer-events-none transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+        </svg>
+    </button>
+    <input type="hidden" name="{{ name }}" {% if id %}id="{{ id }}"{% else %}id="filter_{{ name }}"{% endif %} value="{{ selected_value|default:'' }}">
+
+    <div class="ov-dropdown-menu hidden {% if menu_align == 'right' %}ov-dropdown-menu-right{% endif %}" role="listbox">
+        <div class="w-full">
+            <input type="text"
+                   class="ov-dropdown-search"
+                   placeholder="{{ search_placeholder|default:'Search' }}"
+                   autocomplete="off">
+        </div>
+        <div class="ov-dropdown-options-list">
+            <div class="ov-dropdown-item {% if not selected_value %}is-selected{% endif %}"
+                 data-value=""
+                 data-label="{{ default_label|default:'All' }}">
+                <span>{{ default_label|default:'All' }}</span>
+            </div>
+            {% for opt in options %}
+                <div class="ov-dropdown-item"
+                     data-value="{{ opt.id|default:opt.0|default:opt }}"
+                     data-label="{{ opt.name|default:opt.1|default:opt }}">
+                    <span class="truncate">{{ opt.name|default:opt.1|default:opt }}</span>
+                </div>
+            {% endfor %}
+            <div class="ov-dropdown-empty hidden">No results found</div>
+        </div>
+    </div>
+</div>

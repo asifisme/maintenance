@@ -138,5 +138,408 @@
             "is_active": true,
             "deleted": false
         }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 201,
+        "fields": {
+            "name": "Chiller System",
+            "description": "Government facility chiller system infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 202,
+        "fields": {
+            "name": "Water Pump",
+            "description": "Government facility water pump infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 203,
+        "fields": {
+            "name": "Electrical Substation",
+            "description": "Government facility electrical substation infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 204,
+        "fields": {
+            "name": "Power Transformer",
+            "description": "Government facility power transformer infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 205,
+        "fields": {
+            "name": "UPS Battery Bank",
+            "description": "Government facility ups battery bank infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 206,
+        "fields": {
+            "name": "Solar PV Inverter",
+            "description": "Government facility solar pv inverter infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 207,
+        "fields": {
+            "name": "CCTV Surveillance",
+            "description": "Government facility cctv surveillance infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 208,
+        "fields": {
+            "name": "Biometric Access Control",
+            "description": "Government facility biometric access control infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 209,
+        "fields": {
+            "name": "Public Address System",
+            "description": "Government facility public address system infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 210,
+        "fields": {
+            "name": "Hot Water Boiler",
+            "description": "Government facility hot water boiler infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 211,
+        "fields": {
+            "name": "Cooling Tower",
+            "description": "Government facility cooling tower infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 212,
+        "fields": {
+            "name": "Escalator",
+            "description": "Government facility escalator infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 213,
+        "fields": {
+            "name": "Air Handling Unit",
+            "description": "Government facility air handling unit infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 214,
+        "fields": {
+            "name": "Split AC Unit",
+            "description": "Government facility split ac unit infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 215,
+        "fields": {
+            "name": "VRF Outdoor Unit",
+            "description": "Government facility vrf outdoor unit infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 216,
+        "fields": {
+            "name": "Sewage Treatment Plant",
+            "description": "Government facility sewage treatment plant infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 217,
+        "fields": {
+            "name": "Water Filtration Plant",
+            "description": "Government facility water filtration plant infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 218,
+        "fields": {
+            "name": "Fire Hydrant Pump",
+            "description": "Government facility fire hydrant pump infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 219,
+        "fields": {
+            "name": "Smoke Extraction Fan",
+            "description": "Government facility smoke extraction fan infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 220,
+        "fields": {
+            "name": "Lightning Arrester",
+            "description": "Government facility lightning arrester infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 221,
+        "fields": {
+            "name": "Automatic Transfer Switch",
+            "description": "Government facility automatic transfer switch infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 222,
+        "fields": {
+            "name": "Main Distribution Board",
+            "description": "Government facility main distribution board infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 223,
+        "fields": {
+            "name": "Capacitor Bank",
+            "description": "Government facility capacitor bank infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 224,
+        "fields": {
+            "name": "Voltage Stabilizer",
+            "description": "Government facility voltage stabilizer infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 225,
+        "fields": {
+            "name": "Building Management System",
+            "description": "Government facility building management system infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 226,
+        "fields": {
+            "name": "Intercom Exchange",
+            "description": "Government facility intercom exchange infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 227,
+        "fields": {
+            "name": "Boom Barrier Gate",
+            "description": "Government facility boom barrier gate infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 228,
+        "fields": {
+            "name": "X-Ray Baggage Scanner",
+            "description": "Government facility x-ray baggage scanner infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 229,
+        "fields": {
+            "name": "Walk-Through Metal Detector",
+            "description": "Government facility walk-through metal detector infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 230,
+        "fields": {
+            "name": "Conference Audio System",
+            "description": "Government facility conference audio system infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 231,
+        "fields": {
+            "name": "Precision Server Cooling",
+            "description": "Government facility precision server cooling infrastructure and controls.",
+            "created_by": 1,
+            "is_active": true,
+            "deleted": false,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
     }
 ]

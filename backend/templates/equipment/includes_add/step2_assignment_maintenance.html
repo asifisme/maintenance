@@ -1,0 +1,176 @@
+<!-- ========================================== -->
+<!-- STEP 2: Assignment & Maintenance           -->
+<!-- ========================================== -->
+<div id="stepSection2" class="space-y-8 hidden">
+
+    <!-- Building Assignment (Optional) + Switch -->
+    <div class="space-y-3.5">
+        <h3 class="text-[16px] font-bold text-[#2B2823]">
+            Building Assignment <span class="text-[14px] font-normal text-[#969491]">(Optional)</span>
+        </h3>
+        <div class="flex items-center gap-3">
+            <div id="buildingToggleTrack" class="toggle-track" onclick="toggleBuildingAssignment()">
+                <div class="toggle-knob"></div>
+            </div>
+            <span class="text-[16px] font-medium text-[#2B2823] cursor-pointer select-none" onclick="toggleBuildingAssignment()">
+                Assign to a building now?
+            </span>
+        </div>
+    </div>
+
+    <!-- Collapsible Container (Visible ONLY when toggle is ON) -->
+    <div id="buildingAssignmentFields" class="hidden space-y-6 pt-4 border-t border-[#EAEAEA]">
+
+        <!-- Building & Location Fields -->
+        <div class="space-y-3.5">
+            <!-- Row 1: Building & Floor -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div class="relative">
+                    <label class="form-label" for="buildingSelect">
+                        Building <span class="text-[#D93025]">*</span>
+                    </label>
+                    <div class="relative">
+                        <select id="buildingSelect" name="building_id" class="form-select-field">
+                            <option value="">Search or select building</option>
+                            {% for b in buildings %}
+                                <option value="{{ b.id }}" {% if from_building == b.id %}selected{% endif %}>
+                                    {{ b.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-[#716F6C]">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                    <p id="err_building" class="text-xs text-[#D93025] mt-1 hidden">Building is required when assignment is enabled.</p>
+                </div>
+                <div>
+                    <label class="form-label" for="floor_location">Floor</label>
+                    <input type="text"
+                           id="floor_location"
+                           name="floor_location"
+                           value="{{ obj.floor_location|default:'' }}"
+                           class="form-input-field"
+                           placeholder="e.g. Ground Floor, Basement">
+                </div>
+            </div>
+
+            <!-- Row 2: Room / Location & Installation Date -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                    <label class="form-label" for="room_location">Room / Location</label>
+                    <input type="text"
+                           id="room_location"
+                           name="room_location"
+                           value="{{ obj.room_location|default:'' }}"
+                           class="form-input-field"
+                           placeholder="e.g. Room 502, Server Room">
+                </div>
+                <div>
+                    <label class="form-label" for="installment_date">
+                        Installation Date <span class="text-[#D93025]">*</span>
+                    </label>
+                    <input type="date"
+                           id="installment_date"
+                           name="installment_date"
+                           value="{% if obj.installment_date %}{{ obj.installment_date|date:'Y-m-d' }}{% endif %}"
+                           class="form-input-field">
+                    <p id="err_installment_date" class="text-xs text-[#D93025] mt-1 hidden">Installation Date is required.</p>
+                </div>
+            </div>
+
+            <!-- Row 4: Installation Notes -->
+            <div>
+                <label class="form-label" for="installation_notes">Installation Notes</label>
+                <textarea id="installation_notes"
+                          name="installation_notes"
+                          rows="2"
+                          class="form-textarea-field"
+                          placeholder="Optional notes">{{ obj.installation_notes|default:'' }}</textarea>
+            </div>
+        </div>
+
+        <!-- Maintenance Scheduling Section -->
+        <div class="border-t border-[#EAEAEA] pt-4 space-y-3.5">
+            <h3 class="text-[15px] font-bold text-[#2B2823]">Maintenance Scheduling</h3>
+
+            <!-- Row 6: Maintenance Every & Unit -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                    <label class="form-label" for="maintenance_period_days">
+                        Maintenance Every <span class="text-[#D93025]">*</span>
+                    </label>
+                    <input type="number"
+                           id="maintenance_period_days"
+                           name="maintenance_period_days"
+                           value="{{ obj.maintenance_period_days|default:'90' }}"
+                           min="1"
+                           class="form-input-field"
+                           placeholder="90">
+                    <p id="err_maintenance_period_days" class="text-xs text-[#D93025] mt-1 hidden">Please provide maintenance frequency.</p>
+                </div>
+                <div>
+                    <label class="form-label" for="frequency_unit">
+                        Frequency Unit <span class="text-[#D93025]">*</span>
+                    </label>
+                    <div class="relative">
+                        <select id="frequency_unit" name="frequency_unit" class="form-select-field">
+                            <option value="Days" {% if not obj or obj.frequency_unit == 'Days' %}selected{% endif %}>Days</option>
+                            <option value="Months" {% if obj.frequency_unit == 'Months' %}selected{% endif %}>Months</option>
+                            <option value="Years" {% if obj.frequency_unit == 'Years' %}selected{% endif %}>Years</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-[#716F6C]">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 7: Last Services Date & Next Service Due -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                    <label class="form-label" for="last_maintenance_date">Last Services Date</label>
+                    <input type="date"
+                           id="last_maintenance_date"
+                           name="last_maintenance_date"
+                           value="{% if obj.last_maintenance_date %}{{ obj.last_maintenance_date|date:'Y-m-d' }}{% endif %}"
+                           class="form-input-field">
+                    <p class="text-[11.5px] text-[#969491] mt-1">Optional for newly installed equipment.</p>
+                </div>
+                <div>
+                    <label class="form-label" for="next_service_due">Next Service Due</label>
+                    <input type="date"
+                           id="next_service_due"
+                           name="next_service_due"
+                           value="{% if obj.next_service_due %}{{ obj.next_service_due|date:'Y-m-d' }}{% endif %}"
+                           class="form-input-field">
+                    <p class="text-[11.5px] text-[#969491] mt-1">Enter the last service date to calculate this automatically, or set it manually.</p>
+                </div>
+            </div>
+
+            <!-- Row 8: Maintenance Notes -->
+            <div>
+                <label class="form-label" for="maintenance_notes">Maintenance Notes</label>
+                <textarea id="maintenance_notes"
+                          name="maintenance_notes"
+                          rows="2"
+                          class="form-textarea-field"
+                          placeholder="Optional notes">{{ obj.maintenance_notes|default:'' }}</textarea>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Step 2 Actions -->
+    <div class="flex items-center justify-between pt-2">
+        <a href="{% url 'backend:equipment_list' %}" class="btn-secondary">Cancel</a>
+        <button type="button" id="btnStep2Continue" class="btn-forest" onclick="goToStep(3)">
+            <span id="btnStep2ContinueText">Skip &amp; Continue</span>
+        </button>
+    </div>
+
+</div>

@@ -1,130 +1,717 @@
 {% extends 'base.html' %}
-{% block title %}<span class="hidden">{{ action }} Equipment Type Data</span>{% endblock %}
+{% load static %}
+
+{% block title %}Equipment Fields{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    /* Design Tokens — Consistent with Building & Technicians Pattern */
+    body,
+    #mainContentWrapper {
+        background-color: #F2F2F2 !important;
+        font-family: 'Urbanist', Inter, system-ui, ui-sans-serif, sans-serif;
+    }
+
+    .eqd-mono {
+        font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        letter-spacing: -0.02em;
+    }
+
+    /* Search input box */
+    .eqd-search-box {
+        width: 100%;
+        max-width: 320px;
+        height: 38px;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        border-radius: 8px;
+        padding: 0 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+    .eqd-search-box:focus-within {
+        border-color: #CFCED0;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+    .eqd-search-input {
+        border: 0 !important;
+        outline: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13px;
+        color: #2B2823;
+        width: 100%;
+    }
+    .eqd-search-input::placeholder {
+        color: #9D9C9A;
+    }
+
+    /* Table Outer Tray: Fill w-full, radius 12px, padding 16px 6px 6px 6px, gap 16px, bg #F9F9F9 */
+    .eqd-table-tray {
+        background-color: #F9F9F9;
+        border-radius: 12px;
+        padding: 16px 6px 6px 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    /* Table Inner Container: Fill w-full, radius 6px, padding 14px, gap 10px, bg #FFFFFF */
+    .eqd-table-inner {
+        background-color: #FFFFFF;
+        border-radius: 6px;
+        padding: 14px;
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    /* Filter Select Pill */
+    .eqd-filter-select {
+        background-color: #EAEAE8 !important;
+        border: 1px solid #E2E2E0 !important;
+        border-radius: 8px !important;
+        height: 34px;
+        padding: 0 28px 0 11px !important;
+        font-size: 12.5px;
+        font-weight: 500;
+        color: #555452;
+        outline: none !important;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23716F6C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 9px center;
+        transition: background-color 150ms ease, border-color 150ms ease;
+    }
+    .eqd-filter-select:hover,
+    .eqd-filter-select:focus {
+        background-color: #E3E3E1 !important;
+        border-color: #CFCED0 !important;
+        color: #2B2A29;
+    }
+
+    /* Reset button */
+    .eqd-btn-reset {
+        height: 34px;
+        padding: 0 12px;
+        border-radius: 8px;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        font-size: 12.5px;
+        font-weight: 500;
+        color: #2B2823;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: background-color 150ms ease, border-color 150ms ease;
+    }
+    .eqd-btn-reset:hover {
+        background-color: #F7F7F6;
+        border-color: #D8D7D5;
+    }
+
+    /* Primary Forest Green Button (+ Add Equipment Field) */
+    .eqd-btn-primary {
+        background-color: #0B7A44;
+        color: #FFFFFF;
+        border-radius: 8px;
+        padding: 9px 18px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 1px 3px rgba(11, 122, 68, 0.25);
+        transition: background-color 150ms ease;
+        white-space: nowrap;
+    }
+    .eqd-btn-primary:hover {
+        background-color: #08683A;
+    }
+
+    /* Table Styles */
+    .eqd-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+    .eqd-table thead tr {
+        background-color: #F6F6F6;
+    }
+    .eqd-table th {
+        padding: 12px 14px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        color: #2B2823;
+        white-space: nowrap;
+    }
+    .eqd-table td {
+        padding: 13px 14px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13px;
+        color: #2B2823;
+        vertical-align: middle;
+    }
+
+    /* Action 3-dots circular button */
+    .eqd-action-circle-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 9999px;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #5C5B59;
+        cursor: pointer;
+        transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+    }
+    .eqd-action-circle-btn:hover {
+        background-color: #F7F7F6;
+        border-color: #D8D7D5;
+        color: #2B2823;
+    }
+
+    /* Figma Add / Edit Equipment Field Popup Modal Styles */
+    .eqd-modal-card {
+        width: 100%;
+        max-width: 512px;
+        border-radius: 13px;
+        background-color: #F3F3F3;
+        background-clip: padding-box;
+        border: 2px solid rgba(255, 255, 255, 0.35);
+        padding: 10px 10px 16px 16px;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.20), 3px 9px 21px rgba(48, 48, 48, 0.10), 14px 36px 38px rgba(48, 48, 48, 0.09);
+        box-sizing: border-box;
+    }
+
+    .eqd-modal-close-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAEA;
+        box-shadow: 0 0 1px rgba(135, 135, 135, 0.10), 0 1px 1px rgba(135, 135, 135, 0.09);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #2B2823;
+        cursor: pointer;
+        transition: background-color 150ms ease;
+    }
+    .eqd-modal-close-btn:hover {
+        background-color: #FAFAFA;
+    }
+
+    .eqd-modal-label {
+        display: block;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13.5px;
+        font-weight: 500;
+        color: #2B2823;
+        margin-bottom: 6px;
+    }
+
+    .eqd-modal-input {
+        width: 100%;
+        height: 41px;
+        border-radius: 13px;
+        background-color: #FFFFFF;
+        border: 0.5px solid rgba(240, 240, 240, 0.6);
+        padding: 0 12px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13.5px;
+        color: #2B2823;
+        outline: none;
+        box-shadow: 0 0 6px rgba(135, 135, 135, 0.02), 0 1px 2px rgba(135, 135, 135, 0.09);
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .eqd-modal-select {
+        width: 100%;
+        height: 41px;
+        border-radius: 13px;
+        background-color: #FFFFFF;
+        border: 0.5px solid rgba(240, 240, 240, 0.6);
+        padding: 0 34px 0 12px;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13.5px;
+        color: #2B2823;
+        outline: none;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%232B2823' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        box-shadow: 0 0 6px rgba(135, 135, 135, 0.02), 0 1px 2px rgba(135, 135, 135, 0.09);
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .eqd-modal-input::placeholder {
+        color: #BDBCBB;
+    }
+
+    .eqd-modal-input:focus,
+    .eqd-modal-select:focus {
+        border-color: #0B7A44;
+        box-shadow: 0 0 0 3px rgba(11, 122, 68, 0.08);
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <a href="{% url 'backend:equipment_list' %}" class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#5C5B59] font-medium hover:bg-[#E0E0DF] transition-colors shrink-0">
+        Equipment
+    </a>
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <a href="{% url 'backend:menu_wise_dashboard' 'equipment-setup' %}" class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#5C5B59] font-medium hover:bg-[#E0E0DF] transition-colors shrink-0">
+        Equipment Configuration
+    </a>
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <span class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#2B2823] font-medium shrink-0">
+        Equipment Fields
+    </span>
+{% endblock %}
+
+{% block main_class %}w-full px-[15px] py-4 flex-1{% endblock %}
+
+{% block page_header %}
+<div class="w-full pt-1 pb-4">
+    <!-- Page Title & Primary Action -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="eqd-mono text-[24px] font-medium text-[#2B2823] leading-tight">Equipment Fields</h1>
+            <p class="text-[13.5px] text-[#716F6C] mt-1">Configure custom specifications and dynamic fields for each equipment type.</p>
+        </div>
+        <div>
+            <button type="button" onclick="openAddEquipmentFieldModal()" class="eqd-btn-primary cursor-pointer">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 5v14M5 12h14" />
+                </svg>
+                <span>Add Equipment Field</span>
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
 {% block content %}
-    <section class="bg-[var(--bg-color)] min-h-screen p-4 md:p-2 font-sans">
-        <div class="">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Equipment Type Data</h2>
-                    <p class="text-sm text-gray-500 mt-0.5">Manage custom dynamic fields for your equipment types.</p>
-                </div>
-                <a href="{% url 'backend:equipment_type_data_add' %}"
-                   class="inline-flex items-center gap-2 bg-[#3B5998] hover:bg-blue-800 text-white font-semibold py-2.5 px-4 rounded-xl transition duration-200 shadow-sm text-sm whitespace-nowrap active:scale-95 transform">
-                    <svg width="18"
-                         height="18"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="2.5"
-                         stroke-linecap="round"
-                         stroke-linejoin="round">
-                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                    </svg>
-                    <span>Add Type Data</span>
-                </a>
+<div class="w-full space-y-4 pb-10">
+
+    <!-- ════════════════════════ ROW 1: Search Input ════════════════════════ -->
+    <div class="pt-1">
+        <form method="get" action="{% url 'backend:equipment_type_data_list' %}" id="equipmentTypeDataSearchForm" class="eqd-search-box">
+            <svg class="w-4 h-4 text-[#9D9C9A] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <path d="M21 21l-4.35-4.35" />
+            </svg>
+            <input type="text"
+                   name="search"
+                   value="{{ search }}"
+                   placeholder="Search by field name or equipment type"
+                   class="eqd-search-input">
+            {% if type_id %}<input type="hidden" name="type_id" value="{{ type_id }}">{% endif %}
+            {% if selected_status %}<input type="hidden" name="status" value="{{ selected_status }}">{% endif %}
+            {% if per_page != 10 %}<input type="hidden" name="per_page" value="{{ per_page }}">{% endif %}
+        </form>
+    </div>
+
+    <!-- ════════════════════════ ROW 2: Table Outer Tray ════════════════════════ -->
+    <div class="eqd-table-tray">
+        <!-- Tray Header: Title + Counter Badge + Filter Selects + Reset -->
+        <div class="px-2.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div class="flex items-center gap-2">
+                <h2 class="text-[16.5px] font-semibold text-[#2B2823] tracking-[-0.01em]">Total Equipment Fields</h2>
+                <span class="inline-flex items-center justify-center min-w-[24px] h-[22px] px-2 rounded-full bg-[#EAEAE8] text-[#4A4947] text-[12px] font-semibold leading-none">
+                    {{ filtered_total_count }}
+                </span>
             </div>
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200/60 overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left whitespace-nowrap">
-                        <thead class="text-xs text-gray-500 uppercase bg-gray-50 border-b border-gray-200">
-                            <tr>
-                                <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Equipment Type</th>
-                                <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Field Name</th>
-                                <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Field Type</th>
-                                <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Required</th>
-                                <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Status</th>
-                                <th scope="col" class="px-6 py-4 font-semibold tracking-wider text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100">
-                            {% for data in equipment_type_datas %}
-                                <tr class="hover:bg-slate-50/70 transition-colors group">
-                                    <td class="px-6 py-4 font-medium text-gray-900">{{ data.equipment_type.name }}</td>
-                                    <td class="px-6 py-4 font-semibold text-gray-800">{{ data.field_name }}</td>
-                                    <td class="px-6 py-4 text-gray-600">
-                                        <span class="bg-slate-100 text-slate-700 text-xs px-2.5 py-1 rounded-md font-medium capitalize">
-                                            {{ data.field_type }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        {% if data.is_required %}
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200">
-                                                Yes
-                                            </span>
-                                        {% else %}
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-50 text-slate-600 border border-slate-200">
-                                                No
-                                            </span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        {% if data.is_active %}
-                                            <span class="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Active</span>
-                                        {% else %}
-                                            <span class="inline-flex items-center rounded-full bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">Inactive</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="px-6 py-4 text-right">
-                                        <div data-menu-wrap class="inline-block relative">
-                                            <button data-menu-btn
-                                                    class="p-1 text-[var(--text-light-color)] hover:text-[var(--primary-color)] transition-colors rounded-full hover:bg-[var(--bg-color)]">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z">
-                                                    </path>
-                                                </svg>
-                                            </button>
-                                            <div data-menu
-                                                 class="hidden absolute right-0 mt-2 w-36 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
-                                                <div class="py-1">
-                                                    <a href="{% url 'backend:equipment_type_data_update' data.id %}"
-                                                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">Edit</a>
-                                                    <form action="{% url 'backend:equipment_type_data_status' data.id %}"
-                                                          method="post">
-                                                        {% csrf_token %}
-                                                        <button type="submit"
-                                                                class="block px-4 py-2 text-sm {% if data.is_active %}text-red-600 hover:bg-red-50{% else %}text-green-600 hover:bg-green-50{% endif %} w-full text-left"
-                                                                onclick="return confirm('Are you sure you want to change status?')">
-                                                            {% if data.is_active %}
-                                                                Inactive
-                                                            {% else %}
-                                                                Active
-                                                            {% endif %}
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% empty %}
-                                <tr>
-                                    <td colspan="10" class="px-6 py-16 text-center text-gray-400">
-                                        <div class="flex flex-col items-center justify-center gap-2">
-                                            <svg class="mx-auto h-12 w-12 text-gray-300"
-                                                 fill="none"
-                                                 viewBox="0 0 24 24"
-                                                 stroke="currentColor"
-                                                 stroke-width="1">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+
+            <!-- Filters Form -->
+            <form method="get" action="{% url 'backend:equipment_type_data_list' %}" id="equipmentTypeDataFilterForm" class="flex flex-wrap items-center gap-2">
+                {% if search %}
+                    <input type="hidden" name="search" value="{{ search }}">
+                {% endif %}
+                {% if per_page != 10 %}
+                    <input type="hidden" name="per_page" value="{{ per_page }}">
+                {% endif %}
+
+                <!-- All Equipment Types -->
+                <select name="type_id" onchange="this.form.submit()" class="eqd-filter-select" aria-label="Filter by equipment type">
+                    <option value="">All Types</option>
+                    {% for et in equipment_types %}
+                        <option value="{{ et.id }}" {% if type_id == et.id|stringformat:"s" %}selected{% endif %}>{{ et.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <!-- All Statuses -->
+                <select name="status" onchange="this.form.submit()" class="eqd-filter-select" aria-label="Filter by status">
+                    <option value="">All Statuses</option>
+                    {% for st in status_choices %}
+                        <option value="{{ st }}" {% if selected_status == st %}selected{% endif %}>{{ st }}</option>
+                    {% endfor %}
+                </select>
+
+                <!-- Reset Button -->
+                <a href="{% url 'backend:equipment_type_data_list' %}" class="eqd-btn-reset" title="Reset Filters">
+                    <span>Reset</span>
+                    <svg class="w-3.5 h-3.5 text-[#5C5B59]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                        <path d="M3 3v5h5" />
+                    </svg>
+                </a>
+            </form>
+        </div>
+
+        <!-- Table Inner Container -->
+        <div class="eqd-table-inner overflow-hidden">
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="eqd-table min-w-[760px]">
+                    <thead>
+                        <tr>
+                            <th class="rounded-l-[4px]">Equipment Type</th>
+                            <th>Field Name</th>
+                            <th>Field Type</th>
+                            <th>Required</th>
+                            <th>Status</th>
+                            <th class="text-center rounded-r-[4px]">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#F2F2F0]">
+                        {% for data in data_list %}
+                            <tr class="hover:bg-[#FAFAFA] transition-colors">
+                                <!-- Equipment Type -->
+                                <td>
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="w-7 h-7 rounded-full bg-[#F5F5F4] border border-[#E7E7E5] flex items-center justify-center text-[#716F6C] shrink-0">
+                                            <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M10 18.3335C9.31829 18.3335 8.66708 18.0584 7.36484 17.5084L7.36411 17.5081C4.12137 16.1382 2.5 15.4533 2.5 14.3012V5.8335M10 18.3335C10.6817 18.3335 11.3329 18.0584 12.6351 17.5084L12.6359 17.5081C15.8787 16.1382 17.5 15.4533 17.5 14.3012V5.8335M10 18.3335V9.4625" />
+                                                <path d="M6.93827 8.07599L4.50393 6.89805C3.16797 6.25159 2.5 5.92836 2.5 5.4165C2.5 4.90465 3.16797 4.58142 4.50393 3.93496L6.93827 2.75702C8.44067 2.03001 9.19192 1.6665 10 1.6665C10.8081 1.6665 11.5593 2.03 13.0617 2.75702L15.4961 3.93496C16.832 4.58142 17.5 4.90465 17.5 5.4165C17.5 5.92836 16.832 6.25159 15.4961 6.89805L13.0617 8.07599C11.5593 8.803 10.8081 9.1665 10 9.1665C9.19192 9.1665 8.44067 8.803 6.93827 8.07599Z" />
                                             </svg>
-                                            <span class="text-base font-medium text-gray-500">No custom fields found</span>
-                                            <p class="text-sm text-gray-400 max-w-xs">Get started by creating a new data field mapping for your equipment types.</p>
                                         </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                                        <span class="font-medium text-[#2B2823] text-[13.5px]">
+                                            {{ data.equipment_type.name|default:"-" }}
+                                        </span>
+                                    </div>
+                                </td>
+
+                                <!-- Field Name -->
+                                <td>
+                                    <span class="font-semibold text-[#2B2823] text-[13.5px]">
+                                        {{ data.field_name }}
+                                    </span>
+                                </td>
+
+                                <!-- Field Type -->
+                                <td>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#F5F5F4] text-[#5C5B59] border border-[#E5E5E3] capitalize">
+                                        {{ data.field_type }}
+                                    </span>
+                                </td>
+
+                                <!-- Required -->
+                                <td>
+                                    {% if data.is_required %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#E8F0FE] text-[#1A73E8] border border-[#D2E3FC]">
+                                            Yes
+                                        </span>
+                                    {% else %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#F5F5F4] text-[#716F6C] border border-[#E5E5E3]">
+                                            No
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Status Badge -->
+                                <td>
+                                    {% if data.is_active %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#E6F4EA] text-[#137333] border border-[#CEEAD6]">
+                                            Active
+                                        </span>
+                                    {% else %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#F1F3F4] text-[#5F6368] border border-[#DADCE0]">
+                                            Inactive
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Action (3-Dots Circle Button with Popup Dropdown) -->
+                                <td class="text-center">
+                                    <div class="relative inline-block text-left" data-menu-wrap>
+                                        <button type="button"
+                                                data-menu-btn
+                                                class="eqd-action-circle-btn"
+                                                aria-label="Actions"
+                                                aria-expanded="false">
+                                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                                                <circle cx="12" cy="5" r="1.75" />
+                                                <circle cx="12" cy="12" r="1.75" />
+                                                <circle cx="12" cy="19" r="1.75" />
+                                            </svg>
+                                        </button>
+                                        <div data-menu class="hidden py-1.5 w-44 text-left rounded-lg bg-white shadow-xl border border-[#EAEAE9] z-50" role="menu">
+                                            <!-- Edit Equipment Field (Opens Popup Modal) -->
+                                            <button type="button"
+                                                    onclick="openEditEquipmentFieldModal(this)"
+                                                    data-url="{% url 'backend:equipment_type_data_update' data.id %}"
+                                                    data-equipment-type="{{ data.equipment_type_id|default:'' }}"
+                                                    data-field-name="{{ data.field_name|default:'' }}"
+                                                    data-field-type="{{ data.field_type|default:'text' }}"
+                                                    data-required="{% if data.is_required %}1{% else %}0{% endif %}"
+                                                    data-status="{% if data.is_active %}1{% else %}0{% endif %}"
+                                                    class="w-full flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-left text-[#2B2823] hover:bg-[#F7F7F6] transition-colors cursor-pointer"
+                                                    role="menuitem">
+                                                <svg class="w-4 h-4 text-[#716F6C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                                </svg>
+                                                <span>Edit</span>
+                                            </button>
+
+                                            <div class="my-1 border-t border-[#F2F2F0]"></div>
+
+                                            <!-- Status Toggle (Deactivate / Activate) -->
+                                            <form action="{% url 'backend:equipment_type_data_status' data.id %}" method="post" class="block m-0">
+                                                {% csrf_token %}
+                                                <button type="submit"
+                                                        onclick="return confirm('Are you sure you want to {% if data.is_active %}deactivate{% else %}activate{% endif %} this field?');"
+                                                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-left transition-colors {% if data.is_active %}text-[#D93025] hover:bg-[#FDF2F2]{% else %}text-[#1E8E3E] hover:bg-[#EAF7EE]{% endif %}"
+                                                        role="menuitem">
+                                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                        {% if data.is_active %}
+                                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                        {% else %}
+                                                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                                        {% endif %}
+                                                    </svg>
+                                                    <span>{% if data.is_active %}Deactivate{% else %}Activate{% endif %}</span>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="6" class="py-12 text-center text-[#9E9D9B]">
+                                    <div class="flex flex-col items-center justify-center gap-2">
+                                        <svg class="w-8 h-8 text-[#C7C6C4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                                        </svg>
+                                        <p class="text-[13.5px] font-medium text-[#4A4947]">No equipment fields found</p>
+                                        <p class="text-[12.5px] text-[#8E8C89]">Try clearing filters or search criteria.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
-    </section>
+
+        <!-- ════════════════════════ ROW 3: Pagination Bar ════════════════════════ -->
+        {% include 'includes/pagination.html' with data_list=data_list %}
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- ADD / EDIT EQUIPMENT FIELD POPUP MODAL (Matches Figma 512px #F3F3F3 Design) -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div id="equipmentFieldModal"
+     class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/45 backdrop-blur-[1px]"
+     onclick="if (event.target === this) closeEquipmentFieldModal();">
+    <div class="eqd-modal-card">
+        <!-- Header Row -->
+        <div class="flex items-center justify-between mb-3.5">
+            <h3 id="equipmentFieldModalTitle" class="text-[18px] font-semibold text-[#2B2823] tracking-tight">Add Equipment Field</h3>
+            <button type="button"
+                    onclick="closeEquipmentFieldModal()"
+                    title="Close"
+                    class="eqd-modal-close-btn">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Form -->
+        <form method="post" action="{% url 'backend:equipment_type_data_add' %}" id="equipmentFieldModalForm" class="space-y-3.5">
+            {% csrf_token %}
+
+            <div>
+                <label for="modalFieldEquipmentType" class="eqd-modal-label">
+                    Equipment Type <span class="text-[#D93025]">*</span>
+                </label>
+                <select id="modalFieldEquipmentType" name="equipment_type_id" class="eqd-modal-select" required>
+                    <option value="">Select equipment type</option>
+                    {% for et in equipment_types %}
+                        <option value="{{ et.id }}">{{ et.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label for="modalFieldName" class="eqd-modal-label">
+                    Field Name <span class="text-[#D93025]">*</span>
+                </label>
+                <input type="text"
+                       id="modalFieldName"
+                       name="field_name"
+                       placeholder="e.g. Cooling Capacity (BTU)"
+                       class="eqd-modal-input"
+                       required>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                    <label for="modalFieldType" class="eqd-modal-label">
+                        Field Type <span class="text-[#D93025]">*</span>
+                    </label>
+                    <select id="modalFieldType" name="field_type" class="eqd-modal-select" required>
+                        <option value="text">Text</option>
+                        <option value="number">Number</option>
+                        <option value="date">Date</option>
+                        <option value="boolean">Boolean</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="modalFieldStatus" class="eqd-modal-label">
+                        Status
+                    </label>
+                    <select id="modalFieldStatus" name="is_active" class="eqd-modal-select">
+                        <option value="1" selected>Active</option>
+                        <option value="0">Inactive</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="pt-0.5">
+                <label class="inline-flex items-center gap-2.5 cursor-pointer select-none px-3.5 py-2.5 rounded-[13px] bg-white border border-[#F0F0F0]/60 shadow-[0_1px_2px_rgba(135,135,135,0.09)] w-full">
+                    <input type="checkbox"
+                           id="modalFieldRequired"
+                           name="is_required"
+                           value="True"
+                           class="w-4 h-4 rounded border-[#D0D0CE] text-[#0B7A44] focus:ring-[#0B7A44] accent-[#0B7A44] cursor-pointer">
+                    <span class="text-[13.5px] font-medium text-[#2B2823]">Required Field</span>
+                </label>
+            </div>
+
+            <!-- Footer Buttons -->
+            <div class="pt-2 flex items-center justify-between">
+                <button type="button"
+                        onclick="closeEquipmentFieldModal()"
+                        class="px-4 py-2 rounded-[8px] bg-white border border-[#EAEAE9] text-[13.5px] font-medium text-[#2B2823] shadow-[0_1px_2px_rgba(0,0,0,0.05)] hover:bg-[#FAFAFA] transition-colors cursor-pointer">
+                    Cancel
+                </button>
+                <button type="submit"
+                        id="equipmentFieldModalSubmitBtn"
+                        class="px-5 py-2 rounded-[8px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[13.5px] font-semibold shadow-sm transition-colors cursor-pointer">
+                    Save
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}
+
 {% block extra_js %}
-    <script>
-  $(document).ready(function () {
-    $('.select2-items').select2();
-  });
-    </script>
+<script>
+    const EQUIPMENT_FIELD_ADD_URL = "{% url 'backend:equipment_type_data_add' %}";
+
+    function openAddEquipmentFieldModal() {
+        const form = document.getElementById('equipmentFieldModalForm');
+        if (form) {
+            form.reset();
+            form.action = EQUIPMENT_FIELD_ADD_URL;
+        }
+        const title = document.getElementById('equipmentFieldModalTitle');
+        if (title) title.textContent = 'Add Equipment Field';
+        const submitBtn = document.getElementById('equipmentFieldModalSubmitBtn');
+        if (submitBtn) submitBtn.textContent = 'Save';
+
+        const modal = document.getElementById('equipmentFieldModal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+            setTimeout(function() {
+                const select = document.getElementById('modalFieldEquipmentType');
+                if (select) select.focus();
+            }, 50);
+        }
+    }
+
+    function openEditEquipmentFieldModal(btn) {
+        const form = document.getElementById('equipmentFieldModalForm');
+        if (form) {
+            form.action = btn.getAttribute('data-url') || EQUIPMENT_FIELD_ADD_URL;
+        }
+        const title = document.getElementById('equipmentFieldModalTitle');
+        if (title) title.textContent = 'Edit Equipment Field';
+        const submitBtn = document.getElementById('equipmentFieldModalSubmitBtn');
+        if (submitBtn) submitBtn.textContent = 'Save Changes';
+
+        const etSelect = document.getElementById('modalFieldEquipmentType');
+        const nameInput = document.getElementById('modalFieldName');
+        const typeSelect = document.getElementById('modalFieldType');
+        const reqCheckbox = document.getElementById('modalFieldRequired');
+        const statusSelect = document.getElementById('modalFieldStatus');
+
+        if (etSelect) etSelect.value = btn.getAttribute('data-equipment-type') || '';
+        if (nameInput) nameInput.value = btn.getAttribute('data-field-name') || '';
+        if (typeSelect) typeSelect.value = btn.getAttribute('data-field-type') || 'text';
+        if (reqCheckbox) reqCheckbox.checked = btn.getAttribute('data-required') === '1';
+        if (statusSelect) statusSelect.value = btn.getAttribute('data-status') || '1';
+
+        const modal = document.getElementById('equipmentFieldModal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+            setTimeout(function() {
+                if (nameInput) nameInput.focus();
+            }, 50);
+        }
+    }
+
+    function closeEquipmentFieldModal() {
+        const modal = document.getElementById('equipmentFieldModal');
+        if (modal) {
+            modal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        }
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('equipmentFieldModal');
+            if (modal && !modal.classList.contains('hidden')) {
+                closeEquipmentFieldModal();
+            }
+        }
+    });
+</script>
 {% endblock %}

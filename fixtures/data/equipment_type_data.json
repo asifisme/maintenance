@@ -158,5 +158,421 @@
             "is_active": true,
             "deleted": false
         }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 4,
+        "fields": {
+            "equipment_type": 1,
+            "field_name": "Refrigerant Type",
+            "field_type": "text",
+            "is_required": true,
+            "created_by": 1,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 5,
+        "fields": {
+            "equipment_type": 1,
+            "field_name": "Inverter",
+            "field_type": "boolean",
+            "is_required": false,
+            "created_by": 1,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 201,
+        "fields": {
+            "equipment_type": 1,
+            "field_name": "Cooling Capacity (TR)",
+            "field_type": "number",
+            "is_required": true,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 202,
+        "fields": {
+            "equipment_type": 2,
+            "field_name": "Power Rating (kW)",
+            "field_type": "number",
+            "is_required": false,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 203,
+        "fields": {
+            "equipment_type": 3,
+            "field_name": "Operating Voltage (V)",
+            "field_type": "number",
+            "is_required": false,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 204,
+        "fields": {
+            "equipment_type": 4,
+            "field_name": "Refrigerant Type",
+            "field_type": "text",
+            "is_required": true,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 205,
+        "fields": {
+            "equipment_type": 201,
+            "field_name": "Flow Rate (LPM)",
+            "field_type": "number",
+            "is_required": false,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 206,
+        "fields": {
+            "equipment_type": 202,
+            "field_name": "Max Load Capacity (kg)",
+            "field_type": "number",
+            "is_required": false,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 207,
+        "fields": {
+            "equipment_type": 203,
+            "field_name": "Number of Stops",
+            "field_type": "number",
+            "is_required": true,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 208,
+        "fields": {
+            "equipment_type": 204,
+            "field_name": "Fuel Tank Volume (L)",
+            "field_type": "number",
+            "is_required": false,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 209,
+        "fields": {
+            "equipment_type": 205,
+            "field_name": "Phase Configuration",
+            "field_type": "text",
+            "is_required": false,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 210,
+        "fields": {
+            "equipment_type": 206,
+            "field_name": "IP Protection Rating",
+            "field_type": "text",
+            "is_required": true,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 211,
+        "fields": {
+            "equipment_type": 207,
+            "field_name": "Noise Level (dB)",
+            "field_type": "number",
+            "is_required": false,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 212,
+        "fields": {
+            "equipment_type": 208,
+            "field_name": "Warranty Vendor",
+            "field_type": "text",
+            "is_required": false,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 213,
+        "fields": {
+            "equipment_type": 209,
+            "field_name": "Commissioning Cert No",
+            "field_type": "text",
+            "is_required": true,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 214,
+        "fields": {
+            "equipment_type": 210,
+            "field_name": "Inspection Interval",
+            "field_type": "number",
+            "is_required": false,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 215,
+        "fields": {
+            "equipment_type": 211,
+            "field_name": "Sensor Zone Count",
+            "field_type": "number",
+            "is_required": false,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 216,
+        "fields": {
+            "equipment_type": 212,
+            "field_name": "Cooling Capacity (TR) #16",
+            "field_type": "number",
+            "is_required": true,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 217,
+        "fields": {
+            "equipment_type": 213,
+            "field_name": "Power Rating (kW) #17",
+            "field_type": "number",
+            "is_required": false,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 218,
+        "fields": {
+            "equipment_type": 214,
+            "field_name": "Operating Voltage (V) #18",
+            "field_type": "number",
+            "is_required": false,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 219,
+        "fields": {
+            "equipment_type": 215,
+            "field_name": "Refrigerant Type #19",
+            "field_type": "text",
+            "is_required": true,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 220,
+        "fields": {
+            "equipment_type": 216,
+            "field_name": "Flow Rate (LPM) #20",
+            "field_type": "number",
+            "is_required": false,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 221,
+        "fields": {
+            "equipment_type": 217,
+            "field_name": "Max Load Capacity (kg) #21",
+            "field_type": "number",
+            "is_required": false,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 222,
+        "fields": {
+            "equipment_type": 218,
+            "field_name": "Number of Stops #22",
+            "field_type": "number",
+            "is_required": true,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 223,
+        "fields": {
+            "equipment_type": 219,
+            "field_name": "Fuel Tank Volume (L) #23",
+            "field_type": "number",
+            "is_required": false,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 224,
+        "fields": {
+            "equipment_type": 220,
+            "field_name": "Phase Configuration #24",
+            "field_type": "text",
+            "is_required": false,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 225,
+        "fields": {
+            "equipment_type": 221,
+            "field_name": "IP Protection Rating #25",
+            "field_type": "text",
+            "is_required": true,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 226,
+        "fields": {
+            "equipment_type": 222,
+            "field_name": "Noise Level (dB) #26",
+            "field_type": "number",
+            "is_required": false,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 227,
+        "fields": {
+            "equipment_type": 223,
+            "field_name": "Warranty Vendor #27",
+            "field_type": "text",
+            "is_required": false,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 228,
+        "fields": {
+            "equipment_type": 224,
+            "field_name": "Commissioning Cert No #28",
+            "field_type": "text",
+            "is_required": true,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 229,
+        "fields": {
+            "equipment_type": 225,
+            "field_name": "Inspection Interval #29",
+            "field_type": "number",
+            "is_required": false,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 230,
+        "fields": {
+            "equipment_type": 226,
+            "field_name": "Sensor Zone Count #30",
+            "field_type": "number",
+            "is_required": false,
+            "created_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z"
+        }
     }
 ]

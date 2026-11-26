@@ -1,56 +1,190 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block title %}Add Equipment Type{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    body,
+    #mainContentWrapper {
+        background-color: #F2F2F2 !important;
+        font-family: 'Urbanist', Inter, system-ui, ui-sans-serif, sans-serif;
+    }
+
+    .bld-mono {
+        font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        letter-spacing: -0.02em;
+    }
+
+    .wizard-outer-frame {
+        width: 100%;
+        max-width: 597px;
+        margin: 0 auto;
+        border-radius: 12px;
+        padding: 14px 6px 6px 6px;
+        background-color: #FFFFFF;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        box-sizing: border-box;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+
+    .wizard-inner-frame {
+        width: 100%;
+        border-radius: 6px;
+        padding: 14px 10px;
+        background-color: #F3F3F3;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        box-sizing: border-box;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #2B2823;
+        margin-bottom: 6px;
+    }
+
+    .form-input-field,
+    .form-textarea-field {
+        width: 100%;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        border-radius: 10px;
+        padding: 10px 14px;
+        font-size: 13.5px;
+        color: #2B2823;
+        transition: all 0.15s ease;
+        outline: none;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    .form-input-field::placeholder,
+    .form-textarea-field::placeholder {
+        color: #BDBCBB;
+    }
+
+    .form-input-field:focus,
+    .form-textarea-field:focus {
+        border-color: #0B7A44;
+        box-shadow: 0 0 0 3px rgba(11, 122, 68, 0.08);
+    }
+
+    .btn-forest {
+        background-color: #0B7A44;
+        color: #FFFFFF;
+        font-size: 13.5px;
+        font-weight: 600;
+        padding: 10px 22px;
+        border-radius: 9px;
+        transition: background-color 0.15s ease, transform 0.1s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+        border: none;
+    }
+
+    .btn-forest:hover {
+        background-color: #08683A;
+    }
+
+    .btn-secondary {
+        background-color: #FFFFFF;
+        color: #2B2823;
+        border: 1px solid #E5E5E4;
+        font-size: 13.5px;
+        font-weight: 600;
+        padding: 10px 20px;
+        border-radius: 9px;
+        transition: background-color 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+        background-color: #F7F7F7;
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <a href="{% url 'backend:equipment_type_list' %}" class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#5C5B59] font-medium hover:bg-[#E0E0DF] transition-colors shrink-0">
+        Equipment Types
+    </a>
+{% endblock %}
+
+{% block main_class %}w-full px-[15px] py-4 flex-1{% endblock %}
+
+{% block page_header %}
+<div class="w-full pt-1 pb-4">
+    <h1 class="bld-mono text-[24px] font-medium text-[#2B2823] leading-tight">Equipment Type Management</h1>
+    <p class="text-[13.5px] text-[#716F6C] mt-1">Manage equipment categories and types across your buildings.</p>
+</div>
+{% endblock %}
+
 {% block content %}
-    <section class="bg-slate-50 min-h-screen p-4 md:p-8 font-sans">
-        <div class="max-w-3xl mx-auto">
-            <div class="flex items-center gap-4 mb-6">
-                <a href="{% url 'backend:equipment_type_list' %}"
-                   class="text-gray-600 hover:text-gray-900">
-                    <svg width="24"
-                         height="24"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="2"
-                         stroke-linecap="round"
-                         stroke-linejoin="round">
-                        <path d="M15 18l-6-6 6-6" />
-                    </svg>
-                </a>
-                <h2 class="text-2xl font-bold text-gray-900">Add Equipment Type</h2>
-            </div>
-            <form method="post"
-                  class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+<div class="w-full pb-16">
+    <div class="wizard-outer-frame">
+        <!-- Header inside outer frame -->
+        <div class="px-2 pt-0.5 flex items-center justify-between">
+            <h2 class="text-[18px] font-bold text-[#2B2823] tracking-tight">
+                Add Equipment Type
+            </h2>
+        </div>
+
+        <!-- Inner Frame (#F3F3F3) -->
+        <div class="wizard-inner-frame">
+            <form method="post" action="{% url 'backend:equipment_type_add' %}" class="space-y-4">
                 {% csrf_token %}
-                <div class="mb-6">
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Name <span class="text-red-500">*</span></label>
+
+                <div>
+                    <label for="inputEquipmentTypeName" class="form-label">
+                        Name <span class="text-[#D93025]">*</span>
+                    </label>
                     <input type="text"
+                           id="inputEquipmentTypeName"
                            name="name"
-                           class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
+                           placeholder="e.g. Lift, HVAC, Generator"
+                           class="form-input-field"
                            required
-                           placeholder="e.g. Lift">
+                           autofocus>
                 </div>
-                <div class="mb-6">
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-                    <textarea name="description"
+
+                <div>
+                    <label for="inputEquipmentTypeDesc" class="form-label">
+                        Description
+                    </label>
+                    <textarea id="inputEquipmentTypeDesc"
+                              name="description"
                               rows="4"
-                              class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
-                              placeholder="Provide a brief description..."></textarea>
+                              placeholder="Provide a brief description..."
+                              class="form-textarea-field resize-none"></textarea>
                 </div>
-                <div class="flex items-center gap-4 mt-6">
-                    <button type="submit"
-                            class="bg-[#3B5998] hover:bg-blue-800 text-white font-semibold py-2.5 px-6 rounded-lg transition duration-200">Save</button>
-                    <a href="{% url 'backend:equipment_type_list' %}"
-                       class="bg-white border border-gray-200 text-gray-700 font-semibold py-2.5 px-6 rounded-lg transition duration-200 hover:bg-gray-50">Cancel</a>
+
+                <!-- Footer Actions -->
+                <div class="pt-4 border-t border-[#EAEAE9] flex items-center justify-between">
+                    <a href="{% url 'backend:equipment_type_list' %}" class="btn-secondary">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn-forest px-7">
+                        Save
+                    </button>
                 </div>
             </form>
         </div>
-    </section>
-{% endblock %}
-{% block extra_js %}
-    <script>
-        $(document).ready(function () {
-            $('.select2-items').select2();
-        });
-    </script>
+    </div>
+</div>
 {% endblock %}

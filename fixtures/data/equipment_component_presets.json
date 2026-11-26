@@ -4,12 +4,12 @@
         "pk": 1,
         "fields": {
             "equipment_type": 1,
-            "name": "Hermetic Centrifugal Compressor",
-            "description": "High-efficiency two-stage centrifugal compressor assembly with magnetic bearings.",
+            "name": "Daikin VRV IV Compressor Unit",
+            "description": "Variable Refrigerant Volume primary outdoor inverter scroll compressor.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
             "is_active": true,
             "deleted": false
         }
@@ -19,12 +19,12 @@
         "pk": 2,
         "fields": {
             "equipment_type": 1,
-            "name": "Shell and Tube Evaporator Bundle",
-            "description": "Internally finned copper tube bundle for refrigerant expansion and chilled water heat exchange.",
+            "name": "Carrier Multi-Stage Blower Motor",
+            "description": "High efficiency variable-speed ECM blower assembly with digital controller.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
             "is_active": true,
             "deleted": false
         }
@@ -34,12 +34,12 @@
         "pk": 3,
         "fields": {
             "equipment_type": 1,
-            "name": "Water-Cooled Condenser Tube Bundle",
-            "description": "Heavy-gauge marine water box condenser tubes with sacrificial zinc anodes.",
+            "name": "Trane Dual-Circuit Condenser Coil",
+            "description": "Corrosion-resistant aluminum fin copper tube condenser coil.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
             "is_active": true,
             "deleted": false
         }
@@ -48,13 +48,13 @@
         "model": "backend.equipmentcomponentpreset",
         "pk": 4,
         "fields": {
-            "equipment_type": 1,
-            "name": "Electronic Expansion Valve (EXV)",
-            "description": "Stepper motor precision refrigerant metering valve with PID superheat feedback.",
+            "equipment_type": 2,
+            "name": "Otis SkyRise Permanent-Magnet Hoist Motor",
+            "description": "Permanent-magnet gearless traction machine with regenerative drive unit.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
             "is_active": true,
             "deleted": false
         }
@@ -63,13 +63,13 @@
         "model": "backend.equipmentcomponentpreset",
         "pk": 5,
         "fields": {
-            "equipment_type": 1,
-            "name": "Lubrication Oil Pump & Separator",
-            "description": "Positive displacement oil circulation pump with coalescing oil separator element.",
+            "equipment_type": 2,
+            "name": "Schindler High-Cycle Door Operator",
+            "description": "Direct-drive harmonic door motor system with infrared light curtains.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
             "is_active": true,
             "deleted": false
         }
@@ -79,12 +79,12 @@
         "pk": 6,
         "fields": {
             "equipment_type": 2,
-            "name": "Electronic Fuel Injection Governor",
-            "description": "Common-rail electronic engine management module maintaining precise 60 Hz synchronous speed.",
+            "name": "KONE EcoDisc Hoisting Traction Unit",
+            "description": "Axial synchronous motor hoisting unit with integral disc brakes.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
             "is_active": true,
             "deleted": false
         }
@@ -93,13 +93,13 @@
         "model": "backend.equipmentcomponentpreset",
         "pk": 7,
         "fields": {
-            "equipment_type": 2,
-            "name": "Automatic Transfer Switch (ATS)",
-            "description": "High-speed 4-pole open-transition automatic transfer switch assembly with utility sensing.",
+            "equipment_type": 3,
+            "name": "Cummins Common Rail Fuel Injector Pump",
+            "description": "High-pressure common rail fuel pump assembly for diesel generator sets.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
             "is_active": true,
             "deleted": false
         }
@@ -108,13 +108,13 @@
         "model": "backend.equipmentcomponentpreset",
         "pk": 8,
         "fields": {
-            "equipment_type": 2,
-            "name": "Engine Block Radiator & Jacket Heater",
-            "description": "Thermostatically controlled 4kW immersion jacket water heater maintaining 105°F preheat.",
+            "equipment_type": 3,
+            "name": "Stamford Digital Automatic Voltage Regulator",
+            "description": "Solid-state digital AVR with over-excitation protection circuitry.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
             "is_active": true,
             "deleted": false
         }
@@ -123,13 +123,13 @@
         "model": "backend.equipmentcomponentpreset",
         "pk": 9,
         "fields": {
-            "equipment_type": 2,
-            "name": "Heavy-Duty Starting Battery Bank",
-            "description": "Dual 24VDC AGM lead-acid battery rack with automatic temperature-compensated trickle charger.",
+            "equipment_type": 3,
+            "name": "Perkins Heavy-Duty Turbocharger",
+            "description": "Exhaust gas turbine turbocharger with water-cooled center bearing.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
             "is_active": true,
             "deleted": false
         }
@@ -138,13 +138,13 @@
         "model": "backend.equipmentcomponentpreset",
         "pk": 10,
         "fields": {
-            "equipment_type": 3,
-            "name": "Gearless Permanent Magnet Traction Machine",
-            "description": "High-torque synchronous AC drive motor with dual independently monitored disc brakes.",
+            "equipment_type": 4,
+            "name": "Honeywell Notifier Addressable Optical Sensor",
+            "description": "Intelligent photoelectric smoke detector with drift compensation.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
             "is_active": true,
             "deleted": false
         }
@@ -153,13 +153,13 @@
         "model": "backend.equipmentcomponentpreset",
         "pk": 11,
         "fields": {
-            "equipment_type": 3,
-            "name": "Main Suspension Steel Hoist Cables",
-            "description": "High-tensile steel wire core hoist ropes with matched equalization tension shackles.",
+            "equipment_type": 4,
+            "name": "Ansul R-102 Liquid Suppression Nozzle",
+            "description": "High-velocity liquid chemical fire suppressant discharge nozzle.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
             "is_active": true,
             "deleted": false
         }
@@ -168,208 +168,433 @@
         "model": "backend.equipmentcomponentpreset",
         "pk": 12,
         "fields": {
+            "equipment_type": 4,
+            "name": "Siemens Cerberus Pro Manual Pull Station",
+            "description": "Dual-action addressable manual emergency fire alarm pull station.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-06-10T07:34:21Z",
+            "updated_at": "2026-06-10T07:34:21Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 201,
+        "fields": {
+            "equipment_type": 1,
+            "name": "Compressor Assembly",
+            "description": "Standard inspection checklist component: Compressor Assembly.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 202,
+        "fields": {
+            "equipment_type": 2,
+            "name": "Condenser Coil",
+            "description": "Standard inspection checklist component: Condenser Coil.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 203,
+        "fields": {
             "equipment_type": 3,
-            "name": "Door Operator & Infrared Safety Curtain",
-            "description": "High-speed variable frequency door drive with 3D infrared passenger detection light curtain.",
+            "name": "Evaporator Fan Motor",
+            "description": "Standard inspection checklist component: Evaporator Fan Motor.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
             "is_active": true,
             "deleted": false
         }
     },
     {
         "model": "backend.equipmentcomponentpreset",
-        "pk": 13,
-        "fields": {
-            "equipment_type": 3,
-            "name": "Hydraulic Counterweight Buffer Assembly",
-            "description": "Pit-mounted telescoping hydraulic shock absorption buffers for overspeed deceleration.",
-            "created_by": 1,
-            "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
-            "is_active": true,
-            "deleted": false
-        }
-    },
-    {
-        "model": "backend.equipmentcomponentpreset",
-        "pk": 14,
+        "pk": 204,
         "fields": {
             "equipment_type": 4,
-            "name": "Direct-Drive Backward Curved Supply Fan",
-            "description": "Electronically commutated plenum fan array providing balanced static pressure airflow.",
+            "name": "Expansion Valve",
+            "description": "Standard inspection checklist component: Expansion Valve.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
             "is_active": true,
             "deleted": false
         }
     },
     {
         "model": "backend.equipmentcomponentpreset",
-        "pk": 15,
+        "pk": 205,
         "fields": {
-            "equipment_type": 4,
-            "name": "Chilled Water Cooling Coil Assembly",
-            "description": "Six-row aluminum finned copper tube cooling coil with modulating 2-way control valve.",
+            "equipment_type": 201,
+            "name": "Control PCB Module",
+            "description": "Standard inspection checklist component: Control PCB Module.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
             "is_active": true,
             "deleted": false
         }
     },
     {
         "model": "backend.equipmentcomponentpreset",
-        "pk": 16,
+        "pk": 206,
         "fields": {
-            "equipment_type": 4,
-            "name": "MERV 14 / HEPA Final Filter Bank",
-            "description": "Deep-pleat particulate filter staging with Magnehelic differential pressure gauges.",
+            "equipment_type": 202,
+            "name": "Hoist Traction Rope",
+            "description": "Standard inspection checklist component: Hoist Traction Rope.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
             "is_active": true,
             "deleted": false
         }
     },
     {
         "model": "backend.equipmentcomponentpreset",
-        "pk": 17,
+        "pk": 207,
         "fields": {
-            "equipment_type": 5,
-            "name": "FM-200 / Novec Storage Cylinder Manifold",
-            "description": "Seamless steel pressure vessel manifold with continuous liquid level gauge indicators.",
+            "equipment_type": 203,
+            "name": "Door Interlock Switch",
+            "description": "Standard inspection checklist component: Door Interlock Switch.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
             "is_active": true,
             "deleted": false
         }
     },
     {
         "model": "backend.equipmentcomponentpreset",
-        "pk": 18,
+        "pk": 208,
         "fields": {
-            "equipment_type": 5,
-            "name": "Pneumatic Discharge Head & Actuator",
-            "description": "Fast-acting electrical solenoid release actuator with manual mechanical emergency pull.",
+            "equipment_type": 204,
+            "name": "Safety Gear Brake",
+            "description": "Standard inspection checklist component: Safety Gear Brake.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
             "is_active": true,
             "deleted": false
         }
     },
     {
         "model": "backend.equipmentcomponentpreset",
-        "pk": 19,
+        "pk": 209,
         "fields": {
-            "equipment_type": 6,
-            "name": "Static Bypass Switch Module",
-            "description": "Solid-state silicon controlled rectifier (SCR) static bypass with sub-millisecond transfer.",
+            "equipment_type": 205,
+            "name": "Fuel Injection Pump",
+            "description": "Standard inspection checklist component: Fuel Injection Pump.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
             "is_active": true,
             "deleted": false
         }
     },
     {
         "model": "backend.equipmentcomponentpreset",
-        "pk": 20,
+        "pk": 210,
         "fields": {
-            "equipment_type": 6,
-            "name": "VRLA Battery String & Monitoring",
-            "description": "Individual jar internal resistance, temperature, and string float voltage telemetry.",
+            "equipment_type": 206,
+            "name": "Alternator Stator",
+            "description": "Standard inspection checklist component: Alternator Stator.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
             "is_active": true,
             "deleted": false
         }
     },
     {
         "model": "backend.equipmentcomponentpreset",
-        "pk": 21,
+        "pk": 211,
         "fields": {
-            "equipment_type": 7,
-            "name": "Low Water Fuel Cutoff Safety Probe",
-            "description": "Redundant conductance probe low-water cutoff assembly triggering instantaneous burner shutdown.",
+            "equipment_type": 207,
+            "name": "Radiator Core",
+            "description": "Standard inspection checklist component: Radiator Core.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
             "is_active": true,
             "deleted": false
         }
     },
     {
         "model": "backend.equipmentcomponentpreset",
-        "pk": 22,
+        "pk": 212,
         "fields": {
-            "equipment_type": 7,
-            "name": "Modulating Forced Draft Dual-Fuel Burner",
-            "description": "High-turn-down ratio gas and fuel oil burner with optical flame safeguard scanner.",
+            "equipment_type": 208,
+            "name": "Starter Solenoid",
+            "description": "Standard inspection checklist component: Starter Solenoid.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
             "is_active": true,
             "deleted": false
         }
     },
     {
         "model": "backend.equipmentcomponentpreset",
-        "pk": 23,
+        "pk": 213,
         "fields": {
-            "equipment_type": 8,
-            "name": "BACnet IP Main Processor Motherboard",
-            "description": "High-performance ARM processor running real-time operating system and field bus loops.",
+            "equipment_type": 209,
+            "name": "Smoke Detector Loop",
+            "description": "Standard inspection checklist component: Smoke Detector Loop.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
             "is_active": true,
             "deleted": false
         }
     },
     {
         "model": "backend.equipmentcomponentpreset",
-        "pk": 24,
+        "pk": 214,
         "fields": {
-            "equipment_type": 9,
-            "name": "Twin-Screw Rotor Assembly & Slide Valve",
-            "description": "Precision helical rotors with hydraulic capacity modulation slide valve for stepless control.",
+            "equipment_type": 210,
+            "name": "Sprinkler Flow Switch",
+            "description": "Standard inspection checklist component: Sprinkler Flow Switch.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
             "is_active": true,
             "deleted": false
         }
     },
     {
         "model": "backend.equipmentcomponentpreset",
-        "pk": 25,
+        "pk": 215,
         "fields": {
-            "equipment_type": 10,
-            "name": "DC Maximum Power Point Tracker (MPPT)",
-            "description": "Multiple independent high-efficiency MPPT input channels with DC disconnect switch.",
+            "equipment_type": 211,
+            "name": "Jockey Pump Seal",
+            "description": "Standard inspection checklist component: Jockey Pump Seal.",
             "created_by": 1,
             "updated_by": 1,
-            "created_at": "2026-01-15T08:00:00Z",
-            "updated_at": "2026-01-15T08:00:00Z",
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 216,
+        "fields": {
+            "equipment_type": 212,
+            "name": "Battery Cell Bank",
+            "description": "Standard inspection checklist component: Battery Cell Bank.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 217,
+        "fields": {
+            "equipment_type": 213,
+            "name": "Inverter IGBT Bridge",
+            "description": "Standard inspection checklist component: Inverter IGBT Bridge.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 218,
+        "fields": {
+            "equipment_type": 214,
+            "name": "Circuit Breaker Trip Unit",
+            "description": "Standard inspection checklist component: Circuit Breaker Trip Unit.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 219,
+        "fields": {
+            "equipment_type": 215,
+            "name": "Transformer Bushing",
+            "description": "Standard inspection checklist component: Transformer Bushing.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 220,
+        "fields": {
+            "equipment_type": 216,
+            "name": "Cooling Fan Relay",
+            "description": "Standard inspection checklist component: Cooling Fan Relay.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 221,
+        "fields": {
+            "equipment_type": 217,
+            "name": "Pressure Transducer",
+            "description": "Standard inspection checklist component: Pressure Transducer.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 222,
+        "fields": {
+            "equipment_type": 218,
+            "name": "Thermostat Sensor",
+            "description": "Standard inspection checklist component: Thermostat Sensor.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 223,
+        "fields": {
+            "equipment_type": 219,
+            "name": "Surge Protection Device",
+            "description": "Standard inspection checklist component: Surge Protection Device.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 224,
+        "fields": {
+            "equipment_type": 220,
+            "name": "Bearing & Shaft Seal",
+            "description": "Standard inspection checklist component: Bearing & Shaft Seal.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 225,
+        "fields": {
+            "equipment_type": 221,
+            "name": "VFD Drive Controller",
+            "description": "Standard inspection checklist component: VFD Drive Controller.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 226,
+        "fields": {
+            "equipment_type": 222,
+            "name": "PLC I/O Module",
+            "description": "Standard inspection checklist component: PLC I/O Module.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 227,
+        "fields": {
+            "equipment_type": 223,
+            "name": "Optical Fiber Transceiver",
+            "description": "Standard inspection checklist component: Optical Fiber Transceiver.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 228,
+        "fields": {
+            "equipment_type": 224,
+            "name": "Emergency Stop Switch",
+            "description": "Standard inspection checklist component: Emergency Stop Switch.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-23T09:00:00Z",
+            "updated_at": "2026-11-23T09:00:00Z",
             "is_active": true,
             "deleted": false
         }

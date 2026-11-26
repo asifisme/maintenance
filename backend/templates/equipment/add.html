@@ -1,259 +1,88 @@
 {% extends 'base.html' %}
-{% block title %}<span class="hidden">{{ action }} Equipment</span>{% endblock %}
+{% load static %}
+
+{% block title %}{% if is_edit %}Update Equipment{% else %}Add New Equipment{% endif %}{% endblock %}
+
+{% block extra_head %}
+    {% include 'equipment/includes_add/styles.html' %}
+{% endblock %}
+
+{% block breadcrumb %}
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <a href="{% url 'backend:building_list' %}" class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#5C5B59] font-medium hover:bg-[#E0E0DF] transition-colors shrink-0">
+        Buildings
+    </a>
+{% endblock %}
+
+{% block main_class %}w-full px-[15px] py-4 flex-1{% endblock %}
+
+{% block page_header %}
+<div class="w-full pt-1 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+        <h1 class="bld-mono text-[24px] font-medium text-[#2B2823] leading-tight">{% if is_edit %}Update Equipment{% else %}Add  New  Equipment{% endif %}</h1>
+        <p class="text-[13.5px] text-[#716F6C] mt-1">Manage government buildings and their equipment from one place.</p>
+    </div>
+    <div class="flex items-center gap-2.5">
+        <a href="{% url 'backend:building_add' %}" class="btn-forest">
+            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Add Buildings</span>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
 {% block content %}
-    <section class="bg-[var(--bg-color)] min-h-screen p-4 md:p-2 font-sans">
-        <div class="max-w-6xl mx-auto">
-            <!-- Header -->
-            <div class="flex items-center gap-4 mb-6">
-                <a href="{% if from_building %}{% url 'backend:building_details' from_building %}{% else %}{% url 'backend:equipment_list' %}{% endif %}"
-                   class="text-gray-600 hover:text-gray-900">
-                    <svg width="24"
-                         height="24"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="2"
-                         stroke-linecap="round"
-                         stroke-linejoin="round">
-                        <path d="M15 18l-6-6 6-6" />
-                    </svg>
-                </a>
-                <h2 class="text-2xl font-bold text-gray-900">{{ action }} Equipment</h2>
+<div class="w-full pb-16">
+    <!-- Main Wizard Card -->
+    <div class="wizard-outer-frame">
+        <!-- Header: Title inside outer frame -->
+        <div class="px-2 pt-0.5">
+            <h2 id="wizardStepTitle" class="text-[18px] font-semibold text-[#272420] tracking-normal leading-[22px]" style="font-family: 'Urbanist', sans-serif;">
+                {% if is_edit %}Update Equipment{% else %}Add New Equipment{% endif %}
+            </h2>
+        </div>
+
+        <!-- Inner Frame -->
+        <div class="wizard-inner-frame">
+            <!-- 3-Step Pill Bar -->
+            <div class="step-tabs-container" id="stepTabsBar">
+                <button type="button" id="tabStep1" class="tab-pill-active" onclick="switchStep(1)">
+                    Equipment Information
+                </button>
+                <button type="button" id="tabStep2" class="tab-pill-inactive" onclick="switchStep(2)">
+                    Assignment &amp; Maintenance
+                </button>
+                <button type="button" id="tabStep3" class="tab-pill-inactive" onclick="switchStep(3)">
+                    Review &amp; Save
+                </button>
             </div>
-            <form method="post" enctype="multipart/form-data" class="space-y-6">
+
+            <!-- Form starts -->
+            <form id="equipmentAddForm" method="post" action="{% if is_edit %}{% url 'backend:equipment_update' obj.id %}{% else %}{% url 'backend:equipment_add' %}{% endif %}" novalidate>
                 {% csrf_token %}
-                <input type="hidden" name="from_building" value="{{ from_building|default:'' }}">
-                <!-- Basic & General Info -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <h3 class="text-lg font-bold text-gray-900 mb-6 border-b border-gray-100 pb-2">Basic & General Info</h3>
-                    <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Building <span class="text-red-500">*</span></label>
-                            <select name="building_id"
-                                    class="w-full select2-items bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
-                                    required>
-                                <option value="">Select Building</option>
-                                {% for b in buildings %}
-                                    <option value="{{ b.id }}"
-                                            {% if obj.building_id == b.id or from_building == b.id %}selected{% endif %}>
-                                        {{ b.name }}{% if b.surname %} ({{ b.surname }}){% endif %}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
+                <input type="hidden" name="from_building" value="{% if not is_edit %}{{ from_building|default:'' }}{% endif %}">
+                <input type="hidden" name="is_ajax" value="1">
+                <input type="hidden" id="hiddenEquipmentTypeId" name="equipment_type_id" value="{{ obj.equipment_type_id|default:'' }}">
+                <input type="hidden" id="hiddenCustomFields" name="custom_fields" value="{{ existing_custom_fields_json|default:'{}' }}">
+                <input type="hidden" id="hiddenAssignToBuilding" name="assign_to_building" value="{% if obj.building_id %}true{% else %}false{% endif %}">
+                <input type="hidden" id="hiddenStatus" name="status" value="{{ obj.status|default:'active' }}">
 
+                {% include 'equipment/includes_add/step1_equipment_info.html' %}
+                {% include 'equipment/includes_add/step2_assignment_maintenance.html' %}
+                {% include 'equipment/includes_add/step3_review.html' %}
+            </form>
+        </div>
+    </div>
+</div>
 
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Type <span class="text-red-500">*</span></label>
-                            <select name="equipment_type_id"
-                                    class="w-full select2-items bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
-                                    required>
-                                <option value="">Select Type</option>
-                                {% for t in equipment_types %}
-                                    <option value="{{ t.id }}"
-                                            {% if obj.equipment_type_id == t.id %}selected{% endif %}>{{ t.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
+{% include 'equipment/includes_add/success_modal.html' %}
+{% endblock %}
 
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Equipment ID <span class="text-red-500">*</span></label>
-                            <input type="text"
-                                   name="equipment_id"
-                                   value="{{ obj.equipment_id|default:'' }}"
-                                   class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
-                                   required
-                                   placeholder="e.g. EQ-1710">
-                        </div>
-
-                        <div>
-                            <label for="installment_date" class="block text-sm font-semibold text-gray-700 mb-2">Installment Date</label>
-                            <input type="date"
-                                   name="installment_date"
-                                   value="{{ obj.installment_date|default:'' }}"
-                                   class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none">
-                        </div>
-
-                      
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Brand</label>
-                            <input type="text"
-                                   name="brand"
-                                   value="{{ obj.brand|default:'' }}"
-                                   class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
-                                   placeholder="e.g. Otis, Daikin">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Floor / Location</label>
-                            <input type="text"
-                                   name="floor_location"
-                                   value="{{ obj.floor_location|default:'' }}"
-                                   class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
-                                   placeholder="e.g. 5th Floor, Room 502">
-                        </div>
-                    </div>
-                    </div>
-                    <!-- Equipment Components -->
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                        <div class="flex items-center justify-between mb-6 pb-2 border-b border-gray-100">
-                            <div class="flex items-center gap-2">
-                                <h3 class="text-lg font-bold text-gray-900">Equipment Components</h3>
-                            </div>
-                            <button type="button"
-                                    id="add_component_btn"
-                                    class="text-sm bg-[#3B5998] hover:bg-blue-800 text-white px-3 py-1.5 rounded font-semibold transition-colors">
-                                + Add Component
-                            </button>
-                        </div>
-                        <div id="components_container" class="space-y-4">
-                            <!-- Dynamic components will go here -->
-                        </div>
-                    </div>
-                    <!-- Maintenance Scheduling -->
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                        <div class="flex items-center gap-2 mb-6 pb-2 border-b border-gray-100">
-                            <svg width="20"
-                                 height="20"
-                                 viewBox="0 0 24 24"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 stroke-width="2"
-                                 stroke-linecap="round"
-                                 stroke-linejoin="round"
-                                 class="text-blue-600">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                <line x1="16" y1="2" x2="16" y2="6"></line>
-                                <line x1="8" y1="2" x2="8" y2="6"></line>
-                                <line x1="3" y1="10" x2="21" y2="10"></line>
-                            </svg>
-                            <h3 class="text-lg font-bold text-gray-900">Maintenance Scheduling</h3>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Maintenance Period (Days)</label>
-                                <div class="relative">
-                                    <input type="number"
-                                           name="maintenance_period_days"
-                                           value="{{ obj.maintenance_period_days|default:'90' }}"
-                                           class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 pr-12 outline-none">
-                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-xs font-bold text-gray-400">
-                                        DAYS
-                                    </div>
-                                </div>
-                                <p class="text-xs text-gray-500 mt-2">Frequency of routine checks after installation.</p>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Next Service Due</label>
-                                <input type="date"
-                                       name="next_service_due"
-                                       value="{{ obj.next_service_due|date:'Y-m-d'|default:'' }}"
-                                       class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none">
-                            </div>
-                        </div>
-                    </div>
-                    {% if action == 'Update' %}
-                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                            <h3 class="text-lg font-bold text-gray-400 uppercase tracking-wider mb-6 pb-2 border-b border-gray-100">
-                                Status & Details
-                            </h3>
-                            <div class="mb-6">
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Status</label>
-                                <select name="status"
-                                        class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none">
-                                    <option value="active" {% if obj.status == 'active' %}selected{% endif %}>Active</option>
-                                    <option value="in_repair"
-                                            {% if obj.status == 'in_repair' %}selected{% endif %}>In Repair</option>
-                                    <option value="under_maintenance"
-                                            {% if obj.status == 'under_maintenance' %}selected{% endif %}>
-                                        Under Maintenance
-                                    </option>
-                                    <option value="inactive" {% if obj.status == 'inactive' %}selected{% endif %}>Inactive</option>
-                                    <option value="decommissioned"
-                                            {% if obj.status == 'decommissioned' %}selected{% endif %}>
-                                        Decommissioned
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                    {% endif %}
-                    <!-- Form Actions -->
-                    <div class="flex items-center gap-4 mt-6 pb-8">
-                        <button type="submit"
-                                class="flex-1 md:flex-none md:w-64 bg-[#3B5998] hover:bg-blue-800 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 ease-in-out text-center">
-                            Save Equipment
-                        </button>
-                        <a href="{% if from_building %}{% url 'backend:building_details' from_building %}{% else %}{% url 'backend:equipment_list' %}{% endif %}"
-                           class="flex-1 md:flex-none bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3 px-6 rounded-lg transition duration-200 ease-in-out text-center">
-                            Cancel
-                        </a>
-                        {% if action == 'Update' %}
-                            <div class="ml-auto">
-                                <button type="button"
-                                        onclick="if(confirm('Are you sure you want to change status?')) { document.getElementById('status-form').submit(); }"
-                                        class="{% if obj.is_active %}text-red-500 hover:text-red-700{% else %}text-green-500 hover:text-green-700{% endif %} font-semibold py-3 px-4 transition duration-200 text-sm">
-                                    {% if obj.is_active %}
-                                        Make Inactive
-                                    {% else %}
-                                        Make Active
-                                    {% endif %}
-                                </button>
-                            </div>
-                        {% endif %}
-                    </div>
-                </form>
-                {% if action == 'Update' %}
-                    <form id="status-form"
-                          action="{% url 'backend:equipment_status' obj.id %}"
-                          method="post"
-                          style="display: none">
-                        {% csrf_token %}
-                    </form>
-                {% endif %}
-            </div>
-        </section>
-    {% endblock %}
-    {% block extra_js %}
-        <script>
-    $(document).ready(function () {
-        $('.select2-items').select2();
-
-        function addComponentRow(name = '', desc = '') {
-            const html = `
-                <div class="component-row flex items-start gap-4 p-4 border border-gray-100 rounded-lg bg-slate-50">
-                    <div class="flex-1">
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Component Name <span class="text-red-500">*</span></label>
-                        <input type="text" name="component_name[]" value="${name}" class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block p-2 outline-none" required placeholder="e.g. Compressor">
-                    </div>
-                    <div class="flex-1">
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Description</label>
-                        <input type="text" name="component_description[]" value="${desc}" class="w-full bg-white border border-gray-200 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block p-2 outline-none" placeholder="e.g. Main cooling unit">
-                    </div>
-                    <div class="pt-6">
-                        <button type="button" class="remove-component text-red-500 hover:text-red-700 font-bold p-2 text-sm">Remove</button>
-                    </div>
-                </div>
-            `;
-            $('#components_container').append(html);
-        }
-
-        $('#add_component_btn').on('click', function() {
-            addComponentRow();
-        });
-
-        $(document).on('click', '.remove-component', function() {
-            $(this).closest('.component-row').remove();
-            if ($('.component-row').length === 0) {
-                addComponentRow();
-            }
-        });
-
-        // Add initial empty component row
-        addComponentRow();
-    });
-        </script>
-    {% endblock %}
+{% block extra_js %}
+    {% include 'equipment/includes_add/scripts.html' %}
+{% endblock %}

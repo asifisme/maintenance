@@ -1,206 +1,868 @@
 {% extends 'base.html' %}
-{% block title %}Equipment {{ obj.equipment_id }}{% endblock %}
+{% load static %}
+
+{% block page_title %}{{ obj.equipment_name|default:obj.equipment_id }}{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    body,
+    #mainContentWrapper {
+        background-color: #F2F2F2 !important;
+        font-family: 'Urbanist', Inter, system-ui, ui-sans-serif, sans-serif;
+    }
+
+    .eq-mono {
+        font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        letter-spacing: -0.02em;
+    }
+
+    .figma-card-outer {
+        background-color: #F9F9F9;
+        border-radius: 12px;
+        padding: 16px 6px 6px 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        box-sizing: border-box;
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .figma-card-inner {
+        background-color: #FFFFFF;
+        border-radius: 6px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        box-sizing: border-box;
+    }
+
+    .detail-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px 0;
+        border-bottom: 1px solid #F2F2F2;
+    }
+    .detail-row:first-child { padding-top: 2px; }
+    .detail-row:last-child { border-bottom: none; padding-bottom: 2px; }
+
+    .detail-label {
+        width: 124px;
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: flex-start;
+        gap: 7px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #9D9C9A;
+        line-height: 1.35;
+    }
+    .detail-label svg {
+        width: 15px;
+        height: 15px;
+        flex-shrink: 0;
+        margin-top: 1px;
+        color: #B4B3B1;
+    }
+    .detail-value {
+        flex: 1;
+        min-width: 0;
+        font-size: 13.5px;
+        font-weight: 500;
+        color: #2B2823;
+        line-height: 1.4;
+        word-break: break-word;
+    }
+
+    .filter-select-pill {
+        height: 34px;
+        padding: 0 28px 0 12px;
+        border-radius: 8px;
+        background-color: #EAEAE8 !important;
+        border: 1px solid transparent;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        color: #5C5B59;
+        outline: none;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23716F6C' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 9px center;
+        background-size: 13px;
+    }
+
+    .tab-pill-group {
+        display: inline-flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 4px;
+        padding: 3px;
+        border-radius: 10px;
+        background-color: #EAEAE8;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .tab-pill-group::-webkit-scrollbar {
+        display: none;
+    }
+    .tab-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 7px;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #5C5B59;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: all 150ms ease;
+    }
+    .tab-pill:hover { color: #2B2823; }
+    .tab-pill.active {
+        background-color: #FFFFFF;
+        color: #2B2823;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    }
+
+    .eq-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+    .eq-table thead tr {
+        background-color: #F7F7F7;
+    }
+    .eq-table thead th {
+        padding: 11px 14px;
+        text-align: left;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #2B2823;
+        white-space: nowrap;
+    }
+    .eq-table thead th:first-child { border-radius: 6px 0 0 6px; }
+    .eq-table thead th:last-child { border-radius: 0 6px 6px 0; text-align: right; }
+    .eq-table tbody tr {
+        border-bottom: 1px solid #F2F2F2;
+        background-color: #FFFFFF;
+    }
+    .eq-table tbody tr:nth-child(even) {
+        background-color: #FAFAFA;
+    }
+    .eq-table tbody tr:last-child { border-bottom: none; }
+    .eq-table tbody td {
+        padding: 13px 14px;
+        color: #5C5B59;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+    .eq-table tbody td:last-child { text-align: right; }
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <a href="{% url 'backend:equipment_list' %}" class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#5C5B59] font-medium hover:bg-[#E0E0DF] transition-colors shrink-0">
+        Equipment
+    </a>
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <span class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#2B2823] font-medium shrink-0">
+        {{ obj.equipment_name|default:obj.equipment_id }}
+    </span>
+{% endblock %}
+
+{% block main_class %}w-full px-[10px] pt-2 pb-10 flex-1{% endblock %}
+
+{% block page_header %}
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-5">
+    <div class="flex items-start gap-3">
+        <a href="{% url 'backend:equipment_list' %}"
+           title="Back to Equipment List"
+           class="mt-0.5 w-9 h-9 rounded-[8px] bg-white border border-[#EAEAE9] flex items-center justify-center text-[#5C5B59] hover:text-[#2B2823] hover:bg-[#F7F7F6] shrink-0 transition-colors">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 18l-6-6 6-6" />
+            </svg>
+        </a>
+        <div>
+            <div class="flex flex-wrap items-center gap-2.5">
+                <h1 id="page_title" class="eq-mono text-[23px] lg:text-[26px] font-medium text-[#2B2823] leading-tight">
+                    {{ obj.equipment_name|default:obj.equipment_id }}
+                </h1>
+                <span class="eq-mono inline-flex items-center px-2.5 py-0.5 rounded-[6px] text-[12px] font-medium bg-[#EAEAE8] text-[#4A4947]">
+                    {{ obj.equipment_id }}
+                </span>
+                {% if obj.status == 'active' %}
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#E7F6EC] text-[#0B7A44] border border-[#CEEAD6]">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#0B7A44]"></span>Active
+                    </span>
+                {% elif obj.status == 'under_maintenance' %}
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#FEF3C7] text-[#B45309] border border-[#FDE68A]">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#D97706]"></span>Under Maintenance
+                    </span>
+                {% elif obj.status == 'in_repair' %}
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#FEF3E6] text-[#C86E12] border border-[#FDD8B5]">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#EA580C]"></span>In Repair
+                    </span>
+                {% elif obj.status == 'decommissioned' %}
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#FCE8E6] text-[#C5221F] border border-[#FAD2CF]">
+                        Decommissioned
+                    </span>
+                {% else %}
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#EFEFEF] text-[#5C5B59]">
+                        {{ obj.get_status_display }}
+                    </span>
+                {% endif %}
+            </div>
+            <p class="text-[13px] text-[#716F6C] mt-1">
+                {{ obj.equipment_type.name|default:"Equipment" }}
+                {% if obj.brand %} &bull; {{ obj.brand }}{% endif %}
+                {% if obj.model_number %} &bull; Model {{ obj.model_number }}{% endif %}
+            </p>
+        </div>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2 shrink-0">
+        <a href="{% url 'backend:equipment_qr' obj.id %}?view=1"
+           class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-[8px] bg-white border border-[#EAEAE9] text-[13px] font-semibold text-[#2B2823] hover:bg-[#F7F7F6] shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-colors">
+            <svg class="w-4 h-4 text-[#5C5B59]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            <span>QR Hub</span>
+        </a>
+        <a href="{% url 'backend:equipment_update' obj.id %}"
+           class="inline-flex items-center justify-center px-3.5 py-2 rounded-[8px] bg-white border border-[#EAEAE9] text-[13px] font-semibold text-[#2B2823] hover:bg-[#F7F7F6] shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-colors">
+            Edit Equipment
+        </a>
+        <a href="{% url 'backend:ticket_add' %}?equipment={{ obj.id }}{% if obj.building_id %}&building={{ obj.building_id }}{% endif %}"
+           class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-[8px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[13px] font-semibold shadow-[0_1px_2px_rgba(11,122,68,0.2)] transition-colors">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Create Ticket</span>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
 {% block content %}
-    <section class="bg-[var(--bg-color)] min-h-screen p-4 md:p-2 font-sans">
-        <div class="max-w-6xl mx-auto">
-            
-            <!-- Header -->
-            <div class="flex items-center justify-between mb-8">
-                <div class="flex items-center gap-4">
-                    <a href="{% url 'backend:equipment_list' %}"
-                       class="text-gray-600 hover:text-gray-900 bg-white p-2 rounded-lg border border-gray-200 shadow-sm transition">
-                        <svg width="20"
-                             height="20"
-                             viewBox="0 0 24 24"
-                             fill="none"
-                             stroke="currentColor"
-                             stroke-width="2"
-                             stroke-linecap="round"
-                             stroke-linejoin="round">
-                            <path d="M15 18l-6-6 6-6" />
-                        </svg>
-                    </a>
-                    <div>
-                        <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">Back</h2>
-                        <!-- <p class="text-sm text-gray-500 mt-1">{{ obj.equipment_type.name }} &bull; {{ obj.floor_location|default:"No Location specified" }}</p> -->
-                    </div>
-                </div>
-                <a href="{% url 'backend:equipment_qr' obj.id %}?view=1"
-                   class="bg-gray-900 hover:bg-black text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 transition duration-200 text-sm shadow-sm">
-                    <svg width="16"
-                         height="16"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="2"
-                         stroke-linecap="round"
-                         stroke-linejoin="round">
-                        <rect x="3" y="3" width="7" height="7"></rect>
-                        <rect x="14" y="3" width="7" height="7"></rect>
-                        <rect x="14" y="14" width="7" height="7"></rect>
-                        <rect x="3" y="14" width="7" height="7"></rect>
+<div class="space-y-[10px]">
+
+    <!-- TOP ROW: Equipment Details (Left) + Current Installation & Maintenance Overview (Right) -->
+    <div class="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-[10px] items-stretch">
+
+        <!-- LEFT CARD: Equipment Information & Specifications -->
+        <div class="figma-card-outer h-full">
+            <div class="px-2.5 flex items-center justify-between">
+                <h2 class="text-[16px] font-semibold text-[#2B2823] tracking-tight">Equipment Specifications</h2>
+                <a href="{% url 'backend:equipment_update' obj.id %}"
+                   title="Edit Equipment"
+                   class="w-7 h-7 rounded-[6px] flex items-center justify-center text-[#5C5B59] hover:text-[#0B7A44] hover:bg-white transition-colors">
+                    <svg class="w-[17px] h-[17px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                     </svg>
-                    QR Hub
                 </a>
             </div>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Left Column: Status & Maintenance Logs -->
-                <div class="lg:col-span-2 space-y-6">
-                    <!-- Top Summary Cards -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Next Maintenance Card -->
-                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center gap-4 relative overflow-hidden">
-                            <div class="w-12 h-12 rounded-full bg-red-50 text-red-500 flex items-center justify-center shrink-0 border border-red-100">
-                                <svg width="24"
-                                     height="24"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="2"
-                                     stroke-linecap="round"
-                                     stroke-linejoin="round">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Next Maintenance</p>
-                                <h3 class="text-xl font-bold text-red-600">{{ obj.next_service_due|date:"d M Y"|default:"Not scheduled" }}</h3>
-                                <p class="text-xs text-red-500 font-medium mt-1">Maintenance overdue!</p>
-                            </div>
-                        </div>
-                        <!-- Current Status Card -->
-                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center shrink-0 border border-blue-100">
-                                <svg width="24"
-                                     height="24"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="2"
-                                     stroke-linecap="round"
-                                     stroke-linejoin="round">
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Current Status</p>
-                                <h3 class="text-xl font-bold text-gray-900 capitalize">{{ obj.get_status_display }}</h3>
-                                <div class="mt-1">
-                                    {% if obj.status == 'active' %}
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 border border-green-200">
-                                            <svg class="mr-1 h-2 w-2 text-green-500"
-                                                 fill="currentColor"
-                                                 viewBox="0 0 8 8">
-                                                <circle cx="4" cy="4" r="3" />
-                                            </svg>
-                                            Active
-                                        </span>
-                                    {% else %}
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
-                                            <svg class="mr-1 h-2 w-2 text-gray-500"
-                                                 fill="currentColor"
-                                                 viewBox="0 0 8 8">
-                                                <circle cx="4" cy="4" r="3" />
-                                            </svg>
-                                            {{ obj.get_status_display }}
-                                        </span>
-                                    {% endif %}
-                                </div>
-                            </div>
+
+            <div class="figma-card-inner flex-1">
+                {% if obj.image %}
+                    <div class="pb-3 border-b border-[#F2F2F2] flex items-center gap-4">
+                        <img src="{{ obj.image.url }}"
+                             alt="{{ obj.equipment_name|default:obj.equipment_id }}"
+                             class="w-20 h-20 rounded-[8px] object-cover border border-[#EAEAE9] shrink-0">
+                        <div>
+                            <div class="text-[14px] font-semibold text-[#2B2823]">{{ obj.equipment_name|default:obj.equipment_id }}</div>
+                            <div class="text-[12.5px] text-[#716F6C] mt-0.5">{{ obj.equipment_type.name }} &bull; {{ obj.brand|default:"Unbranded" }}</div>
                         </div>
                     </div>
-                    <!-- Equipment Components Card -->
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-6">
-                        <div class="border-b border-gray-100 pb-4">
-                            <h3 class="text-lg font-bold text-gray-900">Equipment Components</h3>
-                            <p class="text-xs text-gray-500 mt-1">List of parts and components associated with this equipment.</p>
+                {% endif %}
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-7">
+                    <!-- Column 1 -->
+                    <div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                                <span>Name :</span>
+                            </span>
+                            <span class="detail-value font-semibold">{{ obj.equipment_name|default:"-" }}</span>
                         </div>
-                        {% if components %}
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {% for comp in components %}
-                                    <div class="bg-gray-50 rounded-xl p-4 border border-gray-100 flex items-start justify-between hover:shadow-md transition-all duration-200 group">
-                                        <div class="space-y-1">
-                                            <h4 class="font-bold text-gray-800 text-sm flex items-center gap-2">
-                                                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                                                {{ comp.name }}
-                                            </h4>
-                                            {% if comp.description %}
-                                                <p class="text-xs text-gray-500 leading-relaxed pl-4">{{ comp.description }}</p>
-                                            {% else %}
-                                                <p class="text-xs text-gray-400 italic leading-relaxed pl-4">No description provided.</p>
-                                            {% endif %}
-                                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 10h2v4H7zM12 10h3a2 2 0 0 1 0 4h-3v-4z"/></svg>
+                                <span>Equipment ID :</span>
+                            </span>
+                            <span class="detail-value eq-mono">{{ obj.equipment_id|default:"-" }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+                                <span>Type :</span>
+                            </span>
+                            <span class="detail-value">{{ obj.equipment_type.name|default:"-" }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                                <span>Brand :</span>
+                            </span>
+                            <span class="detail-value">{{ obj.brand|default:"-" }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                                <span>Model No :</span>
+                            </span>
+                            <span class="detail-value eq-mono">{{ obj.model_number|default:"-" }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+                                <span>Serial No :</span>
+                            </span>
+                            <span class="detail-value eq-mono">{{ obj.serial_number|default:"-" }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Column 2 -->
+                    <div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                <span>Purchase Date :</span>
+                            </span>
+                            <span class="detail-value">{{ obj.purchase_date|date:"d F Y"|default:"-" }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                <span>Warranty Exp :</span>
+                            </span>
+                            <span class="detail-value">
+                                {% if obj.warranty_expire_date %}
+                                    <div class="flex flex-wrap items-center gap-1.5">
+                                        <span>{{ obj.warranty_expire_date|date:"d M Y" }}</span>
+                                        {% if warranty_state == 'expired' %}
+                                            <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#FCE8E6] text-[#C5221F]">Expired</span>
+                                        {% elif warranty_state == 'expiring_soon' %}
+                                            <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#FEF3C7] text-[#B45309]">{{ warranty_days }}d left</span>
+                                        {% else %}
+                                            <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#E7F6EC] text-[#0B7A44]">Under Warranty</span>
+                                        {% endif %}
                                     </div>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            <div class="text-center py-8 bg-gray-50 rounded-xl border border-dashed border-gray-200">
-                                <svg class="mx-auto h-12 w-12 text-gray-400"
-                                     fill="none"
-                                     viewBox="0 0 24 24"
-                                     stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                                </svg>
-                                <h3 class="mt-2 text-sm font-semibold text-gray-900">No components</h3>
-                                <p class="mt-1 text-xs text-gray-500">No components are currently defined for this equipment.</p>
-                            </div>
-                        {% endif %}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                                <span>QR Code ID :</span>
+                            </span>
+                            <span class="detail-value eq-mono text-[12.5px]">{{ obj.qr_code|default:"-" }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+                                <span>Service Cycle :</span>
+                            </span>
+                            <span class="detail-value">Every {{ obj.maintenance_period_days|default:90 }} {{ obj.frequency_unit|default:"Days" }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                <span>Registered By :</span>
+                            </span>
+                            <span class="detail-value">
+                                {% if obj.created_by %}{{ obj.created_by.get_full_name|default:obj.created_by.username }}{% else %}System{% endif %}
+                            </span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                <span>Added On :</span>
+                            </span>
+                            <span class="detail-value">{{ obj.created_at|date:"d M Y" }}</span>
+                        </div>
                     </div>
                 </div>
-                <!-- Right Column: Technical Specs -->
-                <div class="lg:col-span-1">
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-6">
-                        <h3 class="text-lg font-bold text-gray-900 mb-6">Technical Specs</h3>
-                        <div class="space-y-5">
-                            <div class="border-b border-gray-100 pb-4">
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Building</p>
-                                <p class="text-sm font-semibold text-gray-900">
-                                    [{{ obj.building.id }}] — {{ obj.building.name }}
-                                    {% if obj.building.surname %}({{ obj.building.surname }}){% endif %}
-                                </p>
-                            </div>
-                            <div class="border-b border-gray-100 pb-4">
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Location</p>
-                                <p class="text-sm font-semibold text-gray-900">{{ obj.floor_location|default:"-" }}</p>
-                            </div>
-                            <div class="border-b border-gray-100 pb-4">
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Installation</p>
-                                <p class="text-sm font-semibold text-gray-900">Year {{ obj.installation_year|default:"-" }}</p>
-                            </div>
-                            {% if obj.brand %}
-                                <div class="border-b border-gray-100 pb-4">
-                                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Brand</p>
-                                    <p class="text-sm font-semibold text-gray-900">{{ obj.brand }}</p>
+
+                <!-- Custom Specifications (EquipmentTypeData) -->
+                {% if custom_fields_list %}
+                    <div class="pt-3 border-t border-[#F2F2F2]">
+                        <div class="text-[12px] font-semibold text-[#9D9C9A] uppercase tracking-wider mb-2">Technical Attributes</div>
+                        <div class="flex flex-wrap gap-2">
+                            {% for k, v in custom_fields_list %}
+                                <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] bg-[#F7F7F6] border border-[#EAEAE8] text-[12.5px]">
+                                    <span class="text-[#716F6C] font-medium">{{ k }}:</span>
+                                    <span class="text-[#2B2823] font-semibold">{{ v }}</span>
                                 </div>
-                            {% endif %}
-                        </div>
-                        <div class="mt-6">
-                            <a href="{% url 'backend:equipment_update' obj.id %}"
-                               class="w-full block text-center bg-[#F3F6FB] hover:bg-blue-50 text-blue-700 font-semibold py-3 px-4 rounded-lg transition duration-200 text-sm border border-blue-100">
-                                Edit Equipment
-                            </a>
+                            {% endfor %}
                         </div>
                     </div>
+                {% endif %}
+
+                {% if obj.notes %}
+                    <div class="pt-3 border-t border-[#F2F2F2]">
+                        <div class="text-[12px] font-semibold text-[#9D9C9A] uppercase tracking-wider mb-1">General Notes</div>
+                        <p class="text-[13px] text-[#5C5B59] whitespace-pre-line leading-relaxed">{{ obj.notes }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Current Installation Location + Maintenance & Service Summary -->
+        <div class="flex flex-col gap-[10px]">
+
+            <!-- CARD 1: CURRENT INSTALLATION LOCATION -->
+            <div class="figma-card-outer">
+                <div class="px-2.5 flex items-center justify-between">
+                    <h2 class="text-[16px] font-semibold text-[#2B2823] tracking-tight">Current Installation</h2>
+                    {% if obj.building %}
+                        <a href="{% url 'backend:building_details' obj.building.id %}"
+                           class="inline-flex items-center gap-0.5 text-[13px] font-semibold text-[#0B7A44] hover:underline">
+                            <span>View Building</span>
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 5l7 7-7 7"></path></svg>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'backend:equipment_update' obj.id %}"
+                           class="inline-flex items-center gap-0.5 text-[13px] font-semibold text-[#0B7A44] hover:underline">
+                            <span>Assign Building ›</span>
+                        </a>
+                    {% endif %}
+                </div>
+
+                <div class="figma-card-inner">
+                    {% if obj.building %}
+                        <div class="flex items-start justify-between gap-4">
+                            <div class="flex-1 min-w-0 space-y-2.5">
+                                <!-- Building Title Banner -->
+                                <div class="flex items-start gap-2.5">
+                                    <div class="w-9 h-9 rounded-[8px] bg-[#E7F6EC] text-[#0B7A44] flex items-center justify-center shrink-0 mt-0.5">
+                                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                            <circle cx="12" cy="10" r="3"></circle>
+                                        </svg>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <a href="{% url 'backend:building_details' obj.building.id %}"
+                                           class="text-[15px] font-bold text-[#2B2823] hover:text-[#0B7A44] leading-snug block">
+                                            {{ obj.building.name }}
+                                        </a>
+                                        <div class="text-[12px] text-[#716F6C] mt-0.5 flex flex-wrap items-center gap-1.5">
+                                            {% if obj.building.building_id %}<span class="eq-mono">{{ obj.building.building_id }}</span>{% endif %}
+                                            {% if obj.building.division %}<span>&bull; {{ obj.building.division.name }}</span>{% endif %}
+                                            {% if obj.building.subdivision %}<span>&rsaquo; {{ obj.building.subdivision.name }}</span>{% endif %}
+                                            {% if obj.building.section %}<span>&rsaquo; {{ obj.building.section.name }}</span>{% endif %}
+                                        </div>
+                                        {% if obj.building.address %}
+                                            <p class="text-[12px] text-[#8E8C89] mt-0.5">{{ obj.building.address }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Floor / Room / Installation Date Grid -->
+                                <div class="grid grid-cols-3 gap-2 pt-2 border-t border-[#F2F2F2]">
+                                    <div class="rounded-[7px] bg-[#F8F8F7] px-2.5 py-2">
+                                        <div class="text-[11px] font-medium text-[#9D9C9A]">Floor</div>
+                                        <div class="text-[13px] font-semibold text-[#2B2823] mt-0.5 truncate">{{ obj.floor_location|default:"-" }}</div>
+                                    </div>
+                                    <div class="rounded-[7px] bg-[#F8F8F7] px-2.5 py-2">
+                                        <div class="text-[11px] font-medium text-[#9D9C9A]">Room / Location</div>
+                                        <div class="text-[13px] font-semibold text-[#2B2823] mt-0.5 truncate">{{ obj.room_location|default:"-" }}</div>
+                                    </div>
+                                    <div class="rounded-[7px] bg-[#F8F8F7] px-2.5 py-2">
+                                        <div class="text-[11px] font-medium text-[#9D9C9A]">Installed On</div>
+                                        <div class="text-[13px] font-semibold text-[#2B2823] mt-0.5 truncate">
+                                            {% if obj.installment_date %}{{ obj.installment_date|date:"d M Y" }}{% elif obj.installation_year %}{{ obj.installation_year }}{% else %}-{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {% if obj.installation_notes %}
+                                    <div class="rounded-[7px] bg-[#F8F8F7] border border-[#EFEFED] px-3 py-2 text-[12.5px] text-[#5C5B59]">
+                                        <span class="font-semibold text-[#2B2823]">Installation Notes:</span> {{ obj.installation_notes }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Compact QR Preview -->
+                            {% if qr_base64 %}
+                                <a href="{% url 'backend:equipment_qr' obj.id %}?view=1"
+                                   title="Open QR Scan Bridge"
+                                   class="hidden sm:flex flex-col items-center p-2 rounded-[10px] border border-[#EAEAE8] bg-[#FAFAFA] hover:border-[#0B7A44] transition-colors shrink-0">
+                                    <img src="data:image/png;base64,{{ qr_base64 }}" alt="Equipment QR" class="w-20 h-20 object-contain">
+                                    <span class="text-[10.5px] font-semibold text-[#5C5B59] mt-1">QR Bridge</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="rounded-[8px] border border-dashed border-[#DFDFDD] bg-[#FAFAFA] px-4 py-5 flex items-center justify-between gap-3">
+                            <div>
+                                <div class="text-[13.5px] font-semibold text-[#2B2823]">Unassigned Equipment</div>
+                                <p class="text-[12.5px] text-[#716F6C] mt-0.5">This equipment is not currently installed in any building.</p>
+                            </div>
+                            <a href="{% url 'backend:equipment_update' obj.id %}"
+                               class="px-3.5 py-2 rounded-[8px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[12.5px] font-semibold shrink-0 transition-colors">
+                                Assign Now
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- CARD 2: MAINTENANCE SCHEDULE & SERVICE SUMMARY -->
+            <div class="figma-card-outer flex-1">
+                <div class="px-2.5 flex items-center justify-between">
+                    <h2 class="text-[16px] font-semibold text-[#2B2823] tracking-tight">Maintenance &amp; Service Overview</h2>
+                    <a href="#eqLogsSection" class="text-[12.5px] font-semibold text-[#0B7A44] hover:underline">View Logs ›</a>
+                </div>
+
+                <div class="figma-card-inner flex-1 justify-between gap-3">
+                    <!-- Dynamic Next Service Due Banner -->
+                    {% if service_due_state == 'overdue' %}
+                        <div class="rounded-[8px] border border-[#FAD2CF] bg-[#FDF2F2] px-3.5 py-2.5 flex items-center justify-between gap-3">
+                            <div>
+                                <div class="text-[11.5px] font-semibold text-[#C5221F] uppercase tracking-wider">Next Service Due</div>
+                                <div class="text-[16px] font-bold text-[#991B1B] mt-0.5">{{ obj.next_service_due|date:"d F Y" }}</div>
+                            </div>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[12px] font-semibold bg-[#FCE8E6] text-[#C5221F] border border-[#FAD2CF]">
+                                Overdue by {{ service_due_days }}d
+                            </span>
+                        </div>
+                    {% elif service_due_state == 'due_soon' %}
+                        <div class="rounded-[8px] border border-[#FDE68A] bg-[#FFFBEB] px-3.5 py-2.5 flex items-center justify-between gap-3">
+                            <div>
+                                <div class="text-[11.5px] font-semibold text-[#B45309] uppercase tracking-wider">Next Service Due</div>
+                                <div class="text-[16px] font-bold text-[#92400E] mt-0.5">{{ obj.next_service_due|date:"d F Y" }}</div>
+                            </div>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[12px] font-semibold bg-[#FEF3C7] text-[#B45309]">
+                                {% if service_due_days == 0 %}Due Today{% else %}Due in {{ service_due_days }}d{% endif %}
+                            </span>
+                        </div>
+                    {% elif service_due_state == 'scheduled' %}
+                        <div class="rounded-[8px] border border-[#CEEAD6] bg-[#F4FBF6] px-3.5 py-2.5 flex items-center justify-between gap-3">
+                            <div>
+                                <div class="text-[11.5px] font-semibold text-[#0B7A44] uppercase tracking-wider">Next Service Due</div>
+                                <div class="text-[16px] font-bold text-[#2B2823] mt-0.5">{{ obj.next_service_due|date:"d F Y" }}</div>
+                            </div>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[12px] font-semibold bg-[#E7F6EC] text-[#0B7A44]">
+                                In {{ service_due_days }} days
+                            </span>
+                        </div>
+                    {% else %}
+                        <div class="rounded-[8px] border border-[#EAEAE8] bg-[#FAFAFA] px-3.5 py-2.5 flex items-center justify-between gap-3">
+                            <div>
+                                <div class="text-[11.5px] font-semibold text-[#8E8C89] uppercase tracking-wider">Next Service Due</div>
+                                <div class="text-[15px] font-semibold text-[#5C5B59] mt-0.5">Not Scheduled</div>
+                            </div>
+                            <a href="{% url 'backend:equipment_update' obj.id %}" class="text-[12px] font-semibold text-[#0B7A44] hover:underline">Set Schedule ›</a>
+                        </div>
+                    {% endif %}
+
+                    <!-- 4-KPI Summary Strip -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <div class="rounded-[7px] bg-[#F8F8F7] px-3 py-2.5">
+                            <div class="text-[11px] font-medium text-[#9D9C9A]">Last Serviced</div>
+                            <div class="text-[13.5px] font-semibold text-[#2B2823] mt-0.5">
+                                {% if obj.last_maintenance_date %}{{ obj.last_maintenance_date|date:"d M Y" }}{% elif last_service_record %}{{ last_service_record.maintenance_date|date:"d M Y" }}{% else %}Never{% endif %}
+                            </div>
+                        </div>
+                        <div class="rounded-[7px] bg-[#F8F8F7] px-3 py-2.5">
+                            <div class="text-[11px] font-medium text-[#9D9C9A]">Total Services</div>
+                            <div class="text-[13.5px] font-semibold text-[#2B2823] mt-0.5">{{ total_services }}</div>
+                        </div>
+                        <div class="rounded-[7px] bg-[#F8F8F7] px-3 py-2.5">
+                            <div class="text-[11px] font-medium text-[#9D9C9A]">Total Cost</div>
+                            <div class="text-[13.5px] font-semibold text-[#2B2823] mt-0.5">{{ total_service_cost|floatformat:2 }}</div>
+                        </div>
+                        <div class="rounded-[7px] bg-[#F8F8F7] px-3 py-2.5">
+                            <div class="text-[11px] font-medium text-[#9D9C9A]">Tickets</div>
+                            <div class="text-[13.5px] font-semibold text-[#2B2823] mt-0.5">
+                                {{ total_tickets }}
+                                {% if open_tickets > 0 %}
+                                    <span class="text-[11px] font-semibold text-[#C86E12]">({{ open_tickets }} open)</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if obj.maintenance_notes %}
+                        <div class="rounded-[7px] bg-[#F8F8F7] border border-[#EFEFED] px-3 py-2 text-[12.5px] text-[#5C5B59]">
+                            <span class="font-semibold text-[#2B2823]">Maintenance Notes:</span> {{ obj.maintenance_notes }}
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
-    </section>
-{% endblock %}
-{% block extra_js %}
-    <script>
-    $(document).ready(function () {
-        $('.select2-items').select2();
-    });
+    </div>
 
-    function toggleRejectPanel(panelId) {
-        const panel = document.getElementById(panelId);
-        if (panel) {
-            panel.classList.toggle('hidden');
-        }
-    }
-    </script>
+    <!-- BOTTOM FULL-WIDTH CARD: Service History Logs | Tickets & Requests -->
+    <div id="eqLogsSection" class="figma-card-outer !gap-4">
+        <div class="px-2.5 flex flex-wrap items-center justify-between gap-3 min-w-0">
+            <!-- Tabs -->
+            <div class="tab-pill-group">
+                <a href="{% url 'backend:equipment_detail' obj.id %}?tab=history#eqLogsSection"
+                   class="tab-pill {% if active_tab == 'history' %}active{% endif %}">
+                    <span>Service History Log</span>
+                    <span class="inline-flex items-center justify-center min-w-[22px] h-[20px] px-1.5 rounded-full text-[11.5px] font-semibold {% if active_tab == 'history' %}bg-[#E7F6EC] text-[#0B7A44]{% else %}bg-[#DFDFDD] text-[#5C5B59]{% endif %}">
+                        {{ total_services }}
+                    </span>
+                </a>
+                <a href="{% url 'backend:equipment_detail' obj.id %}?tab=tickets#eqLogsSection"
+                   class="tab-pill {% if active_tab == 'tickets' %}active{% endif %}">
+                    <span>Tickets &amp; Requests</span>
+                    <span class="inline-flex items-center justify-center min-w-[22px] h-[20px] px-1.5 rounded-full text-[11.5px] font-semibold {% if active_tab == 'tickets' %}bg-[#E7F6EC] text-[#0B7A44]{% else %}bg-[#DFDFDD] text-[#5C5B59]{% endif %}">
+                        {{ total_tickets }}
+                    </span>
+                </a>
+            </div>
+
+            <!-- Contextual Filters -->
+            {% if active_tab == 'history' %}
+                <form method="get" action="{% url 'backend:equipment_detail' obj.id %}#eqLogsSection" class="flex flex-wrap items-center gap-2">
+                    <input type="hidden" name="tab" value="history">
+                    <input type="hidden" name="per_page" value="{{ per_page }}">
+                    <select name="record_type" onchange="this.form.submit()" class="filter-select-pill">
+                        <option value="">All Types</option>
+                        {% for val, label in record_type_choices %}
+                            <option value="{{ val }}" {% if selected_type == val %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <select name="source" onchange="this.form.submit()" class="filter-select-pill">
+                        <option value="">All Sources</option>
+                        {% for src in source_choices %}
+                            <option value="{{ src }}" {% if selected_source == src %}selected{% endif %}>{{ src }}</option>
+                        {% endfor %}
+                    </select>
+                    <a href="{% url 'backend:equipment_detail' obj.id %}?tab=history#eqLogsSection"
+                       class="inline-flex items-center h-[34px] px-3 rounded-[8px] bg-white border border-[#EAEAE9] text-[13px] font-medium text-[#5C5B59] hover:text-[#2B2823] hover:bg-[#F7F7F6] transition-colors">
+                        Reset
+                    </a>
+                </form>
+            {% elif active_tab == 'tickets' %}
+                <form method="get" action="{% url 'backend:equipment_detail' obj.id %}#eqLogsSection" class="flex flex-wrap items-center gap-2">
+                    <input type="hidden" name="tab" value="tickets">
+                    <input type="hidden" name="per_page" value="{{ per_page }}">
+                    <select name="ticket_status" onchange="this.form.submit()" class="filter-select-pill">
+                        <option value="">All Statuses</option>
+                        {% for val, label in ticket_status_choices %}
+                            <option value="{{ val }}" {% if selected_ticket_status == val %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <a href="{% url 'backend:equipment_detail' obj.id %}?tab=tickets#eqLogsSection"
+                       class="inline-flex items-center h-[34px] px-3 rounded-[8px] bg-white border border-[#EAEAE9] text-[13px] font-medium text-[#5C5B59] hover:text-[#2B2823] hover:bg-[#F7F7F6] transition-colors">
+                        Reset
+                    </a>
+                </form>
+            {% endif %}
+        </div>
+
+        <div class="bg-white rounded-[6px] p-[14px] overflow-x-auto custom-scrollbar">
+            {% if active_tab == 'history' %}
+                <!-- SERVICE HISTORY TABLE -->
+                <table class="eq-table min-w-[940px]">
+                    <thead>
+                        <tr>
+                            <th>Service ID</th>
+                            <th>Service Date</th>
+                            <th>Type</th>
+                            <th>Source</th>
+                            <th>Technician</th>
+                            <th>Work Summary</th>
+                            <th>Cost / Hrs</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rec in service_records %}
+                            <tr>
+                                <td class="eq-mono font-semibold text-[#2B2823]">
+                                    <a href="{% url 'backend:service_history_detail' rec.id %}" class="underline underline-offset-2 hover:text-[#0B7A44]">
+                                        {% if rec.maintenance %}{{ rec.maintenance.maintenance_serial }}{% else %}SR-{{ rec.id|stringformat:"03d" }}{% endif %}
+                                    </a>
+                                </td>
+                                <td>{{ rec.maintenance_date|date:"d M Y" }}</td>
+                                <td>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#EFEFEF] text-[#4A4947]">
+                                        {{ rec.get_record_type_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if rec.ticket %}
+                                        <a href="{% url 'backend:ticket_detail' rec.ticket.id %}" class="text-[#0B7A44] font-semibold hover:underline">
+                                            Ticket #{{ rec.ticket.id }}
+                                        </a>
+                                    {% elif rec.maintenance %}
+                                        <span>Scheduled</span>
+                                    {% else %}
+                                        <span>Manual</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if rec.assigned_to %}
+                                        <a href="{% url 'backend:technician_details' rec.assigned_to.id %}" class="font-medium text-[#2B2823] hover:text-[#0B7A44] hover:underline">
+                                            {{ rec.assigned_to.display_name }}
+                                        </a>
+                                    {% elif rec.technician %}
+                                        {{ rec.technician.get_full_name|default:rec.technician.username }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+                                <td class="!whitespace-normal max-w-[260px]">
+                                    <div class="text-[13px] text-[#2B2823] line-clamp-2" title="{{ rec.work_description }}">
+                                        {{ rec.work_description|default:"-" }}
+                                    </div>
+                                    {% if rec.parts_replaced %}
+                                        <div class="text-[11.5px] text-[#8E8C89] mt-0.5 truncate" title="Parts: {{ rec.parts_replaced }}">
+                                            Parts: {{ rec.parts_replaced }}
+                                        </div>
+                                    {% endif %}
+                                </td>
+                                <td class="text-[#4A4947]">
+                                    {% if rec.cost %}{{ rec.cost }}{% else %}—{% endif %}
+                                    {% if rec.duration_hours %}
+                                        <span class="text-[11.5px] text-[#8E8C89]"> / {{ rec.duration_hours }}h</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if rec.review_status == 'approved' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#E7F6EC] text-[#0B7A44]">Approved</span>
+                                    {% elif rec.maintainance_status == 'completed' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#E7F6EC] text-[#0B7A44]">Completed</span>
+                                    {% elif rec.maintainance_status == 'in_progress' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#FEF3C7] text-[#B45309]">In Progress</span>
+                                    {% else %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#EFEFEF] text-[#5C5B59]">{{ rec.get_maintainance_status_display }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'backend:service_history_detail' rec.id %}"
+                                       class="inline-flex items-center px-3 py-1 rounded-[6px] bg-[#F5F5F4] hover:bg-[#E7F6EC] text-[12px] font-semibold text-[#2B2823] hover:text-[#0B7A44] transition-colors">
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="9" class="py-10 text-center text-[#716F6C]">
+                                    No service history records logged for this equipment yet.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            {% elif active_tab == 'tickets' %}
+                <!-- TICKETS TABLE -->
+                <table class="eq-table min-w-[860px]">
+                    <thead>
+                        <tr>
+                            <th>Ticket ID</th>
+                            <th>Title &amp; Issue Type</th>
+                            <th>Priority</th>
+                            <th>Assigned Technician</th>
+                            <th>Status</th>
+                            <th>Opened Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tkt in equipment_tickets %}
+                            <tr>
+                                <td class="eq-mono font-semibold text-[#2B2823]">
+                                    <a href="{% url 'backend:ticket_detail' tkt.id %}" class="underline underline-offset-2 hover:text-[#0B7A44]">
+                                        #{{ tkt.id }}
+                                    </a>
+                                </td>
+                                <td class="!whitespace-normal max-w-[280px]">
+                                    <a href="{% url 'backend:ticket_detail' tkt.id %}" class="font-semibold text-[#2B2823] hover:text-[#0B7A44] block">
+                                        {{ tkt.title }}
+                                    </a>
+                                    <span class="text-[11.5px] text-[#8E8C89]">{{ tkt.get_issue_type_display }}</span>
+                                </td>
+                                <td>
+                                    {% if tkt.priority == 'critical' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#FCE8E6] text-[#C5221F]">Critical</span>
+                                    {% elif tkt.priority == 'high' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-[#FEF3E6] text-[#C86E12]">High</span>
+                                    {% elif tkt.priority == 'medium' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#FEF9E7] text-[#B07200]">Medium</span>
+                                    {% else %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#F5F5F4] text-[#5C5B59]">Low</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% with assigns=tkt.assigned_technicians.all %}
+                                        {% if assigns %}
+                                            {% for a in assigns %}
+                                                {% if not a.deleted and a.technician %}
+                                                    <a href="{% url 'backend:technician_details' a.technician.id %}" class="font-medium text-[#2B2823] hover:text-[#0B7A44] hover:underline">{{ a.technician.display_name }}</a>{% if not forloop.last %}, {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            <span class="text-[#9D9C9A] italic">Unassigned</span>
+                                        {% endif %}
+                                    {% endwith %}
+                                </td>
+                                <td>
+                                    {% if tkt.status == 'resolved' or tkt.status == 'closed' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#E7F6EC] text-[#0B7A44]">{{ tkt.get_status_display }}</span>
+                                    {% elif tkt.status == 'pending_review' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#EEF2FF] text-[#4338CA]">Pending Review</span>
+                                    {% elif tkt.status == 'in_progress' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#FEF3E6] text-[#C86E12]">In Progress</span>
+                                    {% elif tkt.status == 'accepted' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#E0F2FE] text-[#0369A1]">Accepted</span>
+                                    {% elif tkt.status == 'assigned' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#F3E8FD] text-[#7C3AED]">Assigned</span>
+                                    {% else %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#E8F0FE] text-[#1A73E8]">{{ tkt.get_status_display }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ tkt.opened_at|date:"d M Y" }}</td>
+                                <td>
+                                    <a href="{% url 'backend:ticket_detail' tkt.id %}"
+                                       class="inline-flex items-center px-3 py-1 rounded-[6px] bg-[#F5F5F4] hover:bg-[#E7F6EC] text-[12px] font-semibold text-[#2B2823] hover:text-[#0B7A44] transition-colors">
+                                        View Ticket
+                                    </a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="7" class="py-10 text-center text-[#716F6C]">
+                                    No maintenance tickets have been created for this equipment yet.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if page_obj %}
+        {% include 'includes/pagination.html' with data_list=page_obj %}
+    {% endif %}
+</div>
 {% endblock %}

@@ -44,9 +44,9 @@
       "is_main_menu": false,
       "is_sub_menu": true,
       "is_sub_child_menu": false,
-      "is_active": true
+      "is_active": false
     }
-  }, 
+  },
   {
     "model": "backend.backendmenu",
     "pk": 451,
@@ -60,7 +60,7 @@
       "is_main_menu": false,
       "is_sub_menu": false,
       "is_sub_child_menu": true,
-      "is_active": true
+      "is_active": false
     }
   },
   {
@@ -68,7 +68,7 @@
     "pk": 4,
     "fields": {
       "module_name": "Equipment Management",
-      "menu_name": "Equipment Management",
+      "menu_name": "Equipments",
       "menu_url": "/equipment/",
       "menu_icon": "<svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12.4012 4.32161C11.2158 3.59532 8.17342 2.20119 5.43291 2.55703C7.09064 3.69869 7.96273 4.31274 10.3154 6.40738M15.6783 7.59867C16.4046 8.78401 17.7988 11.8264 17.4429 14.5669C16.3012 12.9092 15.6872 12.0371 13.5925 9.68443M8.72725 9.51518L2.85275 15.3896C2.37624 15.8661 2.3834 16.6458 2.86873 17.1312C3.35408 17.6165 4.1338 17.6237 4.61031 17.1472L10.4848 11.2727M9.98875 7.68794L12.3118 10.011C12.5698 10.269 12.9871 10.2699 13.2439 10.0132L16.122 7.13508C16.3788 6.87829 16.3778 6.461 16.1199 6.20304L13.7968 3.87994C13.5388 3.62199 13.1215 3.62104 12.8648 3.87783L9.98658 6.75591C9.72983 7.0127 9.73075 7.42999 9.98875 7.68794Z\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#716F6C\"/></svg>",
       "menu_description": "Manage equipment, types, and dynamic data fields.",
@@ -84,7 +84,7 @@
     "pk": 500,
     "fields": {
       "module_name": "Setup",
-      "menu_name": "Setup",
+      "menu_name": "Equipment Configuration",
       "menu_url": "equipment-setup",
       "menu_icon": "fa-solid fa-gear icon",
       "menu_description": "Setup equipment types and dynamic data fields.",
@@ -148,8 +148,8 @@
     "pk": 550,
     "fields": {
       "module_name": "Equipment",
-      "menu_name": "Equipment List",
-      "menu_url": "equipment-list",
+      "menu_name": "Equipments History",
+      "menu_url": "/equipment/history/",
       "menu_icon": "fa-solid fa-list-check icon",
       "menu_description": "Manage list of equipments.",
       "parent_id": 4,
@@ -188,7 +188,7 @@
       "is_main_menu": false,
       "is_sub_menu": false,
       "is_sub_child_menu": true,
-      "is_active": true
+      "is_active": false
     }
   },
   {
@@ -204,7 +204,7 @@
       "is_main_menu": false,
       "is_sub_menu": true,
       "is_sub_child_menu": false,
-      "is_active": true
+      "is_active": false
     }
   },
   {
@@ -220,7 +220,7 @@
       "is_main_menu": false,
       "is_sub_menu": false,
       "is_sub_child_menu": true,
-      "is_active": true
+      "is_active": false
     }
   },
   {
@@ -229,9 +229,9 @@
     "fields": {
       "module_name": "Maintenance",
       "menu_name": "Maintenance",
-      "menu_url": "maintenance",
+      "menu_url": "/ticket/",
       "menu_icon": "<svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12.0801 1.66687H7.91342C7.22307 1.66687 6.66342 2.22652 6.66342 2.91687C6.66342 3.60723 7.22307 4.16687 7.91342 4.16687H12.0801C12.7704 4.16687 13.3301 3.60723 13.3301 2.91687C13.3301 2.22652 12.7704 1.66687 12.0801 1.66687Z\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#716F6C\"/><path d=\"M6.66342 12.5003H9.5206M6.66342 9.16693H13.3301\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#716F6C\"/><path d=\"M13.3301 2.91687C14.6247 2.95589 15.3968 3.10027 15.9312 3.63468C16.6634 4.36691 16.6634 5.5454 16.6634 7.9024V13.3331C16.6634 15.6901 16.6634 16.8686 15.9312 17.6009C15.1989 18.3331 14.0204 18.3331 11.6634 18.3331H8.33008C5.97306 18.3331 4.79455 18.3331 4.06232 17.6009C3.33009 16.8686 3.33009 15.6901 3.33008 13.3331L3.33009 7.90245C3.33009 5.54542 3.33009 4.3669 4.06232 3.63467C4.59672 3.10026 5.36884 2.95588 6.66333 2.91687\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#716F6C\"/></svg>",
-      "menu_description": "Manage scheduled maintenance.",
+      "menu_description": "Manage maintenance tickets, schedules, and service history.",
       "parent_id": null,
       "is_main_menu": true,
       "is_sub_menu": false,
@@ -244,10 +244,42 @@
     "pk": 701,
     "fields": {
       "module_name": "Maintenance",
-      "menu_name": "Maintenance List",
+      "menu_name": "Tickets",
+      "menu_url": "/ticket/",
+      "menu_icon": "fa-solid fa-clipboard-list icon",
+      "menu_description": "Manage maintenance tickets.",
+      "parent_id": 700,
+      "is_main_menu": false,
+      "is_sub_menu": true,
+      "is_sub_child_menu": false,
+      "is_active": false
+    }
+  },
+  {
+    "model": "backend.backendmenu",
+    "pk": 702,
+    "fields": {
+      "module_name": "Maintenance",
+      "menu_name": "Maintenance Schedule",
       "menu_url": "/maintenance/",
       "menu_icon": "fa-solid fa-calendar-check icon",
       "menu_description": "Manage scheduled maintenance.",
+      "parent_id": 700,
+      "is_main_menu": false,
+      "is_sub_menu": true,
+      "is_sub_child_menu": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "backend.backendmenu",
+    "pk": 703,
+    "fields": {
+      "module_name": "Maintenance",
+      "menu_name": "Service History",
+      "menu_url": "/maintenance/history/",
+      "menu_icon": "fa-solid fa-clock-rotate-left icon",
+      "menu_description": "View service and maintenance history.",
       "parent_id": 700,
       "is_main_menu": false,
       "is_sub_menu": true,
@@ -267,6 +299,22 @@
       "parent_id": null,
       "is_main_menu": true,
       "is_sub_menu": false,
+      "is_sub_child_menu": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "backend.backendmenu",
+    "pk": 751,
+    "fields": {
+      "module_name": "Technicians",
+      "menu_name": "Skill Management",
+      "menu_url": "/technician/skills/",
+      "menu_icon": "fa-solid fa-screwdriver-wrench icon",
+      "menu_description": "Manage technician skills and specializations.",
+      "parent_id": 750,
+      "is_main_menu": false,
+      "is_sub_menu": true,
       "is_sub_child_menu": false,
       "is_active": true
     }

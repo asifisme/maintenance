@@ -28,8 +28,17 @@ urlpatterns = [
     # Technician Management
     path('technician/', views.technician_list, name='technician_list'),
     path('technician/add/', views.technician_add, name='technician_add'),
+    path('technician/details/<int:data_id>/', views.technician_details, name='technician_details'),
+    path('technician/<int:tech_id>/task/<int:ticket_id>/', views.technician_task_detail, name='technician_task_detail'),
     path('technician/update/<int:data_id>/', views.technician_update, name='technician_update'),
     path('technician/delete/<int:data_id>/', views.technician_delete, name='technician_delete'),
+
+    # Skill Management
+    path('technician/skills/', views.skill_list, name='skill_list'),
+    path('technician/skills/add/', views.skill_add, name='skill_add'),
+    path('technician/skills/update/<int:data_id>/', views.skill_update, name='skill_update'),
+    path('technician/skills/status/<int:data_id>/', views.skill_status, name='skill_status'),
+    path('technician/skills/delete/<int:data_id>/', views.skill_delete, name='skill_delete'),
 
     # Division
     path('division/', views.division_list, name='division_list'),
@@ -83,6 +92,8 @@ urlpatterns = [
     path('equipment/update/<int:data_id>/', views.equipment_update, name='equipment_update'),
     path('equipment/status/<int:data_id>/', views.equipment_status, name='equipment_status'),
     path('equipment/history/', views.equipment_history, name='equipment_history'),
+    path('maintenance/history/', views.equipment_history, name='service_history'),
+    path('maintenance/history/<int:record_id>/', views.maintenance_record_detail, name='service_history_detail'),
 
     # Maintenance Record Review (approve / reject)
     path('maintenance/',views.maintenance_list,name='maintenance'),
@@ -96,6 +107,10 @@ urlpatterns = [
     path('maintenance/api/get-equipment-components/', views.get_equipment_components, name='get_equipment_components'),
     path('api/get-division-subdivisions/', views.get_division_subdivisions, name='get_division_subdivisions'),
     path('api/get-subdivision-sections/', views.get_subdivision_sections, name='get_subdivision_sections'),
+    path('api/quick-create-division/', views.quick_create_division, name='quick_create_division'),
+    path('api/quick-create-subdivision/', views.quick_create_subdivision, name='quick_create_subdivision'),
+    path('api/quick-create-section/', views.quick_create_section, name='quick_create_section'),
+    path('api/quick-create-equipment-type/', views.quick_create_equipment_type, name='quick_create_equipment_type'),
     path('maintenance/scan/<str:qr_code>/', views.maintanaince_scan, name='maintanaince_scan'),
     path('maintenance-record/<int:record_id>/review/', views.maintenance_record_review, name='maintenance_record_review'),
 
@@ -105,4 +120,12 @@ urlpatterns = [
     path('ticket/detail/<int:data_id>/', views.ticket_detail, name='ticket_detail'),
     path('ticket/update/<int:data_id>/', views.ticket_update, name='ticket_update'),
     path('ticket/status/<int:data_id>/', views.ticket_status, name='ticket_status'),
+
+    # Notifications
+    path('notifications/', views.notification_list, name='notification_list'),
+    path('notifications/open/<int:notif_id>/', views.notification_open, name='notification_open'),
+    path('api/notifications/feed/', views.notification_feed, name='notification_feed'),
+    path('api/notifications/mark-read/<int:notif_id>/', views.notification_mark_read, name='notification_mark_read'),
+    path('api/notifications/mark-all-read/', views.notification_mark_all_read, name='notification_mark_all_read'),
+    path('api/notifications/delete/<int:notif_id>/', views.notification_delete, name='notification_delete'),
 ]

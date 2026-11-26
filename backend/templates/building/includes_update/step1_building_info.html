@@ -1,0 +1,298 @@
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- STEP 1: Building Information                            -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="stepSection1" class="space-y-4">
+    <!-- Row 1: Building ID & Building Name -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+            <label class="form-label">
+                Building ID <span class="text-[#D93025]">*</span>
+            </label>
+            <input type="text"
+                   id="inputBuildingId"
+                   value="{{ obj.building_id }}"
+                   disabled
+                   class="form-input-field bld-mono bg-[#FAFAFA] text-[#716F6C] cursor-not-allowed">
+            <span class="text-[12px] text-[#9D9C9A] mt-1 block">Cannot be changed after creation.</span>
+        </div>
+        <div>
+            <label class="form-label">
+                Building Name <span class="text-[#D93025]">*</span>
+            </label>
+            <input type="text"
+                   name="name"
+                   id="inputBuildingName"
+                   value="{{ obj.name }}"
+                   placeholder="Enter building name"
+                   class="form-input-field"
+                   required>
+        </div>
+    </div>
+
+    <!-- Row 2: Site Name & Establishment Date -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+            <label class="form-label">
+                Site Name
+            </label>
+            <input type="text"
+                   name="surname"
+                   id="inputSiteName"
+                   value="{{ obj.surname|default:'' }}"
+                   placeholder="Enter site"
+                   class="form-input-field">
+        </div>
+        <div>
+            <label class="form-label">
+                Establishment Date <span class="text-[#D93025]">*</span>
+            </label>
+            <input type="date"
+                   name="year_of_establishment"
+                   id="inputEstDate"
+                   value="{{ obj.year_of_establishment|date:'Y-m-d' }}"
+                   class="form-input-field cursor-pointer"
+                   required>
+        </div>
+    </div>
+
+    <!-- Row 3: Division & Subdivision -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Searchable Division with Quick Add -->
+        <div class="relative" id="divisionControlWrapper">
+            <label class="form-label">
+                Division <span class="text-[#D93025]">*</span>
+            </label>
+            <div class="relative">
+                <input type="text"
+                       id="divisionSearchInput"
+                       value="{{ obj.division.name|default:'' }}"
+                       placeholder="Search division..."
+                       autocomplete="off"
+                       class="form-input-field pr-9">
+                <button type="button"
+                        id="btnClearDivision"
+                        class="{% if not obj.division_id %}hidden{% endif %} input-clear-btn"
+                        title="Clear division">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <input type="hidden" name="division" id="selectedDivisionId" value="{{ obj.division_id|default:'' }}" required>
+
+            <!-- Division Dropdown Menu with 2 Floating Cards per Figma -->
+            <div id="divisionDropdown"
+                 class="hidden absolute left-0 right-0 top-full mt-2 z-50 flex flex-col gap-2">
+                <!-- Card 1: Division Options List -->
+                <div id="divisionOptionsCard"
+                     class="bg-white border border-[#EAEAE9] rounded-[14px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-2 max-h-52 overflow-y-auto custom-scrollbar">
+                    <div id="divisionOptionsList" class="space-y-1.5">
+                        {% for d in divisions %}
+                            <div class="division-option px-3.5 py-2.5 text-[13.5px] text-[#4A4947] bg-[#F8F8F8] hover:bg-[#EFEFEF] hover:text-[#2B2823] rounded-[9px] cursor-pointer font-medium transition-colors"
+                                 data-id="{{ d.id }}"
+                                 data-name="{{ d.name }}">
+                                {{ d.name }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Card 2: Quick Create Division Box -->
+                <div id="divisionCreateBox"
+                     class="hidden bg-white border border-[#EAEAE9] rounded-[14px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-3.5 text-center">
+                    <p class="text-[13px] text-[#716F6C] mb-2.5 font-normal">No matching division found.</p>
+                    <button type="button"
+                            id="btnQuickCreateDivision"
+                            class="w-full py-2.5 px-3 rounded-[8px] bg-[#E7F6EC] text-[#0B7A44] hover:bg-[#D4EEDB] text-[13.5px] font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                            <path d="M12 5v14M5 12h14" />
+                        </svg>
+                        <span>Create "<span id="createDivisionNameLabel"></span>"</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Searchable Subdivision with Quick Add -->
+        <div class="relative" id="subdivisionControlWrapper">
+            <label class="form-label">
+                Subdivision <span class="text-[#D93025]">*</span>
+            </label>
+            <div class="relative">
+                <input type="text"
+                       id="subdivisionSearchInput"
+                       value="{{ obj.subdivision.name|default:'' }}"
+                       placeholder="{% if obj.division_id %}Search subdivision...{% else %}Select a division first{% endif %}"
+                       autocomplete="off"
+                       {% if not obj.division_id %}disabled{% endif %}
+                       class="form-input-field pr-9 disabled:bg-[#FAFAFA] disabled:text-[#BDBCBB] disabled:cursor-not-allowed">
+                <button type="button"
+                        id="btnClearSubdivision"
+                        class="{% if not obj.subdivision_id %}hidden{% endif %} input-clear-btn"
+                        title="Clear subdivision">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <input type="hidden" name="subdivision" id="selectedSubdivisionId" value="{{ obj.subdivision_id|default:'' }}">
+
+            <!-- Subdivision Dropdown Menu with 2 Floating Cards per Figma -->
+            <div id="subdivisionDropdown"
+                 class="hidden absolute left-0 right-0 top-full mt-2 z-50 flex flex-col gap-2">
+                <!-- Card 1: Subdivision Options List -->
+                <div id="subdivisionOptionsCard"
+                     class="bg-white border border-[#EAEAE9] rounded-[14px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-2 max-h-52 overflow-y-auto custom-scrollbar">
+                    <div id="subdivisionOptionsList" class="space-y-1.5">
+                        {% if obj.division_id %}
+                            {% for s in subdivisions %}
+                                {% if s.division_id == obj.division_id %}
+                                    <div class="subdivision-option px-3.5 py-2.5 text-[13.5px] text-[#4A4947] bg-[#F8F8F8] hover:bg-[#EFEFEF] hover:text-[#2B2823] rounded-[9px] cursor-pointer font-medium transition-colors"
+                                         data-id="{{ s.id }}"
+                                         data-name="{{ s.name }}">
+                                        {{ s.name }}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-[12.5px] text-[#9D9C9A] p-2 text-center">Select a division first</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Card 2: Quick Create Subdivision Box -->
+                <div id="subdivisionCreateBox"
+                     class="hidden bg-white border border-[#EAEAE9] rounded-[14px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-3.5 text-center">
+                    <p class="text-[13px] text-[#716F6C] mb-2.5 font-normal">No matching subdivision found.</p>
+                    <button type="button"
+                            id="btnQuickCreateSubdivision"
+                            class="w-full py-2.5 px-3 rounded-[8px] bg-[#E7F6EC] text-[#0B7A44] hover:bg-[#D4EEDB] text-[13.5px] font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                            <path d="M12 5v14M5 12h14" />
+                        </svg>
+                        <span>Create "<span id="createSubdivisionNameLabel"></span>"</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 4: Searchable Section with Quick Add -->
+    <div class="relative" id="sectionControlWrapper">
+        <label class="form-label">
+            Section <span class="text-[#D93025]">*</span>
+        </label>
+        <div class="relative">
+            <input type="text"
+                   id="sectionSearchInput"
+                   value="{{ obj.section.name|default:'' }}"
+                   placeholder="{% if obj.subdivision_id %}Search section...{% else %}Select a subdivision first{% endif %}"
+                   autocomplete="off"
+                   {% if not obj.subdivision_id %}disabled{% endif %}
+                   class="form-input-field pr-9 disabled:bg-[#FAFAFA] disabled:text-[#BDBCBB] disabled:cursor-not-allowed">
+            <button type="button"
+                    id="btnClearSection"
+                    class="{% if not obj.section_id %}hidden{% endif %} input-clear-btn"
+                    title="Clear section">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <input type="hidden" name="section" id="selectedSectionId" value="{{ obj.section_id|default:'' }}">
+
+        <!-- Section Dropdown Menu with 2 Floating Cards per Figma -->
+        <div id="sectionDropdown"
+             class="hidden absolute left-0 right-0 top-full mt-2 z-50 flex flex-col gap-2">
+            <!-- Card 1: Section Options List -->
+            <div id="sectionOptionsCard"
+                 class="bg-white border border-[#EAEAE9] rounded-[14px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-2 max-h-52 overflow-y-auto custom-scrollbar">
+                <div id="sectionOptionsList" class="space-y-1.5">
+                    {% if obj.subdivision_id %}
+                        {% for sec in sections %}
+                            {% if sec.subdivision_id == obj.subdivision_id %}
+                                <div class="section-option px-3.5 py-2.5 text-[13.5px] text-[#4A4947] bg-[#F8F8F8] hover:bg-[#EFEFEF] hover:text-[#2B2823] rounded-[9px] cursor-pointer font-medium transition-colors"
+                                     data-id="{{ sec.id }}"
+                                     data-name="{{ sec.name }}">
+                                    {{ sec.name }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-[12.5px] text-[#9D9C9A] p-2 text-center">Select a subdivision first</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Card 2: Quick Create Section Box -->
+            <div id="sectionCreateBox"
+                 class="hidden bg-white border border-[#EAEAE9] rounded-[14px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-3.5 text-center">
+                <p class="text-[13px] text-[#716F6C] mb-2.5 font-normal">No matching section found.</p>
+                <button type="button"
+                        id="btnQuickCreateSection"
+                        class="w-full py-2.5 px-3 rounded-[8px] bg-[#E7F6EC] text-[#0B7A44] hover:bg-[#D4EEDB] text-[13.5px] font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                    <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <path d="M12 5v14M5 12h14" />
+                    </svg>
+                    <span>Create "<span id="createSectionNameLabel"></span>"</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 5: Physical Address -->
+    <div>
+        <label class="form-label">
+            Physical Address <span class="text-[#D93025]">*</span>
+        </label>
+        <textarea name="address"
+                  id="inputAddress"
+                  rows="3"
+                  placeholder="Enter the complete physical address."
+                  class="form-textarea-field"
+                  required>{{ obj.address|default:'' }}</textarea>
+    </div>
+
+    <!-- Row 6: Latitude & Longitude -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+            <label class="form-label">
+                Latitude
+            </label>
+            <input type="number"
+                   step="any"
+                   name="latitude"
+                   id="inputLatitude"
+                   value="{{ obj.latitude|default:'' }}"
+                   placeholder="e.g. 23.8103"
+                   class="form-input-field">
+        </div>
+        <div>
+            <label class="form-label">
+                Longitude
+            </label>
+            <input type="number"
+                   step="any"
+                   name="longitude"
+                   id="inputLongitude"
+                   value="{{ obj.longitude|default:'' }}"
+                   placeholder="e.g. 90.4125"
+                   class="form-input-field">
+        </div>
+    </div>
+
+    <!-- Hidden Status Field -->
+    <input type="hidden" name="status" value="{{ obj.status|default:'Active' }}">
+
+    <!-- Step 1 Footer -->
+    <div class="pt-4 flex items-center justify-end">
+        <button type="button"
+                onclick="validateAndGoToStep(2)"
+                class="btn-forest">
+            <span>Next: Add Equipment</span>
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+        </button>
+    </div>
+</div>

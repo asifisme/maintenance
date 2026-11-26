@@ -1,0 +1,310 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_title %}Notifications{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    body,
+    #mainContentWrapper {
+        background-color: #F2F2F2 !important;
+        font-family: 'Urbanist', Inter, system-ui, ui-sans-serif, sans-serif;
+    }
+
+    .ntf-mono {
+        font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        letter-spacing: -0.02em;
+    }
+
+    .ntf-tray {
+        background-color: #F9F9F9;
+        border-radius: 12px;
+        padding: 16px 6px 6px 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    .ntf-inner {
+        background-color: #FFFFFF;
+        border-radius: 6px;
+        padding: 10px;
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    .ntf-search-box {
+        width: 100%;
+        max-width: 320px;
+        height: 38px;
+        background-color: #FFFFFF;
+        border: 1px solid #EAEAE9;
+        border-radius: 8px;
+        padding: 0 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .ntf-search-input {
+        border: 0 !important;
+        outline: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        font-size: 13px;
+        color: #2B2823;
+        width: 100%;
+    }
+
+    .ntf-filter-select {
+        background-color: #EAEAE8 !important;
+        border: 1px solid #E2E2E0 !important;
+        border-radius: 8px !important;
+        height: 34px;
+        padding: 0 28px 0 11px !important;
+        font-size: 12.5px;
+        font-weight: 500;
+        color: #555452;
+        outline: none !important;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23716F6C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 9px center;
+    }
+
+    .tab-pill-group {
+        display: inline-flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 4px;
+        padding: 3px;
+        border-radius: 10px;
+        background-color: #EAEAE8;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .tab-pill-group::-webkit-scrollbar {
+        display: none;
+    }
+    .tab-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 12px;
+        border-radius: 7px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #5C5B59;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: all 150ms ease;
+    }
+    .tab-pill:hover { color: #2B2823; }
+    .tab-pill.active {
+        background-color: #FFFFFF;
+        color: #2B2823;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <span class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#2B2823] font-medium shrink-0">
+        Notifications
+    </span>
+{% endblock %}
+
+{% block main_class %}w-full px-[15px] py-4 flex-1{% endblock %}
+
+{% block page_header %}
+<div class="w-full pt-1 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <div>
+        <h1 class="ntf-mono text-[24px] font-medium text-[#2B2823] leading-tight">Notifications</h1>
+        <p class="text-[13.5px] text-[#716F6C] mt-1">Track ticket updates, technician progress, supervisor reviews, and equipment maintenance alerts.</p>
+    </div>
+    <div class="flex flex-wrap items-center gap-2 shrink-0">
+        <a href="{% url 'backend:notification_list' %}?sync=1"
+           class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-[8px] bg-white border border-[#EAEAE9] text-[13px] font-semibold text-[#2B2823] hover:bg-[#F7F7F6] shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-colors">
+            <svg class="w-3.5 h-3.5 text-[#5C5B59]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path><path d="M16 16h5v5"></path></svg>
+            <span>Refresh Alerts</span>
+        </a>
+        {% if unread_count > 0 %}
+            <form method="POST" action="{% url 'backend:notification_mark_all_read' %}" class="inline">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button type="submit"
+                        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-[8px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[13px] font-semibold shadow-sm transition-colors cursor-pointer">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Mark All Read ({{ unread_count }})</span>
+                </button>
+            </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="w-full space-y-4 pb-10">
+
+    <!-- Search Bar -->
+    <div class="pt-0.5">
+        <form method="get" action="{% url 'backend:notification_list' %}" class="ntf-search-box">
+            <svg class="w-4 h-4 text-[#9D9C9A] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="M21 21l-4.35-4.35"></path>
+            </svg>
+            <input type="text"
+                   name="search"
+                   value="{{ search }}"
+                   placeholder="Search notifications..."
+                   class="ntf-search-input">
+            {% if active_tab != 'all' %}<input type="hidden" name="tab" value="{{ active_tab }}">{% endif %}
+            {% if category_filter %}<input type="hidden" name="category" value="{{ category_filter }}">{% endif %}
+        </form>
+    </div>
+
+    <!-- Main Notifications Tray -->
+    <div class="ntf-tray">
+        <!-- Header: Tabs & Category Filter -->
+        <div class="px-2.5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 min-w-0">
+            <div class="tab-pill-group">
+                <a href="{% url 'backend:notification_list' %}?tab=all"
+                   class="tab-pill {% if active_tab == 'all' %}active{% endif %}">
+                    <span>All</span>
+                    <span class="px-1.5 py-0.5 rounded-full text-[11px] bg-[#EAEAE8] text-[#4A4947]">{{ total_count }}</span>
+                </a>
+                <a href="{% url 'backend:notification_list' %}?tab=unread"
+                   class="tab-pill {% if active_tab == 'unread' %}active{% endif %}">
+                    <span>Unread</span>
+                    <span class="px-1.5 py-0.5 rounded-full text-[11px] {% if unread_count > 0 %}bg-[#FFE0E0] text-[#D93025]{% else %}bg-[#EAEAE8] text-[#4A4947]{% endif %}">{{ unread_count }}</span>
+                </a>
+                <a href="{% url 'backend:notification_list' %}?tab=tickets"
+                   class="tab-pill {% if active_tab == 'tickets' %}active{% endif %}">
+                    <span>Tickets &amp; Workflow</span>
+                </a>
+                <a href="{% url 'backend:notification_list' %}?tab=alerts"
+                   class="tab-pill {% if active_tab == 'alerts' %}active{% endif %}">
+                    <span>Maintenance Alerts</span>
+                </a>
+            </div>
+
+            <form method="get" action="{% url 'backend:notification_list' %}" class="flex flex-wrap items-center gap-2">
+                <input type="hidden" name="tab" value="{{ active_tab }}">
+                {% if search %}<input type="hidden" name="search" value="{{ search }}">{% endif %}
+                <select name="category" onchange="this.form.submit()" class="ntf-filter-select">
+                    <option value="">All Categories</option>
+                    {% for val, label in category_choices %}
+                        <option value="{{ val }}" {% if category_filter == val %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                <a href="{% url 'backend:notification_list' %}"
+                   class="h-[34px] px-3 rounded-[8px] bg-white border border-[#EAEAE9] text-[12.5px] font-medium text-[#2B2823] hover:bg-[#F7F7F6] inline-flex items-center">
+                    Reset
+                </a>
+            </form>
+        </div>
+
+        <!-- Notifications List -->
+        <div class="ntf-inner divide-y divide-[#F2F2F0]">
+            {% for n in data_list %}
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-3.5 py-3.5 rounded-[6px] transition-colors {% if not n.is_read %}bg-[#F4FBF6]{% else %}bg-white hover:bg-[#FAFAFA]{% endif %}">
+                    <div class="flex items-start gap-3 min-w-0 flex-1">
+                        <!-- Icon -->
+                        <div class="w-9 h-9 rounded-[9px] flex items-center justify-center shrink-0 mt-0.5
+                            {% if n.level == 'critical' or n.category == 'revision_requested' or n.category == 'maintenance_overdue' %}bg-[#FCE8E6] text-[#C5221F]
+                            {% elif n.level == 'success' or n.category == 'review_approved' %}bg-[#E7F6EC] text-[#0B7A44]
+                            {% elif n.category == 'submitted_review' %}bg-[#EEF2FF] text-[#4338CA]
+                            {% elif n.level == 'warning' or n.category == 'work_started' or n.category == 'maintenance_due' %}bg-[#FEF3C7] text-[#B45309]
+                            {% elif n.category == 'task_assigned' %}bg-[#F3E8FD] text-[#7C3AED]
+                            {% else %}bg-[#E8F0FE] text-[#1A73E8]{% endif %}">
+                            {% if n.category == 'review_approved' %}
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            {% elif n.category == 'revision_requested' or n.category == 'maintenance_overdue' or n.category == 'task_rejected' %}
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            {% elif n.category == 'submitted_review' %}
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><polyline points="9 15 11 17 15 13"></polyline></svg>
+                            {% elif n.category == 'task_assigned' or n.category == 'task_accepted' %}
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>
+                            {% else %}
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                            {% endif %}
+                        </div>
+
+                        <div class="min-w-0 flex-1">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <a href="{% url 'backend:notification_open' n.id %}"
+                                   class="text-[14px] {% if not n.is_read %}font-bold text-[#2B2823]{% else %}font-semibold text-[#4A4947]{% endif %} hover:text-[#0B7A44] transition-colors">
+                                    {{ n.title }}
+                                </a>
+                                {% if not n.is_read %}
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-semibold bg-[#0B7A44] text-white">New</span>
+                                {% endif %}
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#EFEFEF] text-[#5C5B59]">
+                                    {{ n.get_category_display }}
+                                </span>
+                            </div>
+                            {% if n.message %}
+                                <p class="text-[13px] text-[#5C5B59] mt-0.5 leading-snug">{{ n.message }}</p>
+                            {% endif %}
+                            <div class="text-[11.5px] text-[#9D9C9A] mt-1">
+                                {{ n.created_at|date:"d M Y, g:i A" }} ({{ n.created_at|timesince }} ago)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-1.5 shrink-0 pl-12 sm:pl-0">
+                        {% if n.link_url %}
+                            <a href="{% url 'backend:notification_open' n.id %}"
+                               class="px-3 py-1.5 rounded-[7px] bg-[#0B7A44] hover:bg-[#08683A] text-white text-[12px] font-semibold transition-colors">
+                                Open
+                            </a>
+                        {% endif %}
+                        {% if not n.is_read %}
+                            <form method="POST" action="{% url 'backend:notification_mark_read' n.id %}" class="inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                                <button type="submit"
+                                        class="px-2.5 py-1.5 rounded-[7px] bg-white border border-[#EAEAE9] hover:bg-[#F7F7F6] text-[12px] font-medium text-[#2B2823] transition-colors cursor-pointer">
+                                    Mark Read
+                                </button>
+                            </form>
+                        {% endif %}
+                        <form method="POST" action="{% url 'backend:notification_delete' n.id %}" class="inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                            <button type="submit"
+                                    title="Dismiss"
+                                    class="w-8 h-8 rounded-[7px] bg-white border border-[#EAEAE9] hover:border-[#FAD2CF] hover:bg-[#FDF2F2] text-[#8E8C89] hover:text-[#D93025] flex items-center justify-center transition-colors cursor-pointer">
+                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="py-14 text-center">
+                    <div class="w-12 h-12 rounded-full bg-[#F3F3F2] text-[#9D9C9A] flex items-center justify-center mx-auto mb-3">
+                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                    </div>
+                    <p class="text-[14px] font-semibold text-[#2B2823]">No notifications found</p>
+                    <p class="text-[12.5px] text-[#8E8C89] mt-0.5">When tickets, reviews, or maintenance alerts occur, they will appear here.</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% include 'includes/pagination.html' with data_list=data_list %}
+    </div>
+</div>
+{% endblock %}

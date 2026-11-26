@@ -6,7 +6,8 @@
     /* Sidebar Typography & Design Tokens (Geist Mono + Neutrals) */
     #sidebar {
         background-color: #EBEBEB;
-        border-right: 1px solid #DFDFDF;
+        border: none !important;
+        border-right: none !important;
     }
 
     .sidebar-mono {
@@ -25,18 +26,34 @@
 
     /* Collapse toggle button */
     .sidebar-collapse-btn {
-        width: 38px;
-        height: 38px;
+        width: 34px;
+        height: 34px;
         border-radius: 9999px;
-        border: 1px solid #D8D7D5;
+        border: 1px solid #E2E1DF;
         color: #5C5B59;
-        background-color: transparent;
+        background-color: #FFFFFF;
+        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.08), 0px 1px 2px rgba(0, 0, 0, 0.04);
         transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
     }
     .sidebar-collapse-btn:hover {
-        background-color: #E0E0DF;
-        border-color: #C7C6C4;
-        color: #333333;
+        background-color: #F7F7F6;
+        border-color: #CFCED0;
+        color: #1F1E1D;
+    }
+
+    @media (min-width: 1024px) {
+        #sidebar {
+            overflow: visible !important;
+        }
+        #sidebar .sidebar-header-row {
+            position: relative;
+        }
+        #sidebar #btnToggleSidebar {
+            position: absolute;
+            right: -17px;
+            top: 24px;
+            z-index: 60;
+        }
     }
 
     /* Search box — exact Figma specs (Fill 256px x 40px, radius 8px, padding 8px 8px 8px 12px) */
@@ -238,40 +255,72 @@
         background: #B8B7B5;
     }
 
-    /* Desktop Collapsed / Minimized Sidebar State */
+    /* Desktop Collapsed / Minimized Sidebar State — Pixel-Locked Icons & Smooth Motion */
     .sidebar-online-dot {
         display: none;
     }
 
+    #sidebar {
+        transition: width 260ms cubic-bezier(0.4, 0, 0.2, 1), transform 260ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    #mainContentWrapper {
+        transition: padding-left 260ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #sidebar .sidebar-brand-text,
+    #sidebar .sidebar-label,
+    #sidebar .sidebar-user-meta,
+    #sidebar .sidebar-user-dots {
+        transition: opacity 180ms ease, max-width 260ms cubic-bezier(0.4, 0, 0.2, 1);
+        max-width: 220px;
+        opacity: 1;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+    #sidebar .sidebar-search-box,
+    #sidebar .sidebar-nav-item {
+        transition: width 260ms cubic-bezier(0.4, 0, 0.2, 1), background-color 150ms ease, color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+    }
+
     @media (min-width: 1024px) {
         body.sidebar-collapsed #sidebar {
-            width: 74px;
+            width: 84px;
             overflow: visible;
         }
         body.sidebar-collapsed #mainContentWrapper {
-            padding-left: 74px;
+            padding-left: 84px !important;
         }
+        /* Smoothly fade & collapse text labels while keeping icon positions pixel-locked */
         body.sidebar-collapsed #sidebar .sidebar-brand-text,
         body.sidebar-collapsed #sidebar .sidebar-label,
-        body.sidebar-collapsed #sidebar .sidebar-submenu,
-        body.sidebar-collapsed #sidebar .sidebar-search-wrap,
         body.sidebar-collapsed #sidebar .sidebar-user-meta,
         body.sidebar-collapsed #sidebar .sidebar-user-dots {
+            opacity: 0;
+            max-width: 0;
+            margin: 0 !important;
+            padding: 0 !important;
+            pointer-events: none;
+        }
+        body.sidebar-collapsed #sidebar .sidebar-submenu,
+        body.sidebar-collapsed #sidebar #sidebarMenuSearch,
+        body.sidebar-collapsed #sidebar .sidebar-search-kbd,
+        body.sidebar-collapsed #sidebar #sidebarSearchResults {
             display: none !important;
         }
+        /* Keep exact same px-4 (16px) left padding on header, search, nav, bottom nav, and footer */
         body.sidebar-collapsed #sidebar .sidebar-header-row {
             position: relative;
-            justify-content: center;
-            padding: 24px 0 12px 0;
+        }
+        body.sidebar-collapsed #sidebar .sidebar-header-row > a {
+            gap: 0;
         }
         /* Floating white circular expand button straddling right edge */
         body.sidebar-collapsed #sidebar #btnToggleSidebar {
             position: absolute;
-            right: -18px;
-            top: 28px;
+            right: -17px;
+            top: 24px;
             z-index: 60;
-            width: 36px;
-            height: 36px;
+            width: 34px;
+            height: 34px;
             background-color: #FFFFFF;
             border: 1px solid #E2E1DF;
             color: #4A4947;
@@ -285,68 +334,50 @@
         body.sidebar-collapsed #sidebar .sidebar-collapse-icon {
             transform: rotate(180deg);
         }
-        /* Centered vertical icon rail with generous spacing */
-        body.sidebar-collapsed #sidebar .sidebar-nav-section {
-            padding: 28px 0 16px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
+        /* Search box shrinks smoothly to 44px width while keeping exact 16px left & 12px inner left */
+        body.sidebar-collapsed #sidebar .sidebar-search-box {
+            width: 44px;
+            padding: 8px 12px;
+            justify-content: flex-start;
+            cursor: pointer;
+            border: 1px solid #E2E1DF;
+            box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.04);
         }
-        body.sidebar-collapsed #sidebar .sidebar-bottom-nav {
-            padding: 8px 0 16px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
+        body.sidebar-collapsed #sidebar .sidebar-search-box:hover {
+            border-color: #CFCED0;
+            background-color: #FAFAFA;
         }
-        body.sidebar-collapsed #sidebar .sidebar-item-wrap {
-            margin-top: 0 !important;
-            display: flex;
-            justify-content: center;
-        }
+        /* Nav items shrink smoothly to 44px width with exact same 10px 11px padding -> icons never shift */
         body.sidebar-collapsed #sidebar .sidebar-nav-item {
-            width: 48px;
-            height: 48px;
-            min-height: 48px;
-            padding: 0;
-            border-radius: 12px;
-            justify-content: center;
-            align-items: center;
+            width: 44px;
+            min-height: 42px;
+            padding: 10px 11px;
+            border-radius: 8px !important;
+            justify-content: flex-start;
+            gap: 0;
         }
         body.sidebar-collapsed #sidebar .sidebar-nav-item > span:first-child {
-            justify-content: center;
             gap: 0;
         }
         body.sidebar-collapsed #sidebar .sidebar-nav-item > span:first-child > svg {
-            width: 21px;
-            height: 21px;
+            width: 20px !important;
+            height: 20px !important;
+            flex-shrink: 0;
         }
         body.sidebar-collapsed #sidebar .sidebar-nav-item > span:first-child > i {
-            font-size: 18px;
-            width: 21px;
-        }
-        body.sidebar-collapsed #sidebar .sidebar-divider {
-            margin-left: 16px;
-            margin-right: 16px;
-        }
-        body.sidebar-collapsed #sidebar .sidebar-footer-row {
-            justify-content: center;
-            padding: 18px 0 22px 0;
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
         }
         body.sidebar-collapsed #sidebar #sidebarUserProfileTrigger {
             cursor: pointer;
-        }
-        body.sidebar-collapsed #sidebar .sidebar-avatar-box {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
+            gap: 0;
         }
         body.sidebar-collapsed #sidebar .sidebar-online-dot {
             display: block;
         }
         body.sidebar-collapsed #sidebar #sidebarUserMenu {
-            left: 82px;
+            left: 92px;
             right: auto;
             bottom: 14px;
             width: 224px;
@@ -407,8 +438,8 @@
 
     <!-- Search Bar -->
     <div class="sidebar-search-wrap px-4 mb-5 shrink-0 relative">
-        <!-- Expanded Search Input -->
-        <div class="sidebar-search-expanded sidebar-search-box">
+        <!-- Expanded Search Input (becomes minimized icon button when sidebar collapsed) -->
+        <div id="sidebarSearchBox" data-tooltip="Search (Ctrl+K)" class="sidebar-search-expanded sidebar-search-box">
             <div class="flex items-center gap-2 flex-1 min-w-0">
                 <svg class="w-[16px] h-[16px] text-[#9E9D9B] shrink-0"
                      viewBox="0 0 24 24"
@@ -482,7 +513,7 @@
                      data-menu-label="{{ menu_name_lower }}{% if menu.sub_menu %} {% for s in menu.sub_menu %}{{ s.menu.menu_name|lower }} {% endfor %}{% endif %}">
                     <a href="{% if menu.menu.menu_url %}{% if '/' in menu.menu.menu_url %}{{ menu.menu.menu_url }}{% else %}{% url 'backend:menu_wise_dashboard' menu.menu.menu_url %}{% endif %}{% else %}#{% endif %}"
                        data-tooltip="{{ menu.menu.menu_name }}"
-                       class="sidebar-nav-item flex items-center {% if menu.is_current %}is-active{% endif %}">
+                       class="sidebar-nav-item flex items-center justify-between {% if menu.is_current %}is-active{% endif %}">
                         <span class="flex items-center gap-2.5 min-w-0">
                             {% if '<svg' in menu.menu.menu_icon %}
                                 {{ menu.menu.menu_icon|safe }}
@@ -529,6 +560,19 @@
                             {% endif %}
                             <span class="sidebar-label truncate">{{ menu.menu.menu_name }}</span>
                         </span>
+                        {% if menu.sub_menu %}
+                            <span class="sidebar-label sidebar-chevron-wrap flex items-center justify-center p-0.5 rounded transition-transform duration-200 {% if not menu.is_current %}-rotate-90{% endif %}">
+                                <svg class="w-3.5 h-3.5 shrink-0"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2.5"
+                                     stroke-linecap="round"
+                                     stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </span>
+                        {% endif %}
                     </a>
 
                     {% if menu.sub_menu %}
@@ -811,6 +855,8 @@
             if (toggleBtn) {
                 toggleBtn.setAttribute('title', collapsed ? 'Expand sidebar' : 'Collapse sidebar');
             }
+            // Trigger resize after CSS padding transition so responsive charts/tables refill the new width
+            setTimeout(() => window.dispatchEvent(new Event('resize')), 280);
         };
 
         if (toggleBtn && document.body.classList.contains('sidebar-collapsed')) {
@@ -825,6 +871,32 @@
                 setDesktopCollapsed(!document.body.classList.contains('sidebar-collapsed'));
             } else {
                 closeMobileSidebar();
+            }
+        });
+
+        // Submenu chevron accordion toggle
+        document.querySelectorAll('.sidebar-chevron-wrap').forEach((chevron) => {
+            chevron.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const wrap = chevron.closest('.sidebar-item-wrap');
+                const submenu = wrap?.querySelector('.sidebar-submenu');
+                if (submenu) {
+                    const isHidden = submenu.classList.toggle('hidden');
+                    chevron.classList.toggle('-rotate-90', isHidden);
+                }
+            });
+        });
+
+        // Clicking the minimized search icon expands the sidebar and focuses search
+        document.getElementById('sidebarSearchBox')?.addEventListener('click', () => {
+            if (isDesktop() && document.body.classList.contains('sidebar-collapsed')) {
+                hideTooltip();
+                setDesktopCollapsed(false);
+                setTimeout(() => {
+                    searchInput?.focus();
+                    searchInput?.select();
+                }, 120);
             }
         });
 

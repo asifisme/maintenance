@@ -1,0 +1,699 @@
+<script>
+    // Data passed from backend
+    const EQUIPMENT_TYPES = {{ equipment_types_json|safe }};
+    const BUILDINGS = {{ buildings_json|safe }};
+    const BRANDS = {{ brands|safe }};
+
+    let currentStep = 1;
+    let selectedType = null;
+    let isBuildingAssigned = false;
+    let selectedStatus = 'active';
+
+    // Step Switching
+    function switchStep(targetStep) {
+        if (targetStep === currentStep) return;
+
+        // Validation gate: cannot jump forward without valid prior steps
+        if (targetStep > currentStep) {
+            if (currentStep === 1 && !validateStep1()) return;
+            if (currentStep === 2 && targetStep === 3 && !validateStep2()) return;
+        }
+
+        if (targetStep === 3) {
+            populateReviewStep();
+        }
+        currentStep = targetStep;
+        updateStepUI();
+    }
+
+    function goToStep(targetStep) {
+        if (targetStep === 2) {
+            if (!validateStep1()) return;
+        } else if (targetStep === 3) {
+            if (!validateStep2()) return;
+            populateReviewStep();
+        }
+        currentStep = targetStep;
+        updateStepUI();
+    }
+
+    function updateStepUI() {
+        // Tab pills styling
+        [1, 2, 3].forEach(step => {
+            const tab = document.getElementById(`tabStep${step}`);
+            const section = document.getElementById(`stepSection${step}`);
+            if (step === currentStep) {
+                tab.className = 'tab-pill-active';
+                section.classList.remove('hidden');
+            } else {
+                tab.className = 'tab-pill-inactive';
+                section.classList.add('hidden');
+            }
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Toggle Building Assignment in Step 2
+    function toggleBuildingAssignment() {
+        isBuildingAssigned = !isBuildingAssigned;
+        const track = document.getElementById('buildingToggleTrack');
+        const fields = document.getElementById('buildingAssignmentFields');
+        const continueBtnText = document.getElementById('btnStep2ContinueText');
+        const hiddenInput = document.getElementById('hiddenAssignToBuilding');
+
+        if (isBuildingAssigned) {
+            track.classList.add('is-on');
+            fields.classList.remove('hidden');
+            continueBtnText.textContent = 'Save & Continue';
+            hiddenInput.value = 'true';
+        } else {
+            track.classList.remove('is-on');
+            fields.classList.add('hidden');
+            continueBtnText.textContent = 'Skip & Continue';
+            hiddenInput.value = 'false';
+            // Clear errors
+            document.getElementById('err_building')?.classList.add('hidden');
+            document.getElementById('err_installment_date')?.classList.add('hidden');
+            document.getElementById('buildingSelect')?.classList.remove('input-error');
+            document.getElementById('installment_date')?.classList.remove('input-error');
+        }
+    }
+
+    // Select Status
+    function selectStatus(statusVal, pillEl) {
+        selectedStatus = statusVal;
+        document.getElementById('hiddenStatus').value = statusVal;
+        document.querySelectorAll('#statusPillsGroup .status-pill').forEach(el => {
+            el.classList.remove('is-selected');
+        });
+        pillEl.classList.add('is-selected');
+    }
+
+    // Dynamic Fields Rendering for Selected Equipment Type
+    function renderDynamicFields(typeObj) {
+        const section = document.getElementById('dynamicFieldsSection');
+        const heading = document.getElementById('dynamicFieldsHeading');
+        const grid = document.getElementById('dynamicFieldsGrid');
+
+        if (!typeObj || !typeObj.fields || typeObj.fields.length === 0) {
+            section.classList.add('hidden');
+            grid.innerHTML = '';
+            return;
+        }
+
+        heading.textContent = `Fields configured for ${typeObj.name}.`;
+        grid.innerHTML = '';
+
+        typeObj.fields.forEach(f => {
+            const fieldId = `dyn_field_${f.id}`;
+            const reqStar = f.is_required ? '<span class="text-[#D93025]">*</span>' : '';
+            const wrap = document.createElement('div');
+
+            if (f.field_type === 'boolean') {
+                wrap.innerHTML = `
+                    <label class="form-label" for="${fieldId}">${f.field_name} ${reqStar}</label>
+                    <div class="relative">
+                        <select id="${fieldId}" name="dyn_field_${f.id}" data-field-name="${f.field_name}" class="form-select-field dyn-input" ${f.is_required ? 'required' : ''}>
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-[#716F6C]">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                `;
+            } else if (f.field_type === 'number') {
+                wrap.innerHTML = `
+                    <label class="form-label" for="${fieldId}">${f.field_name} ${reqStar}</label>
+                    <input type="number" id="${fieldId}" name="dyn_field_${f.id}" data-field-name="${f.field_name}" class="form-input-field dyn-input" placeholder="Enter value" ${f.is_required ? 'required' : ''}>
+                `;
+            } else if (f.field_type === 'date') {
+                wrap.innerHTML = `
+                    <label class="form-label" for="${fieldId}">${f.field_name} ${reqStar}</label>
+                    <input type="date" id="${fieldId}" name="dyn_field_${f.id}" data-field-name="${f.field_name}" class="form-input-field dyn-input" ${f.is_required ? 'required' : ''}>
+                `;
+            } else {
+                wrap.innerHTML = `
+                    <label class="form-label" for="${fieldId}">${f.field_name} ${reqStar}</label>
+                    <input type="text" id="${fieldId}" name="dyn_field_${f.id}" data-field-name="${f.field_name}" class="form-input-field dyn-input" placeholder="Enter ${f.field_name.toLowerCase()}" ${f.is_required ? 'required' : ''}>
+                `;
+            }
+            grid.appendChild(wrap);
+        });
+
+        section.classList.remove('hidden');
+    }
+
+    // Equipment Type Searchable Dropdown
+    function initTypeDropdown() {
+        const input = document.getElementById('typeSearchInput');
+        const clearBtn = document.getElementById('btnClearType');
+        const menu = document.getElementById('typeDropdownMenu');
+        const list = document.getElementById('typeListContainer');
+        const createOpt = document.getElementById('typeCreateOption');
+        const createLabel = document.getElementById('typeCreateLabel');
+        const hiddenId = document.getElementById('hiddenEquipmentTypeId');
+
+        function renderList(query = '') {
+            list.innerHTML = '';
+            const q = query.trim().toLowerCase();
+            const matches = EQUIPMENT_TYPES.filter(t => t.name.toLowerCase().includes(q));
+
+            if (matches.length > 0) {
+                matches.forEach(t => {
+                    const item = document.createElement('div');
+                    item.className = 'px-3 py-2 rounded-lg text-sm font-medium text-[#2B2823] hover:bg-[#F2F2F2] cursor-pointer transition-colors';
+                    item.textContent = t.name;
+                    item.onclick = () => selectType(t);
+                    list.appendChild(item);
+                });
+            } else {
+                const empty = document.createElement('div');
+                empty.className = 'px-3 py-2 text-xs text-[#969491] text-center';
+                empty.textContent = 'No matching equipment type found.';
+                list.appendChild(empty);
+            }
+
+            if (q && !EQUIPMENT_TYPES.some(t => t.name.toLowerCase() === q)) {
+                createLabel.textContent = `Create "${query.trim()}"`;
+                createOpt.classList.remove('hidden');
+            } else {
+                createOpt.classList.add('hidden');
+            }
+        }
+
+        function selectType(t) {
+            selectedType = t;
+            hiddenId.value = t.id;
+            input.value = t.name;
+            clearBtn.classList.remove('hidden');
+            menu.classList.add('hidden');
+            input.classList.remove('input-error');
+            document.getElementById('err_type').classList.add('hidden');
+            renderDynamicFields(t);
+        }
+
+        input.addEventListener('focus', () => {
+            renderList(input.value);
+            menu.classList.remove('hidden');
+        });
+
+        input.addEventListener('input', () => {
+            if (input.value.trim()) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+                selectedType = null;
+                hiddenId.value = '';
+                renderDynamicFields(null);
+            }
+            renderList(input.value);
+            menu.classList.remove('hidden');
+        });
+
+        clearBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            input.value = '';
+            selectedType = null;
+            hiddenId.value = '';
+            clearBtn.classList.add('hidden');
+            renderDynamicFields(null);
+            renderList('');
+            input.focus();
+        });
+
+        document.getElementById('btnQuickCreateType').addEventListener('click', () => {
+            const name = input.value.trim();
+            if (!name) return;
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+
+            fetch("{% url 'backend:quick_create_equipment_type' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: `name=${encodeURIComponent(name)}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const newTypeObj = { id: data.id, name: data.name, fields: [] };
+                    EQUIPMENT_TYPES.push(newTypeObj);
+                    selectType(newTypeObj);
+                } else {
+                    alert(data.error || 'Failed to create equipment type.');
+                }
+            })
+            .catch(() => alert('Network error creating equipment type.'));
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!document.getElementById('equipmentTypeWrap').contains(e.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+    }
+
+    // Brand Dropdown
+    function initBrandDropdown() {
+        const input = document.getElementById('brandInput');
+        const clearBtn = document.getElementById('btnClearBrand');
+        const menu = document.getElementById('brandDropdownMenu');
+        const list = document.getElementById('brandListContainer');
+
+        function renderList(query = '') {
+            list.innerHTML = '';
+            const q = query.trim().toLowerCase();
+            const matches = BRANDS.filter(b => b.toLowerCase().includes(q));
+
+            if (matches.length > 0) {
+                matches.forEach(b => {
+                    const item = document.createElement('div');
+                    item.className = 'px-3 py-2 rounded-lg text-sm font-medium text-[#2B2823] hover:bg-[#F2F2F2] cursor-pointer transition-colors';
+                    item.textContent = b;
+                    item.onclick = () => {
+                        input.value = b;
+                        clearBtn.classList.remove('hidden');
+                        menu.classList.add('hidden');
+                        input.classList.remove('input-error');
+                        document.getElementById('err_brand').classList.add('hidden');
+                    };
+                    list.appendChild(item);
+                });
+            } else {
+                const empty = document.createElement('div');
+                empty.className = 'px-3 py-2 text-xs text-[#969491] text-center';
+                empty.textContent = `Use new brand: "${query.trim()}"`;
+                list.appendChild(empty);
+            }
+        }
+
+        input.addEventListener('focus', () => {
+            renderList(input.value);
+            menu.classList.remove('hidden');
+        });
+
+        input.addEventListener('input', () => {
+            clearBtn.classList.toggle('hidden', !input.value.trim());
+            renderList(input.value);
+            menu.classList.remove('hidden');
+        });
+
+        clearBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            input.value = '';
+            clearBtn.classList.add('hidden');
+            input.focus();
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!document.getElementById('brandWrap').contains(e.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+    }
+
+    // Next Service Date Auto-Calculation
+    function initMaintenanceCalculation() {
+        const daysInput = document.getElementById('maintenance_period_days');
+        const unitSelect = document.getElementById('frequency_unit');
+        const lastDateInput = document.getElementById('last_maintenance_date');
+        const nextDateInput = document.getElementById('next_service_due');
+
+        function recalcNextDate() {
+            if (!lastDateInput.value) return;
+            const val = parseInt(daysInput.value) || 0;
+            if (val <= 0) return;
+
+            const unit = unitSelect.value;
+            const d = new Date(lastDateInput.value);
+            if (isNaN(d.getTime())) return;
+
+            if (unit === 'Days') {
+                d.setDate(d.getDate() + val);
+            } else if (unit === 'Months') {
+                d.setMonth(d.getMonth() + val);
+            } else if (unit === 'Years') {
+                d.setFullYear(d.getFullYear() + val);
+            }
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            nextDateInput.value = `${yyyy}-${mm}-${dd}`;
+        }
+
+        lastDateInput.addEventListener('change', recalcNextDate);
+        daysInput.addEventListener('input', recalcNextDate);
+        unitSelect.addEventListener('change', recalcNextDate);
+    }
+
+    // Validation Functions
+    function validateStep1() {
+        let isValid = true;
+
+        // Type
+        const typeId = document.getElementById('hiddenEquipmentTypeId').value;
+        const typeInput = document.getElementById('typeSearchInput');
+        const errType = document.getElementById('err_type');
+        if (!typeId) {
+            typeInput.classList.add('input-error');
+            errType.classList.remove('hidden');
+            isValid = false;
+        } else {
+            typeInput.classList.remove('input-error');
+            errType.classList.add('hidden');
+        }
+
+        // Equipment ID
+        const eqId = document.getElementById('equipment_id');
+        const errEqId = document.getElementById('err_equipment_id');
+        if (!eqId.value.trim()) {
+            eqId.classList.add('input-error');
+            errEqId.classList.remove('hidden');
+            isValid = false;
+        } else {
+            eqId.classList.remove('input-error');
+            errEqId.classList.add('hidden');
+        }
+
+        // Equipment Name
+        const eqName = document.getElementById('equipment_name');
+        const errEqName = document.getElementById('err_equipment_name');
+        if (!eqName.value.trim()) {
+            eqName.classList.add('input-error');
+            errEqName.classList.remove('hidden');
+            isValid = false;
+        } else {
+            eqName.classList.remove('input-error');
+            errEqName.classList.add('hidden');
+        }
+
+        // Serial Number
+        const sn = document.getElementById('serial_number');
+        const errSn = document.getElementById('err_serial_number');
+        if (!sn.value.trim()) {
+            sn.classList.add('input-error');
+            errSn.classList.remove('hidden');
+            isValid = false;
+        } else {
+            sn.classList.remove('input-error');
+            errSn.classList.add('hidden');
+        }
+
+        // Model Number
+        const mn = document.getElementById('model_number');
+        const errMn = document.getElementById('err_model_number');
+        if (!mn.value.trim()) {
+            mn.classList.add('input-error');
+            errMn.classList.remove('hidden');
+            isValid = false;
+        } else {
+            mn.classList.remove('input-error');
+            errMn.classList.add('hidden');
+        }
+
+        // Brand
+        const brand = document.getElementById('brandInput');
+        const errBrand = document.getElementById('err_brand');
+        if (!brand.value.trim()) {
+            brand.classList.add('input-error');
+            errBrand.classList.remove('hidden');
+            isValid = false;
+        } else {
+            brand.classList.remove('input-error');
+            errBrand.classList.add('hidden');
+        }
+
+        // Dynamic fields required check
+        document.querySelectorAll('.dyn-input').forEach(inp => {
+            if (inp.hasAttribute('required') && !inp.value.trim()) {
+                inp.classList.add('input-error');
+                isValid = false;
+            } else {
+                inp.classList.remove('input-error');
+            }
+        });
+
+        return isValid;
+    }
+
+    function validateStep2() {
+        let isValid = true;
+
+        if (isBuildingAssigned) {
+            const bld = document.getElementById('buildingSelect');
+            const errBld = document.getElementById('err_building');
+            if (!bld.value) {
+                bld.classList.add('input-error');
+                errBld.classList.remove('hidden');
+                isValid = false;
+            } else {
+                bld.classList.remove('input-error');
+                errBld.classList.add('hidden');
+            }
+
+            const instDate = document.getElementById('installment_date');
+            const errInstDate = document.getElementById('err_installment_date');
+            if (!instDate.value) {
+                instDate.classList.add('input-error');
+                errInstDate.classList.remove('hidden');
+                isValid = false;
+            } else {
+                instDate.classList.remove('input-error');
+                errInstDate.classList.add('hidden');
+            }
+        }
+
+        const days = document.getElementById('maintenance_period_days');
+        const errDays = document.getElementById('err_maintenance_period_days');
+        if (!days.value || parseInt(days.value) <= 0) {
+            days.classList.add('input-error');
+            errDays.classList.remove('hidden');
+            isValid = false;
+        } else {
+            days.classList.remove('input-error');
+            errDays.classList.add('hidden');
+        }
+
+        return isValid;
+    }
+
+    // Populate Step 3 Review Cards
+    function populateReviewStep() {
+        // Collect custom fields into JSON object
+        const customObj = {};
+        document.querySelectorAll('.dyn-input').forEach(inp => {
+            const key = inp.getAttribute('data-field-name') || inp.name;
+            customObj[key] = inp.value.trim();
+        });
+        document.getElementById('hiddenCustomFields').value = JSON.stringify(customObj);
+
+        // Status badge
+        const badge = document.getElementById('reviewStatusBadge');
+        const statusMap = {
+            'active': { label: 'Active', bg: '#DCFCE7', text: '#166534' },
+            'in_repair': { label: 'In Repair', bg: '#FEF3C7', text: '#92400E' },
+            'under_maintenance': { label: 'Under Maintenance', bg: '#E0E7FF', text: '#3730A3' },
+            'inactive': { label: 'Inactive', bg: '#F3F4F6', text: '#4B5563' },
+            'decommissioned': { label: 'Decommissioned', bg: '#FEE2E2', text: '#991B1B' }
+        };
+        const sInfo = statusMap[selectedStatus] || statusMap['active'];
+        badge.textContent = sInfo.label;
+        badge.style.backgroundColor = sInfo.bg;
+        badge.style.color = sInfo.text;
+
+        // Card 1: Equipment Specification
+        document.getElementById('rev_equipment_id').textContent = document.getElementById('equipment_id').value || '—';
+        document.getElementById('rev_equipment_name').textContent = document.getElementById('equipment_name').value || '—';
+        document.getElementById('rev_equipment_type').textContent = document.getElementById('typeSearchInput').value || '—';
+        document.getElementById('rev_brand').textContent = document.getElementById('brandInput').value || '—';
+        document.getElementById('rev_serial_number').textContent = document.getElementById('serial_number').value || '—';
+        document.getElementById('rev_model_number').textContent = document.getElementById('model_number').value || '—';
+
+        // Dynamic fields in review card
+        const dynReview = document.getElementById('rev_dynamic_container');
+        dynReview.innerHTML = '';
+        const dynKeys = Object.keys(customObj);
+        if (dynKeys.length > 0) {
+            dynKeys.forEach(k => {
+                const item = document.createElement('div');
+                item.innerHTML = `
+                    <span class="block text-[11px] font-semibold text-[#969491] uppercase tracking-wide">${k}</span>
+                    <span class="text-[13.5px] font-medium text-[#2B2823] mt-0.5 block">${customObj[k] || '—'}</span>
+                `;
+                dynReview.appendChild(item);
+            });
+            dynReview.classList.remove('hidden');
+        } else {
+            dynReview.classList.add('hidden');
+        }
+
+        // Card 2: Location & Assignment
+        const assignedSec = document.getElementById('rev_location_assigned');
+        const unassignedSec = document.getElementById('rev_location_unassigned');
+        const maintCard = document.getElementById('rev_maintenance_outer');
+
+        if (isBuildingAssigned) {
+            assignedSec.classList.remove('hidden');
+            unassignedSec.classList.add('hidden');
+            if (maintCard) maintCard.classList.remove('hidden');
+
+            const bSelect = document.getElementById('buildingSelect');
+            const bId = bSelect.value;
+            const bObj = BUILDINGS.find(b => String(b.id) === String(bId));
+            document.getElementById('rev_building').textContent = bObj ? bObj.name : '—';
+            document.getElementById('rev_org').textContent = (bObj && bObj.org_subdivision) ? bObj.org_subdivision : '—';
+            document.getElementById('rev_floor').textContent = document.getElementById('floor_location').value || '—';
+            document.getElementById('rev_room').textContent = document.getElementById('room_location').value || '—';
+
+            // Card 3: Installation & Maintenance
+            document.getElementById('rev_installment_date').textContent = document.getElementById('installment_date').value || '—';
+            document.getElementById('rev_purchase_date').textContent = document.getElementById('purchase_date').value || '—';
+            document.getElementById('rev_warranty').textContent = document.getElementById('warranty_expire_date').value || '—';
+            const cadence = document.getElementById('maintenance_period_days').value;
+            const unit = document.getElementById('frequency_unit').value;
+            document.getElementById('rev_maintenance_every').textContent = `Every ${cadence} ${unit}`;
+            document.getElementById('rev_last_service').textContent = document.getElementById('last_maintenance_date').value || '—';
+            document.getElementById('rev_next_due').textContent = document.getElementById('next_service_due').value || '—';
+        } else {
+            assignedSec.classList.add('hidden');
+            unassignedSec.classList.remove('hidden');
+            if (maintCard) maintCard.classList.add('hidden');
+        }
+    }
+
+    // Submit Handling with Success Modal
+    function initFormSubmit() {
+        const form = document.getElementById('equipmentAddForm');
+        const submitBtn = document.getElementById('btnSubmitEquipment');
+        const submitBtnText = document.getElementById('btnSubmitEquipmentText');
+        const modal = document.getElementById('successModal');
+        const addAnotherBtn = document.getElementById('btnAddAnother');
+        const closeBtn = document.getElementById('btnCloseSuccessModal');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!validateStep1()) {
+                switchStep(1);
+                return;
+            }
+            if (!validateStep2()) {
+                switchStep(2);
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtnText.textContent = 'Saving...';
+
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                submitBtn.disabled = false;
+                submitBtnText.textContent = '{% if is_edit %}Save Changes{% else %}Save Equipment{% endif %}';
+
+                if (data.success) {
+                    const fallbackUrl = "{% if from_building %}{% url 'backend:building_details' from_building %}{% else %}{% url 'backend:equipment_list' %}{% endif %}";
+                    window.location.href = data.redirect_url || fallbackUrl;
+                } else {
+                    alert((data.errors && data.errors.join('\n')) || 'Failed to save equipment.');
+                }
+            })
+            .catch(() => {
+                submitBtn.disabled = false;
+                submitBtnText.textContent = '{% if is_edit %}Save Changes{% else %}Save Equipment{% endif %}';
+                alert('A network error occurred while saving.');
+            });
+        });
+
+        // Modal Action Handlers
+        closeBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+            window.location.href = "{% if from_building %}{% url 'backend:building_details' from_building %}{% else %}{% url 'backend:equipment_list' %}{% endif %}";
+        });
+
+        addAnotherBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+            form.reset();
+            selectedType = null;
+            isBuildingAssigned = false;
+            selectedStatus = 'active';
+            document.getElementById('hiddenEquipmentTypeId').value = '';
+            document.getElementById('hiddenCustomFields').value = '{}';
+            document.getElementById('hiddenAssignToBuilding').value = 'false';
+            document.getElementById('hiddenStatus').value = 'active';
+            document.getElementById('btnClearType').classList.add('hidden');
+            document.getElementById('btnClearBrand').classList.add('hidden');
+            document.getElementById('buildingToggleTrack').classList.remove('is-on');
+            document.getElementById('buildingAssignmentFields').classList.add('hidden');
+            document.getElementById('btnStep2ContinueText').textContent = 'Skip & Continue';
+            document.querySelectorAll('#statusPillsGroup .status-pill').forEach((el, idx) => {
+                el.classList.toggle('is-selected', idx === 0);
+            });
+            renderDynamicFields(null);
+            switchStep(1);
+        });
+    }
+
+    // Initializer
+    document.addEventListener('DOMContentLoaded', () => {
+        initTypeDropdown();
+        initBrandDropdown();
+        initMaintenanceCalculation();
+        initFormSubmit();
+
+        // If from_building was passed, turn on building toggle by default
+        {% if from_building %}
+            toggleBuildingAssignment();
+        {% endif %}
+
+        // If initial_type_id was provided
+        {% if initial_type_id %}
+            const preType = EQUIPMENT_TYPES.find(t => String(t.id) === "{{ initial_type_id }}");
+            if (preType) {
+                selectedType = preType;
+                document.getElementById('hiddenEquipmentTypeId').value = preType.id;
+                document.getElementById('typeSearchInput').value = preType.name;
+                document.getElementById('btnClearType').classList.remove('hidden');
+                renderDynamicFields(preType);
+            }
+        {% endif %}
+
+        // Edit mode pre-population (brand clear btn, status pill, dynamic custom fields)
+        {% if is_edit %}
+            const brandVal = document.getElementById('brandInput').value;
+            if (brandVal) {
+                document.getElementById('btnClearBrand').classList.remove('hidden');
+            }
+            const initStatus = "{{ obj.status|default:'active' }}";
+            const statusPill = document.querySelector(`#statusPillsGroup .status-pill[data-status="${initStatus}"]`);
+            if (statusPill) {
+                selectStatus(initStatus, statusPill);
+            }
+            const existingCustom = {{ existing_custom_fields_json|default:'{}'|safe }};
+            if (existingCustom && typeof existingCustom === 'object') {
+                document.querySelectorAll('.dyn-input').forEach(inp => {
+                    const key = inp.dataset.fieldName;
+                    if (key && existingCustom[key] !== undefined && existingCustom[key] !== null) {
+                        inp.value = existingCustom[key];
+                    }
+                });
+                document.getElementById('hiddenCustomFields').value = JSON.stringify(existingCustom);
+            }
+            const submitBtnText = document.getElementById('btnSubmitEquipmentText');
+            if (submitBtnText) submitBtnText.textContent = 'Save Changes';
+        {% endif %}
+    });
+</script>

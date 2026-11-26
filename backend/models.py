@@ -274,6 +274,24 @@ class Building(models.Model):
         return f"[{self.id}] — {label}"
  
 
+class Skill(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True)
+
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='skill_created_by', blank=True, null=True)
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='skill_updated_by', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    deleted = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
 class Technician(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="technician_profile", null=True, blank=True)
     first_name = models.CharField(max_length=50, blank=True)
@@ -281,6 +299,7 @@ class Technician(models.Model):
     email = models.EmailField(blank=True) 
     phone_number = models.CharField(max_length=20, blank=True)
     about = models.TextField(blank=True)
+    skills = models.ManyToManyField(Skill, related_name="technicians", blank=True)
 
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='technician_created_by', blank=True, null=True)
     updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='technician_updated_by', blank=True, null=True)
@@ -304,6 +323,52 @@ class Technician(models.Model):
     def first_initial(self):
         name = self.display_name
         return name[0].upper() if name else "T"
+
+    @property
+    def active_skills(self):
+        return [s for s in self.skills.all() if not s.deleted and s.is_active]
+
+    @property
+    def primary_skill(self):
+        assigned = self.active_skills
+        if assigned:
+            return assigned[0].name
+        text = (self.about or '').lower()
+        if 'electric' in text:
+            return 'Electrical'
+        elif 'hvac' in text or 'refrigerat' in text:
+            return 'HVAC'
+        elif 'elevator' in text or 'lift' in text:
+            return 'Elevator'
+        elif 'plumb' in text or 'water' in text:
+            return 'Plumbing'
+        elif 'fire' in text or 'sprinkler' in text or 'alarm' in text:
+            return 'Fire Safety'
+        elif 'solar' in text or 'renewable' in text:
+            return 'Solar'
+        elif 'security' in text or 'cctv' in text:
+            return 'Security'
+        elif 'substation' in text or 'transformer' in text:
+            return 'Substation'
+        elif 'it' in text or 'network' in text or 'server' in text:
+            return 'IT'
+        elif 'drywall' in text or 'paint' in text or 'repair' in text or 'general' in text:
+            return 'General'
+        return 'General'
+
+    @property
+    def extra_skills_count(self):
+        assigned = self.active_skills
+        if assigned:
+            extra = len(assigned) - 1
+            return f'+{extra}' if extra > 0 else ''
+        text = (self.about or '')
+        words = len(text.split())
+        if words > 10:
+            return '+3'
+        elif words > 5:
+            return '+2'
+        return '+1'
 
 
 class EquipmentType(models.Model):
@@ -364,13 +429,17 @@ class Equipment(models.Model):
         ("decommissioned",     "Decommissioned"),
     ]
 
+    equipment_name = models.CharField(max_length=150, blank=True, null=True)
     equipment_id   = models.CharField(max_length=50, unique=True, blank=True) 
     equipment_type = models.ForeignKey(EquipmentType, on_delete=models.CASCADE, related_name="equipment")
-    building       = models.ForeignKey(Building, on_delete=models.CASCADE, related_name="equipment")
+    building       = models.ForeignKey(Building, on_delete=models.SET_NULL, null=True, blank=True, related_name="equipment")
     component_preset = models.ManyToManyField(EquipmentComponentPreset, related_name="equipment", blank=True)
     brand          = models.CharField(max_length=100, blank=True, help_text="e.g. Otis, Daikin")
     floor_location = models.CharField(max_length=100, blank=True, help_text="e.g. Level 4 Lobby")
+    room_location  = models.CharField(max_length=100, blank=True, null=True, help_text="e.g. Room 502, Server Room")
     installment_date = models.DateTimeField(null=True, blank=True)
+    purchase_date   = models.DateField(null=True, blank=True)
+    warranty_expire_date = models.DateField(null=True, blank=True)
 
     model_number   = models.CharField(max_length=100, blank=True)
     serial_number  = models.CharField(max_length=100, blank=True)
@@ -380,14 +449,18 @@ class Equipment(models.Model):
 
     image          = models.ImageField(upload_to="equipment/", null=True, blank=True)
     notes          = models.TextField(blank=True)
+    installation_notes = models.TextField(blank=True, null=True)
+    maintenance_notes = models.TextField(blank=True, null=True)
  
     # Status
     status         = models.CharField(max_length=30, choices=STATUS_CHOICES, default="active")
  
     # Maintenance scheduling 
-    maintenance_period_days = models.PositiveIntegerField(default=90,)
+    maintenance_period_days = models.PositiveIntegerField(default=90)
+    frequency_unit = models.CharField(max_length=20, default="Days", blank=True)
     last_maintenance_date   = models.DateField(null=True, blank=True)
-    next_service_due        = models.DateField(null=True, blank=True, db_index=True,)
+    next_service_due        = models.DateField(null=True, blank=True, db_index=True)
+    custom_fields  = models.JSONField(default=dict, blank=True)
 
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipment_created_by', blank=True, null=True)
     updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipment_updated_by', blank=True, null=True)
@@ -403,7 +476,9 @@ class Equipment(models.Model):
         super().save(*args, **kwargs)
     
     def __str__(self):
-        return f"[{self.equipment_id}] {self.equipment_type.name} at {self.building.name}"
+        bld_name = self.building.name if self.building else "Unassigned"
+        name = self.equipment_name or (self.equipment_type.name if self.equipment_type else "Equipment")
+        return f"[{self.equipment_id}] {name} at {bld_name}"
  
 
 
@@ -553,7 +628,9 @@ class Ticket(models.Model):
     STATUS_CHOICES = [
         ("open", "Open"),
         ("assigned", "Assigned"),
+        ("accepted", "Accepted"),
         ("in_progress", "In Progress"),
+        ("pending_review", "Pending Review"),
         ("resolved", "Resolved"),
         ("closed", "Closed | Done"),
         ("rejected", "Rejected"),
@@ -609,6 +686,28 @@ class Ticket(models.Model):
 
     def __str__(self):
         return f"{self.id}: {self.title}"
+
+
+class TicketTaskItem(models.Model):
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="checklist_items")
+    title = models.CharField(max_length=255)
+    is_completed = models.BooleanField(default=False)
+    technician_feedback = models.TextField(blank=True)
+    order = models.PositiveIntegerField(default=0)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="ticket_task_created_by")
+    updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="ticket_task_updated_by")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    deleted = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["order", "id"]
+
+    def __str__(self):
+        return f"Task on Ticket #{self.ticket_id}: {self.title}"
  
  
 class TicketComment(models.Model):
@@ -636,6 +735,12 @@ class TicketActivityLog(models.Model):
         ("created", "Created Ticket"),
         ("status_changed", "Status Changed"),
         ("assigned", "Technician Assigned"),
+        ("accepted", "Technician Accepted"),
+        ("rejected_assignment", "Assignment Rejected"),
+        ("work_started", "Work Started"),
+        ("submitted_for_review", "Submitted for Review"),
+        ("review_approved", "Review Approved"),
+        ("review_rejected", "Revision Requested"),
         ("comment_added", "Comment Added"),
         ("priority_changed", "Priority Changed"),
         ("resolved", "Marked Resolved"),
@@ -678,6 +783,8 @@ class AssignActivities(models.Model):
 
     COMPLATE_STATUS_CHOICES = [
         ("pending", "Pending"),
+        ("in_progress", "In Progress"),
+        ("submitted", "Submitted for Review"),
         ("completed", "Completed"),
         ("skipped", "Skipped"),
         ('overdue', "Overdue"),
@@ -690,6 +797,8 @@ class AssignActivities(models.Model):
     completion_status = models.CharField(max_length=20, choices=COMPLATE_STATUS_CHOICES, default="pending")
     
     assigned_at = models.DateTimeField(auto_now_add=True)
+    accepted_at = models.DateTimeField(null=True, blank=True)
+    started_at = models.DateTimeField(null=True, blank=True)
     completed_at = models.DateTimeField(null=True, blank=True) 
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assign_activity_created_by', blank=True, null=True)
     updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assign_activity_updated_by', blank=True, null=True)
@@ -774,4 +883,64 @@ class CriticalAlert(models.Model):
  
     def __str__(self):
         return f"[{self.severity.upper()}] {self.title}"
+
+
+class Notification(models.Model):
+    CATEGORY_CHOICES = [
+        ("ticket_created", "New Ticket"),
+        ("task_assigned", "Task Assigned"),
+        ("task_accepted", "Task Accepted"),
+        ("task_rejected", "Assignment Declined"),
+        ("work_started", "Work Started"),
+        ("submitted_review", "Submitted for Review"),
+        ("revision_requested", "Revision Requested"),
+        ("review_approved", "Approved & Archived"),
+        ("maintenance_due", "Maintenance Due"),
+        ("maintenance_overdue", "Maintenance Overdue"),
+        ("system", "System"),
+    ]
+
+    LEVEL_CHOICES = [
+        ("info", "Info"),
+        ("success", "Success"),
+        ("warning", "Warning"),
+        ("critical", "Critical"),
+    ]
+
+    recipient = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="notifications",
+        help_text="Null means visible to all staff/admins.",
+    )
+    actor = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="sent_notifications",
+    )
+    category = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default="system", db_index=True)
+    level = models.CharField(max_length=15, choices=LEVEL_CHOICES, default="info", db_index=True)
+    title = models.CharField(max_length=255)
+    message = models.TextField(blank=True)
+    link_url = models.CharField(max_length=500, blank=True)
+
+    ticket = models.ForeignKey("backend.Ticket", on_delete=models.CASCADE, null=True, blank=True, related_name="notifications")
+    equipment = models.ForeignKey("backend.Equipment", on_delete=models.CASCADE, null=True, blank=True, related_name="notifications")
+    technician = models.ForeignKey("backend.Technician", on_delete=models.SET_NULL, null=True, blank=True, related_name="notifications")
+
+    is_read = models.BooleanField(default=False, db_index=True)
+    read_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    deleted = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["-created_at", "-id"]
+
+    def __str__(self):
+        return f"[{self.category}] {self.title}"
+
 

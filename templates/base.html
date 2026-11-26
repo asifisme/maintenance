@@ -44,7 +44,7 @@
             }
         };
         </script>
-        <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+        <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Urbanist:wght@400;500;600;700&display=swap"
               rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
               rel="stylesheet">
@@ -61,19 +61,32 @@
         }
         body {
             font-family: Inter, system-ui, ui-sans-serif;
-            overflow-x: hidden;
+            overflow-x: clip;
+        }
+
+        /* Single-row horizontally scrollable breadcrumb across all viewports */
+        nav[aria-label="Breadcrumb"] {
+            flex-wrap: nowrap !important;
+            overflow-x: auto;
+            white-space: nowrap;
+            min-width: 0;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+        nav[aria-label="Breadcrumb"]::-webkit-scrollbar {
+            display: none;
         }
 
         /* Responsive Breadcrumb and Table fixes */
         @media (max-width: 640px) {
             .lg\:pl-72 {
-                overflow-x: hidden;
+                overflow-x: clip;
                 -webkit-overflow-scrolling: touch;
             }
             
             nav[aria-label="Breadcrumb"] {
                 font-size: 0.75rem !important; /* text-xs */
-                gap: 0.25rem !important;
+                gap: 0.35rem !important;
             }
             nav[aria-label="Breadcrumb"] svg {
                 width: 0.875rem !important;
@@ -85,6 +98,18 @@
                 -webkit-box-orient: vertical;
                 overflow: hidden;
                 max-width: 120px;
+            }
+        }
+
+        /* Mobile Page Title Standardization & Hide Breadcrumbs in Mobile Navbar (< 640px) */
+        @media (max-width: 639px) {
+            header nav[aria-label="Breadcrumb"] {
+                display: none !important;
+            }
+            main h1[class*="-mono"],
+            main h1#page_title {
+                font-size: 20px !important;
+                line-height: 1.25 !important;
             }
         }
 
@@ -101,6 +126,28 @@
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
+        }
+
+        /* Global Mobile Table Non-Compression: Keep Desktop Layout, Enable Left-Right Scroll */
+        main,
+        #mainContentWrapper,
+        [class*="-table-tray"],
+        [class*="-table-inner"],
+        .ov-card,
+        .ov-inner-card,
+        .listing-box {
+            min-width: 0;
+            max-width: 100%;
+        }
+        .overflow-x-auto {
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch;
+        }
+        .overflow-x-auto > table {
+            width: 100%;
+        }
+        :where(.overflow-x-auto > table th, .overflow-x-auto > table td) {
+            white-space: nowrap;
         }
 
         /* Select2 with Tailwind CSS */
@@ -167,7 +214,7 @@
         <style>
         :root {
             --primary-color: {{ design.primary_color|default:'#4354A3' }};
-            --bg-color: {{ design.bg_color|default:'#EEF3F8' }};
+            --bg-color: {{ design.bg_color|default:'#F2F2F2' }};
             --hover-color: {{ design.hover_color|default:'#4354A3' }};
             --border-color: {{design.border_color|default:'#E5E7EB' }};
             --shadow-color: {{ design.shadow_color|default:'#DDE0FF' }};
@@ -184,131 +231,67 @@
             --table-header: #F9FAFB;
             --white-color: #FFFFFF;
         }
+        body,
+        #mainContentWrapper {
+            background-color: #F2F2F2 !important;
+        }
         </style>
         {% block extra_head %}{% endblock %}
     </head>
     <body class="antialiased bg-[var(--bg-color)] text-[var(--text-color)]">
         {% block modals %}{% endblock %}
         {% include 'includes/sidebar.html' %}
-        <div id="mainContentWrapper" class="lg:pl-72 bg-[var(--bg-color)] min-h-screen transition-[padding] duration-300 ease-in-out">
+        <div id="mainContentWrapper" class="lg:pl-72 bg-[var(--bg-color)] min-h-screen transition-[padding] duration-300 ease-in-out flex flex-col justify-between">
             {% block top_header %}
-            <!-- header -->
-            <header class="sticky top-0 z-30 bg-[var(--bg-color)]/80 backdrop-blur ">
-                <div class="mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="h-16 flex items-center justify-between">
-                        <!-- left side -->
-                        <div class="flex items-center gap-2">
-                            <!-- mobile hamburger -->
-                            <button id="btnOpen"
-                                    class="lg:hidden -ml-1 p-2.5 rounded-md hover:bg-[var(--bg-color)]">
-                                <svg class="h-6 w-6 text-[var(--text-color)]"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="2">
-                                    <path d="M4 6h16M4 12h16M4 18h16" />
+            <!-- header: Exact match with Figma Mockup (Breadcrumbs on Left, Notification Bell on Right, No Search, No Profile Icon) -->
+            <header class="sticky top-0 z-30 bg-[#F2F2F2]/95 backdrop-blur-sm">
+                <div class="w-full px-[15px] lg:pl-8 h-14 flex items-center justify-between gap-2.5 min-w-0">
+                    <!-- Left: Mobile Hamburger + Breadcrumb Navigation -->
+                    <div class="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1">
+                        <button id="btnOpen"
+                                type="button"
+                                aria-label="Open navigation"
+                                class="lg:hidden -ml-1 p-2 rounded-lg bg-white border border-[#EAEAE9] text-[#4A4947] hover:bg-[#F5F5F4] transition-colors shrink-0">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                        <nav class="hidden sm:flex items-center gap-2 text-[12.5px] flex-nowrap overflow-x-auto min-w-0 whitespace-nowrap" aria-label="Breadcrumb">
+                            <a href="{% url 'backend:dash_board' %}" class="w-8 h-8 rounded-[8px] bg-white border border-[#EAEAE9] flex items-center justify-center text-[#5C5B59] hover:bg-[#F7F7F6] transition-colors shrink-0" title="Home">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 10.5L12 3l9 7.5" />
+                                    <path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5" />
                                 </svg>
-                            </button>
-                            <!-- mobile logo -->
-                            <div class="flex items-center gap-2 lg:hidden">
-                                <img src="{% url 'backend:serve_optimized_image' 'no_image' %}?width=300&quality=100&image_path=logo"
-                                     class="h-9 w-7"
-                                     alt="">
-                                <span class="text-sm font-semibold">{{ site_setting.site_title|default:'' }}</span>
-                            </div>
-                            <!-- desktop welcome -->
-                            <div class="hidden lg:block ">
-                                <span class="text-2xl font-medium text-[var(--text-color)]">Welcome, {{ user.username }}</span>
-                            </div>
-                        </div>
-                        <!-- Left side -->
-                        <div class="flex items-center gap-3">
-                            <!-- desktop search -->
-                            <div class="hidden lg:block">
-                                <label class="relative block w-[420px]">
-                                    <span class="pointer-events-none absolute inset-y-0 left-3 grid place-items-center">
-                                        <svg class="h-5 w-5 text-[var(--text-light-color)]"
-                                             viewBox="0 0 24 24"
-                                             fill="none"
-                                             stroke="currentColor"
-                                             stroke-width="2">
-                                            <circle cx="11" cy="11" r="7" />
-                                            <path d="M21 21l-4.35-4.35" />
+                            </a>
+                            <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                            </svg>
+                            <a href="{% url 'backend:dash_board' %}" class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#5C5B59] font-medium hover:bg-[#E0E0DF] transition-colors shrink-0">
+                                Dashboard
+                            </a>
+                            {% block breadcrumb %}
+                                {% if current_menu %}
+                                    {% if current_menu.parent %}
+                                        <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                                         </svg>
-                                    </span>
-                                    <input type="text"
-                                           placeholder="Search"
-                                           data-search="backend-menu"
-                                           class="w-full rounded-lg bg-[var(--bg-color)] h-11 pl-10 pr-3 text-sm outline-none ring-1 ring-[var(--border-color)] focus:ring-[var(--primary-color)]/30">
-                                </label>
-                            </div>
-                            <!-- right icons -->
-                            <button class="p-2.5 rounded-md hover:bg-[var(--bg-color)] relative"
-                                    aria-label="Notifications">
-                                <svg class="h-6 w-6 text-[var(--primary-color)]"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="2">
-                                    <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11a6 6 0 1 0-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 1 1-6 0v-1m6 0H9" />
-                                </svg>
-                            </button>
-                            <!-- Profile Dropdown -->
-                            <div class="relative">
-                                <button id="profileMenuBtn"
-                                        onclick="toggleProfileMenu()"
-                                        class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-[var(--bg-color)] transition-colors"
-                                        aria-haspopup="true"
-                                        aria-expanded="false">
-                                    <div class="w-8 h-8 bg-[var(--primary-color)] rounded-full flex items-center justify-center text-white text-sm font-semibold">
-                                        {{ user.username|slice:":1"|upper }}
-                                    </div>
-                                    <svg class="w-4 h-4 text-[var(--text-light-color)] hidden lg:block"
-                                         fill="none"
-                                         stroke="currentColor"
-                                         viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                        <span class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#5C5B59] font-medium shrink-0">
+                                            {{ current_menu.parent.menu_name }}
+                                        </span>
+                                    {% endif %}
+                                    <svg class="w-3.5 h-3.5 text-[#9E9D9B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                                     </svg>
-                                </button>
-                                <div id="profileMenu"
-                                     class="hidden absolute right-0 mt-2 w-56 rounded-lg bg-white ring-1 ring-[var(--border-color)] shadow-lg z-50">
-                                    <div class="px-4 py-3 border-b border-[var(--border-color)]">
-                                        <p class="text-sm font-medium text-[var(--text-color)]">{{ user.get_full_name|default:user.username }}</p>
-                                        <p class="text-xs text-[var(--text-light-color)] mt-0.5">{{ user.email|default:'' }}</p>
-                                    </div>
-                                    <div class="py-1">
-                                        <a href="{% url 'backend:dash_board' %}"
-                                           class="block px-4 py-2 text-sm text-[var(--text-color)] hover:bg-gray-50">
-                                            <i class="fas fa-home mr-2 w-4"></i>Dashboard
-                                        </a>
-                                        <a href="{% url 'backend:backend_logout' %}"
-                                           class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                                            <i class="fas fa-sign-out-alt mr-2 w-4"></i>Logout
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                    <span class="px-3 py-1 rounded-[6px] bg-[#EAEAE8] text-[#2B2823] font-medium shrink-0">
+                                        {{ current_menu.menu_name }}
+                                    </span>
+                                {% endif %}
+                            {% endblock %}
+                        </nav>
                     </div>
-                    <!-- mobile search -->
-                    <div class="pb-3 lg:hidden">
-                        <label class="relative block">
-                            <span class="pointer-events-none absolute inset-y-0 left-3 grid place-items-center">
-                                <svg class="h-5 w-5 text-[var(--text-light-color)]"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="2">
-                                    <circle cx="11" cy="11" r="7" />
-                                    <path d="M21 21l-4.35-4.35" />
-                                </svg>
-                            </span>
-                            <input type="search"
-                                   placeholder="Search"
-                                   data-search="backend-menu"
-                                   class="w-full rounded-lg bg-[var(--bg-color)] h-11 pl-10 pr-3 text-sm outline-none ring-1 ring-[var(--border-color)] focus:ring-[var(--primary-color)]/30">
-                        </label>
-                    </div>
+
+                    <!-- Right: Notification Bell Popover (No search, no profile) -->
+                    {% include 'includes/notification_bell.html' %}
                 </div>
             </header>
             {% endblock %}
@@ -356,36 +339,10 @@
                     </div>
                 </div>
             {% endif %}
-            <main class="md:mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
+            <main class="{% block main_class %}md:mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-1{% endblock %}">
                 {% block page_header %}
                 <!-- Page Header -->
                 <div class="mb-6">
-                    <!-- Breadcrumb Navigation -->
-                    <nav class="flex items-center gap-2 text-sm text-[var(--text-light-color)] mb-3"
-                         aria-label="Breadcrumb">
-                        <a href="{% url 'backend:dash_board' %}"
-                           class="hover:text-[var(--primary-color)] transition-colors flex items-center gap-1">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
-                                </path>
-                            </svg>
-                            <span>Home</span>
-                        </a>
-                        {% for breadcrumb in breadcrumb_menu %}
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                            <a {% if breadcrumb.menu_url %}href="{% if '/' in breadcrumb.menu_url %}{{ breadcrumb.menu_url }}{% else %}{% url 'backend:menu_wise_dashboard' breadcrumb.menu_url %}{% endif %}
-                               "
-                               {% else %}
-                               href="#"
-                               {% endif %}
-                               class="hover:text-[var(--primary-color)] transition-colors{% if forloop.last %} font-medium text-[var(--primary-color)] breadcrumb-last{% endif %}">
-                                {{ breadcrumb.menu_name }}
-                            </a>
-                        {% endfor %}
-                        {% block breadcrumb %}{% endblock %}
-                    </nav>
                     <!-- Page Title and Actions -->
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div class="flex items-center gap-3">
@@ -415,6 +372,11 @@
         if (pageTitle) {
             document.title = pageTitle.textContent.trim() + ' - {{ site_setting.site_title|default:"" }}';
         }
+        document.querySelectorAll('nav[aria-label="Breadcrumb"]').forEach(nav => {
+            if (nav.scrollWidth > nav.clientWidth) {
+                nav.scrollLeft = nav.scrollWidth;
+            }
+        });
         </script>
         <!-- Loading State -->
         <script>
@@ -494,6 +456,170 @@
             -moz-text-fill-color: inherit;
             caret-color: inherit;
         }
+
+        /* ══════════════════════════════════════════════════════════════
+           Figma Searchable Filter Dropdowns (Global System)
+           Frame 2147259697 & Frame 2147259513
+           ══════════════════════════════════════════════════════════════ */
+        .ov-dropdown-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .ov-dropdown-trigger {
+            height: 34px;
+            border-radius: 8px;
+            background-color: #EAEAE8;
+            border: 1px solid #E2E2E0;
+            padding: 0 12px;
+            font-family: 'Urbanist', Inter, system-ui, sans-serif;
+            font-size: 12.5px;
+            font-weight: 500;
+            color: #555452;
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            cursor: pointer;
+            box-sizing: border-box;
+            transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
+            white-space: nowrap;
+            outline: none;
+        }
+        .ov-dropdown-trigger:hover {
+            background-color: #E3E3E1;
+            border-color: #D5D5D3;
+            color: #2B2A29;
+        }
+        .ov-dropdown-trigger.is-active {
+            background-color: #FFFFFF !important;
+            border: 2px solid #0B7A44 !important;
+            color: #2B2823 !important;
+            box-shadow: 0 0 0 1px rgba(11, 122, 68, 0.12) !important;
+        }
+        .ov-dropdown-trigger.is-active .ov-dropdown-chevron {
+            color: #2B2823;
+            transform: rotate(180deg);
+        }
+
+        /* Menu Outer Tray (Frame 2147259697: Fixed 219px, Radius 12px, Border 2px #EDEDED, BG #F9F9F9, Padding 4px, Gap 4px) */
+        .ov-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            z-index: 50;
+            width: 219px;
+            border-radius: 12px;
+            border: 2px solid #EDEDED;
+            background-color: #F9F9F9;
+            padding: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            box-shadow: 0px 5px 12px 0px rgba(176, 176, 176, 0.17), 0px 21px 21px 0px rgba(176, 176, 176, 0.14);
+            box-sizing: border-box;
+        }
+        .ov-dropdown-menu.hidden {
+            display: none !important;
+        }
+
+        /* Right-alignment modifier / Section dropdown default */
+        .ov-dropdown-menu.ov-dropdown-menu-right,
+        #ovSectionWrapper .ov-dropdown-menu {
+            left: auto;
+            right: 0;
+        }
+
+        /* Search Input (Frame 2147259513: Fill 207px x Hug 31px, Radius 8px, Border 0.5px rgba(240,240,240,0.6), BG #FFFFFF) */
+        .ov-dropdown-search {
+            width: 100%;
+            height: 31px;
+            border-radius: 8px;
+            border: 0.5px solid rgba(240, 240, 240, 0.6);
+            background-color: #FFFFFF;
+            padding: 6px 8px 6px 12px;
+            box-shadow: 0px 0px 6px 0px rgba(135, 135, 135, 0.02), 0px 1px 2px 0px rgba(135, 135, 135, 0.09);
+            font-family: 'Urbanist', Inter, system-ui, sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            color: #2B2823;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .ov-dropdown-search::placeholder {
+            color: #8E8C89;
+        }
+        .ov-dropdown-search:focus {
+            border-color: #0B7A44;
+            box-shadow: 0 0 0 1px rgba(11, 122, 68, 0.15);
+        }
+
+        /* Inner Options Container (Frame 2147207632: Fill 207px x Hug 252px, Radius 8px, BG #FFFFFF, Padding 4px) */
+        .ov-dropdown-options-list {
+            width: 100%;
+            max-height: 252px;
+            overflow-y: auto;
+            border-radius: 8px;
+            background-color: #FFFFFF;
+            padding: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            box-sizing: border-box;
+        }
+        .ov-dropdown-options-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .ov-dropdown-options-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .ov-dropdown-options-list::-webkit-scrollbar-thumb {
+            background: #E2E2E0;
+            border-radius: 4px;
+        }
+        .ov-dropdown-options-list::-webkit-scrollbar-thumb:hover {
+            background: #C4C4C2;
+        }
+
+        /* Option Item (Frame 2147259513: Fill 187px x Fixed 34px, Radius 8px, Padding 0 12px, Hover/Selected #F7F7F7) */
+        .ov-dropdown-item {
+            width: 100%;
+            height: 34px;
+            min-height: 34px;
+            border-radius: 8px;
+            padding: 0 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: transparent;
+            font-family: 'Urbanist', Inter, system-ui, sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: #2B2823;
+            cursor: pointer;
+            transition: background-color 120ms ease;
+            box-sizing: border-box;
+            user-select: none;
+        }
+        .ov-dropdown-item:hover {
+            background-color: #F7F7F7;
+        }
+        .ov-dropdown-item.is-selected {
+            background-color: #F7F7F7;
+            font-weight: 600;
+        }
+        .ov-dropdown-item.hidden {
+            display: none !important;
+        }
+        .ov-dropdown-empty {
+            padding: 10px 12px;
+            text-align: center;
+            font-family: 'Urbanist', Inter, system-ui, sans-serif;
+            font-size: 12.5px;
+            color: #8E8C89;
+        }
+        .ov-dropdown-empty.hidden {
+            display: none !important;
+        }
         </style>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -571,6 +697,247 @@
                     $('[data-menu-btn]').attr('aria-expanded', 'false');
                 }
             });
+        </script>
+
+        <!-- ══════════════════════════════════════════════════════════════
+             Global Figma Searchable Filter Dropdown Controller
+             ══════════════════════════════════════════════════════════════ -->
+        <script>
+        (function() {
+            function closeAllCustomDropdowns() {
+                document.querySelectorAll('.ov-dropdown-wrapper').forEach(wrapper => {
+                    const trigger = wrapper.querySelector('.ov-dropdown-trigger');
+                    const menu = wrapper.querySelector('.ov-dropdown-menu');
+                    const searchInput = wrapper.querySelector('.ov-dropdown-search');
+                    trigger?.classList.remove('is-active');
+                    trigger?.setAttribute('aria-expanded', 'false');
+                    menu?.classList.add('hidden');
+                    if (menu && wrapper.id !== 'ovSectionWrapper' && !menu.classList.contains('ov-dropdown-menu-right')) {
+                        menu.style.left = '';
+                        menu.style.right = '';
+                    }
+                    if (searchInput) searchInput.value = '';
+                    wrapper.querySelectorAll('.ov-dropdown-item').forEach(item => item.classList.remove('hidden'));
+                    wrapper.querySelector('.ov-dropdown-empty')?.classList.add('hidden');
+                });
+            }
+
+            function initCustomDropdowns() {
+                // 1. Auto-enhance filter selects across all list pages
+                const filterSelects = document.querySelectorAll(
+                    'select[data-searchable], select.searchable-dropdown, select[class*="-filter-select"], select.filter-select-pill'
+                );
+
+                filterSelects.forEach(select => {
+                    if (select.dataset.dropdownInitialized) return;
+                    // Skip modal selects or selects explicitly opted out
+                    if (select.closest('.modal, [class*="modal"], [data-no-searchable]')) return;
+                    if (select.classList.contains('sub-modal-select') || 
+                        select.classList.contains('sec-modal-select') || 
+                        select.classList.contains('div-modal-select')) return;
+
+                    select.dataset.dropdownInitialized = 'true';
+                    select.style.display = 'none';
+
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'ov-dropdown-wrapper';
+                    if (select.id) wrapper.dataset.forSelect = select.id;
+                    if (select.name) wrapper.dataset.forName = select.name;
+
+                    // Current selected text
+                    const selectedOpt = select.options[select.selectedIndex] || select.options[0];
+                    const firstOpt = select.options[0];
+                    const rawPlaceholder = select.getAttribute('data-placeholder') || (firstOpt ? firstOpt.text : 'Select');
+                    const cleanPlaceholder = rawPlaceholder.replace(/^All\s+/i, '').trim();
+                    const searchPlaceholder = select.getAttribute('data-search-placeholder') ||
+                        ('Search ' + (cleanPlaceholder ? cleanPlaceholder.toLowerCase() : 'options'));
+
+                    // Trigger button
+                    const trigger = document.createElement('button');
+                    trigger.type = 'button';
+                    trigger.className = 'ov-dropdown-trigger';
+                    trigger.setAttribute('aria-haspopup', 'listbox');
+                    trigger.setAttribute('aria-expanded', 'false');
+                    if (select.getAttribute('aria-label')) {
+                        trigger.setAttribute('aria-label', select.getAttribute('aria-label'));
+                    }
+                    trigger.innerHTML = `
+                        <span class="ov-dropdown-label truncate max-w-[140px]">${selectedOpt ? selectedOpt.text : rawPlaceholder}</span>
+                        <svg class="ov-dropdown-chevron w-3 h-3 text-[#716F6C] shrink-0 pointer-events-none transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+                        </svg>
+                    `;
+                    wrapper.appendChild(trigger);
+
+                    // Menu tray
+                    const menu = document.createElement('div');
+                    menu.className = 'ov-dropdown-menu hidden';
+                    menu.setAttribute('role', 'listbox');
+
+                    // Search container
+                    const searchContainer = document.createElement('div');
+                    searchContainer.className = 'w-full';
+                    const searchInput = document.createElement('input');
+                    searchInput.type = 'text';
+                    searchInput.className = 'ov-dropdown-search';
+                    searchInput.placeholder = searchPlaceholder;
+                    searchInput.autocomplete = 'off';
+                    searchContainer.appendChild(searchInput);
+                    menu.appendChild(searchContainer);
+
+                    // Options list
+                    const listContainer = document.createElement('div');
+                    listContainer.className = 'ov-dropdown-options-list';
+
+                    Array.from(select.options).forEach((opt, idx) => {
+                        const item = document.createElement('div');
+                        const isSel = opt.selected || (!select.value && idx === 0);
+                        item.className = 'ov-dropdown-item' + (isSel ? ' is-selected' : '');
+                        item.dataset.value = opt.value;
+                        item.dataset.label = opt.text;
+                        item.innerHTML = `<span class="truncate">${opt.text}</span>`;
+                        listContainer.appendChild(item);
+                    });
+
+                    const emptyEl = document.createElement('div');
+                    emptyEl.className = 'ov-dropdown-empty hidden';
+                    emptyEl.textContent = 'No ' + (cleanPlaceholder ? cleanPlaceholder.toLowerCase() : 'options') + ' found';
+                    listContainer.appendChild(emptyEl);
+
+                    menu.appendChild(listContainer);
+                    wrapper.appendChild(menu);
+
+                    select.parentNode.insertBefore(wrapper, select.nextSibling);
+                });
+
+                // 2. Bind listeners for all .ov-dropdown-wrapper
+                document.querySelectorAll('.ov-dropdown-wrapper').forEach(wrapper => {
+                    if (wrapper.dataset.eventsBound) return;
+                    wrapper.dataset.eventsBound = 'true';
+
+                    const trigger = wrapper.querySelector('.ov-dropdown-trigger');
+                    const menu = wrapper.querySelector('.ov-dropdown-menu');
+                    const searchInput = wrapper.querySelector('.ov-dropdown-search');
+                    const hiddenInput = wrapper.querySelector('input[type="hidden"]');
+                    const labelEl = wrapper.querySelector('.ov-dropdown-label');
+                    const emptyEl = wrapper.querySelector('.ov-dropdown-empty');
+
+                    const prevSibling = wrapper.previousElementSibling;
+                    const associatedSelect = (prevSibling && prevSibling.tagName === 'SELECT') ? prevSibling : null;
+
+                    // Toggle dropdown open/close
+                    trigger?.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const isOpen = menu && !menu.classList.contains('hidden');
+                        closeAllCustomDropdowns();
+                        if (!isOpen && menu) {
+                            menu.classList.remove('hidden');
+                            trigger.classList.add('is-active');
+                            trigger.setAttribute('aria-expanded', 'true');
+
+                            // Viewport boundary check (right AND left) to prevent overflow on mobile & desktop
+                            menu.style.left = '';
+                            menu.style.right = '';
+                            let rect = menu.getBoundingClientRect();
+                            if (rect.right > (window.innerWidth - 12)) {
+                                menu.style.left = 'auto';
+                                menu.style.right = '0';
+                                rect = menu.getBoundingClientRect();
+                            }
+                            if (rect.left < 12) {
+                                const wrapRect = wrapper.getBoundingClientRect();
+                                menu.style.right = 'auto';
+                                menu.style.left = (12 - wrapRect.left) + 'px';
+                            }
+
+                            if (searchInput) {
+                                searchInput.value = '';
+                                wrapper.querySelectorAll('.ov-dropdown-item').forEach(it => it.classList.remove('hidden'));
+                                emptyEl?.classList.add('hidden');
+                                setTimeout(() => searchInput.focus(), 50);
+                            }
+                        }
+                    });
+
+                    // Search filtering
+                    searchInput?.addEventListener('input', (e) => {
+                        const q = e.target.value.toLowerCase().trim();
+                        let visibleCount = 0;
+                        const items = wrapper.querySelectorAll('.ov-dropdown-item');
+                        items.forEach(item => {
+                            const text = (item.dataset.label || '').toLowerCase();
+                            if (!q || text.includes(q)) {
+                                item.classList.remove('hidden');
+                                visibleCount++;
+                            } else {
+                                item.classList.add('hidden');
+                            }
+                        });
+                        if (emptyEl) {
+                            if (visibleCount === 0) emptyEl.classList.remove('hidden');
+                            else emptyEl.classList.add('hidden');
+                        }
+                    });
+
+                    menu?.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                    });
+
+                    // Option click handling
+                    wrapper.querySelectorAll('.ov-dropdown-item').forEach(item => {
+                        item.addEventListener('click', () => {
+                            const val = item.dataset.value || '';
+                            const label = item.dataset.label || '';
+
+                            if (labelEl) labelEl.textContent = label;
+                            wrapper.querySelectorAll('.ov-dropdown-item').forEach(it => it.classList.remove('is-selected'));
+                            item.classList.add('is-selected');
+
+                            closeAllCustomDropdowns();
+
+                            if (hiddenInput) {
+                                hiddenInput.value = val;
+                                // Overview dashboard cascading
+                                if (hiddenInput.id === 'ovDivisionSelect') {
+                                    const subInput = document.getElementById('ovSubdivisionSelect');
+                                    const secInput = document.getElementById('ovSectionSelect');
+                                    if (subInput) subInput.value = '';
+                                    if (secInput) secInput.value = '';
+                                } else if (hiddenInput.id === 'ovSubdivisionSelect') {
+                                    const secInput = document.getElementById('ovSectionSelect');
+                                    if (secInput) secInput.value = '';
+                                }
+                                const form = hiddenInput.closest('form');
+                                form?.submit();
+                            } else if (associatedSelect) {
+                                associatedSelect.value = val;
+                                associatedSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                                if (associatedSelect.form) {
+                                    associatedSelect.form.submit();
+                                }
+                            }
+                        });
+                    });
+                });
+            }
+
+            // Expose globally
+            window.initCustomDropdowns = initCustomDropdowns;
+            window.closeAllCustomDropdowns = closeAllCustomDropdowns;
+
+            // Global outside click and escape listeners
+            document.addEventListener('click', () => closeAllCustomDropdowns());
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeAllCustomDropdowns();
+            });
+
+            // Auto-run on DOM ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initCustomDropdowns);
+            } else {
+                initCustomDropdowns();
+            }
+        })();
         </script>
         <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
         <script src="{% static 'js/backend_menu_search.js' %}"></script>

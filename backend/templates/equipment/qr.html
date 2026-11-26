@@ -15,8 +15,14 @@
         <main class="flex-1 w-full px-4 py-8 flex flex-col items-center relative">
             <!-- Title & Back -->
             <div class="w-full max-w-sm relative flex justify-center items-center mb-8">
-                <a href="{% url 'backend:equipment_detail' obj.id %}"
-                   class="absolute left-0 p-2 text-gray-800 hover:bg-gray-100 rounded-full transition">
+                {% if technician_obj %}
+                    <a href="{% url 'backend:technician_details' technician_obj.id %}?tab=tasks"
+                       class="absolute left-0 p-2 text-gray-800 hover:bg-gray-100 rounded-full transition"
+                       title="Back to Technician Tasks">
+                {% else %}
+                    <a href="{% url 'backend:equipment_detail' obj.id %}"
+                       class="absolute left-0 p-2 text-gray-800 hover:bg-gray-100 rounded-full transition">
+                {% endif %}
                     <svg width="20"
                          height="20"
                          viewBox="0 0 24 24"
@@ -35,7 +41,7 @@
                 <!-- Top Dark Section -->
                 <div class="w-full bg-[#171A21] rounded-[20px] flex flex-col items-center pt-10 pb-8 px-6 text-center text-white">
                     <!-- QR Code Box -->
-                    <a href="{% url 'backend:equipment_detail' obj.id %}"
+                    <a href="{% if ticket_obj %}{% url 'backend:static_otp_verification' %}?building={{ obj.building_id|default:'' }}&equipment={{ obj.id }}&ticket={{ ticket_obj.id }}{% if technician_param %}&technician={{ technician_param }}{% endif %}{% else %}{% url 'backend:equipment_detail' obj.id %}{% endif %}"
                        class="w-32 h-32 bg-white rounded-[20px] flex items-center justify-center mb-6 p-3 shadow-lg hover:scale-105 transition transform block">
                         {% if qr_base64 %}
                             <img src="data:image/png;base64,{{ qr_base64 }}"
@@ -70,7 +76,7 @@
                     <div class="flex items-center justify-between mb-6">
                         <div>
                             <p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-1">Building</p>
-                            <p class="text-sm font-bold text-gray-900">{{ obj.building.name }}</p>
+                            <p class="text-sm font-bold text-gray-900">{% if obj.building %}{{ obj.building.name }}{% else %}Unassigned{% endif %}</p>
                         </div>
                         <div>
                             {% if obj.status == 'active' %}
@@ -91,11 +97,23 @@
                             {% endif %}
                         </div>
                     </div>
+                    {% if ticket_obj %}
+                        <div class="mb-5 rounded-xl bg-[#EAFBF3] border border-[#CDEEDB] px-3.5 py-2.5">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="text-[10px] font-extrabold text-[#168E46] uppercase tracking-wider">Assigned Task</span>
+                                <span class="font-mono text-[11px] font-bold text-[#168E46]">Ticket #{{ ticket_obj.id }}</span>
+                            </div>
+                            <p class="text-[13px] font-bold text-gray-900 mt-0.5">{{ ticket_obj.title }}</p>
+                            {% if technician_obj %}
+                                <p class="text-[11.5px] text-gray-600 mt-0.5">Technician: <strong class="text-gray-900">{{ technician_obj.display_name }}</strong></p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
                     <!-- Action Buttons -->
                     <div class="space-y-3 mb-8">
-                        <!-- Link to create ticket or maintenance -->
-                        <a href="{% url 'backend:static_otp_verification' %}?building={{ obj.building.id }}&equipment={{ obj.id }}"
-                           class="w-full bg-[#405DF9] hover:bg-blue-700 text-white text-[15px] font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 transition shadow-sm">
+                        <!-- Link to PIN Verification -->
+                        <a href="{% url 'backend:static_otp_verification' %}?building={{ obj.building_id|default:'' }}&equipment={{ obj.id }}{% if ticket_param %}&ticket={{ ticket_param }}{% endif %}{% if technician_param %}&technician={{ technician_param }}{% endif %}"
+                           class="w-full {% if ticket_obj %}bg-[#0B7A44] hover:bg-[#08683A]{% else %}bg-[#405DF9] hover:bg-blue-700{% endif %} text-white text-[15px] font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 transition shadow-sm">
                             <svg width="18"
                                  height="18"
                                  viewBox="0 0 24 24"
@@ -107,9 +125,10 @@
                                 <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">
                                 </path>
                             </svg>
-                            Start Maintenance
+                            {% if ticket_obj %}Enter PIN &amp; Start Work{% else %}Start Maintenance{% endif %}
                         </a>
-                        <a href="{% url 'backend:ticket_add' %}?building_id={{ obj.building.id }}&equipment_id={{ obj.id }}&type=issue"
+                        {% if not ticket_obj %}
+                        <a href="{% url 'backend:ticket_add' %}?building_id={{ obj.building_id|default:'' }}&equipment_id={{ obj.id }}&type=issue"
                            class="w-full bg-[#F36B2B] hover:bg-orange-600 text-white text-[15px] font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 transition shadow-sm">
                             <svg width="18"
                                  height="18"
@@ -123,6 +142,7 @@
                             </svg>
                             Report Issue
                         </a>
+                        {% endif %}
                     </div>
                     <!-- Recent Activity -->
                     <div>

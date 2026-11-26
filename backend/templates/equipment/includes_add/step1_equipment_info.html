@@ -1,0 +1,185 @@
+<!-- ========================================== -->
+<!-- STEP 1: Equipment Information              -->
+<!-- ========================================== -->
+<div id="stepSection1" class="space-y-4">
+
+    <!-- Equipment Type (Searchable Dropdown + Instant Create) -->
+    <div class="relative" id="equipmentTypeWrap">
+        <label class="form-label" for="typeSearchInput">
+            Equipment Type <span class="text-[#D93025]">*</span>
+        </label>
+        <div class="relative">
+            <input type="text"
+                   id="typeSearchInput"
+                   autocomplete="off"
+                   class="form-input-field pr-9"
+                   placeholder="Search or select equipment type...">
+            <button type="button"
+                    id="btnClearType"
+                    class="input-clear-btn hidden"
+                    title="Clear">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <p id="err_type" class="text-xs text-[#D93025] mt-1 hidden">Please select an equipment type.</p>
+
+        <!-- Equipment Types Dropdown Menu -->
+        <div id="typeDropdownMenu" class="hidden absolute left-0 right-0 top-full mt-1.5 z-40 bg-white rounded-xl border border-[#EAEAEA] shadow-lg max-h-56 overflow-y-auto p-1.5 space-y-1">
+            <div id="typeListContainer" class="space-y-0.5">
+                <!-- Populated dynamically by JS -->
+            </div>
+            <div id="typeCreateOption" class="hidden border-t border-[#F0F0F0] pt-1">
+                <button type="button"
+                        id="btnQuickCreateType"
+                        class="w-full text-left px-3 py-2 rounded-lg text-[13px] font-semibold text-[#0B7A44] bg-[#E8F5E9] hover:bg-[#C8E6C9] flex items-center gap-2 transition-colors">
+                    <span class="text-base font-bold">+</span>
+                    <span id="typeCreateLabel">Create ""</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 1: Equipment ID & Equipment Name -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+        <div>
+            <label class="form-label" for="equipment_id">
+                Equipment ID <span class="text-[#D93025]">*</span>
+            </label>
+            <input type="text"
+                   id="equipment_id"
+                   name="equipment_id"
+                   value="{{ obj.equipment_id|default:'' }}"
+                   class="form-input-field"
+                   placeholder="e.g. EQ-2026-001">
+            <p class="text-[11.5px] text-[#969491] mt-1">Cannot be changed after creation.</p>
+            <p id="err_equipment_id" class="text-xs text-[#D93025] mt-0.5 hidden">Equipment ID is required.</p>
+        </div>
+        <div>
+            <label class="form-label" for="equipment_name">
+                Equipment Name <span class="text-[#D93025]">*</span>
+            </label>
+            <input type="text"
+                   id="equipment_name"
+                   name="equipment_name"
+                   value="{{ obj.equipment_name|default:'' }}"
+                   class="form-input-field"
+                   placeholder="Enter equipment name">
+            <p id="err_equipment_name" class="text-xs text-[#D93025] mt-1 hidden">Equipment Name is required.</p>
+        </div>
+    </div>
+
+    <!-- Row 2: Serial Number & Model Number -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+        <div>
+            <label class="form-label" for="serial_number">
+                Serial Number <span class="text-[#D93025]">*</span>
+            </label>
+            <input type="text"
+                   id="serial_number"
+                   name="serial_number"
+                   value="{{ obj.serial_number|default:'' }}"
+                   class="form-input-field"
+                   placeholder="Enter manufacturer's serial number">
+            <p id="err_serial_number" class="text-xs text-[#D93025] mt-1 hidden">Serial number is required.</p>
+        </div>
+        <div>
+            <label class="form-label" for="model_number">
+                Model Number <span class="text-[#D93025]">*</span>
+            </label>
+            <input type="text"
+                   id="model_number"
+                   name="model_number"
+                   value="{{ obj.model_number|default:'' }}"
+                   class="form-input-field"
+                   placeholder="Enter model number">
+            <p id="err_model_number" class="text-xs text-[#D93025] mt-1 hidden">Model number is required.</p>
+        </div>
+    </div>
+
+    <!-- Row 3: Brand (Select or Create) -->
+    <div class="relative" id="brandWrap">
+        <label class="form-label" for="brandInput">
+            Brand <span class="text-[#D93025]">*</span>
+        </label>
+        <div class="relative">
+            <input type="text"
+                   id="brandInput"
+                   name="brand"
+                   value="{{ obj.brand|default:'' }}"
+                   autocomplete="off"
+                   class="form-input-field pr-9"
+                   placeholder="Select or create a brand">
+            <button type="button"
+                    id="btnClearBrand"
+                    class="input-clear-btn hidden"
+                    title="Clear">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <p id="err_brand" class="text-xs text-[#D93025] mt-1 hidden">Brand is required.</p>
+
+        <!-- Brands Dropdown -->
+        <div id="brandDropdownMenu" class="hidden absolute left-0 right-0 top-full mt-1.5 z-40 bg-white rounded-xl border border-[#EAEAEA] shadow-lg max-h-48 overflow-y-auto p-1.5 space-y-1">
+            <div id="brandListContainer" class="space-y-0.5">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 4: Purchase Date & Warranty Expire Date -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+        <div>
+            <label class="form-label" for="purchase_date">Purchase Date</label>
+            <input type="date"
+                   id="purchase_date"
+                   name="purchase_date"
+                   value="{% if obj.purchase_date %}{{ obj.purchase_date|date:'Y-m-d' }}{% endif %}"
+                   class="form-input-field">
+        </div>
+        <div>
+            <label class="form-label" for="warranty_expire_date">Warranty Expire Date</label>
+            <input type="date"
+                   id="warranty_expire_date"
+                   name="warranty_expire_date"
+                   value="{% if obj.warranty_expire_date %}{{ obj.warranty_expire_date|date:'Y-m-d' }}{% endif %}"
+                   class="form-input-field">
+        </div>
+    </div>
+
+    <!-- Dynamic Configured Type Fields Container -->
+    <div id="dynamicFieldsSection" class="hidden border-t border-[#EAEAEA] pt-3.5 space-y-3.5">
+        <h3 id="dynamicFieldsHeading" class="text-[13.5px] font-semibold text-[#2B2823]">
+            Fields configured for Equipment.
+        </h3>
+        <div id="dynamicFieldsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <!-- Populated dynamically based on selected Equipment Type -->
+        </div>
+    </div>
+
+    <!-- Equipment Status Section -->
+    <div class="border-t border-[#EAEAEA] pt-3.5 space-y-2.5">
+        <label class="form-label mb-1">Equipment Status</label>
+        <div class="flex flex-wrap items-center gap-2" id="statusPillsGroup">
+            <span class="status-pill is-selected" data-status="active" onclick="selectStatus('active', this)">Active</span>
+            <span class="status-pill" data-status="in_repair" onclick="selectStatus('in_repair', this)">In Repair</span>
+            <span class="status-pill" data-status="under_maintenance" onclick="selectStatus('under_maintenance', this)">Under Maintenance</span>
+            <span class="status-pill" data-status="inactive" onclick="selectStatus('inactive', this)">Inactive</span>
+            <span class="status-pill" data-status="decommissioned" onclick="selectStatus('decommissioned', this)">Decommissioned</span>
+        </div>
+    </div>
+
+    <!-- Step 1 Actions -->
+    <div class="flex items-center justify-between pt-4">
+        <a href="{% url 'backend:equipment_list' %}" class="btn-secondary">Cancel</a>
+        <button type="button" class="btn-forest" onclick="goToStep(2)">
+            <span>Save &amp; Continue</span>
+        </button>
+    </div>
+
+</div>
