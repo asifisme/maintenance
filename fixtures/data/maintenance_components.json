@@ -1,0 +1,762 @@
+[
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 1,
+        "fields": {
+            "maintenance_record": 1,
+            "name": "Refrigerant Leak & Standing Pressure Verification (Rec #1)",
+            "description": "Electronic halide sniffer scan across all flange joints, Schrader valves, and mechanical seals.",
+            "is_checked": true,
+            "remark": "Zero leak detected, holding 120 PSI standing pressure.",
+            "suggestion": "Proceed with full operational load test.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 2,
+        "fields": {
+            "maintenance_record": 1,
+            "name": "Lubrication Oil Level & Differential Pressure Check (Rec #1)",
+            "description": "Inspect sight glass oil level and verify oil pump differential pressure reaches 25-30 PSI above suction.",
+            "is_checked": true,
+            "remark": "Oil clean, differential holding at 28.5 PSI.",
+            "suggestion": "Scheduled next oil lab analysis for Q1 2027.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 3,
+        "fields": {
+            "maintenance_record": 1,
+            "name": "Electrical Terminal Torque & Thermal Scan (Rec #1)",
+            "description": "Torque all 480V lug connections to manufacturer spec (45 ft-lbs) and inspect with FLIR thermal camera.",
+            "is_checked": true,
+            "remark": "All phases balanced within 2°C.",
+            "suggestion": "No loose connections identified.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 4,
+        "fields": {
+            "maintenance_record": 1,
+            "name": "Safety Interlock & Emergency Cutout Trip Test (Rec #1)",
+            "description": "Simulate high discharge pressure and low oil differential cutouts to verify instantaneous controller trip.",
+            "is_checked": true,
+            "remark": "All safety trips operational within 0.8 seconds.",
+            "suggestion": "Pass safety certification standard.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 5,
+        "fields": {
+            "maintenance_record": 2,
+            "name": "Refrigerant Leak & Standing Pressure Verification (Rec #2)",
+            "description": "Electronic halide sniffer scan across all flange joints, Schrader valves, and mechanical seals.",
+            "is_checked": true,
+            "remark": "Zero leak detected, holding 120 PSI standing pressure.",
+            "suggestion": "Proceed with full operational load test.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 6,
+        "fields": {
+            "maintenance_record": 2,
+            "name": "Lubrication Oil Level & Differential Pressure Check (Rec #2)",
+            "description": "Inspect sight glass oil level and verify oil pump differential pressure reaches 25-30 PSI above suction.",
+            "is_checked": true,
+            "remark": "Oil clean, differential holding at 28.5 PSI.",
+            "suggestion": "Scheduled next oil lab analysis for Q1 2027.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 7,
+        "fields": {
+            "maintenance_record": 2,
+            "name": "Electrical Terminal Torque & Thermal Scan (Rec #2)",
+            "description": "Torque all 480V lug connections to manufacturer spec (45 ft-lbs) and inspect with FLIR thermal camera.",
+            "is_checked": true,
+            "remark": "All phases balanced within 2°C.",
+            "suggestion": "No loose connections identified.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 8,
+        "fields": {
+            "maintenance_record": 2,
+            "name": "Safety Interlock & Emergency Cutout Trip Test (Rec #2)",
+            "description": "Simulate high discharge pressure and low oil differential cutouts to verify instantaneous controller trip.",
+            "is_checked": true,
+            "remark": "All safety trips operational within 0.8 seconds.",
+            "suggestion": "Pass safety certification standard.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 9,
+        "fields": {
+            "maintenance_record": 3,
+            "name": "Refrigerant Leak & Standing Pressure Verification (Rec #3)",
+            "description": "Electronic halide sniffer scan across all flange joints, Schrader valves, and mechanical seals.",
+            "is_checked": true,
+            "remark": "Zero leak detected, holding 120 PSI standing pressure.",
+            "suggestion": "Proceed with full operational load test.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 10,
+        "fields": {
+            "maintenance_record": 3,
+            "name": "Lubrication Oil Level & Differential Pressure Check (Rec #3)",
+            "description": "Inspect sight glass oil level and verify oil pump differential pressure reaches 25-30 PSI above suction.",
+            "is_checked": true,
+            "remark": "Oil clean, differential holding at 28.5 PSI.",
+            "suggestion": "Scheduled next oil lab analysis for Q1 2027.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 11,
+        "fields": {
+            "maintenance_record": 3,
+            "name": "Electrical Terminal Torque & Thermal Scan (Rec #3)",
+            "description": "Torque all 480V lug connections to manufacturer spec (45 ft-lbs) and inspect with FLIR thermal camera.",
+            "is_checked": true,
+            "remark": "All phases balanced within 2°C.",
+            "suggestion": "No loose connections identified.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 12,
+        "fields": {
+            "maintenance_record": 3,
+            "name": "Safety Interlock & Emergency Cutout Trip Test (Rec #3)",
+            "description": "Simulate high discharge pressure and low oil differential cutouts to verify instantaneous controller trip.",
+            "is_checked": true,
+            "remark": "All safety trips operational within 0.8 seconds.",
+            "suggestion": "Pass safety certification standard.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 13,
+        "fields": {
+            "maintenance_record": 4,
+            "name": "Refrigerant Leak & Standing Pressure Verification (Rec #4)",
+            "description": "Electronic halide sniffer scan across all flange joints, Schrader valves, and mechanical seals.",
+            "is_checked": true,
+            "remark": "Zero leak detected, holding 120 PSI standing pressure.",
+            "suggestion": "Proceed with full operational load test.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 14,
+        "fields": {
+            "maintenance_record": 4,
+            "name": "Lubrication Oil Level & Differential Pressure Check (Rec #4)",
+            "description": "Inspect sight glass oil level and verify oil pump differential pressure reaches 25-30 PSI above suction.",
+            "is_checked": true,
+            "remark": "Oil clean, differential holding at 28.5 PSI.",
+            "suggestion": "Scheduled next oil lab analysis for Q1 2027.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 15,
+        "fields": {
+            "maintenance_record": 4,
+            "name": "Electrical Terminal Torque & Thermal Scan (Rec #4)",
+            "description": "Torque all 480V lug connections to manufacturer spec (45 ft-lbs) and inspect with FLIR thermal camera.",
+            "is_checked": true,
+            "remark": "All phases balanced within 2°C.",
+            "suggestion": "No loose connections identified.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 16,
+        "fields": {
+            "maintenance_record": 4,
+            "name": "Safety Interlock & Emergency Cutout Trip Test (Rec #4)",
+            "description": "Simulate high discharge pressure and low oil differential cutouts to verify instantaneous controller trip.",
+            "is_checked": true,
+            "remark": "All safety trips operational within 0.8 seconds.",
+            "suggestion": "Pass safety certification standard.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 17,
+        "fields": {
+            "maintenance_record": 5,
+            "name": "Refrigerant Leak & Standing Pressure Verification (Rec #5)",
+            "description": "Electronic halide sniffer scan across all flange joints, Schrader valves, and mechanical seals.",
+            "is_checked": true,
+            "remark": "Zero leak detected, holding 120 PSI standing pressure.",
+            "suggestion": "Proceed with full operational load test.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 18,
+        "fields": {
+            "maintenance_record": 5,
+            "name": "Lubrication Oil Level & Differential Pressure Check (Rec #5)",
+            "description": "Inspect sight glass oil level and verify oil pump differential pressure reaches 25-30 PSI above suction.",
+            "is_checked": true,
+            "remark": "Oil clean, differential holding at 28.5 PSI.",
+            "suggestion": "Scheduled next oil lab analysis for Q1 2027.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 19,
+        "fields": {
+            "maintenance_record": 5,
+            "name": "Electrical Terminal Torque & Thermal Scan (Rec #5)",
+            "description": "Torque all 480V lug connections to manufacturer spec (45 ft-lbs) and inspect with FLIR thermal camera.",
+            "is_checked": true,
+            "remark": "All phases balanced within 2°C.",
+            "suggestion": "No loose connections identified.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 20,
+        "fields": {
+            "maintenance_record": 5,
+            "name": "Safety Interlock & Emergency Cutout Trip Test (Rec #5)",
+            "description": "Simulate high discharge pressure and low oil differential cutouts to verify instantaneous controller trip.",
+            "is_checked": true,
+            "remark": "All safety trips operational within 0.8 seconds.",
+            "suggestion": "Pass safety certification standard.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 21,
+        "fields": {
+            "maintenance_record": 6,
+            "name": "Refrigerant Leak & Standing Pressure Verification (Rec #6)",
+            "description": "Electronic halide sniffer scan across all flange joints, Schrader valves, and mechanical seals.",
+            "is_checked": true,
+            "remark": "Zero leak detected, holding 120 PSI standing pressure.",
+            "suggestion": "Proceed with full operational load test.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 22,
+        "fields": {
+            "maintenance_record": 6,
+            "name": "Lubrication Oil Level & Differential Pressure Check (Rec #6)",
+            "description": "Inspect sight glass oil level and verify oil pump differential pressure reaches 25-30 PSI above suction.",
+            "is_checked": true,
+            "remark": "Oil clean, differential holding at 28.5 PSI.",
+            "suggestion": "Scheduled next oil lab analysis for Q1 2027.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 23,
+        "fields": {
+            "maintenance_record": 6,
+            "name": "Electrical Terminal Torque & Thermal Scan (Rec #6)",
+            "description": "Torque all 480V lug connections to manufacturer spec (45 ft-lbs) and inspect with FLIR thermal camera.",
+            "is_checked": true,
+            "remark": "All phases balanced within 2°C.",
+            "suggestion": "No loose connections identified.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 24,
+        "fields": {
+            "maintenance_record": 6,
+            "name": "Safety Interlock & Emergency Cutout Trip Test (Rec #6)",
+            "description": "Simulate high discharge pressure and low oil differential cutouts to verify instantaneous controller trip.",
+            "is_checked": true,
+            "remark": "All safety trips operational within 0.8 seconds.",
+            "suggestion": "Pass safety certification standard.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 25,
+        "fields": {
+            "maintenance_record": 7,
+            "name": "Refrigerant Leak & Standing Pressure Verification (Rec #7)",
+            "description": "Electronic halide sniffer scan across all flange joints, Schrader valves, and mechanical seals.",
+            "is_checked": true,
+            "remark": "Zero leak detected, holding 120 PSI standing pressure.",
+            "suggestion": "Proceed with full operational load test.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 26,
+        "fields": {
+            "maintenance_record": 7,
+            "name": "Lubrication Oil Level & Differential Pressure Check (Rec #7)",
+            "description": "Inspect sight glass oil level and verify oil pump differential pressure reaches 25-30 PSI above suction.",
+            "is_checked": true,
+            "remark": "Oil clean, differential holding at 28.5 PSI.",
+            "suggestion": "Scheduled next oil lab analysis for Q1 2027.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 27,
+        "fields": {
+            "maintenance_record": 7,
+            "name": "Electrical Terminal Torque & Thermal Scan (Rec #7)",
+            "description": "Torque all 480V lug connections to manufacturer spec (45 ft-lbs) and inspect with FLIR thermal camera.",
+            "is_checked": true,
+            "remark": "All phases balanced within 2°C.",
+            "suggestion": "No loose connections identified.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 28,
+        "fields": {
+            "maintenance_record": 7,
+            "name": "Safety Interlock & Emergency Cutout Trip Test (Rec #7)",
+            "description": "Simulate high discharge pressure and low oil differential cutouts to verify instantaneous controller trip.",
+            "is_checked": true,
+            "remark": "All safety trips operational within 0.8 seconds.",
+            "suggestion": "Pass safety certification standard.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 29,
+        "fields": {
+            "maintenance_record": 8,
+            "name": "Refrigerant Leak & Standing Pressure Verification (Rec #8)",
+            "description": "Electronic halide sniffer scan across all flange joints, Schrader valves, and mechanical seals.",
+            "is_checked": true,
+            "remark": "Zero leak detected, holding 120 PSI standing pressure.",
+            "suggestion": "Proceed with full operational load test.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 30,
+        "fields": {
+            "maintenance_record": 8,
+            "name": "Lubrication Oil Level & Differential Pressure Check (Rec #8)",
+            "description": "Inspect sight glass oil level and verify oil pump differential pressure reaches 25-30 PSI above suction.",
+            "is_checked": true,
+            "remark": "Oil clean, differential holding at 28.5 PSI.",
+            "suggestion": "Scheduled next oil lab analysis for Q1 2027.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 31,
+        "fields": {
+            "maintenance_record": 8,
+            "name": "Electrical Terminal Torque & Thermal Scan (Rec #8)",
+            "description": "Torque all 480V lug connections to manufacturer spec (45 ft-lbs) and inspect with FLIR thermal camera.",
+            "is_checked": true,
+            "remark": "All phases balanced within 2°C.",
+            "suggestion": "No loose connections identified.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 32,
+        "fields": {
+            "maintenance_record": 8,
+            "name": "Safety Interlock & Emergency Cutout Trip Test (Rec #8)",
+            "description": "Simulate high discharge pressure and low oil differential cutouts to verify instantaneous controller trip.",
+            "is_checked": true,
+            "remark": "All safety trips operational within 0.8 seconds.",
+            "suggestion": "Pass safety certification standard.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 33,
+        "fields": {
+            "maintenance_record": 9,
+            "name": "Refrigerant Leak & Standing Pressure Verification (Rec #9)",
+            "description": "Electronic halide sniffer scan across all flange joints, Schrader valves, and mechanical seals.",
+            "is_checked": true,
+            "remark": "Zero leak detected, holding 120 PSI standing pressure.",
+            "suggestion": "Proceed with full operational load test.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 34,
+        "fields": {
+            "maintenance_record": 9,
+            "name": "Lubrication Oil Level & Differential Pressure Check (Rec #9)",
+            "description": "Inspect sight glass oil level and verify oil pump differential pressure reaches 25-30 PSI above suction.",
+            "is_checked": true,
+            "remark": "Oil clean, differential holding at 28.5 PSI.",
+            "suggestion": "Scheduled next oil lab analysis for Q1 2027.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 35,
+        "fields": {
+            "maintenance_record": 9,
+            "name": "Electrical Terminal Torque & Thermal Scan (Rec #9)",
+            "description": "Torque all 480V lug connections to manufacturer spec (45 ft-lbs) and inspect with FLIR thermal camera.",
+            "is_checked": true,
+            "remark": "All phases balanced within 2°C.",
+            "suggestion": "No loose connections identified.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 36,
+        "fields": {
+            "maintenance_record": 9,
+            "name": "Safety Interlock & Emergency Cutout Trip Test (Rec #9)",
+            "description": "Simulate high discharge pressure and low oil differential cutouts to verify instantaneous controller trip.",
+            "is_checked": true,
+            "remark": "All safety trips operational within 0.8 seconds.",
+            "suggestion": "Pass safety certification standard.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 37,
+        "fields": {
+            "maintenance_record": 10,
+            "name": "Refrigerant Leak & Standing Pressure Verification (Rec #10)",
+            "description": "Electronic halide sniffer scan across all flange joints, Schrader valves, and mechanical seals.",
+            "is_checked": true,
+            "remark": "Zero leak detected, holding 120 PSI standing pressure.",
+            "suggestion": "Proceed with full operational load test.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 38,
+        "fields": {
+            "maintenance_record": 10,
+            "name": "Lubrication Oil Level & Differential Pressure Check (Rec #10)",
+            "description": "Inspect sight glass oil level and verify oil pump differential pressure reaches 25-30 PSI above suction.",
+            "is_checked": true,
+            "remark": "Oil clean, differential holding at 28.5 PSI.",
+            "suggestion": "Scheduled next oil lab analysis for Q1 2027.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 39,
+        "fields": {
+            "maintenance_record": 10,
+            "name": "Electrical Terminal Torque & Thermal Scan (Rec #10)",
+            "description": "Torque all 480V lug connections to manufacturer spec (45 ft-lbs) and inspect with FLIR thermal camera.",
+            "is_checked": true,
+            "remark": "All phases balanced within 2°C.",
+            "suggestion": "No loose connections identified.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.maintenancecomponent",
+        "pk": 40,
+        "fields": {
+            "maintenance_record": 10,
+            "name": "Safety Interlock & Emergency Cutout Trip Test (Rec #10)",
+            "description": "Simulate high discharge pressure and low oil differential cutouts to verify instantaneous controller trip.",
+            "is_checked": true,
+            "remark": "All safety trips operational within 0.8 seconds.",
+            "suggestion": "Pass safety certification standard.",
+            "proceed": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-15T08:00:00Z",
+            "updated_at": "2026-10-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    }
+]

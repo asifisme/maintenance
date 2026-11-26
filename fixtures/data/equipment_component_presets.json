@@ -1,0 +1,377 @@
+[
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 1,
+        "fields": {
+            "equipment_type": 1,
+            "name": "Hermetic Centrifugal Compressor",
+            "description": "High-efficiency two-stage centrifugal compressor assembly with magnetic bearings.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 2,
+        "fields": {
+            "equipment_type": 1,
+            "name": "Shell and Tube Evaporator Bundle",
+            "description": "Internally finned copper tube bundle for refrigerant expansion and chilled water heat exchange.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 3,
+        "fields": {
+            "equipment_type": 1,
+            "name": "Water-Cooled Condenser Tube Bundle",
+            "description": "Heavy-gauge marine water box condenser tubes with sacrificial zinc anodes.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 4,
+        "fields": {
+            "equipment_type": 1,
+            "name": "Electronic Expansion Valve (EXV)",
+            "description": "Stepper motor precision refrigerant metering valve with PID superheat feedback.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 5,
+        "fields": {
+            "equipment_type": 1,
+            "name": "Lubrication Oil Pump & Separator",
+            "description": "Positive displacement oil circulation pump with coalescing oil separator element.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 6,
+        "fields": {
+            "equipment_type": 2,
+            "name": "Electronic Fuel Injection Governor",
+            "description": "Common-rail electronic engine management module maintaining precise 60 Hz synchronous speed.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 7,
+        "fields": {
+            "equipment_type": 2,
+            "name": "Automatic Transfer Switch (ATS)",
+            "description": "High-speed 4-pole open-transition automatic transfer switch assembly with utility sensing.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 8,
+        "fields": {
+            "equipment_type": 2,
+            "name": "Engine Block Radiator & Jacket Heater",
+            "description": "Thermostatically controlled 4kW immersion jacket water heater maintaining 105°F preheat.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 9,
+        "fields": {
+            "equipment_type": 2,
+            "name": "Heavy-Duty Starting Battery Bank",
+            "description": "Dual 24VDC AGM lead-acid battery rack with automatic temperature-compensated trickle charger.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 10,
+        "fields": {
+            "equipment_type": 3,
+            "name": "Gearless Permanent Magnet Traction Machine",
+            "description": "High-torque synchronous AC drive motor with dual independently monitored disc brakes.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 11,
+        "fields": {
+            "equipment_type": 3,
+            "name": "Main Suspension Steel Hoist Cables",
+            "description": "High-tensile steel wire core hoist ropes with matched equalization tension shackles.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 12,
+        "fields": {
+            "equipment_type": 3,
+            "name": "Door Operator & Infrared Safety Curtain",
+            "description": "High-speed variable frequency door drive with 3D infrared passenger detection light curtain.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 13,
+        "fields": {
+            "equipment_type": 3,
+            "name": "Hydraulic Counterweight Buffer Assembly",
+            "description": "Pit-mounted telescoping hydraulic shock absorption buffers for overspeed deceleration.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 14,
+        "fields": {
+            "equipment_type": 4,
+            "name": "Direct-Drive Backward Curved Supply Fan",
+            "description": "Electronically commutated plenum fan array providing balanced static pressure airflow.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 15,
+        "fields": {
+            "equipment_type": 4,
+            "name": "Chilled Water Cooling Coil Assembly",
+            "description": "Six-row aluminum finned copper tube cooling coil with modulating 2-way control valve.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 16,
+        "fields": {
+            "equipment_type": 4,
+            "name": "MERV 14 / HEPA Final Filter Bank",
+            "description": "Deep-pleat particulate filter staging with Magnehelic differential pressure gauges.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 17,
+        "fields": {
+            "equipment_type": 5,
+            "name": "FM-200 / Novec Storage Cylinder Manifold",
+            "description": "Seamless steel pressure vessel manifold with continuous liquid level gauge indicators.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 18,
+        "fields": {
+            "equipment_type": 5,
+            "name": "Pneumatic Discharge Head & Actuator",
+            "description": "Fast-acting electrical solenoid release actuator with manual mechanical emergency pull.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 19,
+        "fields": {
+            "equipment_type": 6,
+            "name": "Static Bypass Switch Module",
+            "description": "Solid-state silicon controlled rectifier (SCR) static bypass with sub-millisecond transfer.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 20,
+        "fields": {
+            "equipment_type": 6,
+            "name": "VRLA Battery String & Monitoring",
+            "description": "Individual jar internal resistance, temperature, and string float voltage telemetry.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 21,
+        "fields": {
+            "equipment_type": 7,
+            "name": "Low Water Fuel Cutoff Safety Probe",
+            "description": "Redundant conductance probe low-water cutoff assembly triggering instantaneous burner shutdown.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 22,
+        "fields": {
+            "equipment_type": 7,
+            "name": "Modulating Forced Draft Dual-Fuel Burner",
+            "description": "High-turn-down ratio gas and fuel oil burner with optical flame safeguard scanner.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 23,
+        "fields": {
+            "equipment_type": 8,
+            "name": "BACnet IP Main Processor Motherboard",
+            "description": "High-performance ARM processor running real-time operating system and field bus loops.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 24,
+        "fields": {
+            "equipment_type": 9,
+            "name": "Twin-Screw Rotor Assembly & Slide Valve",
+            "description": "Precision helical rotors with hydraulic capacity modulation slide valve for stepless control.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponentpreset",
+        "pk": 25,
+        "fields": {
+            "equipment_type": 10,
+            "name": "DC Maximum Power Point Tracker (MPPT)",
+            "description": "Multiple independent high-efficiency MPPT input channels with DC disconnect switch.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-15T08:00:00Z",
+            "updated_at": "2026-01-15T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    }
+]

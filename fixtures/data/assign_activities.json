@@ -1,0 +1,206 @@
+[
+    {
+        "model": "backend.assignactivities",
+        "pk": 1,
+        "fields": {
+            "technician": 1,
+            "ticket": 1,
+            "status": "accepted",
+            "completion_status": "pending",
+            "assigned_at": "2026-11-18T07:30:00Z",
+            "completed_at": null,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-18T07:30:00Z",
+            "updated_at": "2026-11-18T07:30:00Z",
+            "is_active": true
+        }
+    },
+    {
+        "model": "backend.assignactivities",
+        "pk": 2,
+        "fields": {
+            "technician": 4,
+            "ticket": 2,
+            "status": "accepted",
+            "completion_status": "pending",
+            "assigned_at": "2026-11-17T09:30:00Z",
+            "completed_at": null,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-17T09:30:00Z",
+            "updated_at": "2026-11-17T09:30:00Z",
+            "is_active": true
+        }
+    },
+    {
+        "model": "backend.assignactivities",
+        "pk": 3,
+        "fields": {
+            "technician": 8,
+            "ticket": 3,
+            "status": "accepted",
+            "completion_status": "pending",
+            "assigned_at": "2026-11-18T11:45:00Z",
+            "completed_at": null,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-18T11:45:00Z",
+            "updated_at": "2026-11-18T11:45:00Z",
+            "is_active": true
+        }
+    },
+    {
+        "model": "backend.assignactivities",
+        "pk": 4,
+        "fields": {
+            "technician": 9,
+            "ticket": 4,
+            "status": "pending",
+            "completion_status": "pending",
+            "assigned_at": "2026-11-19T07:15:00Z",
+            "completed_at": null,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-19T07:15:00Z",
+            "updated_at": "2026-11-19T07:15:00Z",
+            "is_active": true
+        }
+    },
+    {
+        "model": "backend.assignactivities",
+        "pk": 5,
+        "fields": {
+            "technician": 2,
+            "ticket": 7,
+            "status": "accepted",
+            "completion_status": "pending",
+            "assigned_at": "2026-11-16T15:00:00Z",
+            "completed_at": null,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-16T15:00:00Z",
+            "updated_at": "2026-11-16T15:00:00Z",
+            "is_active": true
+        }
+    },
+    {
+        "model": "backend.assignactivities",
+        "pk": 6,
+        "fields": {
+            "technician": 10,
+            "ticket": 9,
+            "status": "accepted",
+            "completion_status": "pending",
+            "assigned_at": "2026-11-17T14:30:00Z",
+            "completed_at": null,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-17T14:30:00Z",
+            "updated_at": "2026-11-17T14:30:00Z",
+            "is_active": true
+        }
+    },
+    {
+        "model": "backend.assignactivities",
+        "pk": 7,
+        "fields": {
+            "technician": 1,
+            "ticket": 10,
+            "status": "accepted",
+            "completion_status": "pending",
+            "assigned_at": "2026-11-16T11:00:00Z",
+            "completed_at": null,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-16T11:00:00Z",
+            "updated_at": "2026-11-16T11:00:00Z",
+            "is_active": true
+        }
+    },
+    {
+        "model": "backend.assignactivities",
+        "pk": 8,
+        "fields": {
+            "technician": 2,
+            "ticket": 11,
+            "status": "accepted",
+            "completion_status": "pending",
+            "assigned_at": "2026-11-15T09:30:00Z",
+            "completed_at": null,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-15T09:30:00Z",
+            "updated_at": "2026-11-15T09:30:00Z",
+            "is_active": true
+        }
+    },
+    {
+        "model": "backend.assignactivities",
+        "pk": 9,
+        "fields": {
+            "technician": 4,
+            "ticket": 12,
+            "status": "accepted",
+            "completion_status": "pending",
+            "assigned_at": "2026-11-17T08:00:00Z",
+            "completed_at": null,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-17T08:00:00Z",
+            "updated_at": "2026-11-17T08:00:00Z",
+            "is_active": true
+        }
+    },
+    {
+        "model": "backend.assignactivities",
+        "pk": 10,
+        "fields": {
+            "technician": 7,
+            "ticket": 13,
+            "status": "accepted",
+            "completion_status": "pending",
+            "assigned_at": "2026-11-17T13:00:00Z",
+            "completed_at": null,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-17T13:00:00Z",
+            "updated_at": "2026-11-17T13:00:00Z",
+            "is_active": true
+        }
+    },
+    {
+        "model": "backend.assignactivities",
+        "pk": 11,
+        "fields": {
+            "technician": 3,
+            "ticket": 15,
+            "status": "accepted",
+            "completion_status": "pending",
+            "assigned_at": "2026-11-18T15:30:00Z",
+            "completed_at": null,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-18T15:30:00Z",
+            "updated_at": "2026-11-18T15:30:00Z",
+            "is_active": true
+        }
+    },
+    {
+        "model": "backend.assignactivities",
+        "pk": 12,
+        "fields": {
+            "technician": 1,
+            "ticket": 17,
+            "status": "accepted",
+            "completion_status": "pending",
+            "assigned_at": "2026-11-18T14:00:00Z",
+            "completed_at": null,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-18T14:00:00Z",
+            "updated_at": "2026-11-18T14:00:00Z",
+            "is_active": true
+        }
+    }
+]

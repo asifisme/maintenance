@@ -1,0 +1,146 @@
+[
+    {
+        "model": "backend.assigntechnician",
+        "pk": 1,
+        "fields": {
+            "ticket": 1,
+            "technician": 1,
+            "assign_by": 1,
+            "assigned_at": "2026-11-18T07:30:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.assigntechnician",
+        "pk": 2,
+        "fields": {
+            "ticket": 2,
+            "technician": 4,
+            "assign_by": 1,
+            "assigned_at": "2026-11-17T09:30:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.assigntechnician",
+        "pk": 3,
+        "fields": {
+            "ticket": 3,
+            "technician": 8,
+            "assign_by": 1,
+            "assigned_at": "2026-11-18T11:45:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.assigntechnician",
+        "pk": 4,
+        "fields": {
+            "ticket": 4,
+            "technician": 9,
+            "assign_by": 1,
+            "assigned_at": "2026-11-19T07:15:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.assigntechnician",
+        "pk": 5,
+        "fields": {
+            "ticket": 7,
+            "technician": 2,
+            "assign_by": 1,
+            "assigned_at": "2026-11-16T15:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.assigntechnician",
+        "pk": 6,
+        "fields": {
+            "ticket": 9,
+            "technician": 10,
+            "assign_by": 1,
+            "assigned_at": "2026-11-17T14:30:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.assigntechnician",
+        "pk": 7,
+        "fields": {
+            "ticket": 10,
+            "technician": 1,
+            "assign_by": 1,
+            "assigned_at": "2026-11-16T11:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.assigntechnician",
+        "pk": 8,
+        "fields": {
+            "ticket": 11,
+            "technician": 2,
+            "assign_by": 1,
+            "assigned_at": "2026-11-15T09:30:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.assigntechnician",
+        "pk": 9,
+        "fields": {
+            "ticket": 12,
+            "technician": 4,
+            "assign_by": 1,
+            "assigned_at": "2026-11-17T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.assigntechnician",
+        "pk": 10,
+        "fields": {
+            "ticket": 13,
+            "technician": 7,
+            "assign_by": 1,
+            "assigned_at": "2026-11-17T13:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.assigntechnician",
+        "pk": 11,
+        "fields": {
+            "ticket": 15,
+            "technician": 3,
+            "assign_by": 1,
+            "assigned_at": "2026-11-18T15:30:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.assigntechnician",
+        "pk": 12,
+        "fields": {
+            "ticket": 17,
+            "technician": 1,
+            "assign_by": 1,
+            "assigned_at": "2026-11-18T14:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    }
+]

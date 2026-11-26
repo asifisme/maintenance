@@ -4,13 +4,14 @@
         "pk": 1,
         "fields": {
             "subdivision": 1,
-            "name": "Section A1",
-            "code": "SEC-A1",
+            "name": "Central Chilled Water & Heat Exchanger Plant",
+            "code": "SEC-CWP",
             "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-20T08:00:00Z",
+            "updated_at": "2026-01-20T08:00:00Z",
             "is_active": true,
-            "deleted": false,
-            "created_at": "2026-06-10T07:34:21Z",
-            "updated_at": "2026-06-10T07:34:21Z"
+            "deleted": false
         }
     },
     {
@@ -18,41 +19,164 @@
         "pk": 2,
         "fields": {
             "subdivision": 1,
-            "name": "Section A2",
-            "code": "SEC-A2",
+            "name": "High-Rise Traction Elevator & Hoistway Systems",
+            "code": "SEC-HTE",
             "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-20T08:00:00Z",
+            "updated_at": "2026-01-20T08:00:00Z",
             "is_active": true,
-            "deleted": false,
-            "created_at": "2026-06-10T07:34:21Z",
-            "updated_at": "2026-06-10T07:34:21Z"
+            "deleted": false
         }
     },
     {
         "model": "backend.section",
         "pk": 3,
         "fields": {
-            "subdivision": 3,
-            "name": "Section S1",
-            "code": "SEC-S1",
+            "subdivision": 2,
+            "name": "Continuous UPS & Power Conditioning Grid",
+            "code": "SEC-UPS",
             "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-20T08:00:00Z",
+            "updated_at": "2026-01-20T08:00:00Z",
             "is_active": true,
-            "deleted": false,
-            "created_at": "2026-06-10T07:34:21Z",
-            "updated_at": "2026-06-10T07:34:21Z"
+            "deleted": false
         }
     },
     {
         "model": "backend.section",
         "pk": 4,
         "fields": {
-            "subdivision": 4,
-            "name": "Section E1",
-            "code": "SEC-E1",
+            "subdivision": 2,
+            "name": "Clean Agent Fire Suppression & Monitoring",
+            "code": "SEC-CFS",
             "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-20T08:00:00Z",
+            "updated_at": "2026-01-20T08:00:00Z",
             "is_active": true,
-            "deleted": false,
-            "created_at": "2026-06-10T07:34:21Z",
-            "updated_at": "2026-06-10T07:34:21Z"
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 5,
+        "fields": {
+            "subdivision": 3,
+            "name": "Emergency Standby Diesel Generation",
+            "code": "SEC-EGP",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-20T08:00:00Z",
+            "updated_at": "2026-01-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 6,
+        "fields": {
+            "subdivision": 3,
+            "name": "Medical Gas & Clinical Vacuum Delivery",
+            "code": "SEC-MVG",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-20T08:00:00Z",
+            "updated_at": "2026-01-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 7,
+        "fields": {
+            "subdivision": 4,
+            "name": "Cleanroom HEPA & Air Handling Infrastructure",
+            "code": "SEC-CHA",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-20T08:00:00Z",
+            "updated_at": "2026-01-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 8,
+        "fields": {
+            "subdivision": 5,
+            "name": "Ammonia Refrigeration & Cold Chain Systems",
+            "code": "SEC-ARC",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-20T08:00:00Z",
+            "updated_at": "2026-01-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 9,
+        "fields": {
+            "subdivision": 6,
+            "name": "Industrial Compressed Air & Process Piping",
+            "code": "SEC-ICA",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-20T08:00:00Z",
+            "updated_at": "2026-01-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 10,
+        "fields": {
+            "subdivision": 7,
+            "name": "Photovoltaic Inverter & Switchgear Arrays",
+            "code": "SEC-PIH",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-20T08:00:00Z",
+            "updated_at": "2026-01-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 11,
+        "fields": {
+            "subdivision": 8,
+            "name": "High-Pressure Steam Boiler & Deaerator Plant",
+            "code": "SEC-HPS",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-20T08:00:00Z",
+            "updated_at": "2026-01-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.section",
+        "pk": 12,
+        "fields": {
+            "subdivision": 1,
+            "name": "Building Automation & Direct Digital Controls",
+            "code": "SEC-BAS",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-20T08:00:00Z",
+            "updated_at": "2026-01-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
         }
     }
 ]

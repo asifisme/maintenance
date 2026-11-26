@@ -1,0 +1,242 @@
+[
+    {
+        "model": "backend.ticketactivitylog",
+        "pk": 1,
+        "fields": {
+            "ticket": 1,
+            "actor": 1,
+            "action_type": "created",
+            "description": "Ticket reported by Central Plant Automated Monitoring System.",
+            "metadata": {},
+            "created_at": "2026-11-18T07:15:00Z"
+        }
+    },
+    {
+        "model": "backend.ticketactivitylog",
+        "pk": 2,
+        "fields": {
+            "ticket": 1,
+            "actor": 1,
+            "action_type": "assigned",
+            "description": "Assigned to Senior HVAC Technician Michael Chen.",
+            "metadata": {},
+            "created_at": "2026-11-18T07:30:00Z"
+        }
+    },
+    {
+        "model": "backend.ticketactivitylog",
+        "pk": 3,
+        "fields": {
+            "ticket": 1,
+            "actor": 1,
+            "action_type": "status_changed",
+            "description": "Status changed from Open to In Progress.",
+            "metadata": {},
+            "created_at": "2026-11-18T07:45:00Z"
+        }
+    },
+    {
+        "model": "backend.ticketactivitylog",
+        "pk": 4,
+        "fields": {
+            "ticket": 2,
+            "actor": 1,
+            "action_type": "created",
+            "description": "Critical elevator fault reported by Security Operations Center.",
+            "metadata": {},
+            "created_at": "2026-11-17T09:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticketactivitylog",
+        "pk": 5,
+        "fields": {
+            "ticket": 2,
+            "actor": 1,
+            "action_type": "assigned",
+            "description": "Assigned to QEI Elevator Specialist Elena Rodriguez.",
+            "metadata": {},
+            "created_at": "2026-11-17T09:30:00Z"
+        }
+    },
+    {
+        "model": "backend.ticketactivitylog",
+        "pk": 6,
+        "fields": {
+            "ticket": 2,
+            "actor": 1,
+            "action_type": "status_changed",
+            "description": "Status updated to In Progress following initial safety lockout.",
+            "metadata": {},
+            "created_at": "2026-11-17T10:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticketactivitylog",
+        "pk": 7,
+        "fields": {
+            "ticket": 3,
+            "actor": 1,
+            "action_type": "created",
+            "description": "Surgical suite air balance differential pressure alarm generated.",
+            "metadata": {},
+            "created_at": "2026-11-18T11:20:00Z"
+        }
+    },
+    {
+        "model": "backend.ticketactivitylog",
+        "pk": 8,
+        "fields": {
+            "ticket": 3,
+            "actor": 1,
+            "action_type": "assigned",
+            "description": "Assigned to Healthcare Facility Engineer Liam Wong.",
+            "metadata": {},
+            "created_at": "2026-11-18T11:45:00Z"
+        }
+    },
+    {
+        "model": "backend.ticketactivitylog",
+        "pk": 9,
+        "fields": {
+            "ticket": 4,
+            "actor": 1,
+            "action_type": "created",
+            "description": "Ammonia safety telemetry alert detected in cold storage warehouse.",
+            "metadata": {},
+            "created_at": "2026-11-19T06:45:00Z"
+        }
+    },
+    {
+        "model": "backend.ticketactivitylog",
+        "pk": 10,
+        "fields": {
+            "ticket": 4,
+            "actor": 1,
+            "action_type": "assigned",
+            "description": "Assigned to Industrial Refrigeration Specialist Sophia Martinez.",
+            "metadata": {},
+            "created_at": "2026-11-19T07:15:00Z"
+        }
+    },
+    {
+        "model": "backend.ticketactivitylog",
+        "pk": 11,
+        "fields": {
+            "ticket": 7,
+            "actor": 1,
+            "action_type": "created",
+            "description": "UPS battery string telemetry warning logged by Liebert monitor.",
+            "metadata": {},
+            "created_at": "2026-11-16T14:10:00Z"
+        }
+    },
+    {
+        "model": "backend.ticketactivitylog",
+        "pk": 12,
+        "fields": {
+            "ticket": 7,
+            "actor": 1,
+            "action_type": "assigned",
+            "description": "Assigned to Master Electrician Sarah Jenkins.",
+            "metadata": {},
+            "created_at": "2026-11-16T15:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticketactivitylog",
+        "pk": 13,
+        "fields": {
+            "ticket": 9,
+            "actor": 1,
+            "action_type": "created",
+            "description": "Solar PV inverter ground fault code 102 reported via SCADA.",
+            "metadata": {},
+            "created_at": "2026-11-17T13:40:00Z"
+        }
+    },
+    {
+        "model": "backend.ticketactivitylog",
+        "pk": 14,
+        "fields": {
+            "ticket": 9,
+            "actor": 1,
+            "action_type": "assigned",
+            "description": "Assigned to Renewable Energy Specialist Oliver Smith.",
+            "metadata": {},
+            "created_at": "2026-11-17T14:30:00Z"
+        }
+    },
+    {
+        "model": "backend.ticketactivitylog",
+        "pk": 15,
+        "fields": {
+            "ticket": 18,
+            "actor": 1,
+            "action_type": "created",
+            "description": "Elevator door interlock failure logged on floor 22.",
+            "metadata": {},
+            "created_at": "2026-11-12T08:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticketactivitylog",
+        "pk": 16,
+        "fields": {
+            "ticket": 18,
+            "actor": 1,
+            "action_type": "assigned",
+            "description": "Assigned to Elena Rodriguez.",
+            "metadata": {},
+            "created_at": "2026-11-12T08:30:00Z"
+        }
+    },
+    {
+        "model": "backend.ticketactivitylog",
+        "pk": 17,
+        "fields": {
+            "ticket": 18,
+            "actor": 1,
+            "action_type": "resolved",
+            "description": "Marked resolved following successful interlock roller replacement.",
+            "metadata": {},
+            "created_at": "2026-11-13T14:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticketactivitylog",
+        "pk": 18,
+        "fields": {
+            "ticket": 20,
+            "actor": 1,
+            "action_type": "created",
+            "description": "Annual UPS bypass certification ticket generated.",
+            "metadata": {},
+            "created_at": "2026-11-05T08:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticketactivitylog",
+        "pk": 19,
+        "fields": {
+            "ticket": 20,
+            "actor": 1,
+            "action_type": "resolved",
+            "description": "Static bypass timing certification passed successfully.",
+            "metadata": {},
+            "created_at": "2026-11-06T16:00:00Z"
+        }
+    },
+    {
+        "model": "backend.ticketactivitylog",
+        "pk": 20,
+        "fields": {
+            "ticket": 20,
+            "actor": 1,
+            "action_type": "closed",
+            "description": "Ticket closed and compliance documentation archived.",
+            "metadata": {},
+            "created_at": "2026-11-07T09:00:00Z"
+        }
+    }
+]

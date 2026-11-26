@@ -5,25 +5,168 @@
         "fields": {
             "equipment": 1,
             "building": 1,
-            "alert_type": "maint_overdue",
-            "severity": "high",
-            "title": "HVAC Maintenance Overdue",
-            "description": "Routine maintenance for EQ-HVAC-001 is past due.",
-            "is_acknowledged": false
+            "alert_type": "eq_fault",
+            "severity": "critical",
+            "title": "Chiller 1 Compressor Bearing High Temperature Warning",
+            "description": "Thrust bearing temperature transducer on Carrier 19XR-400T reached 198°F (threshold 195°F) during peak building heat load.",
+            "is_acknowledged": false,
+            "acknowledged_by": null,
+            "acknowledged_at": null,
+            "expires_at": "2026-11-20T12:00:00Z",
+            "metadata": {}
         }
     },
     {
         "model": "backend.criticalalert",
         "pk": 2,
         "fields": {
-            "equipment": 3,
+            "equipment": 7,
             "building": 2,
+            "alert_type": "sla_breach",
+            "severity": "critical",
+            "title": "Surgical Pavilion AHU Differential Pressure SLA Threshold Breach",
+            "description": "Air handling static pressure below 1.2 in. w.g. for > 60 minutes in acute surgical block. Hospital infection control compliance notification dispatched.",
+            "is_acknowledged": false,
+            "acknowledged_by": null,
+            "acknowledged_at": null,
+            "expires_at": "2026-11-20T12:00:00Z",
+            "metadata": {}
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 3,
+        "fields": {
+            "equipment": 3,
+            "building": 1,
             "alert_type": "eq_fault",
             "severity": "critical",
-            "title": "Generator Fault Detected",
-            "description": "Critical failure logged for EQ-GEN-001.",
+            "title": "Elevator Car 2 Machine Room Vibration Level Exceeded ISO 18738",
+            "description": "Hoistway acoustic accelerometer detected 0.28 g peak vibration during high-speed travel. Drive controller interlocked in emergency stop.",
+            "is_acknowledged": false,
+            "acknowledged_by": null,
+            "acknowledged_at": null,
+            "expires_at": "2026-11-20T12:00:00Z",
+            "metadata": {}
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 4,
+        "fields": {
+            "equipment": 26,
+            "building": 10,
+            "alert_type": "repair",
+            "severity": "high",
+            "title": "Ammonia Refrigeration Discharge Gas Superheat High Alarm",
+            "description": "Vilter screw compressor discharge temperature reached 242°F. Liquid injection cooling solenoid requires immediate mechanical inspection.",
+            "is_acknowledged": false,
+            "acknowledged_by": null,
+            "acknowledged_at": null,
+            "expires_at": "2026-11-21T12:00:00Z",
+            "metadata": {}
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 5,
+        "fields": {
+            "equipment": 12,
+            "building": 3,
+            "alert_type": "inspection",
+            "severity": "high",
+            "title": "FM-200 Clean Agent Cylinder Manifold Pressure Below Regulatory Minimum",
+            "description": "Master gaseous agent pressure dropped to 310 PSI (minimum 330 PSI at 70°F). Mission-critical server hall fire suppression at risk.",
+            "is_acknowledged": false,
+            "acknowledged_by": null,
+            "acknowledged_at": null,
+            "expires_at": "2026-11-21T12:00:00Z",
+            "metadata": {}
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 6,
+        "fields": {
+            "equipment": 6,
+            "building": 2,
+            "alert_type": "maint_overdue",
+            "severity": "high",
+            "title": "Cummins Hospital Standby Generator Monthly Load Bank Test Overdue",
+            "description": "Monthly NFPA 110 mandatory emergency generator 30-minute full load bank verification test is 14 days overdue.",
+            "is_acknowledged": false,
+            "acknowledged_by": null,
+            "acknowledged_at": null,
+            "expires_at": "2026-11-22T12:00:00Z",
+            "metadata": {}
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 7,
+        "fields": {
+            "equipment": 10,
+            "building": 3,
+            "alert_type": "warranty",
+            "severity": "medium",
+            "title": "Vertiv Liebert UPS OEM Module Warranty Expiration Warning",
+            "description": "OEM battery module factory warranty expires in 30 days. Replacement battery maintenance service agreement review recommended.",
             "is_acknowledged": true,
-            "acknowledged_by": 1
+            "acknowledged_by": 1,
+            "acknowledged_at": "2026-11-15T09:00:00Z",
+            "expires_at": "2026-12-15T12:00:00Z",
+            "metadata": {}
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 8,
+        "fields": {
+            "equipment": 23,
+            "building": 8,
+            "alert_type": "eq_fault",
+            "severity": "high",
+            "title": "Solar Array Inverter String B Ground Fault Code 102",
+            "description": "Insulation resistance drop detected. Field technician dispatched to isolate combiners.",
+            "is_acknowledged": true,
+            "acknowledged_by": 1,
+            "acknowledged_at": "2026-11-17T15:00:00Z",
+            "expires_at": "2026-11-22T12:00:00Z",
+            "metadata": {}
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 9,
+        "fields": {
+            "equipment": 30,
+            "building": 13,
+            "alert_type": "eq_fault",
+            "severity": "critical",
+            "title": "Steam Boiler Low Water Cutoff Automatic Burner Shutdown",
+            "description": "Feedwater supply interruption caused burner shutdown. Deaerator pump inspection initiated.",
+            "is_acknowledged": true,
+            "acknowledged_by": 1,
+            "acknowledged_at": "2026-11-19T09:00:00Z",
+            "expires_at": "2026-11-20T12:00:00Z",
+            "metadata": {}
+        }
+    },
+    {
+        "model": "backend.criticalalert",
+        "pk": 10,
+        "fields": {
+            "equipment": 2,
+            "building": 1,
+            "alert_type": "repair",
+            "severity": "medium",
+            "title": "Otis Passenger Elevator Car 1 Interlock Roller Replaced",
+            "description": "Interlock roller successfully replaced and passed cycle verification.",
+            "is_acknowledged": true,
+            "acknowledged_by": 1,
+            "acknowledged_at": "2026-11-13T14:30:00Z",
+            "expires_at": "2026-11-20T12:00:00Z",
+            "metadata": {}
         }
     }
 ]

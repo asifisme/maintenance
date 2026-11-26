@@ -4,38 +4,159 @@
         "pk": 1,
         "fields": {
             "equipment_type": 1,
-            "field_name": "Cooling Capacity (BTU)",
+            "field_name": "Cooling Capacity (Tons)",
             "field_type": "number",
             "is_required": true,
             "created_by": 1,
-            "created_at": "2026-06-10T07:34:21Z",
-            "updated_at": "2026-06-10T07:34:21Z"
+            "updated_by": 1,
+            "created_at": "2026-01-12T09:00:00Z",
+            "updated_at": "2026-01-12T09:00:00Z",
+            "is_active": true,
+            "deleted": false
         }
     },
     {
         "model": "backend.equipmenttypedata",
         "pk": 2,
         "fields": {
-            "equipment_type": 2,
-            "field_name": "Max Capacity (kg)",
-            "field_type": "number",
+            "equipment_type": 1,
+            "field_name": "Refrigerant Type (e.g. R-134a, R-513A)",
+            "field_type": "text",
             "is_required": true,
             "created_by": 1,
-            "created_at": "2026-06-10T07:34:21Z",
-            "updated_at": "2026-06-10T07:34:21Z"
+            "updated_by": 1,
+            "created_at": "2026-01-12T09:00:00Z",
+            "updated_at": "2026-01-12T09:00:00Z",
+            "is_active": true,
+            "deleted": false
         }
     },
     {
         "model": "backend.equipmenttypedata",
         "pk": 3,
         "fields": {
-            "equipment_type": 3,
-            "field_name": "Fuel Type",
-            "field_type": "text",
+            "equipment_type": 2,
+            "field_name": "Rated Standby Output (kW)",
+            "field_type": "number",
             "is_required": true,
             "created_by": 1,
-            "created_at": "2026-06-10T07:34:21Z",
-            "updated_at": "2026-06-10T07:34:21Z"
+            "updated_by": 1,
+            "created_at": "2026-01-12T09:00:00Z",
+            "updated_at": "2026-01-12T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 4,
+        "fields": {
+            "equipment_type": 2,
+            "field_name": "Diesel Base Tank Capacity (Gallons)",
+            "field_type": "number",
+            "is_required": false,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-12T09:00:00Z",
+            "updated_at": "2026-01-12T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 5,
+        "fields": {
+            "equipment_type": 3,
+            "field_name": "Rated Passenger Capacity (lbs)",
+            "field_type": "number",
+            "is_required": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-12T09:00:00Z",
+            "updated_at": "2026-01-12T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 6,
+        "fields": {
+            "equipment_type": 3,
+            "field_name": "Contract Speed (Feet Per Minute)",
+            "field_type": "number",
+            "is_required": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-12T09:00:00Z",
+            "updated_at": "2026-01-12T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 7,
+        "fields": {
+            "equipment_type": 4,
+            "field_name": "Design Airflow Volume (CFM)",
+            "field_type": "number",
+            "is_required": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-12T09:00:00Z",
+            "updated_at": "2026-01-12T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 8,
+        "fields": {
+            "equipment_type": 6,
+            "field_name": "Total Apparent Power Rating (kVA)",
+            "field_type": "number",
+            "is_required": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-12T09:00:00Z",
+            "updated_at": "2026-01-12T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 9,
+        "fields": {
+            "equipment_type": 7,
+            "field_name": "Maximum Allowable Working Pressure (PSI)",
+            "field_type": "number",
+            "is_required": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-12T09:00:00Z",
+            "updated_at": "2026-01-12T09:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmenttypedata",
+        "pk": 10,
+        "fields": {
+            "equipment_type": 9,
+            "field_name": "Suction Saturated Temperature (°F)",
+            "field_type": "number",
+            "is_required": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-12T09:00:00Z",
+            "updated_at": "2026-01-12T09:00:00Z",
+            "is_active": true,
+            "deleted": false
         }
     }
 ]

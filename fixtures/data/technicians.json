@@ -1,19 +1,38 @@
 [
     {
         "model": "backend.technician",
-        "pk": 2,
+        "pk": 1,
         "fields": {
             "user": null,
             "first_name": "Michael",
             "last_name": "Chen",
             "email": "m.chen@exoveon.com",
-            "phone_number": "+1555010201",
-            "about": "Specializes in commercial HVAC systems and refrigeration. 8 years experience.",
+            "phone_number": "+1 (555) 234-5671",
+            "about": "Senior Chiller & Commercial Refrigeration Specialist. EPA Universal 608 certified with 12 years experience in central cooling plant overhaul and centrifugal compressor rebuilds.",
             "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-10T09:00:00Z",
+            "updated_at": "2026-01-10T09:00:00Z",
             "is_active": true,
-            "deleted": false,
-            "created_at": "2026-06-11T09:30:00Z",
-            "updated_at": "2026-06-11T09:30:00Z"
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.technician",
+        "pk": 2,
+        "fields": {
+            "user": null,
+            "first_name": "Sarah",
+            "last_name": "Jenkins",
+            "email": "s.jenkins@exoveon.com",
+            "phone_number": "+1 (555) 234-5672",
+            "about": "Master Electrician and Switchgear Specialist. NFPA 70E safety certified, specializing in 480V/4160V power distribution, transformer testing, and arc-flash hazard mitigation.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-10T09:00:00Z",
+            "updated_at": "2026-01-10T09:00:00Z",
+            "is_active": true,
+            "deleted": false
         }
     },
     {
@@ -21,16 +40,17 @@
         "pk": 3,
         "fields": {
             "user": null,
-            "first_name": "Sarah",
-            "last_name": "Jenkins",
-            "email": "s.jenkins@exoveon.com",
-            "phone_number": "+1555010202",
-            "about": "Certified electrician with a focus on high-voltage systems and smart grid integration.",
+            "first_name": "David",
+            "last_name": "Okonjo",
+            "email": "d.okonjo@exoveon.com",
+            "phone_number": "+1 (555) 234-5673",
+            "about": "Critical Power Systems Engineer. Factory certified on Caterpillar and Cummins prime and standby diesel generator sets, paralleling switchgear, and automatic transfer switches.",
             "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-10T09:00:00Z",
+            "updated_at": "2026-01-10T09:00:00Z",
             "is_active": true,
-            "deleted": false,
-            "created_at": "2026-06-11T09:30:00Z",
-            "updated_at": "2026-06-11T09:30:00Z"
+            "deleted": false
         }
     },
     {
@@ -38,16 +58,17 @@
         "pk": 4,
         "fields": {
             "user": null,
-            "first_name": "David",
-            "last_name": "Okonjo",
-            "email": "d.okonjo@exoveon.com",
-            "phone_number": "+1555010203",
-            "about": "Elevator mechanic and lift inspector. 12 years of hands-on mechanical experience.",
+            "first_name": "Elena",
+            "last_name": "Rodriguez",
+            "email": "e.rodriguez@exoveon.com",
+            "phone_number": "+1 (555) 234-5674",
+            "about": "QEI Certified Elevator Inspector and Vertical Transportation Specialist. 14 years maintaining high-speed traction elevators, regenerative drives, and hoistway safety devices.",
             "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-10T09:00:00Z",
+            "updated_at": "2026-01-10T09:00:00Z",
             "is_active": true,
-            "deleted": false,
-            "created_at": "2026-06-11T09:30:00Z",
-            "updated_at": "2026-06-11T09:30:00Z"
+            "deleted": false
         }
     },
     {
@@ -55,16 +76,17 @@
         "pk": 5,
         "fields": {
             "user": null,
-            "first_name": "Elena",
-            "last_name": "Rodriguez",
-            "email": "e.rodriguez@exoveon.com",
-            "phone_number": "+1555010204",
-            "about": "Plumbing expert. Specializes in multi-story residential building water systems.",
+            "first_name": "James",
+            "last_name": "O'Connor",
+            "email": "j.oconnor@exoveon.com",
+            "phone_number": "+1 (555) 234-5675",
+            "about": "Stationary Steam Engineer (First Class). Expert in ASME high-pressure firetube and watertube boilers, condensate return loops, and deaerator water chemistry balancing.",
             "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-10T09:00:00Z",
+            "updated_at": "2026-01-10T09:00:00Z",
             "is_active": true,
-            "deleted": false,
-            "created_at": "2026-06-11T09:30:00Z",
-            "updated_at": "2026-06-11T09:30:00Z"
+            "deleted": false
         }
     },
     {
@@ -72,16 +94,17 @@
         "pk": 6,
         "fields": {
             "user": null,
-            "first_name": "James",
-            "last_name": "O'Connor",
-            "email": "j.oconnor@exoveon.com",
-            "phone_number": "+1555010205",
-            "about": "General maintenance technician. Expert in drywall, painting, and superficial repairs.",
+            "first_name": "Aisha",
+            "last_name": "Patel",
+            "email": "a.patel@exoveon.com",
+            "phone_number": "+1 (555) 234-5676",
+            "about": "Fire Protection & Life Safety Systems Engineer. NICET Level IV certified in clean agent gaseous suppression (FM-200, Novec 1230), pre-action deluge systems, and fire booster pumps.",
             "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-10T09:00:00Z",
+            "updated_at": "2026-01-10T09:00:00Z",
             "is_active": true,
-            "deleted": false,
-            "created_at": "2026-06-11T09:30:00Z",
-            "updated_at": "2026-06-11T09:30:00Z"
+            "deleted": false
         }
     },
     {
@@ -89,16 +112,17 @@
         "pk": 7,
         "fields": {
             "user": null,
-            "first_name": "Aisha",
-            "last_name": "Patel",
-            "email": "a.patel@exoveon.com",
-            "phone_number": "+1555010206",
-            "about": "IT hardware technician and network installer. Handles server room maintenance.",
+            "first_name": "Marcus",
+            "last_name": "Johnson",
+            "email": "m.johnson@exoveon.com",
+            "phone_number": "+1 (555) 234-5677",
+            "about": "Building Automation & DDC Systems Integrator. Specialist in BACnet/IP, Modbus, Siemens Desigo, and Tridium Niagara N4 architecture for central energy plant optimization.",
             "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-10T09:00:00Z",
+            "updated_at": "2026-01-10T09:00:00Z",
             "is_active": true,
-            "deleted": false,
-            "created_at": "2026-06-11T09:30:00Z",
-            "updated_at": "2026-06-11T09:30:00Z"
+            "deleted": false
         }
     },
     {
@@ -106,16 +130,17 @@
         "pk": 8,
         "fields": {
             "user": null,
-            "first_name": "Marcus",
-            "last_name": "Johnson",
-            "email": "m.johnson@exoveon.com",
-            "phone_number": "+1555010207",
-            "about": "Fire safety systems technician. Specializes in sprinkler and alarm testing.",
+            "first_name": "Liam",
+            "last_name": "Wong",
+            "email": "l.wong@exoveon.com",
+            "phone_number": "+1 (555) 234-5678",
+            "about": "Healthcare Facility Engineering Lead. ASHE CHFM certified, focused on hospital HVAC negative pressure isolation suites, clinical medical gases, and surgery suite HEPA airflow.",
             "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-10T09:00:00Z",
+            "updated_at": "2026-01-10T09:00:00Z",
             "is_active": true,
-            "deleted": false,
-            "created_at": "2026-06-11T09:30:00Z",
-            "updated_at": "2026-06-11T09:30:00Z"
+            "deleted": false
         }
     },
     {
@@ -123,16 +148,17 @@
         "pk": 9,
         "fields": {
             "user": null,
-            "first_name": "Liam",
-            "last_name": "Wong",
-            "email": "l.wong@exoveon.com",
-            "phone_number": "+1555010208",
-            "about": "Solar panel installer and renewable energy maintenance coordinator.",
+            "first_name": "Sophia",
+            "last_name": "Martinez",
+            "email": "s.martinez@exoveon.com",
+            "phone_number": "+1 (555) 234-5679",
+            "about": "Industrial Refrigeration Specialist. RETA CARO certified in industrial ammonia (R-717) screw compressors, evaporative condensers, and sub-zero blast freezer systems.",
             "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-10T09:00:00Z",
+            "updated_at": "2026-01-10T09:00:00Z",
             "is_active": true,
-            "deleted": false,
-            "created_at": "2026-06-11T09:30:00Z",
-            "updated_at": "2026-06-11T09:30:00Z"
+            "deleted": false
         }
     },
     {
@@ -140,33 +166,17 @@
         "pk": 10,
         "fields": {
             "user": null,
-            "first_name": "Sophia",
-            "last_name": "Martinez",
-            "email": "s.martinez@exoveon.com",
-            "phone_number": "+1555010209",
-            "about": "Security systems expert. Handles CCTV, access control, and turnstiles.",
-            "created_by": 1,
-            "is_active": true,
-            "deleted": false,
-            "created_at": "2026-06-11T09:30:00Z",
-            "updated_at": "2026-06-11T09:30:00Z"
-        }
-    },
-    {
-        "model": "backend.technician",
-        "pk": 11,
-        "fields": {
-            "user": null,
             "first_name": "Oliver",
             "last_name": "Smith",
             "email": "o.smith@exoveon.com",
-            "phone_number": "+1555010210",
-            "about": "Substation maintenance engineer. Handles heavy electrical loads and transformers.",
+            "phone_number": "+1 (555) 234-5680",
+            "about": "Renewable Power & Grid Systems Technician. NABCEP certified PV installation professional with in-depth expertise in utility-scale SMA solar inverters and battery storage switchgear.",
             "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-10T09:00:00Z",
+            "updated_at": "2026-01-10T09:00:00Z",
             "is_active": true,
-            "deleted": false,
-            "created_at": "2026-06-11T09:30:00Z",
-            "updated_at": "2026-06-11T09:30:00Z"
+            "deleted": false
         }
     }
 ]

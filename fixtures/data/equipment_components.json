@@ -1,0 +1,962 @@
+[
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 1,
+        "fields": {
+            "equipment": 1,
+            "name": "Stage 1 Drive Assembly (EQ-MHT-CHIL-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Carrier 19XR-400T.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 2,
+        "fields": {
+            "equipment": 1,
+            "name": "Primary Sensor & Control Harness (EQ-MHT-CHIL-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Carrier 19XR-400T.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 3,
+        "fields": {
+            "equipment": 2,
+            "name": "Stage 1 Drive Assembly (EQ-MHT-ELV-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Otis SkyRise PM-60.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 4,
+        "fields": {
+            "equipment": 2,
+            "name": "Primary Sensor & Control Harness (EQ-MHT-ELV-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Otis SkyRise PM-60.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 5,
+        "fields": {
+            "equipment": 3,
+            "name": "Stage 1 Drive Assembly (EQ-MHT-ELV-02)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Otis SkyRise PM-60.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 6,
+        "fields": {
+            "equipment": 3,
+            "name": "Primary Sensor & Control Harness (EQ-MHT-ELV-02)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Otis SkyRise PM-60.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 7,
+        "fields": {
+            "equipment": 4,
+            "name": "Stage 1 Drive Assembly (EQ-MHT-GEN-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Caterpillar CAT-3516B-HD.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 8,
+        "fields": {
+            "equipment": 4,
+            "name": "Primary Sensor & Control Harness (EQ-MHT-GEN-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Caterpillar CAT-3516B-HD.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 9,
+        "fields": {
+            "equipment": 5,
+            "name": "Stage 1 Drive Assembly (EQ-MHT-AHU-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Trane ClimateChanger CSAA-050.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 10,
+        "fields": {
+            "equipment": 5,
+            "name": "Primary Sensor & Control Harness (EQ-MHT-AHU-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Trane ClimateChanger CSAA-050.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 11,
+        "fields": {
+            "equipment": 6,
+            "name": "Stage 1 Drive Assembly (EQ-SJP-GEN-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Cummins QSK60-G9.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 12,
+        "fields": {
+            "equipment": 6,
+            "name": "Primary Sensor & Control Harness (EQ-SJP-GEN-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Cummins QSK60-G9.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 13,
+        "fields": {
+            "equipment": 7,
+            "name": "Stage 1 Drive Assembly (EQ-SJP-AHU-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Daikin Vision VSA-40.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 14,
+        "fields": {
+            "equipment": 7,
+            "name": "Primary Sensor & Control Harness (EQ-SJP-AHU-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Daikin Vision VSA-40.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 15,
+        "fields": {
+            "equipment": 8,
+            "name": "Stage 1 Drive Assembly (EQ-SJP-ELV-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Schindler Schindler 7000.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 16,
+        "fields": {
+            "equipment": 8,
+            "name": "Primary Sensor & Control Harness (EQ-SJP-ELV-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Schindler Schindler 7000.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 17,
+        "fields": {
+            "equipment": 9,
+            "name": "Stage 1 Drive Assembly (EQ-SJP-CHIL-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for York YK MaxE 500-Ton.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 18,
+        "fields": {
+            "equipment": 9,
+            "name": "Primary Sensor & Control Harness (EQ-SJP-CHIL-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for York YK MaxE 500-Ton.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 19,
+        "fields": {
+            "equipment": 10,
+            "name": "Stage 1 Drive Assembly (EQ-ATH-UPS-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Vertiv Liebert EXL S1 800kVA.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 20,
+        "fields": {
+            "equipment": 10,
+            "name": "Primary Sensor & Control Harness (EQ-ATH-UPS-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Vertiv Liebert EXL S1 800kVA.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 21,
+        "fields": {
+            "equipment": 11,
+            "name": "Stage 1 Drive Assembly (EQ-ATH-UPS-02)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Vertiv Liebert EXL S1 800kVA.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 22,
+        "fields": {
+            "equipment": 11,
+            "name": "Primary Sensor & Control Harness (EQ-ATH-UPS-02)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Vertiv Liebert EXL S1 800kVA.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 23,
+        "fields": {
+            "equipment": 12,
+            "name": "Stage 1 Drive Assembly (EQ-ATH-FIRE-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Siemens Sinorix FM-200 Matrix.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 24,
+        "fields": {
+            "equipment": 12,
+            "name": "Primary Sensor & Control Harness (EQ-ATH-FIRE-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Siemens Sinorix FM-200 Matrix.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 25,
+        "fields": {
+            "equipment": 13,
+            "name": "Stage 1 Drive Assembly (EQ-ATH-GEN-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Caterpillar CAT-3516C 2000kW.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 26,
+        "fields": {
+            "equipment": 13,
+            "name": "Primary Sensor & Control Harness (EQ-ATH-GEN-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Caterpillar CAT-3516C 2000kW.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 27,
+        "fields": {
+            "equipment": 14,
+            "name": "Stage 1 Drive Assembly (EQ-VAM-CHIL-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Trane CenTraVac CVHE-500.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 28,
+        "fields": {
+            "equipment": 14,
+            "name": "Primary Sensor & Control Harness (EQ-VAM-CHIL-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Trane CenTraVac CVHE-500.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 29,
+        "fields": {
+            "equipment": 15,
+            "name": "Stage 1 Drive Assembly (EQ-VAM-DDC-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Siemens Desigo PXC4.E16.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 30,
+        "fields": {
+            "equipment": 15,
+            "name": "Primary Sensor & Control Harness (EQ-VAM-DDC-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Siemens Desigo PXC4.E16.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 31,
+        "fields": {
+            "equipment": 16,
+            "name": "Stage 1 Drive Assembly (EQ-CIR-AHU-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Carrier Aero 39M Custom Air Handler.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 32,
+        "fields": {
+            "equipment": 16,
+            "name": "Primary Sensor & Control Harness (EQ-CIR-AHU-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Carrier Aero 39M Custom Air Handler.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 33,
+        "fields": {
+            "equipment": 17,
+            "name": "Stage 1 Drive Assembly (EQ-CIR-BOIL-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Cleaver-Brooks CB-700-150-150#.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 34,
+        "fields": {
+            "equipment": 17,
+            "name": "Primary Sensor & Control Harness (EQ-CIR-BOIL-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Cleaver-Brooks CB-700-150-150#.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 35,
+        "fields": {
+            "equipment": 18,
+            "name": "Stage 1 Drive Assembly (EQ-PGL-GEN-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Kohler KD1000 Tier 4 Final.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 36,
+        "fields": {
+            "equipment": 18,
+            "name": "Primary Sensor & Control Harness (EQ-PGL-GEN-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Kohler KD1000 Tier 4 Final.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 37,
+        "fields": {
+            "equipment": 19,
+            "name": "Stage 1 Drive Assembly (EQ-PGL-FIRE-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Kidde Fire Novec 1230 Engineered System.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 38,
+        "fields": {
+            "equipment": 19,
+            "name": "Primary Sensor & Control Harness (EQ-PGL-FIRE-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Kidde Fire Novec 1230 Engineered System.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 39,
+        "fields": {
+            "equipment": 20,
+            "name": "Stage 1 Drive Assembly (EQ-HRC-CHIL-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Daikin Magnitude WME-500.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 40,
+        "fields": {
+            "equipment": 20,
+            "name": "Primary Sensor & Control Harness (EQ-HRC-CHIL-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Daikin Magnitude WME-500.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 41,
+        "fields": {
+            "equipment": 21,
+            "name": "Stage 1 Drive Assembly (EQ-HRC-ELV-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for KONE MonoSpace 700.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 42,
+        "fields": {
+            "equipment": 21,
+            "name": "Primary Sensor & Control Harness (EQ-HRC-ELV-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for KONE MonoSpace 700.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 43,
+        "fields": {
+            "equipment": 22,
+            "name": "Stage 1 Drive Assembly (EQ-SES-SOL-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for SMA Solar Sunny Central 2500-EV.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 44,
+        "fields": {
+            "equipment": 22,
+            "name": "Primary Sensor & Control Harness (EQ-SES-SOL-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for SMA Solar Sunny Central 2500-EV.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 45,
+        "fields": {
+            "equipment": 23,
+            "name": "Stage 1 Drive Assembly (EQ-SES-SOL-02)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for SMA Solar Sunny Central 2500-EV.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 46,
+        "fields": {
+            "equipment": 23,
+            "name": "Primary Sensor & Control Harness (EQ-SES-SOL-02)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for SMA Solar Sunny Central 2500-EV.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 47,
+        "fields": {
+            "equipment": 24,
+            "name": "Stage 1 Drive Assembly (EQ-SCF-ELV-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Otis SkyRise High-Speed Traction.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 48,
+        "fields": {
+            "equipment": 24,
+            "name": "Primary Sensor & Control Harness (EQ-SCF-ELV-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Otis SkyRise High-Speed Traction.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 49,
+        "fields": {
+            "equipment": 25,
+            "name": "Stage 1 Drive Assembly (EQ-SCF-CHIL-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for York YMC2 Magnetic Chiller 400T.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 50,
+        "fields": {
+            "equipment": 25,
+            "name": "Primary Sensor & Control Harness (EQ-SCF-CHIL-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for York YMC2 Magnetic Chiller 400T.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 51,
+        "fields": {
+            "equipment": 26,
+            "name": "Stage 1 Drive Assembly (EQ-OCD-AMM-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Vilter / Emerson Single Screw VSS-601.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 52,
+        "fields": {
+            "equipment": 26,
+            "name": "Primary Sensor & Control Harness (EQ-OCD-AMM-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Vilter / Emerson Single Screw VSS-601.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 53,
+        "fields": {
+            "equipment": 27,
+            "name": "Stage 1 Drive Assembly (EQ-OCD-AMM-02)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Vilter / Emerson Single Screw VSS-601.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 54,
+        "fields": {
+            "equipment": 27,
+            "name": "Primary Sensor & Control Harness (EQ-OCD-AMM-02)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Vilter / Emerson Single Screw VSS-601.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 55,
+        "fields": {
+            "equipment": 28,
+            "name": "Stage 1 Drive Assembly (EQ-CEP-DDC-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Honeywell WEBs-N4 JACE 8000.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 56,
+        "fields": {
+            "equipment": 28,
+            "name": "Primary Sensor & Control Harness (EQ-CEP-DDC-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Honeywell WEBs-N4 JACE 8000.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 57,
+        "fields": {
+            "equipment": 29,
+            "name": "Stage 1 Drive Assembly (EQ-BHE-AHU-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Carrier WeatherMaker 48TC.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 58,
+        "fields": {
+            "equipment": 29,
+            "name": "Primary Sensor & Control Harness (EQ-BHE-AHU-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Carrier WeatherMaker 48TC.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 59,
+        "fields": {
+            "equipment": 30,
+            "name": "Stage 1 Drive Assembly (EQ-MHS-BOIL-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Cleaver-Brooks ClearFire-C CFC-700.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 60,
+        "fields": {
+            "equipment": 30,
+            "name": "Primary Sensor & Control Harness (EQ-MHS-BOIL-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Cleaver-Brooks ClearFire-C CFC-700.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 61,
+        "fields": {
+            "equipment": 31,
+            "name": "Stage 1 Drive Assembly (EQ-CPS-BOIL-99)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Babcock & Wilcox FM-9 Industrial Watertube.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 62,
+        "fields": {
+            "equipment": 31,
+            "name": "Primary Sensor & Control Harness (EQ-CPS-BOIL-99)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Babcock & Wilcox FM-9 Industrial Watertube.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 63,
+        "fields": {
+            "equipment": 32,
+            "name": "Stage 1 Drive Assembly (EQ-AMO-GEN-01)",
+            "description": "Main motorized drive mechanism and rotational shaft bearings for Caterpillar CAT-3412 DITA.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmentcomponents",
+        "pk": 64,
+        "fields": {
+            "equipment": 32,
+            "name": "Primary Sensor & Control Harness (EQ-AMO-GEN-01)",
+            "description": "Instrumentation sensor bundle and telemetry communication harness for Caterpillar CAT-3412 DITA.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-02-20T08:00:00Z",
+            "updated_at": "2026-02-20T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    }
+]

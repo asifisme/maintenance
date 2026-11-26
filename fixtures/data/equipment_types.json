@@ -3,52 +3,140 @@
         "model": "backend.equipmenttype",
         "pk": 1,
         "fields": {
-            "name": "HVAC",
-            "description": "Heating, Ventilation, and Air Conditioning",
+            "name": "Centrifugal Liquid Chiller",
+            "description": "High-efficiency variable-speed centrifugal water chillers providing primary chilled water for commercial and central plant facilities.",
             "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-12T08:00:00Z",
+            "updated_at": "2026-01-12T08:00:00Z",
             "is_active": true,
-            "deleted": false,
-            "created_at": "2026-06-10T07:34:21Z",
-            "updated_at": "2026-06-10T07:34:21Z"
+            "deleted": false
         }
     },
     {
         "model": "backend.equipmenttype",
         "pk": 2,
         "fields": {
-            "name": "Elevator",
-            "description": "Passenger and Freight Elevators",
+            "name": "Emergency Standby Diesel Generator",
+            "description": "Heavy-duty diesel generator sets providing automatic emergency power backup during utility grid interruptions.",
             "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-12T08:00:00Z",
+            "updated_at": "2026-01-12T08:00:00Z",
             "is_active": true,
-            "deleted": false,
-            "created_at": "2026-06-10T07:34:21Z",
-            "updated_at": "2026-06-10T07:34:21Z"
+            "deleted": false
         }
     },
     {
         "model": "backend.equipmenttype",
         "pk": 3,
         "fields": {
-            "name": "Generator",
-            "description": "Backup Power Generators",
+            "name": "High-Speed Traction Passenger Elevator",
+            "description": "Gearless permanent-magnet traction elevator systems for vertical transportation in mid-rise and high-rise commercial facilities.",
             "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-12T08:00:00Z",
+            "updated_at": "2026-01-12T08:00:00Z",
             "is_active": true,
-            "deleted": false,
-            "created_at": "2026-06-10T07:34:21Z",
-            "updated_at": "2026-06-10T07:34:21Z"
+            "deleted": false
         }
     },
     {
         "model": "backend.equipmenttype",
         "pk": 4,
         "fields": {
-            "name": "Fire Safety",
-            "description": "Fire Alarms and Sprinkler Systems",
+            "name": "Central Station Air Handling Unit (AHU)",
+            "description": "Modular air handling units equipped with chilled water coils, variable speed fan arrays, and high-efficiency filtration.",
             "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-12T08:00:00Z",
+            "updated_at": "2026-01-12T08:00:00Z",
             "is_active": true,
-            "deleted": false,
-            "created_at": "2026-06-10T07:34:21Z",
-            "updated_at": "2026-06-10T07:34:21Z"
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 5,
+        "fields": {
+            "name": "Clean Agent Fire Suppression System",
+            "description": "Waterless gas-based total flooding fire protection systems engineered for mission-critical electrical and data center rooms.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-12T08:00:00Z",
+            "updated_at": "2026-01-12T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 6,
+        "fields": {
+            "name": "Uninterruptible Power Supply (UPS)",
+            "description": "Double-conversion online static UPS systems delivering seamless power conditioning and battery backup for critical IT loads.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-12T08:00:00Z",
+            "updated_at": "2026-01-12T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 7,
+        "fields": {
+            "name": "Industrial Package Steam Boiler",
+            "description": "High-pressure packaged firetube and watertube boilers generating dry saturated steam for process heating and central utility plants.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-12T08:00:00Z",
+            "updated_at": "2026-01-12T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 8,
+        "fields": {
+            "name": "Direct Digital Controller (BACnet DDC)",
+            "description": "Programmable BACnet IP automation controllers managing central plant staging, air handlers, and energy management algorithms.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-12T08:00:00Z",
+            "updated_at": "2026-01-12T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 9,
+        "fields": {
+            "name": "Ammonia Industrial Refrigeration Compressor",
+            "description": "Industrial twin-screw refrigeration compressors operating on R-717 ammonia for cold storage warehousing and process cooling.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-12T08:00:00Z",
+            "updated_at": "2026-01-12T08:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.equipmenttype",
+        "pk": 10,
+        "fields": {
+            "name": "Commercial Solar PV String Inverter",
+            "description": "Three-phase grid-tied solar photovoltaic string inverters converting DC solar array power to 480VAC facility distribution.",
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-01-12T08:00:00Z",
+            "updated_at": "2026-01-12T08:00:00Z",
+            "is_active": true,
+            "deleted": false
         }
     }
 ]

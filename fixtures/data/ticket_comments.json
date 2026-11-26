@@ -3,26 +3,240 @@
         "model": "backend.ticketcomment",
         "pk": 1,
         "fields": {
-            "ticket": 2,
+            "ticket": 1,
             "author": 1,
-            "body": "I have inspected the shaft, ordering new bearings.",
+            "body": "Michael Chen dispatched to central plant. Suction and discharge pressure loggers connected to Carrier microcomputer controller.",
             "is_internal": false,
             "created_by": 1,
-            "created_at": "2026-06-10T07:34:21Z",
-            "updated_at": "2026-06-10T07:34:21Z"
+            "updated_by": 1,
+            "created_at": "2026-11-18T07:45:00Z",
+            "updated_at": "2026-11-18T07:45:00Z",
+            "is_active": true,
+            "deleted": false
         }
     },
     {
         "model": "backend.ticketcomment",
         "pk": 2,
         "fields": {
-            "ticket": 3,
+            "ticket": 1,
             "author": 1,
-            "body": "Fuel pump replaced, generator is now fully operational.",
+            "body": "Identified fouling buildup on tube sheets in condenser water box #2. Isolating water box for emergency chemical descaling and rod brushing.",
+            "is_internal": false,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-18T10:30:00Z",
+            "updated_at": "2026-11-18T10:30:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.ticketcomment",
+        "pk": 3,
+        "fields": {
+            "ticket": 2,
+            "author": 1,
+            "body": "Elena Rodriguez locked and tagged out Elevator Car 2 hoistway. Machine room acoustic scan confirmed bearing pit failure on primary drive sheave.",
             "is_internal": true,
             "created_by": 1,
-            "created_at": "2026-06-10T07:34:21Z",
-            "updated_at": "2026-06-10T07:34:21Z"
+            "updated_by": 1,
+            "created_at": "2026-11-17T10:15:00Z",
+            "updated_at": "2026-11-17T10:15:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.ticketcomment",
+        "pk": 4,
+        "fields": {
+            "ticket": 2,
+            "author": 1,
+            "body": "Replacement SKF spherical roller bearing assembly dispatched from Otis regional distribution hub. Estimated arrival 08:00 tomorrow.",
+            "is_internal": false,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-17T15:00:00Z",
+            "updated_at": "2026-11-17T15:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.ticketcomment",
+        "pk": 5,
+        "fields": {
+            "ticket": 3,
+            "author": 1,
+            "body": "Liam Wong on site in Surgical Suite 3. Initial inspection found pre-filter stage clogged with drywall dust from hallway renovation. Replacing pre-filters immediately.",
+            "is_internal": false,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-18T12:15:00Z",
+            "updated_at": "2026-11-18T12:15:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.ticketcomment",
+        "pk": 6,
+        "fields": {
+            "ticket": 4,
+            "author": 1,
+            "body": "Sophia Martinez on site with refrigeration manifold gauges. Slide valve potentiometer verified jumping from 40% to 80% due to loose feedback bracket.",
+            "is_internal": false,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-19T07:30:00Z",
+            "updated_at": "2026-11-19T07:30:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.ticketcomment",
+        "pk": 7,
+        "fields": {
+            "ticket": 7,
+            "author": 1,
+            "body": "Sarah Jenkins completed internal resistance readings on string 2. Cell #18 confirmed defective internal plate connection. Placing replacement jar on order.",
+            "is_internal": false,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-16T16:00:00Z",
+            "updated_at": "2026-11-16T16:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.ticketcomment",
+        "pk": 8,
+        "fields": {
+            "ticket": 9,
+            "author": 1,
+            "body": "Oliver Smith isolated DC combiner boxes 1 through 6. Traced ground fault to pinched positive solar lead in array section B-4 conduit expansion joint.",
+            "is_internal": false,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-17T16:30:00Z",
+            "updated_at": "2026-11-17T16:30:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.ticketcomment",
+        "pk": 9,
+        "fields": {
+            "ticket": 11,
+            "author": 1,
+            "body": "Carrier frequency adjusted on VFD parameter set from 8kHz to 4kHz. Acoustic whine significantly reduced. Monitoring drive heatsink thermals.",
+            "is_internal": false,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-15T11:00:00Z",
+            "updated_at": "2026-11-15T11:00:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.ticketcomment",
+        "pk": 10,
+        "fields": {
+            "ticket": 18,
+            "author": 1,
+            "body": "Elena Rodriguez installed new Otis interlock roller assembly. Completed 50 consecutive cycle tests with zero interlock faults. Restored car to active service.",
+            "is_internal": false,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-13T13:45:00Z",
+            "updated_at": "2026-11-13T13:45:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.ticketcomment",
+        "pk": 11,
+        "fields": {
+            "ticket": 20,
+            "author": 1,
+            "body": "Completed secondary injection test on Vertiv 800kVA UPS static switch breaker. Trip time 14.2 milliseconds, well within 20ms manufacturer specification.",
+            "is_internal": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-06T15:30:00Z",
+            "updated_at": "2026-11-06T15:30:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.ticketcomment",
+        "pk": 12,
+        "fields": {
+            "ticket": 21,
+            "author": 1,
+            "body": "Liam Wong certified HEPA filter installation with ATI TDA-2i photometer. Clean room particulate count meets ISO Class 5 standard.",
+            "is_internal": false,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-30T14:30:00Z",
+            "updated_at": "2026-10-30T14:30:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.ticketcomment",
+        "pk": 13,
+        "fields": {
+            "ticket": 22,
+            "author": 1,
+            "body": "Michael Chen replaced sight glass gasket, evacuated system to 450 microns, and recharged with virgin R-134a. Standing pressure holding steady at 120 PSI.",
+            "is_internal": false,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-10-16T15:45:00Z",
+            "updated_at": "2026-10-16T15:45:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.ticketcomment",
+        "pk": 14,
+        "fields": {
+            "ticket": 10,
+            "author": 1,
+            "body": "Replacement John Crane mechanical shaft seal kit received. Scheduling pump shutdown during low manufacturing process demand window.",
+            "is_internal": true,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-17T09:30:00Z",
+            "updated_at": "2026-11-17T09:30:00Z",
+            "is_active": true,
+            "deleted": false
+        }
+    },
+    {
+        "model": "backend.ticketcomment",
+        "pk": 15,
+        "fields": {
+            "ticket": 13,
+            "author": 1,
+            "body": "Marcus Johnson connected Wireshark network capture. Diagnosed IP packet broadcast storm originating from obsolete third-party gateway on subnet.",
+            "is_internal": false,
+            "created_by": 1,
+            "updated_by": 1,
+            "created_at": "2026-11-17T15:45:00Z",
+            "updated_at": "2026-11-17T15:45:00Z",
+            "is_active": true,
+            "deleted": false
         }
     }
 ]
